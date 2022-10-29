@@ -7,15 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		246FD5AA87D11BAF881832ED /* Pods_BreadAndBacon_CoAccounting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */; };
 		76608659290BDA29008EF772 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608658290BDA29008EF772 /* AppDelegate.swift */; };
 		7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865A290BDA29008EF772 /* SceneDelegate.swift */; };
 		7660865D290BDA29008EF772 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865C290BDA29008EF772 /* ViewController.swift */; };
 		76608660290BDA29008EF772 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660865E290BDA29008EF772 /* Main.storyboard */; };
 		76608662290BDA2A008EF772 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76608661290BDA2A008EF772 /* Assets.xcassets */; };
 		76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608663290BDA2A008EF772 /* LaunchScreen.storyboard */; };
+		7660866D290C17C4008EF772 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7660866C290C17C4008EF772 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BreadAndBacon_CoAccounting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76608655290BDA29008EF772 /* BreadAndBacon_CoAccounting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreadAndBacon_CoAccounting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76608658290BDA29008EF772 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7660865A290BDA29008EF772 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -24,6 +27,9 @@
 		76608661290BDA2A008EF772 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76608664290BDA2A008EF772 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		76608666290BDA2A008EF772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7660866C290C17C4008EF772 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
+		CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.release.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +37,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				246FD5AA87D11BAF881832ED /* Pods_BreadAndBacon_CoAccounting.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1BA9FACACF44F8EEEF1D1949 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3F91477775AA235BF7E9D33E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */,
+				CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		7660864C290BDA29008EF772 = {
 			isa = PBXGroup;
 			children = (
 				76608657290BDA29008EF772 /* BreadAndBacon_CoAccounting */,
 				76608656290BDA29008EF772 /* Products */,
+				3F91477775AA235BF7E9D33E /* Pods */,
+				1BA9FACACF44F8EEEF1D1949 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -63,6 +90,7 @@
 				76608661290BDA2A008EF772 /* Assets.xcassets */,
 				76608663290BDA2A008EF772 /* LaunchScreen.storyboard */,
 				76608666290BDA2A008EF772 /* Info.plist */,
+				7660866C290C17C4008EF772 /* GoogleService-Info.plist */,
 			);
 			path = BreadAndBacon_CoAccounting;
 			sourceTree = "<group>";
@@ -74,9 +102,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 76608669290BDA2A008EF772 /* Build configuration list for PBXNativeTarget "BreadAndBacon_CoAccounting" */;
 			buildPhases = (
+				B982F4596B5071DF7A721126 /* [CP] Check Pods Manifest.lock */,
 				76608651290BDA29008EF772 /* Sources */,
 				76608652290BDA29008EF772 /* Frameworks */,
 				76608653290BDA29008EF772 /* Resources */,
+				0D62039CA7A3AF43DD9A0F14 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -126,12 +156,55 @@
 			buildActionMask = 2147483647;
 			files = (
 				76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */,
+				7660866D290C17C4008EF772 /* GoogleService-Info.plist in Resources */,
 				76608662290BDA2A008EF772 /* Assets.xcassets in Resources */,
 				76608660290BDA29008EF772 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0D62039CA7A3AF43DD9A0F14 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B982F4596B5071DF7A721126 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BreadAndBacon_CoAccounting-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		76608651290BDA29008EF772 /* Sources */ = {
@@ -282,6 +355,7 @@
 		};
 		7660866A290BDA2A008EF772 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -310,6 +384,7 @@
 		};
 		7660866B290BDA2A008EF772 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
