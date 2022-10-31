@@ -15,6 +15,11 @@
 		76608662290BDA2A008EF772 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76608661290BDA2A008EF772 /* Assets.xcassets */; };
 		76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608663290BDA2A008EF772 /* LaunchScreen.storyboard */; };
 		7660866D290C17C4008EF772 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7660866C290C17C4008EF772 /* GoogleService-Info.plist */; };
+		76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608671290E2A4F008EF772 /* AddNewDataViewController.swift */; };
+		76608674290E2A80008EF772 /* AddNewDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */; };
+		76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608695290F7129008EF772 /* UIStoryboard+Extension.swift */; };
+		76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608697290F74E1008EF772 /* AddNewData.storyboard */; };
+		766086A0290F7B0B008EF772 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660869F290F7B0B008EF772 /* Home.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +33,11 @@
 		76608664290BDA2A008EF772 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		76608666290BDA2A008EF772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7660866C290C17C4008EF772 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		76608671290E2A4F008EF772 /* AddNewDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewDataViewController.swift; sourceTree = "<group>"; };
+		76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewDataTableViewCell.swift; sourceTree = "<group>"; };
+		76608695290F7129008EF772 /* UIStoryboard+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Extension.swift"; sourceTree = "<group>"; };
+		76608697290F74E1008EF772 /* AddNewData.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = AddNewData.storyboard; sourceTree = "<group>"; };
+		7660869F290F7B0B008EF772 /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
 		CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.release.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,7 +68,6 @@
 				C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */,
 				CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -83,16 +92,45 @@
 		76608657290BDA29008EF772 /* BreadAndBacon_CoAccounting */ = {
 			isa = PBXGroup;
 			children = (
+				7660869A290F79CC008EF772 /* Extension */,
+				76608699290F79B3008EF772 /* HomePage */,
+				7660866E290E2571008EF772 /* AddNewDataPage */,
+				7660865E290BDA29008EF772 /* Main.storyboard */,
 				76608658290BDA29008EF772 /* AppDelegate.swift */,
 				7660865A290BDA29008EF772 /* SceneDelegate.swift */,
-				7660865C290BDA29008EF772 /* ViewController.swift */,
-				7660865E290BDA29008EF772 /* Main.storyboard */,
 				76608661290BDA2A008EF772 /* Assets.xcassets */,
 				76608663290BDA2A008EF772 /* LaunchScreen.storyboard */,
 				76608666290BDA2A008EF772 /* Info.plist */,
 				7660866C290C17C4008EF772 /* GoogleService-Info.plist */,
 			);
 			path = BreadAndBacon_CoAccounting;
+			sourceTree = "<group>";
+		};
+		7660866E290E2571008EF772 /* AddNewDataPage */ = {
+			isa = PBXGroup;
+			children = (
+				76608697290F74E1008EF772 /* AddNewData.storyboard */,
+				76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */,
+				76608671290E2A4F008EF772 /* AddNewDataViewController.swift */,
+			);
+			path = AddNewDataPage;
+			sourceTree = "<group>";
+		};
+		76608699290F79B3008EF772 /* HomePage */ = {
+			isa = PBXGroup;
+			children = (
+				7660869F290F7B0B008EF772 /* Home.storyboard */,
+				7660865C290BDA29008EF772 /* ViewController.swift */,
+			);
+			path = HomePage;
+			sourceTree = "<group>";
+		};
+		7660869A290F79CC008EF772 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				76608695290F7129008EF772 /* UIStoryboard+Extension.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,6 +196,8 @@
 				76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */,
 				7660866D290C17C4008EF772 /* GoogleService-Info.plist in Resources */,
 				76608662290BDA2A008EF772 /* Assets.xcassets in Resources */,
+				766086A0290F7B0B008EF772 /* Home.storyboard in Resources */,
+				76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */,
 				76608660290BDA29008EF772 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,6 +252,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7660865D290BDA29008EF772 /* ViewController.swift in Sources */,
+				76608674290E2A80008EF772 /* AddNewDataTableViewCell.swift in Sources */,
+				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
+				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
 				7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */,
 			);
