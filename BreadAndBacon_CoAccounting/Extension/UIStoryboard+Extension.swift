@@ -15,7 +15,6 @@ private struct StoryboardCategory {
 
 extension UIStoryboard {
     static var addNewData: UIStoryboard { return goToStoryboard(name: StoryboardCategory.addNewData) }
-    
     private static func goToStoryboard(name: String) -> UIStoryboard {
         return UIStoryboard(name: name, bundle: nil)
     }

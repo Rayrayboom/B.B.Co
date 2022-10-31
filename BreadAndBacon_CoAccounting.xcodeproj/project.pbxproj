@@ -20,6 +20,8 @@
 		76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608695290F7129008EF772 /* UIStoryboard+Extension.swift */; };
 		76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608697290F74E1008EF772 /* AddNewData.storyboard */; };
 		766086A0290F7B0B008EF772 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660869F290F7B0B008EF772 /* Home.storyboard */; };
+		766086A2290F8168008EF772 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766086A1290F8168008EF772 /* TabViewController.swift */; };
+		766086A4290F82F6008EF772 /* PresentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766086A3290F82F6008EF772 /* PresentViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,8 @@
 		76608695290F7129008EF772 /* UIStoryboard+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Extension.swift"; sourceTree = "<group>"; };
 		76608697290F74E1008EF772 /* AddNewData.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = AddNewData.storyboard; sourceTree = "<group>"; };
 		7660869F290F7B0B008EF772 /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
+		766086A1290F8168008EF772 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabViewController.swift; path = BreadAndBacon_CoAccounting/TabViewController.swift; sourceTree = SOURCE_ROOT; };
+		766086A3290F82F6008EF772 /* PresentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentViewController.swift; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
 		CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.release.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,6 +100,7 @@
 				76608699290F79B3008EF772 /* HomePage */,
 				7660866E290E2571008EF772 /* AddNewDataPage */,
 				7660865E290BDA29008EF772 /* Main.storyboard */,
+				766086A1290F8168008EF772 /* TabViewController.swift */,
 				76608658290BDA29008EF772 /* AppDelegate.swift */,
 				7660865A290BDA29008EF772 /* SceneDelegate.swift */,
 				76608661290BDA2A008EF772 /* Assets.xcassets */,
@@ -110,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				76608697290F74E1008EF772 /* AddNewData.storyboard */,
+				766086A3290F82F6008EF772 /* PresentViewController.swift */,
 				76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */,
 				76608671290E2A4F008EF772 /* AddNewDataViewController.swift */,
 			);
@@ -145,6 +151,7 @@
 				76608652290BDA29008EF772 /* Frameworks */,
 				76608653290BDA29008EF772 /* Resources */,
 				0D62039CA7A3AF43DD9A0F14 /* [CP] Embed Pods Frameworks */,
+				76265F23290FB48400F5E341 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -222,6 +229,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		76265F23290FB48400F5E341 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nif test -d \"/opt/homebrew/bin/\"; then\n  PATH=\"/opt/homebrew/bin/:${PATH}\"\nfi\n\nexport PATH\n\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 		B982F4596B5071DF7A721126 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -256,6 +280,8 @@
 				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
 				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
+				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
+				766086A4290F82F6008EF772 /* PresentViewController.swift in Sources */,
 				7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

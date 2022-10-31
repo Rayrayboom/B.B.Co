@@ -8,13 +8,14 @@
 import UIKit
 
 class AddNewDataTableViewCell: UITableViewCell {
-
-    @IBOutlet weak var moneyLabel: UILabel!
-    @IBOutlet weak var moneyTextField: UITextField!
-    @IBOutlet weak var catagoryLabel: UILabel!
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var contentTextField: UITextField!
+    @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var categoryResultLabel: UILabel!
     @IBOutlet weak var accountLabel: UILabel!
     @IBOutlet weak var detailTextView: UITextView!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -26,4 +27,9 @@ class AddNewDataTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+    // 金額、種類、帳戶function - 生成tableview時覆用
+    func fillInContent(name: String) {
+        titleLabel.text = name
+        contentTextField.text = ""
+    }
 }
