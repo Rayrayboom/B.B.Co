@@ -12,17 +12,33 @@ protocol PassTextfieldDelegate: AnyObject {
 }
 
 class AddNewDataTableViewCell: UITableViewCell {
-    weak var delegate: PassTextfieldDelegate?
 
-    @IBOutlet weak var dateTextfield: UITextField!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var contentTextField: UITextField! {
+    weak var delegate: PassTextfieldDelegate?
+    var costContent: [String] = ["早餐", "午餐", "晚餐"]
+    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
+    var indexPath: IndexPath? {
         didSet {
-            // contentTextField有更動時叫出黑色數字鍵盤
-            contentTextField.keyboardType = .numberPad
-            contentTextField.keyboardAppearance = .dark
+            if indexPath?.item == 0 {
+                // contentTextField有更動時叫出黑色數字鍵盤
+                contentTextField.keyboardType = .numberPad
+                contentTextField.keyboardAppearance = .dark
+                return
+            } else {
+// MARK: - picker
+                let contentPicker = UIPickerView()
+                contentPicker.delegate = self
+                contentPicker.dataSource = self
+                contentTextField.inputView = contentPicker
+//                contentTextField.text = costContent[0]
+                contentTextField.keyboardAppearance = .dark
+            }
         }
     }
+
+    @IBOutlet weak var contentTextField: UITextField!
+    @IBOutlet weak var dateTextfield: UITextField!
+    @IBOutlet weak var titleLabel: UILabel!
+// MARK: - Notice
     @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var qrButton: UIButton!
     @IBOutlet weak var detailTextView: UITextView! {
@@ -42,17 +58,20 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
 
     // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
-    func fillInContent(name: String, content: String) {
+// MARK: - Notice
+    func fillInContent(name: String/*, content: String*/) {
         titleLabel.text = name
         contentTextField.text = ""
-        contentLabel.text = content
+//        contentLabel.text = content
     }
 
     // cell本身不執行func，只在這邊設定完之後交由delegate傳過去給VC動作
     // 把datePicker相關動作移回來是因為addTarget的self指的是當前的VC裡的func，在addNewDataVC執行addTarget會報錯的原因在於self在addNewDataVC中其實會找不到dateTextfield這個東西，會無法給值; 因此需要用一個config func讓addTarget抓到cell本身的func且拿到對應dateTextfield，才有辦法把sender的值用delegate倒給addNewDataVC去塞值
     func config(dateStr: String) {
         self.dateTextfield.text = dateStr
-        self.dateTextfield.textColor = .link
+        self.dateTextfield.textColor = .black
+        self.dateTextfield.textAlignment = .center
+        self.dateTextfield.keyboardAppearance = .dark
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = .date
         datePicker.addTarget(self, action: #selector(didSelectData(_:)), for: UIControl.Event.valueChanged)
@@ -63,5 +82,55 @@ class AddNewDataTableViewCell: UITableViewCell {
     // 利用addNewDataTableViewCell自己的delegate傳值過去給addNewDataVC來執行塞值的動作
     @objc func didSelectData(_ sender: UIDatePicker) {
         self.delegate?.passTextField(self, sender: sender)
+    }
+
+// MARK: - picker
+    func contentConfig() {
+//        self.contentTextField.textAlignment = .center
+//        let contentPicker = UIPickerView()
+//        contentTextField.inputView = contentPicker
+    }
+}
+
+// MARK: - picker
+extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
+    // 有幾列可以選擇
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    // 每列有多少行資料
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch indexPath?.item {
+        case 1:
+            return costContent.count
+        default:
+            return accountContent.count
+        }
+    }
+
+    // 每個選項顯示的資料, Inherited from UIPickerViewDelegate
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch indexPath?.item {
+        case 1:
+            return costContent[row]
+        case 2:
+            return accountContent[row]
+        default:
+            return nil
+        }
+    }
+
+    // pickerView改變選擇後執行的動作, Inherited from UIPickerViewDelegate
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        // 依據元件的 tag 取得 UITextField
+//        let textField = self.view.viewWithTag(100) as? UITextField
+        // 將 UITextField 的值更新為陣列 meals 的第 row 項資料
+        switch indexPath?.item {
+        case 1:
+            contentTextField.text = costContent[row]
+        default:
+            contentTextField.text = accountContent[row]
+        }
     }
 }

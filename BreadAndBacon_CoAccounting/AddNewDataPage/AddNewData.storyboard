@@ -81,13 +81,6 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7tP-MF-V0r">
-                                                    <rect key="frame" x="323" y="27" width="42" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="OJi-0S-5nV" secondAttribute="trailing" constant="20" id="Cvl-Wr-oLW"/>
@@ -98,7 +91,6 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="contentLabel" destination="7tP-MF-V0r" id="Haz-DP-guS"/>
                                             <outlet property="contentTextField" destination="OJi-0S-5nV" id="kqp-1R-hBp"/>
                                             <outlet property="titleLabel" destination="u9x-qB-yCX" id="e7d-eJ-YsN"/>
                                         </connections>

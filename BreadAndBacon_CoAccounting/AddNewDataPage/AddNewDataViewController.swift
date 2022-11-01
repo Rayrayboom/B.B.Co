@@ -13,9 +13,10 @@ class AddNewDataViewController: UIViewController {
     let formatter = DateFormatter()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
-    var costContent: [String] = ["早餐", "午餐", "晚餐"]
-    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
+//    var costContent: [String] = ["早餐", "午餐", "晚餐"]
+//    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
     var segmentTag = 0
+    var tapIndexpath: IndexPath?
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
@@ -43,7 +44,7 @@ class AddNewDataViewController: UIViewController {
         sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
         // 點選X時，執行取消新增
         cancelNewData()
-        formatter.dateFormat = "dd/MM/yyyy"
+        formatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -64,7 +65,7 @@ class AddNewDataViewController: UIViewController {
 //        default:
 //            <#code#>
 //        }
-    addNewDadaTableView.reloadData()
+        addNewDadaTableView.reloadData()
     }
 
     // 取消新增資料按鈕trigger
@@ -81,7 +82,8 @@ class AddNewDataViewController: UIViewController {
 
 extension AddNewDataViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print(indexPath)
+        tapIndexpath = indexPath
+        // 點擊cell時收起鍵盤
         view.endEditing(true)
     }
 }
@@ -119,6 +121,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
 
+                // 設定datePicker的delegate
                 dateCell.delegate = self
                 let date = Date()
                 // formatter把日期(date)轉成String塞給dateStr
@@ -132,18 +135,26 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+
+                addDataCell.contentTextField.inputView = nil
+                addDataCell.indexPath = indexPath
+                addDataCell.delegate = self
                 // 依照category array裡的資料筆數決定section:1有幾個cell
-                addDataCell.fillInContent(name: transferCategory[indexPath.row], content: costContent[indexPath.row])
-                if indexPath.row == 0 {
-                    addDataCell.contentLabel.isHidden = true
-                    addDataCell.contentTextField.text = ""
-                    return addDataCell
-                } else {
-                    addDataCell.contentLabel.isHidden = false
-                    addDataCell.contentTextField.isHidden = true
-//                    addDataCell.contentLabel.text = "早餐"
-                    return addDataCell
-                }
+                addDataCell.fillInContent(name: transferCategory[indexPath.row])
+                addDataCell.contentTextField.textAlignment = .center
+                return addDataCell
+// MARK: - Notice
+//                addDataCell.fillInContent(name: transferCategory[indexPath.row], content: costContent[indexPath.row])
+
+//                if indexPath.row == 0 {
+//                    addDataCell.contentLabel.isHidden = true
+//                    addDataCell.contentTextField.text = ""
+//                    return addDataCell
+//                } else {
+//                    addDataCell.contentLabel.isHidden = false
+//                    addDataCell.contentTextField.isHidden = true
+//                    return addDataCell
+//                }
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? AddNewDataTableViewCell
@@ -169,6 +180,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
 
+                // 設定datePicker的delegate
                 dateCell.delegate = self
                 let date = Date()
                 // formatter把日期(date)轉成String塞給dateStr
@@ -182,17 +194,24 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                addDataCell.fillInContent(name: costCategory[indexPath.row], content: costContent[indexPath.row])
-                if indexPath.row == 0 {
-                    addDataCell.contentLabel.isHidden = true
-                    addDataCell.contentTextField.text = ""
-                    return addDataCell
-                } else {
-                    addDataCell.contentLabel.isHidden = false
-                    addDataCell.contentTextField.isHidden = true
-//                    addDataCell.contentLabel.text = "早餐"
-                    return addDataCell
-                }
+                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
+                addDataCell.contentTextField.inputView = nil
+                addDataCell.indexPath = indexPath
+                addDataCell.delegate = self
+                addDataCell.fillInContent(name: costCategory[indexPath.row])
+                addDataCell.contentTextField.textAlignment = .center
+                return addDataCell
+// MARK: - Notice
+//                addDataCell.fillInContent(name: costCategory[indexPath.row], content: costContent[indexPath.row])
+//                if indexPath.row == 0 {
+//                    addDataCell.contentLabel.isHidden = true
+//                    addDataCell.contentTextField.text = ""
+//                    return addDataCell
+//                } else {
+//                    addDataCell.contentLabel.isHidden = false
+//                    addDataCell.contentTextField.isHidden = true
+//                    return addDataCell
+//                }
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? AddNewDataTableViewCell
