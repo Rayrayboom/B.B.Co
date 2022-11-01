@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		246FD5AA87D11BAF881832ED /* Pods_BreadAndBacon_CoAccounting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */; };
+		76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F242910051F00F5E341 /* QRCodeViewController.swift */; };
 		76608659290BDA29008EF772 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608658290BDA29008EF772 /* AppDelegate.swift */; };
 		7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865A290BDA29008EF772 /* SceneDelegate.swift */; };
 		7660865D290BDA29008EF772 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865C290BDA29008EF772 /* ViewController.swift */; };
@@ -21,11 +22,11 @@
 		76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608697290F74E1008EF772 /* AddNewData.storyboard */; };
 		766086A0290F7B0B008EF772 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660869F290F7B0B008EF772 /* Home.storyboard */; };
 		766086A2290F8168008EF772 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766086A1290F8168008EF772 /* TabViewController.swift */; };
-		766086A4290F82F6008EF772 /* PresentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766086A3290F82F6008EF772 /* PresentViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BreadAndBacon_CoAccounting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		76265F242910051F00F5E341 /* QRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeViewController.swift; sourceTree = "<group>"; };
 		76608655290BDA29008EF772 /* BreadAndBacon_CoAccounting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreadAndBacon_CoAccounting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76608658290BDA29008EF772 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7660865A290BDA29008EF772 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -41,7 +42,6 @@
 		76608697290F74E1008EF772 /* AddNewData.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = AddNewData.storyboard; sourceTree = "<group>"; };
 		7660869F290F7B0B008EF772 /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		766086A1290F8168008EF772 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabViewController.swift; path = BreadAndBacon_CoAccounting/TabViewController.swift; sourceTree = SOURCE_ROOT; };
-		766086A3290F82F6008EF772 /* PresentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentViewController.swift; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
 		CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.release.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,7 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				76608697290F74E1008EF772 /* AddNewData.storyboard */,
-				766086A3290F82F6008EF772 /* PresentViewController.swift */,
+				76265F242910051F00F5E341 /* QRCodeViewController.swift */,
 				76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */,
 				76608671290E2A4F008EF772 /* AddNewDataViewController.swift */,
 			);
@@ -277,11 +277,11 @@
 			files = (
 				7660865D290BDA29008EF772 /* ViewController.swift in Sources */,
 				76608674290E2A80008EF772 /* AddNewDataTableViewCell.swift in Sources */,
+				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
 				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
 				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
 				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
-				766086A4290F82F6008EF772 /* PresentViewController.swift in Sources */,
 				7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

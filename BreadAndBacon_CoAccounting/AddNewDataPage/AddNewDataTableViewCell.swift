@@ -16,11 +16,22 @@ class AddNewDataTableViewCell: UITableViewCell {
 
     @IBOutlet weak var dateTextfield: UITextField!
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var contentTextField: UITextField!
-    @IBOutlet weak var qrButton: UIButton!
-    @IBAction func insertQRCode(_ sender: UIButton) {
+    @IBOutlet weak var contentTextField: UITextField! {
+        didSet {
+            // contentTextField有更動時叫出黑色數字鍵盤
+            contentTextField.keyboardType = .numberPad
+            contentTextField.keyboardAppearance = .dark
+        }
     }
-    @IBOutlet weak var detailTextView: UITextView!
+    @IBOutlet weak var contentLabel: UILabel!
+    @IBOutlet weak var qrButton: UIButton!
+    @IBOutlet weak var detailTextView: UITextView! {
+        didSet {
+            // contentTextField有更動時叫出黑色數字鍵盤
+//            detailTextView.becomeFirstResponder()
+            detailTextView.keyboardAppearance = .dark
+        }
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,13 +39,13 @@ class AddNewDataTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
     }
 
-    // 金額、種類、帳戶function - 生成tableview時覆用
-    func fillInContent(name: String) {
+    // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
+    func fillInContent(name: String, content: String) {
         titleLabel.text = name
         contentTextField.text = ""
+        contentLabel.text = content
     }
 
     // cell本身不執行func，只在這邊設定完之後交由delegate傳過去給VC動作

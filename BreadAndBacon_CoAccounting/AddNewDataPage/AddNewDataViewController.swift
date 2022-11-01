@@ -9,13 +9,29 @@ import UIKit
 import SwiftUI
 
 class AddNewDataViewController: UIViewController {
-    //因為DateFormatter()非常佔記憶體也很吃效能，因此把他從cellForRowAt拉出來，放在global，這樣只要宣告一次就好，否則每次gen tableView就得生成一次
+    // 因為DateFormatter()非常佔記憶體也很吃效能，因此把他從cellForRowAt拉出來，放在global，這樣只要宣告一次就好，否則每次gen tableView就得生成一次
     let formatter = DateFormatter()
-    let category: [String] = ["金額", "種類", "帳戶"]
+    var costCategory: [String] = ["金額", "種類", "帳戶"]
+    var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
+    var costContent: [String] = ["早餐", "午餐", "晚餐"]
+    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
+    var segmentTag = 0
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
+
+    @IBAction func insertQRCode(_ sender: UIButton) {
+//        let storyboard = UIStoryboard(name: "AddNewData", bundle: nil)
+        guard let presentQRCode = self.storyboard?.instantiateViewController(
+            withIdentifier: "qrcodeVC") as? QRCodeViewController
+        else {
+            fatalError("ERROR: Can not find addDataPage.")
+        }
+        let navigation = UINavigationController(rootViewController: presentQRCode)
+        navigation.modalPresentationStyle = .fullScreen
+        present(navigation, animated: true, completion: nil)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,9 +46,15 @@ class AddNewDataViewController: UIViewController {
         formatter.dateFormat = "dd/MM/yyyy"
     }
 
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
+
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
-        print(sourceSegmentControl.selectedSegmentIndex)
+//        print(sourceSegmentControl.selectedSegmentIndex)
+        segmentTag = sourceSegmentControl.selectedSegmentIndex
+        print("This is current segmentTag \(segmentTag)")
 
 //        switch sourceSegmentControl.selectedSegmentIndex {
 //        case 0:
@@ -51,7 +73,7 @@ class AddNewDataViewController: UIViewController {
             image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dismissPage))
     }
 
-    // 取消新增func並dismiss VC
+    // 取消並dismiss VC
     @objc func dismissPage() {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
@@ -59,11 +81,19 @@ class AddNewDataViewController: UIViewController {
 
 extension AddNewDataViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
+//        print(indexPath)
+        view.endEditing(true)
     }
 }
 
 extension AddNewDataViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 3 {
+            return 250
+        } else {
+            return UITableView.automaticDimension
+        }
+    }
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4
     }
@@ -72,7 +102,7 @@ extension AddNewDataViewController: UITableViewDataSource {
         if section == 0 {
             return 1
         } else if section == 1 {
-            return category.count
+            return costCategory.count
         } else if section == 2 {
             return 1
         } else {
@@ -81,46 +111,105 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 0 {
-            guard let dateCell = tableView.dequeueReusableCell(
-                withIdentifier: "dateCell") as? AddNewDataTableViewCell
-            else {
-                fatalError("can not create cell")
-            }
+        if segmentTag == 2 {
+            if indexPath.section == 0 {
+                guard let dateCell = tableView.dequeueReusableCell(
+                    withIdentifier: "dateCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
 
-            dateCell.delegate = self
-            let date = Date()
-            // formatter把日期(date)轉成String塞給dateStr
-            let dateStr = formatter.string(from: date)
-            // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
-            dateCell.config(dateStr: dateStr)
-            return dateCell
-        } else if indexPath.section == 1 {
-            guard let addDataCell = tableView.dequeueReusableCell(
-                withIdentifier: "addDataCell") as? AddNewDataTableViewCell
-            else {
-                fatalError("can not create cell")
+                dateCell.delegate = self
+                let date = Date()
+                // formatter把日期(date)轉成String塞給dateStr
+                let dateStr = formatter.string(from: date)
+                // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
+                dateCell.config(dateStr: dateStr)
+                return dateCell
+            } else if indexPath.section == 1 {
+                guard let addDataCell = tableView.dequeueReusableCell(
+                    withIdentifier: "addDataCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
+                // 依照category array裡的資料筆數決定section:1有幾個cell
+                addDataCell.fillInContent(name: transferCategory[indexPath.row], content: costContent[indexPath.row])
+                if indexPath.row == 0 {
+                    addDataCell.contentLabel.isHidden = true
+                    addDataCell.contentTextField.text = ""
+                    return addDataCell
+                } else {
+                    addDataCell.contentLabel.isHidden = false
+                    addDataCell.contentTextField.isHidden = true
+//                    addDataCell.contentLabel.text = "早餐"
+                    return addDataCell
+                }
+            } else if indexPath.section == 2 {
+                guard let qrCell = tableView.dequeueReusableCell(
+                    withIdentifier: "QRCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
+    //            qrCell.qrButton.setImage(UIImage(systemName: "qrcode.viewfinde"), for: .normal)
+                return qrCell
+            } else {
+                guard let detailCell = tableView.dequeueReusableCell(
+                    withIdentifier: "detailCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
+                detailCell.detailTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur"
+                return detailCell
             }
-            // 依照category array裡的資料筆數決定section:1有幾個cell
-            addDataCell.fillInContent(name: category[indexPath.row])
-            return addDataCell
-        } else if indexPath.section == 2 {
-            guard let qrCell = tableView.dequeueReusableCell(
-                withIdentifier: "QRCell") as? AddNewDataTableViewCell
-            else {
-                fatalError("can not create cell")
-            }
-//            qrCell.qrButton.setImage(UIImage(systemName: "qrcode.viewfinde"), for: .normal)
-            return qrCell
         } else {
-            guard let detailCell = tableView.dequeueReusableCell(
-                withIdentifier: "detailCell") as? AddNewDataTableViewCell
-            else {
-                fatalError("can not create cell")
+            if indexPath.section == 0 {
+                guard let dateCell = tableView.dequeueReusableCell(
+                    withIdentifier: "dateCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
+
+                dateCell.delegate = self
+                let date = Date()
+                // formatter把日期(date)轉成String塞給dateStr
+                let dateStr = formatter.string(from: date)
+                // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
+                dateCell.config(dateStr: dateStr)
+                return dateCell
+            } else if indexPath.section == 1 {
+                guard let addDataCell = tableView.dequeueReusableCell(
+                    withIdentifier: "addDataCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
+                addDataCell.fillInContent(name: costCategory[indexPath.row], content: costContent[indexPath.row])
+                if indexPath.row == 0 {
+                    addDataCell.contentLabel.isHidden = true
+                    addDataCell.contentTextField.text = ""
+                    return addDataCell
+                } else {
+                    addDataCell.contentLabel.isHidden = false
+                    addDataCell.contentTextField.isHidden = true
+//                    addDataCell.contentLabel.text = "早餐"
+                    return addDataCell
+                }
+            } else if indexPath.section == 2 {
+                guard let qrCell = tableView.dequeueReusableCell(
+                    withIdentifier: "QRCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
+//            qrCell.qrButton.setImage(UIImage(systemName: "qrcode.viewfinde"), for: .normal)
+                return qrCell
+            } else {
+                guard let detailCell = tableView.dequeueReusableCell(
+                    withIdentifier: "detailCell") as? AddNewDataTableViewCell
+                else {
+                    fatalError("can not create cell")
+                }
+                detailCell.detailTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur"
+                return detailCell
             }
-            detailCell.detailTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur"
-            tableView.rowHeight = 250
-            return detailCell
         }
     }
 }
