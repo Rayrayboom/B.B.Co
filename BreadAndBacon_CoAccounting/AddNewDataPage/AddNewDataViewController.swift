@@ -29,6 +29,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
 //        else {
 //            fatalError("ERROR: Can not find addDataPage.")
 //        }
+        // 建立一個VNDocumentCameraViewController實例，並執行delegate，delegate會導到QRCodeVC去執行process image的func
         let documentCameraViewController = VNDocumentCameraViewController()
         documentCameraViewController.delegate = self
         present(documentCameraViewController, animated: true)
@@ -54,7 +55,6 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
 
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
-//        print(sourceSegmentControl.selectedSegmentIndex)
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         print("This is current segmentTag \(segmentTag)")
         addNewDadaTableView.reloadData()
@@ -74,6 +74,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
 
 extension AddNewDataViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 把當前點到的indexPath傳到cell的indexPath
         tapIndexpath = indexPath
         // 點擊cell時收起鍵盤
         view.endEditing(true)
@@ -131,11 +132,12 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
                 addDataCell.indexPath = indexPath
+                addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
                 // 依照category array裡的資料筆數決定section:1有幾個cell
                 addDataCell.fillInContent(name: transferCategory[indexPath.row])
                 addDataCell.contentTextField.textAlignment = .center
-                addDataCell.contentConfig()
+                addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
@@ -179,10 +181,11 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
                 addDataCell.indexPath = indexPath
+                addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
                 addDataCell.fillInContent(name: costCategory[indexPath.row])
                 addDataCell.contentTextField.textAlignment = .center
-                addDataCell.contentConfig()
+                addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(

@@ -20,6 +20,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     let contentPicker = UIPickerView()
     // 宣告一個alertVC
     var controller = UIAlertController()
+    var segmentTag = 0
     var indexPath: IndexPath? {
         didSet {
             // 第一個金額cell不需要picker，因此讓他顯示數字鍵盤
@@ -90,7 +91,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
 
 // MARK: - picker
-    func contentConfig() {
+    func contentConfig(segment: Int) {
         controller = UIAlertController(title: "新增選項", message: "", preferredStyle: .alert)
         controller.addTextField { textField in
             textField.placeholder = "內容"
@@ -98,14 +99,20 @@ class AddNewDataTableViewCell: UITableViewCell {
         }
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
             // 利用index.item（點選到的是哪一個add button）來更新對應的array資料並reload component
-            if self.indexPath?.item == 1 {
-                self.costContent.append(controller.textFields?[0].text ?? "")
-                // 按下ok之後同步reload picker的component
-                self.contentPicker.reloadAllComponents()
+            if segment == 2 {
+                    self.accountContent.append(controller.textFields?[0].text ?? "")
+                    // 按下ok之後同步reload picker的component
+                    self.contentPicker.reloadAllComponents()
             } else {
-                self.accountContent.append(controller.textFields?[0].text ?? "")
-                // 按下ok之後同步reload picker的component
-                self.contentPicker.reloadAllComponents()
+                if self.indexPath?.item == 1 {
+                    self.costContent.append(controller.textFields?[0].text ?? "")
+                    // 按下ok之後同步reload picker的component
+                    self.contentPicker.reloadAllComponents()
+                } else {
+                    self.accountContent.append(controller.textFields?[0].text ?? "")
+                    // 按下ok之後同步reload picker的component
+                    self.contentPicker.reloadAllComponents()
+                }
             }
         }
 
@@ -132,9 +139,15 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch indexPath?.item {
         case 1:
-            return costContent.count
-        default:
+            if segmentTag == 2 {
+                return accountContent.count
+            } else {
+                return costContent.count
+            }
+        case 2:
             return accountContent.count
+        default:
+            return 0
         }
     }
 
@@ -142,7 +155,11 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch indexPath?.item {
         case 1:
-            return costContent[row]
+            if segmentTag == 2 {
+                return accountContent[row]
+            } else {
+                return costContent[row]
+            }
         case 2:
             return accountContent[row]
         default:
@@ -155,11 +172,15 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
         // 將 UITextField 的值更新為 array 的第 row 項資料
         switch indexPath?.item {
         case 1:
-            contentTextField.text = costContent[row]
-        default:
+            if segmentTag == 2 {
+                contentTextField.text = accountContent[row]
+            } else {
+                contentTextField.text = costContent[row]
+            }
+        case 2:
             contentTextField.text = accountContent[row]
+        default:
+            return
         }
-        // reload當前選項所有的pickerView
-//        pickerView.reloadAllComponents()
     }
 }
