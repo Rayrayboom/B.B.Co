@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		246FD5AA87D11BAF881832ED /* Pods_BreadAndBacon_CoAccounting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */; };
 		76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F242910051F00F5E341 /* QRCodeViewController.swift */; };
+		76265F272911855600F5E341 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F262911855600F5E341 /* User.swift */; };
 		76608659290BDA29008EF772 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608658290BDA29008EF772 /* AppDelegate.swift */; };
 		7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865A290BDA29008EF772 /* SceneDelegate.swift */; };
 		7660865D290BDA29008EF772 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865C290BDA29008EF772 /* ViewController.swift */; };
@@ -27,6 +28,7 @@
 /* Begin PBXFileReference section */
 		4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BreadAndBacon_CoAccounting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		76265F242910051F00F5E341 /* QRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeViewController.swift; sourceTree = "<group>"; };
+		76265F262911855600F5E341 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		76608655290BDA29008EF772 /* BreadAndBacon_CoAccounting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreadAndBacon_CoAccounting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76608658290BDA29008EF772 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7660865A290BDA29008EF772 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				76265F242910051F00F5E341 /* QRCodeViewController.swift */,
 				76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */,
 				76608671290E2A4F008EF772 /* AddNewDataViewController.swift */,
+				76265F262911855600F5E341 /* User.swift */,
 			);
 			path = AddNewDataPage;
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
 				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
 				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
+				76265F272911855600F5E341 /* User.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
 				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
 				7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */,
