@@ -433,6 +433,7 @@
 				DEVELOPMENT_TEAM = LSR93VH6VG;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BreadAndBacon_CoAccounting/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要你的相機權限掃描QRCode";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -462,6 +463,7 @@
 				DEVELOPMENT_TEAM = LSR93VH6VG;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BreadAndBacon_CoAccounting/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要你的相機權限掃描QRCode";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

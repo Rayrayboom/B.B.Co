@@ -44,7 +44,6 @@ class QRCodeViewController: UIViewController {
             }
         }
 //        request.regionOfInterest = CGRect(x: 1, y: 1, width: 1, height: 1)
-        
         do {
             try handler.perform([request])
             print("this is request \(request)")

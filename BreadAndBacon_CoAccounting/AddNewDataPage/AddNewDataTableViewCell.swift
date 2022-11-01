@@ -16,8 +16,9 @@ class AddNewDataTableViewCell: UITableViewCell {
     weak var delegate: PassTextfieldDelegate?
     var costContent: [String] = ["早餐", "午餐", "晚餐"]
     var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
+    // 宣告一個pickerView
     let contentPicker = UIPickerView()
-    // 宣告一個alertVC的實體
+    // 宣告一個alertVC
     var controller = UIAlertController()
     var indexPath: IndexPath? {
         didSet {
@@ -44,9 +45,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     @IBOutlet weak var contentTextField: UITextField!
     @IBOutlet weak var dateTextfield: UITextField!
     @IBOutlet weak var titleLabel: UILabel!
-// MARK: - Notice
     @IBOutlet weak var addNewContentBO: UIButton!
-    @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var qrButton: UIButton!
     @IBOutlet weak var detailTextView: UITextView! {
         didSet {
@@ -66,10 +65,9 @@ class AddNewDataTableViewCell: UITableViewCell {
 
     // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
 // MARK: - Notice
-    func fillInContent(name: String/*, content: String*/) {
+    func fillInContent(name: String) {
         titleLabel.text = name
         contentTextField.text = ""
-//        contentLabel.text = content
     }
 
     // cell本身不執行func，只在這邊設定完之後交由delegate傳過去給VC動作
@@ -99,9 +97,16 @@ class AddNewDataTableViewCell: UITableViewCell {
             textField.keyboardType = UIKeyboardType.default
         }
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
-            self.costContent.append(controller.textFields?[0].text ?? "")
-            // 按下ok之後同步reload picker的component
-            self.contentPicker.reloadAllComponents()
+            // 利用index.item（點選到的是哪一個add button）來更新對應的array資料並reload component
+            if self.indexPath?.item == 1 {
+                self.costContent.append(controller.textFields?[0].text ?? "")
+                // 按下ok之後同步reload picker的component
+                self.contentPicker.reloadAllComponents()
+            } else {
+                self.accountContent.append(controller.textFields?[0].text ?? "")
+                // 按下ok之後同步reload picker的component
+                self.contentPicker.reloadAllComponents()
+            }
         }
 
         controller.addAction(okAction)

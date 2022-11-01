@@ -7,8 +7,11 @@
 
 import UIKit
 import SwiftUI
+import AVFoundation
+import Vision
+import VisionKit
 
-class AddNewDataViewController: UIViewController {
+class AddNewDataViewController: UIViewController, VNDocumentCameraViewControllerDelegate {
     // 因為DateFormatter()非常佔記憶體也很吃效能，因此把他從cellForRowAt拉出來，放在global，這樣只要宣告一次就好，否則每次gen tableView就得生成一次
     let formatter = DateFormatter()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
@@ -20,19 +23,15 @@ class AddNewDataViewController: UIViewController {
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
-    @IBAction func addNewContent(_ sender: UIButton) {
-        
-    }
-
     @IBAction func insertQRCode(_ sender: UIButton) {
-        guard let presentQRCode = self.storyboard?.instantiateViewController(
-            withIdentifier: "qrcodeVC") as? QRCodeViewController
-        else {
-            fatalError("ERROR: Can not find addDataPage.")
-        }
-        let navigation = UINavigationController(rootViewController: presentQRCode)
-        navigation.modalPresentationStyle = .fullScreen
-        present(navigation, animated: true, completion: nil)
+//        guard let presentQRCode = self.storyboard?.instantiateViewController(
+//            withIdentifier: "qrcodeVC") as? QRCodeViewController
+//        else {
+//            fatalError("ERROR: Can not find addDataPage.")
+//        }
+        let documentCameraViewController = VNDocumentCameraViewController()
+        documentCameraViewController.delegate = self
+        present(documentCameraViewController, animated: true)
     }
 
     override func viewDidLoad() {
@@ -138,18 +137,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig()
                 return addDataCell
-// MARK: - Notice
-//                addDataCell.fillInContent(name: transferCategory[indexPath.row], content: costContent[indexPath.row])
-
-//                if indexPath.row == 0 {
-//                    addDataCell.contentLabel.isHidden = true
-//                    addDataCell.contentTextField.text = ""
-//                    return addDataCell
-//                } else {
-//                    addDataCell.contentLabel.isHidden = false
-//                    addDataCell.contentTextField.isHidden = true
-//                    return addDataCell
-//                }
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? AddNewDataTableViewCell
@@ -197,17 +184,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig()
                 return addDataCell
-// MARK: - Notice
-//                addDataCell.fillInContent(name: costCategory[indexPath.row], content: costContent[indexPath.row])
-//                if indexPath.row == 0 {
-//                    addDataCell.contentLabel.isHidden = true
-//                    addDataCell.contentTextField.text = ""
-//                    return addDataCell
-//                } else {
-//                    addDataCell.contentLabel.isHidden = false
-//                    addDataCell.contentTextField.isHidden = true
-//                    return addDataCell
-//                }
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? AddNewDataTableViewCell
