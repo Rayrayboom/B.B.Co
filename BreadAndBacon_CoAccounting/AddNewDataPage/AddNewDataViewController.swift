@@ -13,8 +13,6 @@ class AddNewDataViewController: UIViewController {
     let formatter = DateFormatter()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
-//    var costContent: [String] = ["早餐", "午餐", "晚餐"]
-//    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
 
@@ -22,8 +20,11 @@ class AddNewDataViewController: UIViewController {
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
+    @IBAction func addNewContent(_ sender: UIButton) {
+        
+    }
+
     @IBAction func insertQRCode(_ sender: UIButton) {
-//        let storyboard = UIStoryboard(name: "AddNewData", bundle: nil)
         guard let presentQRCode = self.storyboard?.instantiateViewController(
             withIdentifier: "qrcodeVC") as? QRCodeViewController
         else {
@@ -44,6 +45,7 @@ class AddNewDataViewController: UIViewController {
         sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
         // 點選X時，執行取消新增
         cancelNewData()
+        // datePicker的格式
         formatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
 
@@ -56,15 +58,6 @@ class AddNewDataViewController: UIViewController {
 //        print(sourceSegmentControl.selectedSegmentIndex)
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         print("This is current segmentTag \(segmentTag)")
-
-//        switch sourceSegmentControl.selectedSegmentIndex {
-//        case 0:
-//
-//        case 1:
-//
-//        default:
-//            <#code#>
-//        }
         addNewDadaTableView.reloadData()
     }
 
@@ -136,12 +129,14 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
 
+                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
                 addDataCell.indexPath = indexPath
                 addDataCell.delegate = self
                 // 依照category array裡的資料筆數決定section:1有幾個cell
                 addDataCell.fillInContent(name: transferCategory[indexPath.row])
                 addDataCell.contentTextField.textAlignment = .center
+                addDataCell.contentConfig()
                 return addDataCell
 // MARK: - Notice
 //                addDataCell.fillInContent(name: transferCategory[indexPath.row], content: costContent[indexPath.row])
@@ -200,6 +195,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.delegate = self
                 addDataCell.fillInContent(name: costCategory[indexPath.row])
                 addDataCell.contentTextField.textAlignment = .center
+                addDataCell.contentConfig()
                 return addDataCell
 // MARK: - Notice
 //                addDataCell.fillInContent(name: costCategory[indexPath.row], content: costContent[indexPath.row])
@@ -234,8 +230,13 @@ extension AddNewDataViewController: UITableViewDataSource {
 }
 
 extension AddNewDataViewController: PassTextfieldDelegate {
+    // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
+    func addNewContent(_ cell: AddNewDataTableViewCell) {
+        present(cell.controller, animated: true)
+    }
+
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
-    @objc func passTextField(_ cell: AddNewDataTableViewCell, sender: UIDatePicker) {
+    func passTextField(_ cell: AddNewDataTableViewCell, sender: UIDatePicker) {
         // 當date picker改變時，執行此func，把當前改變的date塞給textfield
         cell.dateTextfield.text = formatter.string(from: sender.date)
     }

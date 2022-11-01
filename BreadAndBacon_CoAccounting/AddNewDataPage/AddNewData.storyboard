@@ -68,7 +68,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OJi-0S-5nV">
-                                                    <rect key="frame" x="294" y="20" width="100" height="34"/>
+                                                    <rect key="frame" x="270.5" y="20" width="100" height="34"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="100" id="ixj-U2-TNf"/>
                                                     </constraints>
@@ -81,16 +81,26 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EdB-Bk-acO">
+                                                    <rect key="frame" x="370.5" y="20" width="43.5" height="37"/>
+                                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <state key="normal" title="Button"/>
+                                                    <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system"/>
+                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="OJi-0S-5nV" secondAttribute="trailing" constant="20" id="Cvl-Wr-oLW"/>
+                                                <constraint firstItem="EdB-Bk-acO" firstAttribute="top" secondItem="j4T-KR-TcS" secondAttribute="top" constant="20" id="3Lu-s0-QBB"/>
+                                                <constraint firstItem="EdB-Bk-acO" firstAttribute="leading" secondItem="OJi-0S-5nV" secondAttribute="trailing" id="JdI-as-PMg"/>
+                                                <constraint firstAttribute="trailing" secondItem="EdB-Bk-acO" secondAttribute="trailing" id="KuH-5M-85z"/>
                                                 <constraint firstItem="OJi-0S-5nV" firstAttribute="top" secondItem="j4T-KR-TcS" secondAttribute="top" constant="20" id="YRp-ue-w17"/>
+                                                <constraint firstAttribute="bottom" secondItem="EdB-Bk-acO" secondAttribute="bottom" constant="20" id="eEu-dd-ZE3"/>
                                                 <constraint firstAttribute="bottom" secondItem="u9x-qB-yCX" secondAttribute="bottom" priority="250" constant="20" id="itL-1u-bqp"/>
                                                 <constraint firstItem="u9x-qB-yCX" firstAttribute="leading" secondItem="j4T-KR-TcS" secondAttribute="leading" constant="20" id="kCb-9o-ffd"/>
                                                 <constraint firstItem="u9x-qB-yCX" firstAttribute="top" secondItem="j4T-KR-TcS" secondAttribute="top" constant="20" id="pHY-pp-Pgx"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="addNewContentBO" destination="EdB-Bk-acO" id="zh2-bY-BA2"/>
                                             <outlet property="contentTextField" destination="OJi-0S-5nV" id="kqp-1R-hBp"/>
                                             <outlet property="titleLabel" destination="u9x-qB-yCX" id="e7d-eJ-YsN"/>
                                         </connections>
@@ -189,7 +199,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GiM-4u-j9S" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-42" y="1573"/>
+            <point key="canvasLocation" x="-42.028985507246382" y="1572.9910714285713"/>
         </scene>
         <!--Item-->
         <scene sceneID="D2j-N2-LyP">

@@ -9,27 +9,33 @@ import UIKit
 
 protocol PassTextfieldDelegate: AnyObject {
     func passTextField(_ cell: AddNewDataTableViewCell, sender: UIDatePicker)
+    func addNewContent(_ cell: AddNewDataTableViewCell)
 }
 
 class AddNewDataTableViewCell: UITableViewCell {
-
     weak var delegate: PassTextfieldDelegate?
     var costContent: [String] = ["早餐", "午餐", "晚餐"]
     var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
+    let contentPicker = UIPickerView()
+    // 宣告一個alertVC的實體
+    var controller = UIAlertController()
     var indexPath: IndexPath? {
         didSet {
+            // 第一個金額cell不需要picker，因此讓他顯示數字鍵盤
             if indexPath?.item == 0 {
+                addNewContentBO.isHidden = true
                 // contentTextField有更動時叫出黑色數字鍵盤
                 contentTextField.keyboardType = .numberPad
                 contentTextField.keyboardAppearance = .dark
                 return
             } else {
 // MARK: - picker
-                let contentPicker = UIPickerView()
+                addNewContentBO.isHidden = false
+                // 種類、帳戶需要picker，故執行picker功能
+//                let contentPicker = UIPickerView()
                 contentPicker.delegate = self
                 contentPicker.dataSource = self
                 contentTextField.inputView = contentPicker
-//                contentTextField.text = costContent[0]
                 contentTextField.keyboardAppearance = .dark
             }
         }
@@ -39,6 +45,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     @IBOutlet weak var dateTextfield: UITextField!
     @IBOutlet weak var titleLabel: UILabel!
 // MARK: - Notice
+    @IBOutlet weak var addNewContentBO: UIButton!
     @IBOutlet weak var contentLabel: UILabel!
     @IBOutlet weak var qrButton: UIButton!
     @IBOutlet weak var detailTextView: UITextView! {
@@ -86,9 +93,26 @@ class AddNewDataTableViewCell: UITableViewCell {
 
 // MARK: - picker
     func contentConfig() {
-//        self.contentTextField.textAlignment = .center
-//        let contentPicker = UIPickerView()
-//        contentTextField.inputView = contentPicker
+        controller = UIAlertController(title: "新增選項", message: "", preferredStyle: .alert)
+        controller.addTextField { textField in
+            textField.placeholder = "內容"
+            textField.keyboardType = UIKeyboardType.default
+        }
+        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
+            self.costContent.append(controller.textFields?[0].text ?? "")
+            // 按下ok之後同步reload picker的component
+            self.contentPicker.reloadAllComponents()
+        }
+
+        controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        controller.addAction(cancelAction)
+
+        addNewContentBO.addTarget(self, action: #selector(didSelectAddButton), for: .touchUpInside)
+    }
+
+    @objc func didSelectAddButton() {
+        self.delegate?.addNewContent(self)
     }
 }
 
@@ -123,14 +147,14 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
 
     // pickerView改變選擇後執行的動作, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        // 依據元件的 tag 取得 UITextField
-//        let textField = self.view.viewWithTag(100) as? UITextField
-        // 將 UITextField 的值更新為陣列 meals 的第 row 項資料
+        // 將 UITextField 的值更新為 array 的第 row 項資料
         switch indexPath?.item {
         case 1:
             contentTextField.text = costContent[row]
         default:
             contentTextField.text = accountContent[row]
         }
+        // reload當前選項所有的pickerView
+//        pickerView.reloadAllComponents()
     }
 }
