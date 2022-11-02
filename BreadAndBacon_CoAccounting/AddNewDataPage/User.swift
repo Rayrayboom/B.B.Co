@@ -39,8 +39,8 @@ struct Account: Codable {
     let date: Timestamp
 //    let destinationAccountId: Category
 //    let sourceAccountId: Category
-    let accountId: Category
-    let expenditureId: Category
+    let accountId: String
+    let expenditureId: String
 //    let revenueId: Category
     let detail: String
 

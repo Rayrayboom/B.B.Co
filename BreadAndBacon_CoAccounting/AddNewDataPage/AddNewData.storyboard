@@ -36,7 +36,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="dateCell" id="J0J-e7-hxz" customClass="AddNewDataTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="dateCell" id="J0J-e7-hxz" customClass="AddDateTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="44.5" width="414" height="74.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="J0J-e7-hxz" id="qSo-Is-oIo">
@@ -57,7 +57,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="dateTextfield" destination="27v-Vr-bR8" id="ZwY-nl-Emg"/>
+                                            <outlet property="dateTextfield" destination="27v-Vr-bR8" id="ZNS-pc-zjt"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="addDataCell" rowHeight="77" id="zWS-Sh-WCX" customClass="AddNewDataTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -105,7 +105,7 @@
                                             <outlet property="titleLabel" destination="u9x-qB-yCX" id="e7d-eJ-YsN"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="QRCell" id="2Ut-UO-eFt" customClass="AddNewDataTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="QRCell" id="2Ut-UO-eFt" customClass="QRCodeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="196" width="414" height="61.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2Ut-UO-eFt" id="P8H-gH-xUJ">
@@ -136,10 +136,10 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="qrButton" destination="iRh-D2-x4X" id="Ryp-Gq-lgX"/>
+                                            <outlet property="qrButton" destination="iRh-D2-x4X" id="m5N-Vl-lyH"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="detailCell" id="5BP-Wq-8Iq" customClass="AddNewDataTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="detailCell" id="5BP-Wq-8Iq" customClass="DetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="257.5" width="414" height="40.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5BP-Wq-8Iq" id="plV-aR-FyR">
@@ -163,7 +163,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="detailTextView" destination="GEb-Le-vdB" id="TVd-R9-rbm"/>
+                                            <outlet property="detailTextView" destination="GEb-Le-vdB" id="jik-Bj-vDz"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

@@ -99,11 +99,11 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
     // 上傳資料到Firebase
     func createUserData() {
         let db = Firestore.firestore()
-// MARK: - 測試支出
+// MARK: - 測試支出寫入firebase
         let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection("expenditure").document()
         let account = Account(amount: data.contentTextField, date: data.dateTimeStamp,
-                              accountId: Category(id: "vdH5py0HZ9ZP791pUFM8", title: data.contentTextField),
-                              expenditureId: Category(id: "GWiBqlywvYj12jEJkjkw", title: data.contentTextField), detail: data.detailTextView)
+                              accountId: "vdH5py0HZ9ZP791pUFM8",
+                              expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
         do {
             try fetchDocumentID.setData(from: account)
             print("success create article. ID: \(fetchDocumentID.documentID)")
@@ -150,7 +150,7 @@ extension AddNewDataViewController: UITableViewDataSource {
         if segmentTag == 2 {
             if indexPath.section == 0 {
                 guard let dateCell = tableView.dequeueReusableCell(
-                    withIdentifier: "dateCell") as? AddNewDataTableViewCell
+                    withIdentifier: "dateCell") as? AddDateTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
@@ -182,7 +182,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
-                    withIdentifier: "QRCell") as? AddNewDataTableViewCell
+                    withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
@@ -190,7 +190,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
-                    withIdentifier: "detailCell") as? AddNewDataTableViewCell
+                    withIdentifier: "detailCell") as? DetailTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
@@ -201,7 +201,7 @@ extension AddNewDataViewController: UITableViewDataSource {
         } else {
             if indexPath.section == 0 {
                 guard let dateCell = tableView.dequeueReusableCell(
-                    withIdentifier: "dateCell") as? AddNewDataTableViewCell
+                    withIdentifier: "dateCell") as? AddDateTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
@@ -231,7 +231,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
-                    withIdentifier: "QRCell") as? AddNewDataTableViewCell
+                    withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
@@ -239,7 +239,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
-                    withIdentifier: "detailCell") as? AddNewDataTableViewCell
+                    withIdentifier: "detailCell") as? DetailTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
@@ -251,14 +251,18 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 }
 
-extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
+// date cell
+extension AddNewDataViewController: AddDateTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
-    func getDate(_ cell: AddNewDataTableViewCell, sender: UIDatePicker) {
+    func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
         // 當date picker改變時，執行此func，把當前改變的date塞給textfield
         cell.dateTextfield.text = formatter.string(from: sender.date)
         data.dateTimeStamp = Timestamp(date: sender.date)
     }
+}
 
+// new data cell
+extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
     // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
     func addNewContent(_ cell: AddNewDataTableViewCell) {
         present(cell.controller, animated: true)
@@ -267,17 +271,19 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
     func getInputTextField(indexPath: IndexPath, textField: String) {
         self.tapIndexpath = indexPath
         data.contentTextField = textField
-        print("======= TF \(data.contentTextField)")
+        print("======= \(data.contentTextField)")
     }
 
     func getTitle(indexPath: IndexPath, title: String) {
         self.tapIndexpath = indexPath
         data.titleLabel = title
-        print("=======\(data.titleLabel)")
+        print("======= \(data.titleLabel)")
     }
+}
 
+extension AddNewDataViewController: DetailTableViewCellDelegate {
     func getDetail(detail: String) {
         data.detailTextView = detail
-        print("======= this is detail\(data.detailTextView)")
+        print("======= this is detail \(data.detailTextView)")
     }
 }
