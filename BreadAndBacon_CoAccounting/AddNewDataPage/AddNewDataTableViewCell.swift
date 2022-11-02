@@ -7,13 +7,16 @@
 
 import UIKit
 
-protocol PassTextfieldDelegate: AnyObject {
-    func passTextField(_ cell: AddNewDataTableViewCell, sender: UIDatePicker)
+protocol AddNewDataTableViewCellDelegate: AnyObject {
+    func getDate(_ cell: AddNewDataTableViewCell, sender: UIDatePicker)
     func addNewContent(_ cell: AddNewDataTableViewCell)
+    func getInputTextField(indexPath: IndexPath, textField: String)
+    func getTitle(indexPath: IndexPath, title: String)
+    func getDetail(detail: String)
 }
 
 class AddNewDataTableViewCell: UITableViewCell {
-    weak var delegate: PassTextfieldDelegate?
+    weak var delegate: AddNewDataTableViewCellDelegate?
     var costContent: [String] = ["早餐", "午餐", "晚餐"]
     var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
     // 宣告一個pickerView
@@ -34,7 +37,6 @@ class AddNewDataTableViewCell: UITableViewCell {
 // MARK: - picker
                 addNewContentBO.isHidden = false
                 // 種類、帳戶需要picker，故執行picker功能
-//                let contentPicker = UIPickerView()
                 contentPicker.delegate = self
                 contentPicker.dataSource = self
                 contentTextField.inputView = contentPicker
@@ -43,13 +45,22 @@ class AddNewDataTableViewCell: UITableViewCell {
         }
     }
 
-    @IBOutlet weak var contentTextField: UITextField!
-    @IBOutlet weak var dateTextfield: UITextField!
+    @IBOutlet weak var contentTextField: UITextField! {
+        didSet {
+            contentTextField.delegate = self
+        }
+    }
+    @IBOutlet weak var dateTextfield: UITextField! {
+        didSet {
+            dateTextfield.delegate = self
+        }
+    }
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var addNewContentBO: UIButton!
     @IBOutlet weak var qrButton: UIButton!
     @IBOutlet weak var detailTextView: UITextView! {
         didSet {
+            detailTextView.delegate = self
             // contentTextField有更動時叫出黑色數字鍵盤
 //            detailTextView.becomeFirstResponder()
             detailTextView.keyboardAppearance = .dark
@@ -87,7 +98,9 @@ class AddNewDataTableViewCell: UITableViewCell {
 
     // 利用addNewDataTableViewCell自己的delegate傳值過去給addNewDataVC來執行塞值的動作
     @objc func didSelectData(_ sender: UIDatePicker) {
-        self.delegate?.passTextField(self, sender: sender)
+        self.delegate?.getDate(self, sender: sender)
+        // MARK: -
+        print("===\(dateTextfield.text)")
     }
 
 // MARK: - picker
@@ -114,6 +127,9 @@ class AddNewDataTableViewCell: UITableViewCell {
                     self.contentPicker.reloadAllComponents()
                 }
             }
+
+            // 按下OK後把最新選項用delegate傳給VC
+//            self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: self.costContent.last ?? "")
         }
 
         controller.addAction(okAction)
@@ -124,6 +140,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
 
     @objc func didSelectAddButton() {
+        // 按下add button後把最新選項用delegate傳給VC
         self.delegate?.addNewContent(self)
     }
 }
@@ -182,5 +199,24 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
         default:
             return
         }
+    }
+}
+
+// textField delegate
+extension AddNewDataTableViewCell: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if indexPath?.section != 0 {
+            print("====== TF delegate \(contentTextField.text)")
+//            print("====== TF delegate \(dateTextfield.text)")
+        }
+        self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")
+
+        self.delegate?.getTitle(indexPath: self.indexPath ?? [0, 0], title: self.titleLabel.text ?? "")
+    }
+}
+
+extension AddNewDataTableViewCell: UITextViewDelegate {
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.delegate?.getDetail(detail: detailTextView.text)
     }
 }

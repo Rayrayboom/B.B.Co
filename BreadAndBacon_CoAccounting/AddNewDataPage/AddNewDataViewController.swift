@@ -10,6 +10,16 @@ import SwiftUI
 import AVFoundation
 import Vision
 import VisionKit
+import FirebaseFirestore
+
+
+// MARK: - expenditure
+struct NewDataModel {
+    var contentTextField: String = ""
+    var dateTimeStamp = Timestamp()
+    var titleLabel: String = ""
+    var detailTextView: String = ""
+}
 
 class AddNewDataViewController: UIViewController, VNDocumentCameraViewControllerDelegate {
     // 因為DateFormatter()非常佔記憶體也很吃效能，因此把他從cellForRowAt拉出來，放在global，這樣只要宣告一次就好，否則每次gen tableView就得生成一次
@@ -18,6 +28,8 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
+    var data = NewDataModel()
+
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
@@ -45,8 +57,10 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
         // 點選X時，執行取消新增
         cancelNewData()
+        // 點選+時，執行新增資料到firebase
+        saveNewData()
         // datePicker的格式
-        formatter.dateFormat = "yyyy 年 MM 月 dd 日"
+        formatter.dateFormat = "yyyy 年 MM 月 dd日"
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -69,6 +83,33 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
     // 取消並dismiss VC
     @objc func dismissPage() {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+
+    // 新增資料按鈕trigger
+    func saveNewData() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(savePage))
+    }
+
+    // 新增並上傳firebase
+    @objc func savePage() {
+        createUserData()
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+
+    // 上傳資料到Firebase
+    func createUserData() {
+        let db = Firestore.firestore()
+// MARK: - 測試支出
+        let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection("expenditure").document()
+        let account = Account(amount: data.contentTextField, date: data.dateTimeStamp,
+                              accountId: Category(id: "vdH5py0HZ9ZP791pUFM8", title: data.contentTextField),
+                              expenditureId: Category(id: "GWiBqlywvYj12jEJkjkw", title: data.contentTextField), detail: data.detailTextView)
+        do {
+            try fetchDocumentID.setData(from: account)
+            print("success create article. ID: \(fetchDocumentID.documentID)")
+        } catch {
+            print(error)
+        }
     }
 }
 
@@ -153,7 +194,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                detailCell.detailTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur"
+                detailCell.detailTextView.text = ""
+                detailCell.delegate = self
                 return detailCell
             }
         } else {
@@ -201,22 +243,41 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                detailCell.detailTextView.text = "Lorem ipsum dolor sit er elit lamet, consectetaur"
+                detailCell.detailTextView.text = ""
+                detailCell.delegate = self
                 return detailCell
             }
         }
     }
 }
 
-extension AddNewDataViewController: PassTextfieldDelegate {
+extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
+    // 用delegate把cell和點選的sender傳過來，進行給新值的動作
+    func getDate(_ cell: AddNewDataTableViewCell, sender: UIDatePicker) {
+        // 當date picker改變時，執行此func，把當前改變的date塞給textfield
+        cell.dateTextfield.text = formatter.string(from: sender.date)
+        data.dateTimeStamp = Timestamp(date: sender.date)
+    }
+
     // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
     func addNewContent(_ cell: AddNewDataTableViewCell) {
         present(cell.controller, animated: true)
     }
 
-    // 用delegate把cell和點選的sender傳過來，進行給新值的動作
-    func passTextField(_ cell: AddNewDataTableViewCell, sender: UIDatePicker) {
-        // 當date picker改變時，執行此func，把當前改變的date塞給textfield
-        cell.dateTextfield.text = formatter.string(from: sender.date)
+    func getInputTextField(indexPath: IndexPath, textField: String) {
+        self.tapIndexpath = indexPath
+        data.contentTextField = textField
+        print("======= TF \(data.contentTextField)")
+    }
+
+    func getTitle(indexPath: IndexPath, title: String) {
+        self.tapIndexpath = indexPath
+        data.titleLabel = title
+        print("=======\(data.titleLabel)")
+    }
+
+    func getDetail(detail: String) {
+        data.detailTextView = detail
+        print("======= this is detail\(data.detailTextView)")
     }
 }

@@ -20,7 +20,7 @@ struct User: Codable {
     let expenditureCategory: [Category]
     let revenue: [Account]
     let revenueCategory: [Category]
-    
+
     enum CodingKeys: String, CodingKey {
         case id
         case email
@@ -35,23 +35,23 @@ struct User: Codable {
 }
 
 struct Account: Codable {
-    let amount: Int
+    let amount: String
     let date: Timestamp
-    let destinationAccountId: String
-    let sourceAccountId: String
-    let accountId: String
-    let expenditureId: String
-    let revenueId: String
+//    let destinationAccountId: Category
+//    let sourceAccountId: Category
+    let accountId: Category
+    let expenditureId: Category
+//    let revenueId: Category
     let detail: String
-    
+
     enum CodingKeys: String, CodingKey {
         case amount
         case date
-        case destinationAccountId = "destination_account_id"
-        case sourceAccountId = "source_account_id"
+//        case destinationAccountId = "destination_account_id"
+//        case sourceAccountId = "source_account_id"
         case accountId = "account_id"
         case expenditureId = "expenditure_id"
-        case revenueId = "revenue_id"
+//        case revenueId = "revenue_id"
         case detail
     }
 }
@@ -61,4 +61,3 @@ struct Category: Codable {
     let id: String?
     let title: String
 }
-
