@@ -11,12 +11,13 @@ protocol AddNewDataTableViewCellDelegate: AnyObject {
     func addNewContent(_ cell: AddNewDataTableViewCell)
     func getInputTextField(indexPath: IndexPath, textField: String)
     func getTitle(indexPath: IndexPath, title: String)
+    func setContent(content: [String])
 }
 
 class AddNewDataTableViewCell: UITableViewCell {
     weak var delegate: AddNewDataTableViewCellDelegate?
-    var costContent: [String] = ["早餐", "午餐", "晚餐"]
-    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
+    // 用來存取對應content array（由VC判斷當前是哪一個indexPath.row來決定content array要放costContent或accountContent）
+    var content: [String] = []
     // 宣告一個pickerView
     let contentPicker = UIPickerView()
     // 宣告一個alertVC
@@ -75,23 +76,13 @@ class AddNewDataTableViewCell: UITableViewCell {
             textField.keyboardType = UIKeyboardType.default
         }
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
-            // 利用index.item（點選到的是哪一個add button）來更新對應的array資料並reload component
-            if segment == 2 {
-                    self.accountContent.append(controller.textFields?[0].text ?? "")
-                    // 按下ok之後同步reload picker的component
-                    self.contentPicker.reloadAllComponents()
-            } else {
-                if self.indexPath?.item == 1 {
-                    self.costContent.append(controller.textFields?[0].text ?? "")
-                    // 按下ok之後同步reload picker的component
-                    self.contentPicker.reloadAllComponents()
-                } else {
-                    self.accountContent.append(controller.textFields?[0].text ?? "")
-                    // 按下ok之後同步reload picker的component
-                    self.contentPicker.reloadAllComponents()
-                }
-            }
+            self.content.append(controller.textFields?[0].text ?? "")
+            // 按下ok之後同步reload picker的component
+            self.contentPicker.reloadAllComponents()
+            // 用delegate把已經append的content傳回VC並改值
+            self.delegate?.setContent(content: self.content)
         }
+        //    }
 
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -117,13 +108,9 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch indexPath?.item {
         case 1:
-            if segmentTag == 2 {
-                return accountContent.count
-            } else {
-                return costContent.count
-            }
+            return content.count
         case 2:
-            return accountContent.count
+            return content.count
         default:
             return 0
         }
@@ -133,13 +120,9 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch indexPath?.item {
         case 1:
-            if segmentTag == 2 {
-                return accountContent[row]
-            } else {
-                return costContent[row]
-            }
+            return content[row]
         case 2:
-            return accountContent[row]
+            return content[row]
         default:
             return nil
         }
@@ -147,16 +130,11 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
 
     // pickerView改變選擇後執行的動作, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        // 將 UITextField 的值更新為 array 的第 row 項資料
         switch indexPath?.item {
         case 1:
-            if segmentTag == 2 {
-                contentTextField.text = accountContent[row]
-            } else {
-                contentTextField.text = costContent[row]
-            }
+            contentTextField.text = content[row]
         case 2:
-            contentTextField.text = accountContent[row]
+            contentTextField.text = content[row]
         default:
             return
         }

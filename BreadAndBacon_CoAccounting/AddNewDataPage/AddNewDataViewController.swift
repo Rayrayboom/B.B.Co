@@ -26,6 +26,8 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
     let formatter = DateFormatter()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
+    var costContent: [String] = ["早餐", "午餐", "晚餐"]
+    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
@@ -111,6 +113,8 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
             print(error)
         }
     }
+
+    // To-Do: 再打一支API過去，用來新增category的
 }
 
 extension AddNewDataViewController: UITableViewDelegate {
@@ -170,6 +174,13 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
 
+// MARK: - notice
+                // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
+                switch indexPath.row {
+                default:
+                    addDataCell.content = accountContent
+                }
+
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
                 addDataCell.indexPath = indexPath
@@ -220,6 +231,16 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+
+// MARK: - notice
+                // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
+                switch indexPath.row {
+                case 1:
+                    addDataCell.content = costContent
+                default:
+                    addDataCell.content = accountContent
+                }
+
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
                 addDataCell.indexPath = indexPath
@@ -279,8 +300,26 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         data.titleLabel = title
         print("======= \(data.titleLabel)")
     }
+
+    // 新增的選項用delegate傳回來並改變array data
+    func setContent(content: [String]) {
+        // 當轉帳頁面時
+        switch segmentTag {
+        case 2:
+            costContent = content
+            accountContent = content
+        // 其餘頁面-支出/收入
+        default:
+            if tapIndexpath?.item == 1 {
+                costContent = content
+            } else {
+                accountContent = content
+            }
+        }
+    }
 }
 
+// detail cell
 extension AddNewDataViewController: DetailTableViewCellDelegate {
     func getDetail(detail: String) {
         data.detailTextView = detail
