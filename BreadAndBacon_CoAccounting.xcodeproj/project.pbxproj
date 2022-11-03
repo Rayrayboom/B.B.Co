@@ -13,6 +13,7 @@
 		76265F2929126AC100F5E341 /* AddDateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F2829126AC100F5E341 /* AddDateTableViewCell.swift */; };
 		76265F2B29126E3100F5E341 /* QRCodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F2A29126E3100F5E341 /* QRCodeTableViewCell.swift */; };
 		76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F2C291271C000F5E341 /* DetailTableViewCell.swift */; };
+		76265F382913A47900F5E341 /* HomeDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F372913A47900F5E341 /* HomeDetailTableViewCell.swift */; };
 		76608659290BDA29008EF772 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608658290BDA29008EF772 /* AppDelegate.swift */; };
 		7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865A290BDA29008EF772 /* SceneDelegate.swift */; };
 		7660865D290BDA29008EF772 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865C290BDA29008EF772 /* ViewController.swift */; };
@@ -35,6 +36,7 @@
 		76265F2829126AC100F5E341 /* AddDateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDateTableViewCell.swift; sourceTree = "<group>"; };
 		76265F2A29126E3100F5E341 /* QRCodeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeTableViewCell.swift; sourceTree = "<group>"; };
 		76265F2C291271C000F5E341 /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
+		76265F372913A47900F5E341 /* HomeDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeDetailTableViewCell.swift; sourceTree = "<group>"; };
 		76608655290BDA29008EF772 /* BreadAndBacon_CoAccounting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreadAndBacon_CoAccounting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76608658290BDA29008EF772 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7660865A290BDA29008EF772 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 		76265F3529138FF200F5E341 /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				76265F372913A47900F5E341 /* HomeDetailTableViewCell.swift */,
 			);
 			path = HomePage;
 			sourceTree = "<group>";
@@ -351,6 +354,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				76265F382913A47900F5E341 /* HomeDetailTableViewCell.swift in Sources */,
 				7660865D290BDA29008EF772 /* ViewController.swift in Sources */,
 				76608674290E2A80008EF772 /* AddNewDataTableViewCell.swift in Sources */,
 				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,

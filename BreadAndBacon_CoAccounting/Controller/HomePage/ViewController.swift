@@ -18,8 +18,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        showDetailTableView.delegate = self
+        showDetailTableView.dataSource = self
 
-        formatter.dateFormat = "yyyy/MM/dd"
         tappedDatePicker()
         dateBO.tintColor = .black
         // 讓date button一開始顯示當天日期
@@ -35,8 +37,11 @@ class ViewController: UIViewController {
 
     // 把選擇的date picker日期轉成string給button顯示
     @objc func didSelectDate(_ sender: UIDatePicker) {
+        // 點選date picker時顯示的格式用"yyyy/MM/dd"
+        formatter.dateFormat = "yyyy/MM/dd"
         dateBO.tintColor = .black
         dateBO.setTitle(formatter.string(from: sender.date), for: .normal)
+        fetchUser()
     }
 
     // 點選date button後date picker和button title會回到今天日期
@@ -46,5 +51,42 @@ class ViewController: UIViewController {
         datePicker.setDate(today, animated: true)
         // date button顯示今天日期
         dateBO.setTitle(formatter.string(from: datePicker.date), for: .normal)
+    }
+
+    // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
+    func fetchUser() {
+        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月 dd 日"格式來偵測
+        formatter.dateFormat = "yyyy 年 MM 月 dd 日"
+        let db = Firestore.firestore()
+        db.collection("user/vy4oSHvNXfzBAKzwj95x/expenditure").whereField("date", isEqualTo: formatter.string(from: datePicker.date)).getDocuments { snapshot, error in
+            guard let snapshot = snapshot else {
+                return
+            }
+            let account = snapshot.documents.compactMap { snapshot in
+                try? snapshot.data(as: Account.self)
+            }
+            print(account)
+            print(self.formatter.string(from: self.datePicker.date))
+        }
+    }
+}
+
+extension ViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath)
+    }
+}
+
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let homeDetailCell = tableView.dequeueReusableCell(withIdentifier: "homeDetailCell") as? HomeDetailTableViewCell else {
+            fatalError("can not create cell")
+        }
+
+        return homeDetailCell
     }
 }

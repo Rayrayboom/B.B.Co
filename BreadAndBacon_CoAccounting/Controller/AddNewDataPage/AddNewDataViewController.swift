@@ -16,7 +16,8 @@ import FirebaseFirestore
 // MARK: - expenditure
 struct NewDataModel {
     var contentTextField: String = ""
-    var dateTimeStamp = Timestamp()
+    // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
+    var dateTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
     var latestElement: String = ""
@@ -111,7 +112,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
     func createUserData(subCollection: String) {
         let db = Firestore.firestore()
         let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document()
-        let account = Account(amount: data.contentTextField, date: data.dateTimeStamp,
+        let account = Account(amount: data.contentTextField, date: data.dateTime,
                               accountId: "vdH5py0HZ9ZP791pUFM8",
                               expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
         do {
@@ -284,7 +285,8 @@ extension AddNewDataViewController: AddDateTableViewCellDelegate {
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
         // 當date picker改變時，執行此func，把當前改變的date塞給textfield
         cell.dateTextfield.text = formatter.string(from: sender.date)
-        data.dateTimeStamp = Timestamp(date: sender.date)
+        // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
+        data.dateTime = formatter.string(from: sender.date)
     }
 }
 

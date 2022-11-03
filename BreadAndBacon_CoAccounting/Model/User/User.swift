@@ -36,7 +36,8 @@ struct User: Codable {
 
 struct Account: Codable {
     let amount: String
-    let date: Timestamp
+    // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
+    let date: String
 //    let destinationAccountId: String
 //    let sourceAccountId: String
     let accountId: String
