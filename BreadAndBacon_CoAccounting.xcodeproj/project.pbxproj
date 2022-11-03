@@ -7,15 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		246FD5AA87D11BAF881832ED /* Pods_BreadAndBacon_CoAccounting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */; };
+		76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F242910051F00F5E341 /* QRCodeViewController.swift */; };
+		76265F272911855600F5E341 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F262911855600F5E341 /* User.swift */; };
+		76265F2929126AC100F5E341 /* AddDateTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F2829126AC100F5E341 /* AddDateTableViewCell.swift */; };
+		76265F2B29126E3100F5E341 /* QRCodeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F2A29126E3100F5E341 /* QRCodeTableViewCell.swift */; };
+		76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76265F2C291271C000F5E341 /* DetailTableViewCell.swift */; };
 		76608659290BDA29008EF772 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608658290BDA29008EF772 /* AppDelegate.swift */; };
 		7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865A290BDA29008EF772 /* SceneDelegate.swift */; };
 		7660865D290BDA29008EF772 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7660865C290BDA29008EF772 /* ViewController.swift */; };
 		76608660290BDA29008EF772 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660865E290BDA29008EF772 /* Main.storyboard */; };
 		76608662290BDA2A008EF772 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 76608661290BDA2A008EF772 /* Assets.xcassets */; };
 		76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608663290BDA2A008EF772 /* LaunchScreen.storyboard */; };
+		7660866D290C17C4008EF772 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7660866C290C17C4008EF772 /* GoogleService-Info.plist */; };
+		76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608671290E2A4F008EF772 /* AddNewDataViewController.swift */; };
+		76608674290E2A80008EF772 /* AddNewDataTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */; };
+		76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76608695290F7129008EF772 /* UIStoryboard+Extension.swift */; };
+		76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608697290F74E1008EF772 /* AddNewData.storyboard */; };
+		766086A0290F7B0B008EF772 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660869F290F7B0B008EF772 /* Home.storyboard */; };
+		766086A2290F8168008EF772 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766086A1290F8168008EF772 /* TabViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BreadAndBacon_CoAccounting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		76265F242910051F00F5E341 /* QRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeViewController.swift; sourceTree = "<group>"; };
+		76265F262911855600F5E341 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		76265F2829126AC100F5E341 /* AddDateTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDateTableViewCell.swift; sourceTree = "<group>"; };
+		76265F2A29126E3100F5E341 /* QRCodeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeTableViewCell.swift; sourceTree = "<group>"; };
+		76265F2C291271C000F5E341 /* DetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailTableViewCell.swift; sourceTree = "<group>"; };
 		76608655290BDA29008EF772 /* BreadAndBacon_CoAccounting.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BreadAndBacon_CoAccounting.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76608658290BDA29008EF772 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7660865A290BDA29008EF772 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -24,6 +43,15 @@
 		76608661290BDA2A008EF772 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76608664290BDA2A008EF772 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		76608666290BDA2A008EF772 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7660866C290C17C4008EF772 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		76608671290E2A4F008EF772 /* AddNewDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewDataViewController.swift; sourceTree = "<group>"; };
+		76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewDataTableViewCell.swift; sourceTree = "<group>"; };
+		76608695290F7129008EF772 /* UIStoryboard+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Extension.swift"; sourceTree = "<group>"; };
+		76608697290F74E1008EF772 /* AddNewData.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = AddNewData.storyboard; sourceTree = "<group>"; };
+		7660869F290F7B0B008EF772 /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
+		766086A1290F8168008EF772 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabViewController.swift; path = BreadAndBacon_CoAccounting/TabViewController.swift; sourceTree = SOURCE_ROOT; };
+		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
+		CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.release.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,17 +59,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				246FD5AA87D11BAF881832ED /* Pods_BreadAndBacon_CoAccounting.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1BA9FACACF44F8EEEF1D1949 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4517FCF9CAB217A234E3A7B3 /* Pods_BreadAndBacon_CoAccounting.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3F91477775AA235BF7E9D33E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */,
+				CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		7660864C290BDA29008EF772 = {
 			isa = PBXGroup;
 			children = (
 				76608657290BDA29008EF772 /* BreadAndBacon_CoAccounting */,
 				76608656290BDA29008EF772 /* Products */,
+				3F91477775AA235BF7E9D33E /* Pods */,
+				1BA9FACACF44F8EEEF1D1949 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -56,15 +104,51 @@
 		76608657290BDA29008EF772 /* BreadAndBacon_CoAccounting */ = {
 			isa = PBXGroup;
 			children = (
+				7660869A290F79CC008EF772 /* Extension */,
+				76608699290F79B3008EF772 /* HomePage */,
+				7660866E290E2571008EF772 /* AddNewDataPage */,
+				7660865E290BDA29008EF772 /* Main.storyboard */,
+				766086A1290F8168008EF772 /* TabViewController.swift */,
 				76608658290BDA29008EF772 /* AppDelegate.swift */,
 				7660865A290BDA29008EF772 /* SceneDelegate.swift */,
-				7660865C290BDA29008EF772 /* ViewController.swift */,
-				7660865E290BDA29008EF772 /* Main.storyboard */,
 				76608661290BDA2A008EF772 /* Assets.xcassets */,
 				76608663290BDA2A008EF772 /* LaunchScreen.storyboard */,
 				76608666290BDA2A008EF772 /* Info.plist */,
+				7660866C290C17C4008EF772 /* GoogleService-Info.plist */,
 			);
 			path = BreadAndBacon_CoAccounting;
+			sourceTree = "<group>";
+		};
+		7660866E290E2571008EF772 /* AddNewDataPage */ = {
+			isa = PBXGroup;
+			children = (
+				76608697290F74E1008EF772 /* AddNewData.storyboard */,
+				76265F242910051F00F5E341 /* QRCodeViewController.swift */,
+				76608673290E2A80008EF772 /* AddNewDataTableViewCell.swift */,
+				76265F2A29126E3100F5E341 /* QRCodeTableViewCell.swift */,
+				76608671290E2A4F008EF772 /* AddNewDataViewController.swift */,
+				76265F2C291271C000F5E341 /* DetailTableViewCell.swift */,
+				76265F2829126AC100F5E341 /* AddDateTableViewCell.swift */,
+				76265F262911855600F5E341 /* User.swift */,
+			);
+			path = AddNewDataPage;
+			sourceTree = "<group>";
+		};
+		76608699290F79B3008EF772 /* HomePage */ = {
+			isa = PBXGroup;
+			children = (
+				7660869F290F7B0B008EF772 /* Home.storyboard */,
+				7660865C290BDA29008EF772 /* ViewController.swift */,
+			);
+			path = HomePage;
+			sourceTree = "<group>";
+		};
+		7660869A290F79CC008EF772 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				76608695290F7129008EF772 /* UIStoryboard+Extension.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -74,9 +158,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 76608669290BDA2A008EF772 /* Build configuration list for PBXNativeTarget "BreadAndBacon_CoAccounting" */;
 			buildPhases = (
+				B982F4596B5071DF7A721126 /* [CP] Check Pods Manifest.lock */,
 				76608651290BDA29008EF772 /* Sources */,
 				76608652290BDA29008EF772 /* Frameworks */,
 				76608653290BDA29008EF772 /* Resources */,
+				0D62039CA7A3AF43DD9A0F14 /* [CP] Embed Pods Frameworks */,
+				76265F23290FB48400F5E341 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -126,12 +213,74 @@
 			buildActionMask = 2147483647;
 			files = (
 				76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */,
+				7660866D290C17C4008EF772 /* GoogleService-Info.plist in Resources */,
 				76608662290BDA2A008EF772 /* Assets.xcassets in Resources */,
+				766086A0290F7B0B008EF772 /* Home.storyboard in Resources */,
+				76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */,
 				76608660290BDA29008EF772 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0D62039CA7A3AF43DD9A0F14 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		76265F23290FB48400F5E341 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nif test -d \"/opt/homebrew/bin/\"; then\n  PATH=\"/opt/homebrew/bin/:${PATH}\"\nfi\n\nexport PATH\n\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+		B982F4596B5071DF7A721126 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BreadAndBacon_CoAccounting-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		76608651290BDA29008EF772 /* Sources */ = {
@@ -139,7 +288,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				7660865D290BDA29008EF772 /* ViewController.swift in Sources */,
+				76608674290E2A80008EF772 /* AddNewDataTableViewCell.swift in Sources */,
+				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
+				76265F2929126AC100F5E341 /* AddDateTableViewCell.swift in Sources */,
+				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
+				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
+				76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */,
+				76265F272911855600F5E341 /* User.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
+				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
+				76265F2B29126E3100F5E341 /* QRCodeTableViewCell.swift in Sources */,
 				7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -282,6 +440,7 @@
 		};
 		7660866A290BDA2A008EF772 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -290,6 +449,7 @@
 				DEVELOPMENT_TEAM = LSR93VH6VG;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BreadAndBacon_CoAccounting/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要你的相機權限掃描QRCode";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -310,6 +470,7 @@
 		};
 		7660866B290BDA2A008EF772 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -318,6 +479,7 @@
 				DEVELOPMENT_TEAM = LSR93VH6VG;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BreadAndBacon_CoAccounting/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要你的相機權限掃描QRCode";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
