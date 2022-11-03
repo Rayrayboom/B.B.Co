@@ -9,6 +9,14 @@ import UIKit
 import FirebaseFirestore
 
 class ViewController: UIViewController {
+    // 用來存所選日期的data
+    var data: [Account] = [] {
+        didSet {
+            dateBO.addTarget(self, action: #selector(tappedDateButton), for: .touchUpInside)
+            showDetailTableView.reloadData()
+        }
+    }
+
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var showDetailTableView: UITableView!
@@ -23,7 +31,6 @@ class ViewController: UIViewController {
         dateBO.tintColor = .black
         // 讓date button一開始顯示當天日期
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
-        dateBO.addTarget(self, action: #selector(tappedDateButton), for: .touchUpInside)
     }
 
     // 點選date picker時偵測點選的狀態
@@ -38,16 +45,20 @@ class ViewController: UIViewController {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.tintColor = .black
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: sender.date), for: .normal)
+        // fetch firebase data
         fetchUser()
     }
 
     // 點選date button後date picker和button title會回到今天日期
     @objc func tappedDateButton(_ sender: UIDatePicker) {
+        // 點選date button時顯示的格式用"yyyy/MM/dd"
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         // 把date picker日期改為今天
         let today = Date(timeIntervalSinceNow: 0)
         datePicker.setDate(today, animated: true)
         // date button顯示今天日期
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+        showDetailTableView.reloadData()
     }
 
     // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
@@ -62,7 +73,8 @@ class ViewController: UIViewController {
             let account = snapshot.documents.compactMap { snapshot in
                 try? snapshot.data(as: Account.self)
             }
-            print(account)
+            self.data = account
+            print(self.data)
         }
     }
 }
@@ -71,17 +83,26 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath)
     }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 }
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return data.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let homeDetailCell = tableView.dequeueReusableCell(withIdentifier: "homeDetailCell") as? HomeDetailTableViewCell else {
             fatalError("can not create cell")
         }
+
+        homeDetailCell.categoryImage.image = UIImage(systemName: "hand_thumbsup.fill")
+        homeDetailCell.nameLabel.text = data[indexPath.row].expenditureId
+        homeDetailCell.amountLabel.text = data[indexPath.row].amount
+        homeDetailCell.detailLabel.text = data[indexPath.row].detail
 
         return homeDetailCell
     }
