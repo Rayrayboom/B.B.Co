@@ -24,8 +24,6 @@ struct NewDataModel {
 }
 
 class AddNewDataViewController: UIViewController, VNDocumentCameraViewControllerDelegate {
-    // 因為DateFormatter()非常佔記憶體也很吃效能，因此把他從cellForRowAt拉出來，放在global，這樣只要宣告一次就好，否則每次gen tableView就得生成一次
-    let formatter = DateFormatter()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
     var costContent: [String] = ["早餐", "午餐", "晚餐"]
@@ -64,7 +62,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         // 點選+時，執行新增資料到firebase
         saveNewData()
         // datePicker的格式
-        formatter.dateFormat = "yyyy 年 MM 月 dd 日"
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -170,7 +168,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 dateCell.delegate = self
                 let date = Date()
                 // formatter把日期(date)轉成String塞給dateStr
-                let dateStr = formatter.string(from: date)
+                let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
                 return dateCell
@@ -228,7 +226,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 dateCell.delegate = self
                 let date = Date()
                 // formatter把日期(date)轉成String塞給dateStr
-                let dateStr = formatter.string(from: date)
+                let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
                 return dateCell
@@ -284,9 +282,9 @@ extension AddNewDataViewController: AddDateTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
         // 當date picker改變時，執行此func，把當前改變的date塞給textfield
-        cell.dateTextfield.text = formatter.string(from: sender.date)
+        cell.dateTextfield.text = BBCDateFormatter.shareFormatter.string(from: sender.date)
         // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
-        data.dateTime = formatter.string(from: sender.date)
+        data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
     }
 }
 
