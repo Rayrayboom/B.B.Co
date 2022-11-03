@@ -63,7 +63,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         // 點選+時，執行新增資料到firebase
         saveNewData()
         // datePicker的格式
-        formatter.dateFormat = "yyyy 年 MM 月 dd日"
+        formatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
