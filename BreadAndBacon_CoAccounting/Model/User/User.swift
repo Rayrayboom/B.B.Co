@@ -37,11 +37,11 @@ struct User: Codable {
 struct Account: Codable {
     let amount: String
     let date: Timestamp
-//    let destinationAccountId: Category
-//    let sourceAccountId: Category
+//    let destinationAccountId: String
+//    let sourceAccountId: String
     let accountId: String
     let expenditureId: String
-//    let revenueId: Category
+//    let revenueId: String
     let detail: String
 
     enum CodingKeys: String, CodingKey {

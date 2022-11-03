@@ -19,28 +19,52 @@
                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="inline" translatesAutoresizingMaskIntoConstraints="NO" id="jDB-7P-lFf">
                                 <rect key="frame" x="0.0" y="88" width="414" height="374"/>
                             </datePicker>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="YXs-et-Vpv">
+                                <rect key="frame" x="0.0" y="462" width="414" height="400"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="AvO-iC-MAk">
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AvO-iC-MAk" id="nl2-jG-fiK">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="YXs-et-Vpv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="1uU-GS-DED"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="jDB-7P-lFf" secondAttribute="bottom" constant="400" id="GVR-9N-CSU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="YXs-et-Vpv" secondAttribute="bottom" id="Nv6-gj-ufd"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="YXs-et-Vpv" secondAttribute="trailing" id="Zzp-aS-5Qn"/>
                             <constraint firstItem="jDB-7P-lFf" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="d1s-Xl-qtU"/>
                             <constraint firstItem="jDB-7P-lFf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="dF2-kj-qSo"/>
                             <constraint firstItem="jDB-7P-lFf" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="l7N-Ct-KaJ"/>
+                            <constraint firstItem="YXs-et-Vpv" firstAttribute="top" secondItem="jDB-7P-lFf" secondAttribute="bottom" id="mzI-Tv-2f7"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="syv-hv-bx8">
                         <nil key="title"/>
-                        <button key="titleView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="JSa-Hc-ez5">
+                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="aQr-iC-ZiH">
+                            <rect key="frame" x="107.5" y="4.5" width="199" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain"/>
                         </button>
                     </navigationItem>
+                    <connections>
+                        <outlet property="dateBO" destination="aQr-iC-ZiH" id="gE7-9n-FRa"/>
+                        <outlet property="datePicker" destination="jDB-7P-lFf" id="tXJ-9c-uQF"/>
+                        <outlet property="showDetailTableView" destination="YXs-et-Vpv" id="1eK-Nh-bhL"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-994" y="1540"/>
+            <point key="canvasLocation" x="-994.20289855072474" y="1539.5089285714284"/>
         </scene>
         <!--Item-->
         <scene sceneID="pNn-O1-8aS">
