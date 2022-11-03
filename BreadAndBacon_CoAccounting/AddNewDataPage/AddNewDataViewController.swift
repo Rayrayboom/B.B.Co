@@ -19,6 +19,7 @@ struct NewDataModel {
     var dateTimeStamp = Timestamp()
     var titleLabel: String = ""
     var detailTextView: String = ""
+    var latestElement: String = ""
 }
 
 class AddNewDataViewController: UIViewController, VNDocumentCameraViewControllerDelegate {
@@ -92,29 +93,34 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(savePage))
     }
 
-    // 新增並上傳firebase
+    // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面
     @objc func savePage() {
-        createUserData()
+        switch segmentTag {
+        case 0:
+            createUserData(subCollection: "expenditure")
+        case 1:
+            createUserData(subCollection: "revenue")
+        default:
+            createUserData(subCollection: "account")
+        }
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     // 上傳資料到Firebase
-    func createUserData() {
+    // MARK: - 測試支出寫入firebase
+    func createUserData(subCollection: String) {
         let db = Firestore.firestore()
-// MARK: - 測試支出寫入firebase
-        let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection("expenditure").document()
+        let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document()
         let account = Account(amount: data.contentTextField, date: data.dateTimeStamp,
                               accountId: "vdH5py0HZ9ZP791pUFM8",
                               expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
         do {
             try fetchDocumentID.setData(from: account)
-            print("success create article. ID: \(fetchDocumentID.documentID)")
+            print("success create document. ID: \(fetchDocumentID.documentID)")
         } catch {
             print(error)
         }
     }
-
-    // To-Do: 再打一支API過去，用來新增category的
 }
 
 extension AddNewDataViewController: UITableViewDelegate {
@@ -303,10 +309,9 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
 
     // 新增的選項用delegate傳回來並改變array data
     func setContent(content: [String]) {
-        // 當轉帳頁面時
+        // 當轉帳頁面時，都會抓帳戶資訊
         switch segmentTag {
         case 2:
-            costContent = content
             accountContent = content
         // 其餘頁面-支出/收入
         default:
@@ -316,6 +321,18 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
                 accountContent = content
             }
         }
+        // 當轉帳頁面時，都會抓帳戶資訊
+//        switch segmentTag {
+//        case 2:
+//            data.latestElement = accountContent.last ?? ""
+//        // 其餘頁面-支出/收入
+//        default:
+//            if tapIndexpath?.item == 1 {
+//                data.latestElement = costContent.last ?? ""
+//            } else {
+//                data.latestElement = accountContent.last ?? ""
+//            }
+//        }
     }
 }
 

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 protocol AddNewDataTableViewCellDelegate: AnyObject {
     func addNewContent(_ cell: AddNewDataTableViewCell)
@@ -75,14 +76,39 @@ class AddNewDataTableViewCell: UITableViewCell {
             textField.placeholder = "內容"
             textField.keyboardType = UIKeyboardType.default
         }
+        // 按下OK執行的動作
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
             self.content.append(controller.textFields?[0].text ?? "")
             // 按下ok之後同步reload picker的component
             self.contentPicker.reloadAllComponents()
             // 用delegate把已經append的content傳回VC並改值
             self.delegate?.setContent(content: self.content)
+
+// MARK: - 以下待測試 .arrayUnion 方法
+            // 按下ok之後判斷現在在哪一頁，然後判斷是哪一個indexPath，把對應的選項上傳到對應的title document裡
+            switch self.segmentTag {
+            case 0:
+                switch self.indexPath?.item {
+                case 1:
+                    self.createCategory(subCollection: "expenditure_category")
+                case 2:
+                    self.createCategory(subCollection: "account_category")
+                default:
+                    return
+                }
+            case 1:
+                switch self.indexPath?.item {
+                case 1:
+                    self.createCategory(subCollection: "revenue_category")
+                case 2:
+                    self.createCategory(subCollection: "account_category")
+                default:
+                    return
+                }
+            default:
+                self.createCategory(subCollection: "account_category")
+            }
         }
-        //    }
 
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -94,6 +120,20 @@ class AddNewDataTableViewCell: UITableViewCell {
     @objc func didSelectAddButton() {
         // 按下add button後把最新選項用delegate傳給VC
         self.delegate?.addNewContent(self)
+    }
+
+    // 新增對應category細項
+    func createCategory(subCollection: String) {
+        let db = Firestore.firestore()
+        let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document()
+        let collection = Category(id: fetchDocumentID.documentID, title: controller.textFields?[0].text ?? "")
+
+        do {
+            try fetchDocumentID.setData(from: collection)
+            print("success create document. ID: \(fetchDocumentID.documentID)")
+        } catch {
+            print(error)
+        }
     }
 }
 
