@@ -115,7 +115,8 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
 
     // 新增資料按鈕trigger
     func saveNewData() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(savePage))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(savePage))
     }
 
     // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面
@@ -131,20 +132,23 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
-    // 上傳資料到Firebase
-    // MARK: - 測試支出寫入firebase
+    // MARK: - 上傳資料到Firebase
     func createUserData(subCollection: String) {
         let dataBase = Firestore.firestore()
-        let fetchDocumentID = dataBase.collection("user").document("vy4oSHvNXfzBAKzwj95x")
-            .collection(subCollection).document()
-// MARK: -測試：不放ID有沒有差？
-//        let account = Account(amount: data.categoryTextField, category: <#String#>, date: data.dateTime,
-//                              accountId: "vdH5py0HZ9ZP791pUFM8",
-//                              expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
+        let fetchDocumentID = dataBase.collection("user")
+            .document("vy4oSHvNXfzBAKzwj95x")
+            .collection(subCollection)
+            .document()
+// MARK: - 測試：不放ID有沒有差？-> Ans.有，後續delete需要抓取ID刪除對應資料
+//        let account = Account(amount: data.categoryTextField, category: <#String#>, date: data.dateTime, accountId: "vdH5py0HZ9ZP791pUFM8", expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
+//        let account = Account(amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, destinationAccountId: "destinationAccountId", sourceAccountId: "sourceAccountId", accountId: nil, expenditureId: nil, revenueId: nil, detail: data.detailTextView)
 
-        let account = Account(amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, detail: data.detailTextView)
-
-//        let account = Account(amount: data.catagoryTextField, date: data.dateTime, detail: data.detailTextView)
+        let account = Account(
+            amount: data.amountTextField,
+            category: data.categoryTextField,
+            account: data.accountTextField,
+            date: data.dateTime,
+            detail: data.detailTextView)
 
         do {
             try fetchDocumentID.setData(from: account)
