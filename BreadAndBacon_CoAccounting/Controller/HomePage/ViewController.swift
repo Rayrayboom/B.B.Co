@@ -9,9 +9,6 @@ import UIKit
 import FirebaseFirestore
 
 class ViewController: UIViewController {
-    // To-Do: global var to save firestore裡的種類資訊
-
-
     // 用來存所選日期的data
     var data: [Account] = [] {
         didSet {
@@ -135,6 +132,7 @@ class ViewController: UIViewController {
     }
 
     func fetchAllData() {
+        // 點選新的日期時，先把存資料、種類的array清空，讓新fetch data塞最新資料，才不會一直append下去
         data = []
         category = []
         fetchUserSpecific(subCollection: "expenditure")
@@ -148,7 +146,15 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
+        guard let presentEditVC = self.storyboard?.instantiateViewController(withIdentifier: "editVC") as? EditViewController else {
+            fatalError("can not find editVC")
+        }
+        presentEditVC.data = data
+        presentEditVC.category = category
+
+        let navigation = UINavigationController(rootViewController: presentEditVC)
+        navigation.modalPresentationStyle = .overFullScreen
+        present(navigation, animated: true, completion: nil)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -167,7 +173,7 @@ extension ViewController: UITableViewDataSource {
         }
 
         homeDetailCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
-        homeDetailCell.nameLabel.text = data[indexPath.row].category // category[indexPath.row].title
+        homeDetailCell.nameLabel.text = data[indexPath.row].category
         homeDetailCell.amountLabel.text = data[indexPath.row].amount
         homeDetailCell.detailLabel.text = data[indexPath.row].detail
 

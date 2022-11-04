@@ -23,7 +23,7 @@ struct NewDataModel {
     var dateTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
-    var latestElement: String = ""
+//    var latestElement: String = ""
 }
 
 class AddNewDataViewController: UIViewController, VNDocumentCameraViewControllerDelegate {
@@ -83,7 +83,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         cancelNewData()
         // 點選+時，執行新增資料到firebase
         saveNewData()
-        //
+        // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
         fetchUser(subCollection: "expenditure")
         fetchUser(subCollection: "revenue")
         fetchUser(subCollection: "account")
@@ -139,22 +139,62 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
             .document("vy4oSHvNXfzBAKzwj95x")
             .collection(subCollection)
             .document()
-// MARK: - 測試：不放ID有沒有差？-> Ans.有，後續delete需要抓取ID刪除對應資料
-//        let account = Account(amount: data.categoryTextField, category: <#String#>, date: data.dateTime, accountId: "vdH5py0HZ9ZP791pUFM8", expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
-//        let account = Account(amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, destinationAccountId: "destinationAccountId", sourceAccountId: "sourceAccountId", accountId: nil, expenditureId: nil, revenueId: nil, detail: data.detailTextView)
-
-        let account = Account(
-            amount: data.amountTextField,
-            category: data.categoryTextField,
-            account: data.accountTextField,
-            date: data.dateTime,
-            detail: data.detailTextView)
-
-        do {
-            try fetchDocumentID.setData(from: account)
-            print("success create document. ID: \(fetchDocumentID.documentID)")
-        } catch {
-            print(error)
+        // 需存id，後續delete要抓取ID刪除對應資料
+        switch subCollection {
+        case "expenditure":
+            let account = Account(
+                amount: data.amountTextField,
+                category: data.categoryTextField,
+                account: data.accountTextField,
+                date: data.dateTime,
+                destinationAccountId: nil,
+                sourceAccountId: nil,
+                accountId: "accountId",
+                expenditureId: "expenditureId",
+                revenueId: nil,
+                detail: data.detailTextView)
+            do {
+                try fetchDocumentID.setData(from: account)
+                print("success create document. ID: \(fetchDocumentID.documentID)")
+            } catch {
+                print(error)
+            }
+        case "revenue":
+            let account = Account(
+                amount: data.amountTextField,
+                category: data.categoryTextField,
+                account: data.accountTextField,
+                date: data.dateTime,
+                destinationAccountId: nil,
+                sourceAccountId: nil,
+                accountId: "accountId",
+                expenditureId: nil,
+                revenueId: "revenueId",
+                detail: data.detailTextView)
+            do {
+                try fetchDocumentID.setData(from: account)
+                print("success create document. ID: \(fetchDocumentID.documentID)")
+            } catch {
+                print(error)
+            }
+        default:
+            let account = Account(
+                amount: data.amountTextField,
+                category: data.categoryTextField,
+                account: data.accountTextField,
+                date: data.dateTime,
+                destinationAccountId: "destinationAccountId",
+                sourceAccountId: "sourceAccountId",
+                accountId: nil,
+                expenditureId: nil,
+                revenueId: nil,
+                detail: data.detailTextView)
+            do {
+                try fetchDocumentID.setData(from: account)
+                print("success create document. ID: \(fetchDocumentID.documentID)")
+            } catch {
+                print(error)
+            }
         }
     }
     // 從Firebase上fetch全部種類/帳戶資料
