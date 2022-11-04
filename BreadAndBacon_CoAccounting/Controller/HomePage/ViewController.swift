@@ -9,6 +9,9 @@ import UIKit
 import FirebaseFirestore
 
 class ViewController: UIViewController {
+    // To-Do: global var to save firestore裡的種類資訊
+
+
     // 用來存所選日期的data
     var data: [Account] = [] {
         didSet {
@@ -16,6 +19,13 @@ class ViewController: UIViewController {
             showDetailTableView.reloadData()
         }
     }
+    var category: [Category] = [] {
+        didSet {
+            dateBO.addTarget(self, action: #selector(tappedDateButton), for: .touchUpInside)
+            showDetailTableView.reloadData()
+        }
+    }
+//    var user: [User] = []
 
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -24,6 +34,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
+//        fetchAllData()
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
 
@@ -46,7 +58,13 @@ class ViewController: UIViewController {
         dateBO.tintColor = .black
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: sender.date), for: .normal)
         // fetch firebase data
-        fetchUser()
+//        fetchAllData()
+        fetchUserSpecific(subCollection: "account")
+        fetchUser(subCollection: "account")
+//        fetchUserSpecific(subCollection: "revenue")
+//        fetchUser(subCollection: "revenue")
+//        fetchUserSpecific(subCollection: "expenditure")
+//        fetchUser(subCollection: "expenditure")
     }
 
     // 點選date button後date picker和button title會回到今天日期
@@ -58,24 +76,74 @@ class ViewController: UIViewController {
         datePicker.setDate(today, animated: true)
         // date button顯示今天日期
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
-        showDetailTableView.reloadData()
+        // 點擊date button後會回到當天日期，需要再fetch一次data讓他呈現當天的資料
+//        fetchAllData()
+        fetchUserSpecific(subCollection: "account")
+        fetchUser(subCollection: "account")
+//        fetchUserSpecific(subCollection: "revenue")
+//        fetchUser(subCollection: "revenue")
+//        fetchUserSpecific(subCollection: "expenditure")
+//        fetchUser(subCollection: "expenditure")
     }
 
     // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
-    func fetchUser() {
+    func fetchUserSpecific(subCollection: String) {
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月 dd 日"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        let db = Firestore.firestore()
-        db.collection("user/vy4oSHvNXfzBAKzwj95x/expenditure").whereField("date", isEqualTo: BBCDateFormatter.shareFormatter.string(from: datePicker.date)).getDocuments { snapshot, error in
-            guard let snapshot = snapshot else {
-                return
+        let dataBase = Firestore.firestore()
+        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)")
+            .whereField("date", isEqualTo: BBCDateFormatter.shareFormatter.string(from: datePicker.date))
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                self.data = account
+                print("data here \(self.data)")
             }
-            let account = snapshot.documents.compactMap { snapshot in
-                try? snapshot.data(as: Account.self)
+    }
+
+    // 從Firebase上fetch全部種類/帳戶資料
+    func fetchUser(subCollection: String) {
+        let dataBase = Firestore.firestore()
+        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let category = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Category.self)
+                }
+                self.category = category
+                print("category here \(self.category)")
             }
-            self.data = account
-            print(self.data)
-        }
+    }
+
+    // 從Firebase上fetch user全部資料
+//    func fetchUserAll() {
+//        let dataBase = Firestore.firestore()
+//        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x")
+//            .getDocuments { snapshot, error in
+//                guard let snapshot = snapshot else {
+//                    return
+//                }
+//                let user = snapshot.documents.compactMap { snapshot in
+//                    try? snapshot.data(as: User.self)
+//                }
+//                self.user = user
+//                print("user here \(self.user)")
+//            }
+//    }
+
+    func fetchAllData() {
+        fetchUserSpecific(subCollection: "expenditure")
+        fetchUser(subCollection: "expenditure")
+        fetchUserSpecific(subCollection: "revenue")
+        fetchUser(subCollection: "revenue")
+        fetchUserSpecific(subCollection: "account")
+        fetchUser(subCollection: "account")
     }
 }
 
@@ -99,8 +167,8 @@ extension ViewController: UITableViewDataSource {
             fatalError("can not create cell")
         }
 
-        homeDetailCell.categoryImage.image = UIImage(systemName: "hand_thumbsup.fill")
-        homeDetailCell.nameLabel.text = data[indexPath.row].expenditureId
+        homeDetailCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
+        homeDetailCell.nameLabel.text = data[indexPath.row].category // category[indexPath.row].title
         homeDetailCell.amountLabel.text = data[indexPath.row].amount
         homeDetailCell.detailLabel.text = data[indexPath.row].detail
 

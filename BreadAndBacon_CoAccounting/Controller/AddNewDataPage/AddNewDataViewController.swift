@@ -15,7 +15,10 @@ import FirebaseFirestore
 
 // MARK: - expenditure
 struct NewDataModel {
-    var contentTextField: String = ""
+    var amountTextField: String = ""
+    var categoryTextField: String = ""
+    var accountTextField: String = ""
+
     // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
     var dateTime: String = ""
     var titleLabel: String = ""
@@ -26,8 +29,27 @@ struct NewDataModel {
 class AddNewDataViewController: UIViewController, VNDocumentCameraViewControllerDelegate {
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
-    var costContent: [String] = ["早餐", "午餐", "晚餐"]
-    var accountContent: [String] = ["現金", "信用卡", "悠遊卡"]
+    // 存支出textField picker資料
+    var costContent: [String] = [] {
+        didSet {
+            print("=== this is all costContent \(self.costContent)")
+            addNewDadaTableView.reloadData()
+        }
+    }
+    // 存收入textField picker資料
+    var incomeContent: [String] = [] {
+        didSet {
+            print("=== this is all incomeContent \(self.incomeContent)")
+            addNewDadaTableView.reloadData()
+        }
+    }
+    // 存轉帳textField picker資料
+    var accountContent: [String] = [] {
+        didSet {
+            print("=== this is all accountContent \(self.accountContent)")
+            addNewDadaTableView.reloadData()
+        }
+    }
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
@@ -61,6 +83,10 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         cancelNewData()
         // 點選+時，執行新增資料到firebase
         saveNewData()
+        //
+        fetchUser(subCollection: "expenditure")
+        fetchUser(subCollection: "revenue")
+        fetchUser(subCollection: "account")
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -108,17 +134,49 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
     // 上傳資料到Firebase
     // MARK: - 測試支出寫入firebase
     func createUserData(subCollection: String) {
-        let db = Firestore.firestore()
-        let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document()
-        let account = Account(amount: data.contentTextField, date: data.dateTime,
-                              accountId: "vdH5py0HZ9ZP791pUFM8",
-                              expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
+        let dataBase = Firestore.firestore()
+        let fetchDocumentID = dataBase.collection("user").document("vy4oSHvNXfzBAKzwj95x")
+            .collection(subCollection).document()
+// MARK: -測試：不放ID有沒有差？
+//        let account = Account(amount: data.categoryTextField, category: <#String#>, date: data.dateTime,
+//                              accountId: "vdH5py0HZ9ZP791pUFM8",
+//                              expenditureId: "GWiBqlywvYj12jEJkjkw", detail: data.detailTextView)
+
+        let account = Account(amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, detail: data.detailTextView)
+
+//        let account = Account(amount: data.catagoryTextField, date: data.dateTime, detail: data.detailTextView)
+
         do {
             try fetchDocumentID.setData(from: account)
             print("success create document. ID: \(fetchDocumentID.documentID)")
         } catch {
             print(error)
         }
+    }
+    // 從Firebase上fetch全部種類/帳戶資料
+    func fetchUser(subCollection: String) {
+        let dataBase = Firestore.firestore()
+        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let category = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Category.self)
+                }
+
+                for num in 0..<category.count {
+                    switch subCollection {
+                    case "expenditure":
+                        self.costContent.append(category[num].title)
+                    case "revenue":
+                        self.incomeContent.append(category[num].title)
+//                        self.costContent.append(category[num].title)
+                    default:
+                        self.accountContent.append(category[num].title)
+                    }
+                }
+            }
     }
 }
 
@@ -178,10 +236,19 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
+                case 1:
+                    switch segmentTag {
+                    case 0:
+                        addDataCell.content = costContent
+                    case 1:
+                        addDataCell.content = incomeContent
+                    default:
+                        addDataCell.content = accountContent
+                    }
+
                 default:
                     addDataCell.content = accountContent
                 }
@@ -241,7 +308,14 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 1:
-                    addDataCell.content = costContent
+                    switch segmentTag {
+                    case 0:
+                        addDataCell.content = costContent
+                    case 1:
+                        addDataCell.content = incomeContent
+                    default:
+                        addDataCell.content = accountContent
+                    }
                 default:
                     addDataCell.content = accountContent
                 }
@@ -297,8 +371,17 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
 
     func getInputTextField(indexPath: IndexPath, textField: String) {
         self.tapIndexpath = indexPath
-        data.contentTextField = textField
-        print("======= \(data.contentTextField)")
+        switch tapIndexpath?.row {
+        case 0:
+            data.amountTextField = textField
+            print("======= \(data.amountTextField)")
+        case 1:
+            data.categoryTextField = textField
+            print("======= \(data.categoryTextField)")
+        default:
+            data.accountTextField = textField
+            print("======= \(data.accountTextField)")
+        }
     }
 
     func getTitle(indexPath: IndexPath, title: String) {
@@ -311,28 +394,24 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
     func setContent(content: [String]) {
         // 當轉帳頁面時，都會抓帳戶資訊
         switch segmentTag {
-        case 2:
-            accountContent = content
-        // 其餘頁面-支出/收入
-        default:
+        // 頁面-支出
+        case 0:
             if tapIndexpath?.item == 1 {
                 costContent = content
             } else {
                 accountContent = content
             }
+        // 頁面-收入
+        case 1:
+            if tapIndexpath?.item == 1 {
+                incomeContent = content
+            } else {
+                accountContent = content
+            }
+        // 頁面-轉帳
+        default:
+            accountContent = content
         }
-        // 當轉帳頁面時，都會抓帳戶資訊
-//        switch segmentTag {
-//        case 2:
-//            data.latestElement = accountContent.last ?? ""
-//        // 其餘頁面-支出/收入
-//        default:
-//            if tapIndexpath?.item == 1 {
-//                data.latestElement = costContent.last ?? ""
-//            } else {
-//                data.latestElement = accountContent.last ?? ""
-//            }
-//        }
     }
 }
 

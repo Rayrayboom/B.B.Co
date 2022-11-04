@@ -184,9 +184,6 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
 // textField delegate
 extension AddNewDataTableViewCell: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if indexPath?.section != 0 {
-            print("====== TF delegate \(contentTextField.text)")
-        }
         self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")
 
         self.delegate?.getTitle(indexPath: self.indexPath ?? [0, 0], title: self.titleLabel.text ?? "")

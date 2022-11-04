@@ -17,10 +17,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="inline" translatesAutoresizingMaskIntoConstraints="NO" id="jDB-7P-lFf">
-                                <rect key="frame" x="0.0" y="88" width="414" height="374"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="474"/>
+                                <locale key="locale" localeIdentifier="zh"/>
                             </datePicker>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="YXs-et-Vpv">
-                                <rect key="frame" x="0.0" y="462" width="414" height="400"/>
+                                <rect key="frame" x="0.0" y="562" width="414" height="300"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="homeDetailCell" rowHeight="91" id="AvO-iC-MAk" customClass="HomeDetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -36,8 +37,9 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="th" translatesAutoresizingMaskIntoConstraints="NO" id="UOj-fS-2sh">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UOj-fS-2sh">
                                                     <rect key="frame" x="10" y="10" width="71" height="71"/>
+                                                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="UOj-fS-2sh" secondAttribute="height" multiplier="1:1" id="H7N-D7-zIF"/>
                                                         <constraint firstAttribute="height" constant="50" id="j06-fN-gn5"/>
@@ -82,7 +84,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="YXs-et-Vpv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="1uU-GS-DED"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="jDB-7P-lFf" secondAttribute="bottom" constant="400" id="GVR-9N-CSU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="jDB-7P-lFf" secondAttribute="bottom" constant="300" id="GVR-9N-CSU"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="YXs-et-Vpv" secondAttribute="bottom" id="Nv6-gj-ufd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="YXs-et-Vpv" secondAttribute="trailing" id="Zzp-aS-5Qn"/>
                             <constraint firstItem="jDB-7P-lFf" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="d1s-Xl-qtU"/>
@@ -110,6 +112,21 @@
             </objects>
             <point key="canvasLocation" x="-994.20289855072474" y="1539.5089285714284"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="4aY-4g-kiq">
+            <objects>
+                <viewController id="6th-lW-0ie" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VTw-UM-nSJ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="K6z-Xy-pLI"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hhp-F6-7WA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-35" y="1540"/>
+        </scene>
         <!--Item-->
         <scene sceneID="pNn-O1-8aS">
             <objects>
@@ -129,7 +146,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="th" width="128" height="128"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
