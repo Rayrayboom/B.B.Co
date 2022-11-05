@@ -21,11 +21,10 @@ struct DataModel {
     var dateTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
-//    var latestElement: String = ""
 }
 
 class EditViewController: UIViewController {
-    var data: [Account] = []
+    var data: Account?
     var category: [Category] = []
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
@@ -180,31 +179,31 @@ extension EditViewController: UITableViewDataSource {
             guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                 fatalError("can not create cell")
             }
-
-//            editDataCell.indexPath = indexPath
-//            editDataCell.segmentTag = segmentTag
-//            editDataCell.contentTextField.text = data[indexPath.row].amount
-//            editDataCell.contentTextField.textAlignment = .center
-//            editDataCell.fillInContent(name: costCategory[indexPath.row])
-//
-//            return editDataCell
-
 // MARK: - notice
             // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
             switch indexPath.row {
+            case 0:
+                editDataCell.contentTextField.text = self.data?.amount
             case 1:
                 switch segmentTag {
                 case 0:
                     editDataCell.content = costContent
+                    editDataCell.contentTextField.text = self.data?.category
                 case 1:
                     editDataCell.content = incomeContent
+                    editDataCell.contentTextField.text = self.data?.category
                 default:
                     editDataCell.content = accountContent
+                    editDataCell.contentTextField.text = self.data?.account
                 }
             default:
                 editDataCell.content = accountContent
+                editDataCell.contentTextField.text = self.data?.account
             }
-
+            
+            // 測試從homeVC抓到傳過來的資料
+            print("datadatadatadatadata\(self.data)")
+            
             // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
             editDataCell.contentTextField.inputView = nil
             editDataCell.indexPath = indexPath
@@ -220,7 +219,6 @@ extension EditViewController: UITableViewDataSource {
             else {
                 fatalError("can not create cell")
             }
-//            qrCell.qrButton.setImage(UIImage(systemName: "qrcode.viewfinde"), for: .normal)
             return editQRCell
         } else {
             guard let editDetailCell = tableView.dequeueReusableCell(

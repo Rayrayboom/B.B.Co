@@ -65,7 +65,6 @@ class AddNewDataTableViewCell: UITableViewCell {
     // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
     func fillInContent(name: String) {
         titleLabel.text = name
-        contentTextField.text = ""
     }
 
 // MARK: - picker

@@ -16,6 +16,7 @@ class EditDetailTableViewCell: UITableViewCell {
 
     @IBOutlet weak var detailTextView: UITextView!
     override func awakeFromNib() {
+        detailTextView.delegate = self
         super.awakeFromNib()
         // Initialization code
     }

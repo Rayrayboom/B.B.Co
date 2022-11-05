@@ -149,7 +149,8 @@ extension ViewController: UITableViewDelegate {
         guard let presentEditVC = self.storyboard?.instantiateViewController(withIdentifier: "editVC") as? EditViewController else {
             fatalError("can not find editVC")
         }
-        presentEditVC.data = data
+        // 點擊哪個row就把data array對應row的資料傳給editVC
+        presentEditVC.data = data[indexPath.row]
         presentEditVC.category = category
 
         let navigation = UINavigationController(rootViewController: presentEditVC)
