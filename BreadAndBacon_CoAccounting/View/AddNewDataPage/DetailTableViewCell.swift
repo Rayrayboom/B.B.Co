@@ -12,7 +12,6 @@ protocol DetailTableViewCellDelegate: AnyObject {
 }
 
 class DetailTableViewCell: UITableViewCell {
-
     weak var delegate: DetailTableViewCellDelegate?
 
     @IBOutlet weak var detailTextView: UITextView! {
@@ -34,7 +33,6 @@ class DetailTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
 }
 
 // textView delegate

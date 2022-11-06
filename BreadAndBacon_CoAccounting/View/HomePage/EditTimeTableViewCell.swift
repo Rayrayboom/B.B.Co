@@ -1,25 +1,24 @@
 //
-//  AddDateTableViewCell.swift
+//  EditTimeTableViewCell.swift
 //  BreadAndBacon_CoAccounting
 //
-//  Created by 張育睿 on 2022/11/2.
+//  Created by 張育睿 on 2022/11/4.
 //
 
 import UIKit
 
-protocol AddDateTableViewCellDelegate: AnyObject {
-    func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker)
+protocol EditTimeTableViewCellDelegate: AnyObject {
+    func getDate(_ cell: EditTimeTableViewCell, sender: UIDatePicker, textField: String)
 }
 
-class AddDateTableViewCell: UITableViewCell {
-    weak var delegate: AddDateTableViewCellDelegate?
+class EditTimeTableViewCell: UITableViewCell {
+    weak var delegate: EditTimeTableViewCellDelegate?
 
     @IBOutlet weak var dateTextfield: UITextField! {
         didSet {
             dateTextfield.delegate = self
         }
     }
-
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -48,11 +47,12 @@ class AddDateTableViewCell: UITableViewCell {
     // 利用addNewDataTableViewCell自己的delegate傳值過去給addNewDataVC來執行塞值的動作
     @objc func didSelectData(_ sender: UIDatePicker) {
         // date delegate
-        self.delegate?.getDate(self, sender: sender)
+        self.delegate?.getDate(self, sender: sender, textField: self.dateTextfield.text ?? "")
     }
 }
 
-extension AddDateTableViewCell: UITextFieldDelegate {
+// textField delegate
+extension EditTimeTableViewCell: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
         print("====== TF delegate \(dateTextfield.text)")
     }

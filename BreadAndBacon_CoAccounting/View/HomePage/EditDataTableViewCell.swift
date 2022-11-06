@@ -1,22 +1,22 @@
 //
-//  AddNewDataTableViewCell.swift
+//  EditDataTableViewCell.swift
 //  BreadAndBacon_CoAccounting
 //
-//  Created by 張育睿 on 2022/10/30.
+//  Created by 張育睿 on 2022/11/4.
 //
 
 import UIKit
 import FirebaseFirestore
 
-protocol AddNewDataTableViewCellDelegate: AnyObject {
-    func addNewContent(_ cell: AddNewDataTableViewCell)
+protocol EditDataTableViewCellDelegate: AnyObject {
+    func addNewContent(_ cell: EditDataTableViewCell)
     func getInputTextField(indexPath: IndexPath, textField: String)
     func getTitle(indexPath: IndexPath, title: String)
     func setContent(content: [String])
 }
 
-class AddNewDataTableViewCell: UITableViewCell {
-    weak var delegate: AddNewDataTableViewCellDelegate?
+class EditDataTableViewCell: UITableViewCell {
+    weak var delegate: EditDataTableViewCellDelegate?
     // 用來存取對應content array（由VC判斷當前是哪一個indexPath.row來決定content array要放costContent或accountContent）
     var content: [String] = []
     // 宣告一個pickerView
@@ -45,14 +45,14 @@ class AddNewDataTableViewCell: UITableViewCell {
         }
     }
 
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var contentTextField: UITextField! {
         didSet {
             contentTextField.delegate = self
         }
     }
-
-    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var addNewContentBO: UIButton!
+
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -63,13 +63,11 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
 
     // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
-// MARK: - Notice
     func fillInContent(name: String) {
         titleLabel.text = name
-        contentTextField.text = ""
     }
 
-// MARK: - picker
+    // MARK: - picker
     func contentConfig(segment: Int) {
         controller = UIAlertController(title: "新增選項", message: "", preferredStyle: .alert)
         controller.addTextField { textField in
@@ -84,7 +82,7 @@ class AddNewDataTableViewCell: UITableViewCell {
             // 用delegate把已經append的content傳回VC並改值
             self.delegate?.setContent(content: self.content)
 
-// MARK: - 以下待測試 .arrayUnion 方法
+            // MARK: - 以下待測試 .arrayUnion 方法
             // 按下ok之後判斷現在在哪一頁，然後判斷是哪一個indexPath，把對應的選項上傳到對應的title document裡
             switch self.segmentTag {
             case 0:
@@ -138,7 +136,7 @@ class AddNewDataTableViewCell: UITableViewCell {
 }
 
 // MARK: - picker
-extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
+extension EditDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
     // 有幾列可以選擇
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -182,11 +180,8 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
 }
 
 // textField delegate
-extension AddNewDataTableViewCell: UITextFieldDelegate {
+extension EditDataTableViewCell: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
-        if indexPath?.section != 0 {
-            print("====== TF delegate \(contentTextField.text)")
-        }
         self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")
 
         self.delegate?.getTitle(indexPath: self.indexPath ?? [0, 0], title: self.titleLabel.text ?? "")

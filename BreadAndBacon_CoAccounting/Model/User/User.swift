@@ -35,23 +35,30 @@ struct User: Codable {
 }
 
 struct Account: Codable {
-    let amount: String
-    let date: Timestamp
-//    let destinationAccountId: Category
-//    let sourceAccountId: Category
-    let accountId: String
-    let expenditureId: String
-//    let revenueId: Category
-    let detail: String
+    var id: String
+    var amount: String
+    var category: String
+    var account: String
+    // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
+    var date: String
+    var destinationAccountId: String? // = nil
+    var sourceAccountId: String? // = nil
+    var accountId: String? // = nil
+    var expenditureId: String? // = nil
+    var revenueId: String? // = nil
+    var detail: String
 
     enum CodingKeys: String, CodingKey {
+        case id
         case amount
+        case category
+        case account
         case date
-//        case destinationAccountId = "destination_account_id"
-//        case sourceAccountId = "source_account_id"
+        case destinationAccountId = "destination_account_id"
+        case sourceAccountId = "source_account_id"
         case accountId = "account_id"
         case expenditureId = "expenditure_id"
-//        case revenueId = "revenue_id"
+        case revenueId = "revenue_id"
         case detail
     }
 }
