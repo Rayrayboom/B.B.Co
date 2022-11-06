@@ -25,14 +25,18 @@ class PieChartViewController: UIViewController {
         didSet {
             if segmentTag == 0 {
                 data = []
+                pieChartDataEntries = []
                 fetchUser(subCollection: "expenditure")
-                pieChartView = nil
                 setupPieChartView()
+
+                pieChartView = nil
             } else {
                 data = []
+                pieChartDataEntries = []
                 fetchUser(subCollection: "revenue")
-                pieChartView = nil
                 setupPieChartView()
+
+                pieChartView = nil
             }
         }
     }
@@ -100,7 +104,7 @@ class PieChartViewController: UIViewController {
     func pieChartViewConfig() {
         let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
         // 設定圓餅圖的顏色
-        chartDataSet.colors = [.systemRed, .systemGreen, .systemBlue, .systemYellow]
+        chartDataSet.colors = [.systemRed, .systemYellow, .systemGreen, .systemBlue, .systemBrown, .link]
         // 設定資料數值的字體大小
         chartDataSet.valueTextColor = .black
         chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)
@@ -115,7 +119,8 @@ class PieChartViewController: UIViewController {
         // 按下對應扇形後，凸出來的多寡
         chartDataSet.selectionShift = 5
         // 扇形間隔
-        chartDataSet.sliceSpace = 3
+//        chartDataSet.sliceSpace = 5
+        // 設置為實心圓
         pieChartView.drawHoleEnabled = false
 
         // 設定數值包含$符號
@@ -147,8 +152,6 @@ class PieChartViewController: UIViewController {
                     try? snapshot.data(as: Account.self)
                 }
                 self.data.append(contentsOf: account)
-                print("account here \(self.data)")
-                print("account qty here \(self.data.count)")
             }
     }
 }

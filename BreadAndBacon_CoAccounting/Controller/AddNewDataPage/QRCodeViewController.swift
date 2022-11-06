@@ -23,18 +23,15 @@ class QRCodeViewController: UIViewController {
 //    }
 
     override func viewDidLoad() {
-        print("=== in VDL")
         super.viewDidLoad()
     }
 
     func processImage(image: UIImage) {
         guard let cgImage = image.cgImage else {
-            print("can not get image")
             return
         }
         let handler = VNImageRequestHandler(cgImage: cgImage)
         let request = VNDetectBarcodesRequest { request, error in
-            print("=== in req")
             if let observation = request.results?.first as? VNBarcodeObservation,
                observation.symbology == .qr {
                 print("詳細資訊如下：\(observation.payloadStringValue ?? "")")
@@ -48,7 +45,6 @@ class QRCodeViewController: UIViewController {
 //        request.regionOfInterest = CGRect(x: 1, y: 1, width: 1, height: 1)
         do {
             try handler.perform([request])
-            print("=== in request")
             print("this is request \(request)")
         } catch {
             print(error)

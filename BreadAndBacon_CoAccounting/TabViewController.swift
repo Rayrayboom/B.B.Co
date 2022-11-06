@@ -14,7 +14,7 @@ class TabViewController: UITabBarController {
     }
 }
 
-
+// 當點選第1個tab bar時會present AddNewDataVC
 extension TabViewController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         if let viewControllers = tabBarController.viewControllers {

@@ -23,10 +23,9 @@ struct NewDataModel {
     var dateTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
-//    var latestElement: String = ""
 }
 
-class AddNewDataViewController: UIViewController, VNDocumentCameraViewControllerDelegate {
+class AddNewDataViewController: UIViewController {
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
     // 存支出textField picker資料
@@ -53,18 +52,15 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
-
+//    var dataFromHomeVC: [Account] = []
+    // for QRCode func use
+    var content: String = ""
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
     @IBAction func insertQRCode(_ sender: UIButton) {
-//        guard let presentQRCode = self.storyboard?.instantiateViewController(
-//            withIdentifier: "qrcodeVC") as? QRCodeViewController
-//        else {
-//            fatalError("ERROR: Can not find addDataPage.")
-//        }
         // 建立一個VNDocumentCameraViewController實例，並執行delegate，delegate會導到QRCodeVC去執行process image的func
         let documentCameraViewController = VNDocumentCameraViewController()
         documentCameraViewController.delegate = self
@@ -226,6 +222,33 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
                 }
             }
     }
+
+    // QRCode
+    func processImage(image: UIImage) {
+        guard let cgImage = image.cgImage else {
+            print("can not get image")
+            return
+        }
+        let handler = VNImageRequestHandler(cgImage: cgImage)
+        let request = VNDetectBarcodesRequest { request, error in
+            if let observation = request.results?.first as? VNBarcodeObservation,
+               observation.symbology == .qr {
+                print("詳細資訊如下：\(observation.payloadStringValue ?? "")")
+//                self.contentLabel.text = observation.payloadStringValue ?? ""
+//                self.content.append(observation.payloadStringValue ?? "")
+                self.content = observation.payloadStringValue ?? ""
+                print("發票號碼：\(self.content.prefix(10))")
+//                print("品項：\((self.content as NSString).substring(with: NSMakeRange(150, 160)))")
+            }
+        }
+//        request.regionOfInterest = CGRect(x: 1, y: 1, width: 1, height: 1)
+        do {
+            try handler.perform([request])
+            print("this is request \(request)")
+        } catch {
+            print(error)
+        }
+    }
 }
 
 extension AddNewDataViewController: UITableViewDelegate {
@@ -277,6 +300,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
+//                dateCell.dateTextfield.text = dataFromHomeVC[indexPath.row].date
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -317,7 +341,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-    //            qrCell.qrButton.setImage(UIImage(systemName: "qrcode.viewfinde"), for: .normal)
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
@@ -344,6 +367,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
+//                dateCell.dateTextfield.text = dataFromHomeVC[indexPath.row].date
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -383,7 +407,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//            qrCell.qrButton.setImage(UIImage(systemName: "qrcode.viewfinde"), for: .normal)
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
@@ -468,5 +491,14 @@ extension AddNewDataViewController: DetailTableViewCellDelegate {
     func getDetail(detail: String) {
         data.detailTextView = detail
         print("======= this is detail \(data.detailTextView)")
+    }
+}
+
+// QRCode
+extension AddNewDataViewController: VNDocumentCameraViewControllerDelegate {
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
+        let image = scan.imageOfPage(at: scan.pageCount - 1)
+        processImage(image: image)
+        dismiss(animated: true, completion: nil)
     }
 }
