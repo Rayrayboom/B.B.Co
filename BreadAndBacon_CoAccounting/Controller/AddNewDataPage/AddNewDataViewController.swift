@@ -139,10 +139,13 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
             .document("vy4oSHvNXfzBAKzwj95x")
             .collection(subCollection)
             .document()
+        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
+        let identifier = fetchDocumentID.documentID
         // 需存id，後續delete要抓取ID刪除對應資料
         switch subCollection {
         case "expenditure":
             let account = Account(
+                id: identifier,
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
@@ -161,6 +164,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
             }
         case "revenue":
             let account = Account(
+                id: identifier,
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
@@ -179,6 +183,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
             }
         default:
             let account = Account(
+                id: identifier,
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
@@ -215,7 +220,6 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
                         self.costContent.append(category[num].title)
                     case "revenue":
                         self.incomeContent.append(category[num].title)
-//                        self.costContent.append(category[num].title)
                     default:
                         self.accountContent.append(category[num].title)
                     }

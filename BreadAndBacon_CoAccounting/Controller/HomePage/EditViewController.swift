@@ -52,9 +52,11 @@ class EditViewController: UIViewController {
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var editData = DataModel()
+    weak var homeVC: ViewController?
 
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
+// TO-DO: 偵測第幾個segment control後直接在新VC上顯示對應index
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,14 +68,14 @@ class EditViewController: UIViewController {
         sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
         // 點選X時，執行取消新增
         cancelNewData()
+        // 點選pencil時，執行更新編輯
+        saveEditData()
         // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
         fetchUser(subCollection: "expenditure")
         fetchUser(subCollection: "revenue")
         fetchUser(subCollection: "account")
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        print("=== edit data \(self.data)")
-        print("=== edit category \(self.category)")
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -97,7 +99,22 @@ class EditViewController: UIViewController {
     @objc func dismissPage() {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
-    
+
+    // 儲存已編輯完成的data
+    func saveEditData() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "pencil"), style: .plain, target: self, action: #selector(saveEdit))
+    }
+
+// MARK: -如下edit func先全部執行，目前可以照預期的呈現，後續再來想判斷式
+    // 儲存並dismiss VC
+    @objc func saveEdit() {
+        editUser(subCollection: "expenditure", documentID: data?.id ?? "")
+        editUser(subCollection: "revenue", documentID: data?.id ?? "")
+        editUser(subCollection: "account", documentID: data?.id ?? "")
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
+        homeVC?.showDetailTableView.reloadData()
+    }
+
     // 從Firebase上fetch全部種類/帳戶資料
     func fetchUser(subCollection: String) {
         let dataBase = Firestore.firestore()
@@ -116,12 +133,29 @@ class EditViewController: UIViewController {
                         self.costContent.append(category[num].title)
                     case "revenue":
                         self.incomeContent.append(category[num].title)
-//                        self.costContent.append(category[num].title)
                     default:
                         self.accountContent.append(category[num].title)
                     }
                 }
             }
+    }
+
+    // 點選對應細項編輯資料
+    func editUser(subCollection: String, documentID: String) {
+        let dataBase = Firestore.firestore()
+        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)").document("\(documentID)").updateData([
+            "date": editData.dateTime,
+            "amount": editData.amountTextField,
+            "category": editData.categoryTextField,
+            "account": editData.accountTextField,
+            "detail": editData.detailTextView
+        ]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document successfully updated")
+            }
+        }
     }
 }
 
@@ -174,6 +208,10 @@ extension EditViewController: UITableViewDataSource {
             let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
             // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
             editTimeCell.config(dateStr: dateStr)
+            // 在生成editDataCell時先把已經從firebase抓下來的單筆對應資料的值塞給struct(editData)
+            editData.dateTime = self.data?.date ?? ""
+            // 接著把已經從firebase抓下來的單筆對應資料的值塞給editVC中的dateTextField.text顯示
+            editTimeCell.dateTextfield.text = self.data?.date ?? ""
             return editTimeCell
         } else if indexPath.section == 1 {
             guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
@@ -183,27 +221,33 @@ extension EditViewController: UITableViewDataSource {
             // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
             switch indexPath.row {
             case 0:
+                editData.amountTextField = self.data?.amount ?? ""
                 editDataCell.contentTextField.text = self.data?.amount
             case 1:
                 switch segmentTag {
                 case 0:
                     editDataCell.content = costContent
+                    // 在生成editDataCell時先把已經從firebase抓下來的單筆對應資料的值塞給struct(editData)
+                    editData.categoryTextField = self.data?.category ?? ""
+                    // 接著把已經從firebase抓下來的單筆對應資料的值塞給editVC中的textField.text顯示
                     editDataCell.contentTextField.text = self.data?.category
                 case 1:
                     editDataCell.content = incomeContent
+                    editData.categoryTextField = self.data?.category ?? ""
                     editDataCell.contentTextField.text = self.data?.category
                 default:
                     editDataCell.content = accountContent
+                    editData.accountTextField = self.data?.account ?? ""
                     editDataCell.contentTextField.text = self.data?.account
                 }
             default:
                 editDataCell.content = accountContent
+                editData.accountTextField = self.data?.account ?? ""
                 editDataCell.contentTextField.text = self.data?.account
             }
-            
+
             // 測試從homeVC抓到傳過來的資料
             print("datadatadatadatadata\(self.data)")
-            
             // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
             editDataCell.contentTextField.inputView = nil
             editDataCell.indexPath = indexPath
@@ -226,7 +270,8 @@ extension EditViewController: UITableViewDataSource {
             else {
                 fatalError("can not create cell")
             }
-            editDetailCell.detailTextView.text = ""
+            editData.detailTextView = self.data?.detail ?? ""
+            editDetailCell.detailTextView.text = self.data?.detail
             editDetailCell.delegate = self
             return editDetailCell
         }
@@ -236,7 +281,7 @@ extension EditViewController: UITableViewDataSource {
 // date cell
 extension EditViewController: EditTimeTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
-    func getDate(_ cell: EditTimeTableViewCell, sender: UIDatePicker) {
+    func getDate(_ cell: EditTimeTableViewCell, sender: UIDatePicker, textField: String) {
         // 當date picker改變時，執行此func，把當前改變的date塞給textfield
         cell.dateTextfield.text = BBCDateFormatter.shareFormatter.string(from: sender.date)
         // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
