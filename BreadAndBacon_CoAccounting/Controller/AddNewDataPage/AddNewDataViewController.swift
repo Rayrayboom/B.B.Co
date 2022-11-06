@@ -52,9 +52,13 @@ class AddNewDataViewController: UIViewController {
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
-//    var dataFromHomeVC: [Account] = []
+//    var dataFromHomeVC: String?
     // for QRCode func use
-    var content: String = ""
+    var content: String = "" {
+        didSet {
+            addNewDadaTableView.reloadData()
+        }
+    }
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
@@ -349,6 +353,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 detailCell.detailTextView.text = ""
+                detailCell.QRLabel.text = content
                 detailCell.delegate = self
                 return detailCell
             }
@@ -415,6 +420,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 detailCell.detailTextView.text = ""
+                detailCell.QRLabel.text = content
                 detailCell.delegate = self
                 return detailCell
             }

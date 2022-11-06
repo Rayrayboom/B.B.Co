@@ -28,22 +28,19 @@ class PieChartViewController: UIViewController {
                 pieChartDataEntries = []
                 fetchUser(subCollection: "expenditure")
                 setupPieChartView()
-
-                pieChartView = nil
             } else {
                 data = []
                 pieChartDataEntries = []
                 fetchUser(subCollection: "revenue")
                 setupPieChartView()
-
-                pieChartView = nil
             }
         }
     }
 
     @IBOutlet weak var pieTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
-
+    @IBOutlet weak var monthLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUser(subCollection: "expenditure")
@@ -104,12 +101,14 @@ class PieChartViewController: UIViewController {
     func pieChartViewConfig() {
         let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
         // 設定圓餅圖的顏色
-        chartDataSet.colors = [.systemRed, .systemYellow, .systemGreen, .systemBlue, .systemBrown, .link]
+        chartDataSet.colors = ChartColorTemplates.vordiplom()
+//        chartDataSet.colors = [.systemRed, .systemYellow, .systemGreen, .systemBlue, .systemBrown, .link]
         // 設定資料數值的字體大小
         chartDataSet.valueTextColor = .black
         chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)
 
         let chartData = PieChartData(dataSets: [chartDataSet])
+//        let chartData = PieChartData(dataSets: [chartDataSet])
         // 將 chartData 指派給 pieChartView
         pieChartView.data = chartData
         // 設定下方圖例樣式，default為圓形

@@ -239,6 +239,9 @@
                                                     <rect key="frame" x="352.5" y="15" width="46.5" height="31.5"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="qrcode.viewfinder" catalog="system"/>
+                                                    <connections>
+                                                        <action selector="insertQRCode:" destination="NZ5-gY-QLD" eventType="touchUpInside" id="dxh-Wd-yCh"/>
+                                                    </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldN-1v-UET">
                                                     <rect key="frame" x="296" y="15" width="41.5" height="31.5"/>

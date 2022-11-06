@@ -147,9 +147,9 @@ class ViewController: UIViewController {
 
 //    func passDataToAddNewDataPage() {
 //        guard let addVC = self.storyboard?.instantiateViewController(withIdentifier: "addNewData") as? AddNewDataViewController else {
-//            fatalError("can not find editVC")
+//            fatalError("can not find addNewDataVC")
 //        }
-//        addVC.dataFromHomeVC = data
+//        addVC.dataFromHomeVC = data[0].date
 //    }
 }
 
