@@ -18,6 +18,7 @@
                     <connections>
                         <segue destination="7Vs-q9-i23" kind="relationship" relationship="viewControllers" id="wrL-xT-spe"/>
                         <segue destination="tDh-Ht-LeE" kind="relationship" relationship="viewControllers" id="pMx-OV-ttU"/>
+                        <segue destination="DMI-bA-0bO" kind="relationship" relationship="viewControllers" id="LMG-YK-gnP"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="No7-hc-oCR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -43,6 +44,16 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d4I-i1-BHc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-894" y="828"/>
+        </scene>
+        <!--PieChart-->
+        <scene sceneID="05f-e6-SIj">
+            <objects>
+                <viewControllerPlaceholder storyboardName="PieChart" id="DMI-bA-0bO" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Item" id="mjo-CL-TJ7"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VwR-Uh-m5K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-70" y="828"/>
         </scene>
     </scenes>
 </document>
