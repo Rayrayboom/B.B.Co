@@ -38,14 +38,6 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
-        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
-        self.group.enter()
-        queueGroup.async(group: group) {
-            self.fetchAllData()
-            self.group.leave()
-        }
-
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
 
@@ -53,6 +45,16 @@ class ViewController: UIViewController {
         dateBO.tintColor = .black
         // 讓date button一開始顯示當天日期
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
+        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
+        self.group.enter()
+        queueGroup.async(group: group) {
+            self.fetchAllData()
+            self.group.leave()
+        }
     }
 
     // 點選date picker時偵測點選的狀態
@@ -116,7 +118,7 @@ class ViewController: UIViewController {
     }
 
     // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUser(subCollection: String) {
+    func fetchUserCategory(subCollection: String) {
         let dataBase = Firestore.firestore()
         dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
             .getDocuments { snapshot, error in
@@ -136,12 +138,19 @@ class ViewController: UIViewController {
         data = []
         category = []
         fetchUserSpecific(subCollection: "expenditure")
-        fetchUser(subCollection: "expenditure")
+        fetchUserCategory(subCollection: "expenditure")
         fetchUserSpecific(subCollection: "revenue")
-        fetchUser(subCollection: "revenue")
+        fetchUserCategory(subCollection: "revenue")
         fetchUserSpecific(subCollection: "account")
-        fetchUser(subCollection: "account")
+        fetchUserCategory(subCollection: "account")
     }
+
+//    func passDataToAddNewDataPage() {
+//        guard let addVC = self.storyboard?.instantiateViewController(withIdentifier: "addNewData") as? AddNewDataViewController else {
+//            fatalError("can not find addNewDataVC")
+//        }
+//        addVC.dataFromHomeVC = data[0].date
+//    }
 }
 
 extension ViewController: UITableViewDelegate {

@@ -22,6 +22,7 @@ class DetailTableViewCell: UITableViewCell {
             detailTextView.keyboardAppearance = .dark
         }
     }
+    @IBOutlet weak var QRLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

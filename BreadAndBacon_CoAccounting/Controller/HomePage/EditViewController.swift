@@ -53,7 +53,19 @@ class EditViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var editData = DataModel()
     weak var homeVC: ViewController?
+    // for QRCode func use
+    var content: String = "" {
+        didSet {
+            editTableView.reloadData()
+        }
+    }
 
+    @IBAction func insertQRCode(_ sender: UIButton) {
+        // 建立一個VNDocumentCameraViewController實例，並執行delegate，delegate會導到QRCodeVC去執行process image的func
+        let documentCameraViewController = VNDocumentCameraViewController()
+        documentCameraViewController.delegate = self
+        present(documentCameraViewController, animated: true)
+    }
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 // TO-DO: 偵測第幾個segment control後直接在新VC上顯示對應index
@@ -157,6 +169,33 @@ class EditViewController: UIViewController {
             }
         }
     }
+
+    // QRCode
+    func processImage(image: UIImage) {
+        guard let cgImage = image.cgImage else {
+            print("can not get image")
+            return
+        }
+        let handler = VNImageRequestHandler(cgImage: cgImage)
+        let request = VNDetectBarcodesRequest { request, error in
+            if let observation = request.results?.first as? VNBarcodeObservation,
+               observation.symbology == .qr {
+                print("詳細資訊如下：\(observation.payloadStringValue ?? "")")
+//                self.contentLabel.text = observation.payloadStringValue ?? ""
+//                self.content.append(observation.payloadStringValue ?? "")
+                self.content = observation.payloadStringValue ?? ""
+                print("發票號碼：\(self.content.prefix(10))")
+//                print("品項：\((self.content as NSString).substring(with: NSMakeRange(150, 160)))")
+            }
+        }
+//        request.regionOfInterest = CGRect(x: 1, y: 1, width: 1, height: 1)
+        do {
+            try handler.perform([request])
+            print("this is request \(request)")
+        } catch {
+            print(error)
+        }
+    }
 }
 
 extension EditViewController: UITableViewDelegate {
@@ -247,7 +286,7 @@ extension EditViewController: UITableViewDataSource {
             }
 
             // 測試從homeVC抓到傳過來的資料
-            print("datadatadatadatadata\(self.data)")
+//            print("datadatadatadatadata\(self.data)")
             // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
             editDataCell.contentTextField.inputView = nil
             editDataCell.indexPath = indexPath
@@ -347,5 +386,14 @@ extension EditViewController: EditDetailTableViewCellDelegate {
     func getDetail(detail: String) {
         editData.detailTextView = detail
         print("======= this is detail \(editData.detailTextView)")
+    }
+}
+
+// QRCode
+extension EditViewController: VNDocumentCameraViewControllerDelegate {
+    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
+        let image = scan.imageOfPage(at: scan.pageCount - 1)
+        processImage(image: image)
+        dismiss(animated: true, completion: nil)
     }
 }
