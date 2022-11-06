@@ -116,7 +116,7 @@ class ViewController: UIViewController {
     }
 
     // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUser(subCollection: String) {
+    func fetchUserCategory(subCollection: String) {
         let dataBase = Firestore.firestore()
         dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
             .getDocuments { snapshot, error in
@@ -136,12 +136,20 @@ class ViewController: UIViewController {
         data = []
         category = []
         fetchUserSpecific(subCollection: "expenditure")
-        fetchUser(subCollection: "expenditure")
+        fetchUserCategory(subCollection: "expenditure")
         fetchUserSpecific(subCollection: "revenue")
-        fetchUser(subCollection: "revenue")
+        fetchUserCategory(subCollection: "revenue")
         fetchUserSpecific(subCollection: "account")
-        fetchUser(subCollection: "account")
+        fetchUserCategory(subCollection: "account")
     }
+
+//    func passDataToPieChartPage() {
+//        guard let pieChartVC = self.storyboard?.instantiateViewController(withIdentifier: "pieChartVC") as? PieChartViewController else {
+//            fatalError("can not find editVC")
+//        }
+//
+//        pieChartVC.data = data
+//    }
 }
 
 extension ViewController: UITableViewDelegate {

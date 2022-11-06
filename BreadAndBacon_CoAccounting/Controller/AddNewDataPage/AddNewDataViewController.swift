@@ -84,9 +84,9 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         // 點選+時，執行新增資料到firebase
         saveNewData()
         // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
-        fetchUser(subCollection: "expenditure")
-        fetchUser(subCollection: "revenue")
-        fetchUser(subCollection: "account")
+        fetchUserCategory(subCollection: "expenditure")
+        fetchUserCategory(subCollection: "revenue")
+        fetchUserCategory(subCollection: "account")
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -203,7 +203,7 @@ class AddNewDataViewController: UIViewController, VNDocumentCameraViewController
         }
     }
     // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUser(subCollection: String) {
+    func fetchUserCategory(subCollection: String) {
         let dataBase = Firestore.firestore()
         dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
             .getDocuments { snapshot, error in
