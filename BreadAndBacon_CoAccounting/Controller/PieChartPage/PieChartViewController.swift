@@ -11,6 +11,7 @@ import FirebaseFirestore
 
 class PieChartViewController: UIViewController {
     var pieChartView: PieChartView!
+    var fillInPieChartView: UIView!
     // 圓餅圖資料陣列
     var pieChartDataEntries: [PieChartDataEntry] = []
     // 等fetch data回來有值後，讓tableView重新更新畫面
@@ -26,11 +27,19 @@ class PieChartViewController: UIViewController {
             if segmentTag == 0 {
                 data = []
                 pieChartDataEntries = []
+                let subviews = fillInPieChartView.subviews
+                for subview in subviews {
+                    subview.removeFromSuperview()
+                }
                 fetchUser(subCollection: "expenditure")
                 setupPieChartView()
             } else {
                 data = []
                 pieChartDataEntries = []
+                let subviews = fillInPieChartView.subviews
+                for subview in subviews {
+                    subview.removeFromSuperview()
+                }
                 fetchUser(subCollection: "revenue")
                 setupPieChartView()
             }
@@ -47,6 +56,15 @@ class PieChartViewController: UIViewController {
         pieTableView.delegate = self
         pieTableView.dataSource = self
         didSelectSegmentControl()
+        fillInPieChartView = UIView()
+        self.view.addSubview(fillInPieChartView)
+        fillInPieChartView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            fillInPieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
+            fillInPieChartView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            fillInPieChartView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            fillInPieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
+        ])
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -69,7 +87,7 @@ class PieChartViewController: UIViewController {
         // 生成PieChartView物件
         pieChartView = PieChartView()
         // pieChartView constraint
-        self.view.addSubview(pieChartView)
+        self.fillInPieChartView.addSubview(pieChartView)
         pieChartView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             pieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
