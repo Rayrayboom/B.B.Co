@@ -27,20 +27,26 @@ class PieChartViewController: UIViewController {
             if segmentTag == 0 {
                 data = []
                 pieChartDataEntries = []
+                // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
                 let subviews = fillInPieChartView.subviews
                 for subview in subviews {
                     subview.removeFromSuperview()
                 }
+                // 接著重新抓取支出總覽資料
                 fetchUser(subCollection: "expenditure")
+                // 並再次生成fillInPieChartView & pieChartView
                 setupPieChartView()
             } else {
                 data = []
                 pieChartDataEntries = []
+                // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
                 let subviews = fillInPieChartView.subviews
                 for subview in subviews {
                     subview.removeFromSuperview()
                 }
+                // 接著重新抓取支出總覽資料
                 fetchUser(subCollection: "revenue")
+                // 並再次生成fillInPieChartView & pieChartView
                 setupPieChartView()
             }
         }
@@ -48,27 +54,52 @@ class PieChartViewController: UIViewController {
 
     @IBOutlet weak var pieTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
-    @IBOutlet weak var monthLabel: UILabel!
+    @IBOutlet weak var monthDatePicker: UIDatePicker!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        monthDatePicker.center = view.center
+        // 一進頁面預設顯示支出總覽
         fetchUser(subCollection: "expenditure")
         pieTableView.delegate = self
         pieTableView.dataSource = self
+        // 選取segment control時拿SegmentIndex
         didSelectSegmentControl()
-        fillInPieChartView = UIView()
-        self.view.addSubview(fillInPieChartView)
-        fillInPieChartView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            fillInPieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
-            fillInPieChartView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            fillInPieChartView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            fillInPieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
-        ])
+        // 畫出view放pieChartView
+        setupfillInPieChartView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        monthDatePicker.addTarget(self, action: #selector(didMonthChanged), for: .valueChanged)
         pieTableView.reloadData()
+    }
+
+    @objc func didMonthChanged() {
+        if segmentTag == 0 {
+            data = []
+            pieChartDataEntries = []
+            // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+            let subviews = fillInPieChartView.subviews
+            for subview in subviews {
+                subview.removeFromSuperview()
+            }
+            // 接著重新抓取支出總覽資料
+            fetchUser(subCollection: "expenditure")
+            // 並再次生成fillInPieChartView & pieChartView
+            setupPieChartView()
+        } else {
+            data = []
+            pieChartDataEntries = []
+            // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+            let subviews = fillInPieChartView.subviews
+            for subview in subviews {
+                subview.removeFromSuperview()
+            }
+            // 接著重新抓取支出總覽資料
+            fetchUser(subCollection: "revenue")
+            // 並再次生成fillInPieChartView & pieChartView
+            setupPieChartView()
+        }
     }
 
     func didSelectSegmentControl() {
@@ -90,7 +121,7 @@ class PieChartViewController: UIViewController {
         self.fillInPieChartView.addSubview(pieChartView)
         pieChartView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            pieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
+            pieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 130),
             pieChartView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             pieChartView.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 40),
             pieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
@@ -157,10 +188,28 @@ class PieChartViewController: UIViewController {
         ])
     }
 
-    // 抓所有subCollection的資料
+    // 設定fillInPieChartView constrains, 拿來放pieChartView
+    func setupfillInPieChartView() {
+        fillInPieChartView = UIView()
+        self.view.addSubview(fillInPieChartView)
+        fillInPieChartView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            fillInPieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
+            fillInPieChartView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            fillInPieChartView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            fillInPieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
+        ])
+    }
+
+    // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
     func fetchUser(subCollection: String) {
+        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
         let dataBase = Firestore.firestore()
+        print("this is month \(BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))")
+        // 抓取哪個月份由monthDatePicker.date決定
         dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)")
+            .whereField("month", isEqualTo: BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -169,6 +218,7 @@ class PieChartViewController: UIViewController {
                     try? snapshot.data(as: Account.self)
                 }
                 self.data.append(contentsOf: account)
+                print("data here \(self.data)")
             }
     }
 }

@@ -21,6 +21,7 @@ struct NewDataModel {
 
     // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
     var dateTime: String = ""
+    var monthTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
 }
@@ -52,7 +53,11 @@ class AddNewDataViewController: UIViewController {
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
-//    var dataFromHomeVC: String?
+//    var dataFromHomeVC: String? = "" {
+//        didSet {
+//            print("this is dataFromHomeVC \(dataFromHomeVC)")
+//        }
+//    }
     // for QRCode func use
     var content: String = "" {
         didSet {
@@ -150,6 +155,7 @@ class AddNewDataViewController: UIViewController {
                 category: data.categoryTextField,
                 account: data.accountTextField,
                 date: data.dateTime,
+                month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
                 accountId: "accountId",
@@ -169,6 +175,7 @@ class AddNewDataViewController: UIViewController {
                 category: data.categoryTextField,
                 account: data.accountTextField,
                 date: data.dateTime,
+                month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
                 accountId: "accountId",
@@ -188,6 +195,7 @@ class AddNewDataViewController: UIViewController {
                 category: data.categoryTextField,
                 account: data.accountTextField,
                 date: data.dateTime,
+                month: data.monthTime,
                 destinationAccountId: "destinationAccountId",
                 sourceAccountId: "sourceAccountId",
                 accountId: nil,
@@ -432,10 +440,17 @@ extension AddNewDataViewController: UITableViewDataSource {
 extension AddNewDataViewController: AddDateTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
         // 當date picker改變時，執行此func，把當前改變的date塞給textfield
         cell.dateTextfield.text = BBCDateFormatter.shareFormatter.string(from: sender.date)
         // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
         data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
+    }
+
+    // 用delegate把cell和點選的sender傳過來，進行給month值
+    func getMonth(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
+        data.monthTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
     }
 }
 

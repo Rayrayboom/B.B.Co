@@ -30,6 +30,8 @@ class ViewController: UIViewController {
     var date = Date()
     let group = DispatchGroup()
     let queueGroup = DispatchQueue.global()
+// MARK: - 注意！
+    var month: String = ""
 
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -100,9 +102,12 @@ class ViewController: UIViewController {
 
     // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
     func fetchUserSpecific(subCollection: String) {
+// MARK: - 注意！
+//        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
+//        month = BBCDateFormatter.shareFormatter.string(from: self.date)
+
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月 dd 日"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        print("date--- \(BBCDateFormatter.shareFormatter.string(from: self.date))")
         let dataBase = Firestore.firestore()
         // 因為UIDatePicker一定要在main thread做，但group是在global執行，因此先在全域宣告一個Date型別的變數，當fetch data抓date picker的日期資料時，改用全域變數的date拿到date的資料(self.date)
         dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)")

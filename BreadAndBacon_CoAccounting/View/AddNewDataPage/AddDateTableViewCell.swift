@@ -9,6 +9,7 @@ import UIKit
 
 protocol AddDateTableViewCellDelegate: AnyObject {
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker)
+    func getMonth(_ cell: AddDateTableViewCell, sender: UIDatePicker)
 }
 
 class AddDateTableViewCell: UITableViewCell {
@@ -49,6 +50,8 @@ class AddDateTableViewCell: UITableViewCell {
     @objc func didSelectData(_ sender: UIDatePicker) {
         // date delegate
         self.delegate?.getDate(self, sender: sender)
+        // month delegate
+        self.delegate?.getMonth(self, sender: sender)
     }
 }
 
