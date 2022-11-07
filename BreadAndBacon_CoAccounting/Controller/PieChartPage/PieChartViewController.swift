@@ -40,7 +40,7 @@ class PieChartViewController: UIViewController {
     @IBOutlet weak var pieTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
     @IBOutlet weak var monthLabel: UILabel!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         fetchUser(subCollection: "expenditure")
