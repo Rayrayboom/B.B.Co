@@ -11,6 +11,7 @@ import FirebaseFirestore
 
 class PieChartViewController: UIViewController {
     var pieChartView: PieChartView!
+    var fillInPieChartView: UIView!
     // 圓餅圖資料陣列
     var pieChartDataEntries: [PieChartDataEntry] = []
     // 等fetch data回來有值後，讓tableView重新更新畫面
@@ -21,36 +22,103 @@ class PieChartViewController: UIViewController {
             pieTableViewConstrains()
         }
     }
+
+    // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
     var segmentTag: Int? {
         didSet {
             if segmentTag == 0 {
-                data = []
-                pieChartDataEntries = []
-                fetchUser(subCollection: "expenditure")
-                setupPieChartView()
+                recreateExpenditurePieChart()
             } else {
-                data = []
-                pieChartDataEntries = []
-                fetchUser(subCollection: "revenue")
-                setupPieChartView()
+                recreateRevenuePieChart()
             }
         }
     }
 
+// MARK: - 待處理month pie chart
+    @IBAction func goToLastMonth(_ sender: UIButton) {
+        print("in the last")
+//        monthDatePicker.date = DateComponents(calendar: Calendar.current, timeZone: TimeZone.current, year: 2021, month: 11, day: 1).date!
+//        print(monthDatePicker.date)
+//        let dateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: monthDatePicker.date)
+//        var month = dateComponent.month ?? 0
+//        month -= 1
+        
+        var components = monthDatePicker.calendar.dateComponents([.day, .month, .year], from: monthDatePicker.date)
+        let day = components.day
+        let month = components.month
+        let year = components.year
+
+//        print(monthDatePicker)
+//        let today =
+//        print(today)
+//        monthDatePicker.setDate(today, animated: true)
+//        print(monthDatePicker)
+    }
+    @IBAction func goToNextMonth(_ sender: UIButton) {
+        print("in the next")
+    }
+
     @IBOutlet weak var pieTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
-    @IBOutlet weak var monthLabel: UILabel!
+    @IBOutlet weak var monthDatePicker: UIDatePicker!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        monthDatePicker.center = view.center
+        // 一進頁面預設顯示支出總覽
         fetchUser(subCollection: "expenditure")
         pieTableView.delegate = self
         pieTableView.dataSource = self
+        // 選取segment control時拿SegmentIndex
         didSelectSegmentControl()
+        // 畫出view放pieChartView
+        setupfillInPieChartView()
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        // 偵測monthDatePicker改值時觸發func didMonthChanged
+        monthDatePicker.addTarget(self, action: #selector(didMonthChanged), for: .valueChanged)
         pieTableView.reloadData()
+    }
+
+    // 重新畫pie chart based on expenditure data
+    func recreateExpenditurePieChart() {
+        data = []
+        pieChartDataEntries = []
+        // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+        let subviews = fillInPieChartView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+        // 接著重新抓取支出總覽資料
+        fetchUser(subCollection: "expenditure")
+        // 並再次生成fillInPieChartView & pieChartView
+        setupPieChartView()
+    }
+
+    // 重新畫pie chart based on revenue data
+    func recreateRevenuePieChart() {
+        data = []
+        pieChartDataEntries = []
+        // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+        let subviews = fillInPieChartView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+        // 接著重新抓取支出總覽資料
+        fetchUser(subCollection: "revenue")
+        // 並再次生成fillInPieChartView & pieChartView
+        setupPieChartView()
+    }
+
+    // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)
+    @objc func didMonthChanged() {
+        if segmentTag == 0 {
+            recreateExpenditurePieChart()
+        } else {
+            recreateRevenuePieChart()
+        }
     }
 
     func didSelectSegmentControl() {
@@ -69,10 +137,10 @@ class PieChartViewController: UIViewController {
         // 生成PieChartView物件
         pieChartView = PieChartView()
         // pieChartView constraint
-        self.view.addSubview(pieChartView)
+        self.fillInPieChartView.addSubview(pieChartView)
         pieChartView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            pieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
+            pieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 130),
             pieChartView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
             pieChartView.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 40),
             pieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
@@ -139,10 +207,28 @@ class PieChartViewController: UIViewController {
         ])
     }
 
-    // 抓所有subCollection的資料
+    // 設定fillInPieChartView constrains, 拿來放pieChartView
+    func setupfillInPieChartView() {
+        fillInPieChartView = UIView()
+        self.view.addSubview(fillInPieChartView)
+        fillInPieChartView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            fillInPieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
+            fillInPieChartView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            fillInPieChartView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            fillInPieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
+        ])
+    }
+
+    // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
     func fetchUser(subCollection: String) {
+        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
         let dataBase = Firestore.firestore()
+        print("this is month \(BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))")
+        // 抓取哪個月份由monthDatePicker.date決定
         dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)")
+            .whereField("month", isEqualTo: BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -151,6 +237,7 @@ class PieChartViewController: UIViewController {
                     try? snapshot.data(as: Account.self)
                 }
                 self.data.append(contentsOf: account)
+                print("data here \(self.data)")
             }
     }
 }

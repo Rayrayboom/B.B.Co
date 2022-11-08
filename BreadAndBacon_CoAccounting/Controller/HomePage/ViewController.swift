@@ -30,6 +30,8 @@ class ViewController: UIViewController {
     var date = Date()
     let group = DispatchGroup()
     let queueGroup = DispatchQueue.global()
+// MARK: - 注意！
+    var month: String = ""
 
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -40,7 +42,7 @@ class ViewController: UIViewController {
 
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
-        
+
         // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
         self.group.enter()
@@ -83,8 +85,11 @@ class ViewController: UIViewController {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         // 把date picker日期改為今天
         let today = Date(timeIntervalSinceNow: 0)
+        // 按下date button之後要把當天date的值(let today)給外部變數的date，因為在fetch指定日期data時是抓date的日期
+        date = today
+        // 按下date button之後要把date picker顯示的顏色區塊改為當天
         datePicker.setDate(today, animated: true)
-        // date button顯示今天日期
+        // date button顯示date picker拿到的日期(也就是today的日期)
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
         // 點擊date button後會回到當天日期，需要再fetch一次data讓他呈現當天的資料
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
@@ -97,6 +102,10 @@ class ViewController: UIViewController {
 
     // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
     func fetchUserSpecific(subCollection: String) {
+// MARK: - 注意！
+//        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
+//        month = BBCDateFormatter.shareFormatter.string(from: self.date)
+
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月 dd 日"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
         let dataBase = Firestore.firestore()
@@ -141,6 +150,13 @@ class ViewController: UIViewController {
         fetchUserCategory(subCollection: "revenue")
         fetchUserSpecific(subCollection: "account")
         fetchUserCategory(subCollection: "account")
+    }
+
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(subCollection: String, indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document(data[indexPathRow].id)
+        documentRef.delete()
     }
 
 //    func passDataToAddNewDataPage() {
@@ -188,5 +204,19 @@ extension ViewController: UITableViewDataSource {
         homeDetailCell.detailLabel.text = data[indexPath.row].detail
 
         return homeDetailCell
+    }
+
+    // tableView右滑刪除
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            // 順序問題，需要先偵測對應indexPath資料再進行刪除
+            deleteSpecificData(subCollection: "expenditure", indexPathRow: indexPath.row)
+            deleteSpecificData(subCollection: "revenue", indexPathRow: indexPath.row)
+            deleteSpecificData(subCollection: "account", indexPathRow: indexPath.row)
+            data.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
 }
