@@ -22,34 +22,40 @@ class PieChartViewController: UIViewController {
             pieTableViewConstrains()
         }
     }
+
+    // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
     var segmentTag: Int? {
         didSet {
             if segmentTag == 0 {
-                data = []
-                pieChartDataEntries = []
-                // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
-                let subviews = fillInPieChartView.subviews
-                for subview in subviews {
-                    subview.removeFromSuperview()
-                }
-                // 接著重新抓取支出總覽資料
-                fetchUser(subCollection: "expenditure")
-                // 並再次生成fillInPieChartView & pieChartView
-                setupPieChartView()
+                recreateExpenditurePieChart()
             } else {
-                data = []
-                pieChartDataEntries = []
-                // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
-                let subviews = fillInPieChartView.subviews
-                for subview in subviews {
-                    subview.removeFromSuperview()
-                }
-                // 接著重新抓取支出總覽資料
-                fetchUser(subCollection: "revenue")
-                // 並再次生成fillInPieChartView & pieChartView
-                setupPieChartView()
+                recreateRevenuePieChart()
             }
         }
+    }
+
+// MARK: - 待處理month pie chart
+    @IBAction func goToLastMonth(_ sender: UIButton) {
+        print("in the last")
+//        monthDatePicker.date = DateComponents(calendar: Calendar.current, timeZone: TimeZone.current, year: 2021, month: 11, day: 1).date!
+//        print(monthDatePicker.date)
+//        let dateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: monthDatePicker.date)
+//        var month = dateComponent.month ?? 0
+//        month -= 1
+        
+        var components = monthDatePicker.calendar.dateComponents([.day, .month, .year], from: monthDatePicker.date)
+        let day = components.day
+        let month = components.month
+        let year = components.year
+
+//        print(monthDatePicker)
+//        let today =
+//        print(today)
+//        monthDatePicker.setDate(today, animated: true)
+//        print(monthDatePicker)
+    }
+    @IBAction func goToNextMonth(_ sender: UIButton) {
+        print("in the next")
     }
 
     @IBOutlet weak var pieTableView: UITableView!
@@ -70,35 +76,48 @@ class PieChartViewController: UIViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        // 偵測monthDatePicker改值時觸發func didMonthChanged
         monthDatePicker.addTarget(self, action: #selector(didMonthChanged), for: .valueChanged)
         pieTableView.reloadData()
     }
 
+    // 重新畫pie chart based on expenditure data
+    func recreateExpenditurePieChart() {
+        data = []
+        pieChartDataEntries = []
+        // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+        let subviews = fillInPieChartView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+        // 接著重新抓取支出總覽資料
+        fetchUser(subCollection: "expenditure")
+        // 並再次生成fillInPieChartView & pieChartView
+        setupPieChartView()
+    }
+
+    // 重新畫pie chart based on revenue data
+    func recreateRevenuePieChart() {
+        data = []
+        pieChartDataEntries = []
+        // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+        let subviews = fillInPieChartView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+        // 接著重新抓取支出總覽資料
+        fetchUser(subCollection: "revenue")
+        // 並再次生成fillInPieChartView & pieChartView
+        setupPieChartView()
+    }
+
+    // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)
     @objc func didMonthChanged() {
         if segmentTag == 0 {
-            data = []
-            pieChartDataEntries = []
-            // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
-            let subviews = fillInPieChartView.subviews
-            for subview in subviews {
-                subview.removeFromSuperview()
-            }
-            // 接著重新抓取支出總覽資料
-            fetchUser(subCollection: "expenditure")
-            // 並再次生成fillInPieChartView & pieChartView
-            setupPieChartView()
+            recreateExpenditurePieChart()
         } else {
-            data = []
-            pieChartDataEntries = []
-            // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
-            let subviews = fillInPieChartView.subviews
-            for subview in subviews {
-                subview.removeFromSuperview()
-            }
-            // 接著重新抓取支出總覽資料
-            fetchUser(subCollection: "revenue")
-            // 並再次生成fillInPieChartView & pieChartView
-            setupPieChartView()
+            recreateRevenuePieChart()
         }
     }
 

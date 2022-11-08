@@ -152,6 +152,13 @@ class ViewController: UIViewController {
         fetchUserCategory(subCollection: "account")
     }
 
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(subCollection: String, indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document(data[indexPathRow].id)
+        documentRef.delete()
+    }
+
 //    func passDataToAddNewDataPage() {
 //        guard let addVC = self.storyboard?.instantiateViewController(withIdentifier: "addNewData") as? AddNewDataViewController else {
 //            fatalError("can not find addNewDataVC")
@@ -197,5 +204,19 @@ extension ViewController: UITableViewDataSource {
         homeDetailCell.detailLabel.text = data[indexPath.row].detail
 
         return homeDetailCell
+    }
+
+    // tableView右滑刪除
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            // 順序問題，需要先偵測對應indexPath資料再進行刪除
+            deleteSpecificData(subCollection: "expenditure", indexPathRow: indexPath.row)
+            deleteSpecificData(subCollection: "revenue", indexPathRow: indexPath.row)
+            deleteSpecificData(subCollection: "account", indexPathRow: indexPath.row)
+            data.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
 }
