@@ -1,16 +1,14 @@
 //
-//  QRCodeViewController.swift
+//  EditQRCodeViewController.swift
 //  BreadAndBacon_CoAccounting
 //
-//  Created by 張育睿 on 2022/10/31.
+//  Created by 張育睿 on 2022/11/9.
 //
 
 import UIKit
 import AVFoundation
-import Vision
-import VisionKit
 
-class QRCodeViewController: UIViewController {
+class EditQRCodeViewController: UIViewController {
     var content: String = ""
 
     // For QRCode Scanner
@@ -20,11 +18,12 @@ class QRCodeViewController: UIViewController {
     var controller = UIAlertController()
 
     @IBOutlet weak var messageLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         scanQRCode()
     }
-
+    
     func scanQRCode() {
         // 取得後置鏡頭來擷取影片
         guard let captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
@@ -101,7 +100,7 @@ class QRCodeViewController: UIViewController {
 //    }
 }
 
-extension QRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
+extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         // 檢查  metadataObjects 陣列為非空值，它至少需包含一個物件
         if metadataObjects.isEmpty {
@@ -126,3 +125,5 @@ extension QRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
         }
     }
 }
+
+

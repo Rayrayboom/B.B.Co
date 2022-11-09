@@ -9,21 +9,40 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Code View Controller-->
         <scene sceneID="LOu-sQ-Y9u">
             <objects>
-                <viewController storyboardIdentifier="qrcodeVC" id="m0n-E7-pL7" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="qrScanVC" id="m0n-E7-pL7" customClass="QRCodeViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="V49-Tl-X3v">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No QR code is detected" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k4N-Zl-aVG">
+                                <rect key="frame" x="0.0" y="802" width="414" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="fNh-FI-hmH"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="7gW-LM-UfM"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7gW-LM-UfM" firstAttribute="trailing" secondItem="k4N-Zl-aVG" secondAttribute="trailing" id="E9D-Qv-b9x"/>
+                            <constraint firstItem="7gW-LM-UfM" firstAttribute="bottom" secondItem="k4N-Zl-aVG" secondAttribute="bottom" id="p9H-Wd-pTs"/>
+                            <constraint firstItem="k4N-Zl-aVG" firstAttribute="leading" secondItem="7gW-LM-UfM" secondAttribute="leading" id="vMZ-tN-hpx"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="PdJ-Sa-lXb"/>
+                    <connections>
+                        <outlet property="messageLabel" destination="k4N-Zl-aVG" id="luB-wM-78c"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X6f-yv-016" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="878" y="1573"/>
+            <point key="canvasLocation" x="876.81159420289862" y="1572.9910714285713"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="CGC-Vf-WCX">
@@ -138,6 +157,9 @@
                                                     <rect key="frame" x="296" y="15" width="41.5" height="31.5"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="mic.fill" catalog="system"/>
+                                                    <connections>
+                                                        <action selector="insertSpeech:" destination="FXA-dv-yEb" eventType="touchUpInside" id="wSq-I7-gyb"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>

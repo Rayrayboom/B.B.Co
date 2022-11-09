@@ -69,11 +69,14 @@ class AddNewDataViewController: UIViewController {
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
+    @IBAction func insertSpeech(_ sender: UIButton) {
+    }
     @IBAction func insertQRCode(_ sender: UIButton) {
-        // 建立一個VNDocumentCameraViewController實例，並執行delegate，delegate會導到QRCodeVC去執行process image的func
-        let documentCameraViewController = VNDocumentCameraViewController()
-        documentCameraViewController.delegate = self
-        present(documentCameraViewController, animated: true)
+        guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
+            fatalError("can not find QRScanner VC")
+        }
+//        presentQRScanVC.delegate = self
+        present(presentQRScanVC, animated: true)
     }
 
     override func viewDidLoad() {
@@ -233,33 +236,6 @@ class AddNewDataViewController: UIViewController {
                     }
                 }
             }
-    }
-
-    // QRCode
-    func processImage(image: UIImage) {
-        guard let cgImage = image.cgImage else {
-            print("can not get image")
-            return
-        }
-        let handler = VNImageRequestHandler(cgImage: cgImage)
-        let request = VNDetectBarcodesRequest { request, error in
-            if let observation = request.results?.first as? VNBarcodeObservation,
-               observation.symbology == .qr {
-                print("詳細資訊如下：\(observation.payloadStringValue ?? "")")
-//                self.contentLabel.text = observation.payloadStringValue ?? ""
-//                self.content.append(observation.payloadStringValue ?? "")
-                self.content = observation.payloadStringValue ?? ""
-                print("發票號碼：\(self.content.prefix(10))")
-//                print("品項：\((self.content as NSString).substring(with: NSMakeRange(150, 160)))")
-            }
-        }
-//        request.regionOfInterest = CGRect(x: 1, y: 1, width: 1, height: 1)
-        do {
-            try handler.perform([request])
-            print("this is request \(request)")
-        } catch {
-            print(error)
-        }
     }
 }
 
@@ -512,14 +488,5 @@ extension AddNewDataViewController: DetailTableViewCellDelegate {
     func getDetail(detail: String) {
         data.detailTextView = detail
         print("======= this is detail \(data.detailTextView)")
-    }
-}
-
-// QRCode
-extension AddNewDataViewController: VNDocumentCameraViewControllerDelegate {
-    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-        let image = scan.imageOfPage(at: scan.pageCount - 1)
-        processImage(image: image)
-        dismiss(animated: true, completion: nil)
     }
 }

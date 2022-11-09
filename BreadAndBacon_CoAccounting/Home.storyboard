@@ -240,7 +240,7 @@
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="qrcode.viewfinder" catalog="system"/>
                                                     <connections>
-                                                        <action selector="insertQRCode:" destination="NZ5-gY-QLD" eventType="touchUpInside" id="dxh-Wd-yCh"/>
+                                                        <action selector="insertEditQRCode:" destination="NZ5-gY-QLD" eventType="touchUpInside" id="x8N-il-Ddb"/>
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldN-1v-UET">
@@ -323,6 +323,40 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cLL-Cd-dM8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-36" y="1540"/>
+        </scene>
+        <!--EditQR Code View Controller-->
+        <scene sceneID="L1P-hG-pst">
+            <objects>
+                <viewController storyboardIdentifier="editQRScanVC" id="EBV-Gk-jUQ" customClass="EditQRCodeViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="LZ4-5P-PEe">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Msu-PZ-J6O">
+                                <rect key="frame" x="0.0" y="802" width="414" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="luP-QS-hsh"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="nbI-nb-fo7"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="nbI-nb-fo7" firstAttribute="bottom" secondItem="Msu-PZ-J6O" secondAttribute="bottom" id="Kxu-bh-2Tt"/>
+                            <constraint firstItem="Msu-PZ-J6O" firstAttribute="leading" secondItem="nbI-nb-fo7" secondAttribute="leading" id="aGq-xO-cuJ"/>
+                            <constraint firstItem="nbI-nb-fo7" firstAttribute="trailing" secondItem="Msu-PZ-J6O" secondAttribute="trailing" id="cP2-OV-yqP"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="messageLabel" destination="Msu-PZ-J6O" id="TTF-6H-vz8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WWh-9Y-dlO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="987" y="1540"/>
         </scene>
     </scenes>
     <resources>

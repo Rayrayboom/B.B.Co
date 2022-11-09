@@ -42,7 +42,6 @@ class PieChartViewController: UIViewController {
 //        let dateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: monthDatePicker.date)
 //        var month = dateComponent.month ?? 0
 //        month -= 1
-        
         var components = monthDatePicker.calendar.dateComponents([.day, .month, .year], from: monthDatePicker.date)
         let day = components.day
         let month = components.month
