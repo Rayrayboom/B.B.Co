@@ -31,8 +31,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="91"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="smh-bl-YiE">
-                                                    <rect key="frame" x="91" y="10" width="44.5" height="21.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="smh-bl-YiE">
+                                                    <rect key="frame" x="91" y="10" width="44.5" height="30.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -45,8 +45,8 @@
                                                         <constraint firstAttribute="height" constant="50" id="j06-fN-gn5"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="detail" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lgs-Ma-jhU">
-                                                    <rect key="frame" x="91" y="41.5" width="42" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="detail" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lgs-Ma-jhU">
+                                                    <rect key="frame" x="91" y="50.5" width="303" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -61,7 +61,7 @@
                                             <constraints>
                                                 <constraint firstItem="smh-bl-YiE" firstAttribute="top" secondItem="nl2-jG-fiK" secondAttribute="top" constant="10" id="386-dT-FJd"/>
                                                 <constraint firstItem="Lgs-Ma-jhU" firstAttribute="leading" secondItem="UOj-fS-2sh" secondAttribute="trailing" constant="10" id="5j7-WH-wzg"/>
-                                                <constraint firstAttribute="bottom" secondItem="Lgs-Ma-jhU" secondAttribute="bottom" priority="749" constant="28.5" id="LHP-Vo-pnq"/>
+                                                <constraint firstAttribute="bottom" secondItem="Lgs-Ma-jhU" secondAttribute="bottom" priority="749" constant="20" id="LHP-Vo-pnq"/>
                                                 <constraint firstItem="UOj-fS-2sh" firstAttribute="leading" secondItem="nl2-jG-fiK" secondAttribute="leading" constant="10" id="Otr-5E-L2b"/>
                                                 <constraint firstItem="smh-bl-YiE" firstAttribute="leading" secondItem="UOj-fS-2sh" secondAttribute="trailing" constant="10" id="Y2Q-0O-W1j"/>
                                                 <constraint firstAttribute="bottom" secondItem="UOj-fS-2sh" secondAttribute="bottom" constant="10" id="aNJ-Rj-6NF"/>
@@ -69,6 +69,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="UvC-xT-LLi" secondAttribute="trailing" constant="20" id="hEv-Hb-ePY"/>
                                                 <constraint firstItem="UvC-xT-LLi" firstAttribute="top" secondItem="nl2-jG-fiK" secondAttribute="top" constant="20" id="lg1-9Y-UTQ"/>
                                                 <constraint firstItem="Lgs-Ma-jhU" firstAttribute="top" secondItem="smh-bl-YiE" secondAttribute="bottom" constant="10" id="v7A-aq-ouz"/>
+                                                <constraint firstAttribute="trailing" secondItem="Lgs-Ma-jhU" secondAttribute="trailing" constant="20" id="xIm-jm-ZDu"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>

@@ -54,6 +54,12 @@ class AddNewDataViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
     var dateFromHomeVC: String? = ""
+    // 存QRCode掃描內容
+    var messageFromQRVC: String = "" {
+        didSet {
+            addNewDadaTableView.reloadData()
+        }
+    }
 
     // for QRCode func use
     var content: String = "" {
@@ -72,7 +78,7 @@ class AddNewDataViewController: UIViewController {
         guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
             fatalError("can not find QRScanner VC")
         }
-//        presentQRScanVC.delegate = self
+        presentQRScanVC.delegate = self
         present(presentQRScanVC, animated: true)
     }
 
@@ -338,7 +344,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 detailCell.detailTextView.text = ""
-                detailCell.QRLabel.text = content
+                // 把message的值塞給detailTextView
+                detailCell.detailTextView.text = messageFromQRVC
                 detailCell.delegate = self
                 return detailCell
             }
@@ -357,7 +364,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
-//                dateCell.dateTextfield.text = dataFromHomeVC[indexPath.row].date
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -405,7 +411,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 detailCell.detailTextView.text = ""
-                detailCell.QRLabel.text = content
+                // 把message的值塞給detailTextView
+                detailCell.detailTextView.text = messageFromQRVC
                 detailCell.delegate = self
                 return detailCell
             }
@@ -492,8 +499,16 @@ extension AddNewDataViewController: DetailTableViewCellDelegate {
     }
 }
 
+// date from homeVC
 extension AddNewDataViewController: ViewControllerDelegate {
     func getDate(currentDate: String) {
         dateFromHomeVC = currentDate
+    }
+}
+
+// QRCode text from QRCodeVC
+extension AddNewDataViewController: QRCodeViewControllerDelegate {
+    func getMessage(message: String) {
+        messageFromQRVC = message
     }
 }

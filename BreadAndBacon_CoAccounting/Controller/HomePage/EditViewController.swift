@@ -53,26 +53,29 @@ class EditViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var editData = DataModel()
     weak var homeVC: ViewController?
-    // for QRCode func use
+    // 用來判斷是否有使用QR scanner去掃描內容
+    var isTappedQR = 0
+    // 存QRCode掃描內容
+    var messageFromQRVC: String = "" {
+        didSet {
+            editTableView.reloadData()
+        }
+    }
     var content: String = "" {
         didSet {
             editTableView.reloadData()
         }
     }
 
-    @IBAction func insertQRCode(_ sender: UIButton) {
-        // 建立一個VNDocumentCameraViewController實例，並執行delegate，delegate會導到QRCodeVC去執行process image的func
-        let documentCameraViewController = VNDocumentCameraViewController()
-        documentCameraViewController.delegate = self
-        present(documentCameraViewController, animated: true)
-    }
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
     @IBAction func insertEditQRCode(_ sender: UIButton) {
         guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "editQRScanVC") as? EditQRCodeViewController else {
             fatalError("can not find EditQRScanner VC")
         }
-//        presentQRScanVC.delegate = self
+        // 當內容是透過QR scanner拿取，isTappedQR == 1
+        isTappedQR = 1
+        presentEditQRScanVC.delegate = self
         present(presentEditQRScanVC, animated: true)
     }
 
@@ -97,6 +100,13 @@ class EditViewController: UIViewController {
         fetchUser(subCollection: "account")
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("gogogo")
+//        print(presentationController?.presentingViewController)
+        presentationController?.presentingViewController.viewWillAppear(true)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -129,6 +139,8 @@ class EditViewController: UIViewController {
 // MARK: -如下edit func先全部執行，目前可以照預期的呈現，後續再來想判斷式
     // 儲存並dismiss VC
     @objc func saveEdit() {
+        // 按下儲存編輯時isTappedQR要重置，才不會影響下一筆編輯的資料判斷
+        isTappedQR = 0
         editUser(subCollection: "expenditure", documentID: data?.id ?? "")
         editUser(subCollection: "revenue", documentID: data?.id ?? "")
         editUser(subCollection: "account", documentID: data?.id ?? "")
@@ -176,33 +188,6 @@ class EditViewController: UIViewController {
             } else {
                 print("Document successfully updated")
             }
-        }
-    }
-
-    // QRCode
-    func processImage(image: UIImage) {
-        guard let cgImage = image.cgImage else {
-            print("can not get image")
-            return
-        }
-        let handler = VNImageRequestHandler(cgImage: cgImage)
-        let request = VNDetectBarcodesRequest { request, error in
-            if let observation = request.results?.first as? VNBarcodeObservation,
-               observation.symbology == .qr {
-                print("詳細資訊如下：\(observation.payloadStringValue ?? "")")
-//                self.contentLabel.text = observation.payloadStringValue ?? ""
-//                self.content.append(observation.payloadStringValue ?? "")
-                self.content = observation.payloadStringValue ?? ""
-                print("發票號碼：\(self.content.prefix(10))")
-//                print("品項：\((self.content as NSString).substring(with: NSMakeRange(150, 160)))")
-            }
-        }
-//        request.regionOfInterest = CGRect(x: 1, y: 1, width: 1, height: 1)
-        do {
-            try handler.perform([request])
-            print("this is request \(request)")
-        } catch {
-            print(error)
         }
     }
 }
@@ -319,7 +304,13 @@ extension EditViewController: UITableViewDataSource {
                 fatalError("can not create cell")
             }
             editData.detailTextView = self.data?.detail ?? ""
-            editDetailCell.detailTextView.text = self.data?.detail
+            // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一班手動編輯(isTappedQR == 0)則顯示原textView資訊
+            if isTappedQR == 1 {
+                // 把message的值塞給detailTextView
+                editDetailCell.detailTextView.text = messageFromQRVC
+            } else {
+                editDetailCell.detailTextView.text = self.data?.detail
+            }
             editDetailCell.delegate = self
             return editDetailCell
         }
@@ -398,11 +389,10 @@ extension EditViewController: EditDetailTableViewCellDelegate {
     }
 }
 
-// QRCode
-extension EditViewController: VNDocumentCameraViewControllerDelegate {
-    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-        let image = scan.imageOfPage(at: scan.pageCount - 1)
-        processImage(image: image)
-        dismiss(animated: true, completion: nil)
+// QRCode text from QRCodeVC
+extension EditViewController: EditQRCodeViewControllerDelegate {
+    func getMessage(message: String) {
+        print("wwwww??")
+        messageFromQRVC = message
     }
 }

@@ -7,10 +7,15 @@
 
 import UIKit
 import AVFoundation
-import Vision
-import VisionKit
+
+// QRCode掃描後的內容以protocol-delegate傳給addNewData page_detail cell
+protocol QRCodeViewControllerDelegate: AnyObject {
+    func getMessage(message: String)
+}
 
 class QRCodeViewController: UIViewController {
+    weak var delegate: QRCodeViewControllerDelegate?
+
     var content: String = ""
 
     // For QRCode Scanner
@@ -54,7 +59,7 @@ class QRCodeViewController: UIViewController {
             // 開始影片的擷取
             captureSession.startRunning()
 
-            //移動訊息標籤與頂部列至上層
+            // 移動訊息標籤與頂部列至上層
             view.bringSubviewToFront(messageLabel)
 //            view.bringSubviewToFront(topbar)
 
@@ -76,7 +81,8 @@ class QRCodeViewController: UIViewController {
 
     func contentConfig() {
         captureSession.stopRunning()
-//        self.delegate?.getContent(content: self.messageLabel.text ?? "")
+        // 執行delegate + 塞掃描內容
+        self.delegate?.getMessage(message: messageLabel.text ?? "")
         print(messageLabel.text)
 
         self.presentingViewController?.dismiss(animated: true, completion: nil)

@@ -8,7 +8,14 @@
 import UIKit
 import AVFoundation
 
+// QRCode掃描後的內容以protocol-delegate傳給addNewData page_detail cell
+protocol EditQRCodeViewControllerDelegate: AnyObject {
+    func getMessage(message: String)
+}
+
 class EditQRCodeViewController: UIViewController {
+    weak var delegate: EditQRCodeViewControllerDelegate?
+
     var content: String = ""
 
     // For QRCode Scanner
@@ -23,7 +30,7 @@ class EditQRCodeViewController: UIViewController {
         super.viewDidLoad()
         scanQRCode()
     }
-    
+
     func scanQRCode() {
         // 取得後置鏡頭來擷取影片
         guard let captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
@@ -53,7 +60,7 @@ class EditQRCodeViewController: UIViewController {
             // 開始影片的擷取
             captureSession.startRunning()
 
-            //移動訊息標籤與頂部列至上層
+            // 移動訊息標籤與頂部列至上層
             view.bringSubviewToFront(messageLabel)
 //            view.bringSubviewToFront(topbar)
 
@@ -75,7 +82,8 @@ class EditQRCodeViewController: UIViewController {
 
     func contentConfig() {
         captureSession.stopRunning()
-//        self.delegate?.getContent(content: self.messageLabel.text ?? "")
+        // 執行delegate + 塞掃描內容
+        self.delegate?.getMessage(message: messageLabel.text ?? "")
         print(messageLabel.text)
 
         self.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -125,5 +133,3 @@ extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
         }
     }
 }
-
-

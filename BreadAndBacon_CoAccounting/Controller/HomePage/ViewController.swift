@@ -48,6 +48,15 @@ class ViewController: UIViewController {
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
 
+        tappedDatePicker()
+        dateBO.tintColor = .black
+        // 讓date button一開始顯示當天日期
+        dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("okokok")
         // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
         self.group.enter()
@@ -55,11 +64,7 @@ class ViewController: UIViewController {
             self.fetchAllData()
             self.group.leave()
         }
-
-        tappedDatePicker()
-        dateBO.tintColor = .black
-        // 讓date button一開始顯示當天日期
-        dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+        showDetailTableView.reloadData()
     }
 
     // 點選date picker時偵測點選的狀態
