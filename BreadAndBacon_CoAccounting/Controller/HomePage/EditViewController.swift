@@ -67,6 +67,10 @@ class EditViewController: UIViewController {
         }
     }
 
+
+    let group = DispatchGroup()
+    let queueGroup = DispatchQueue.global()
+
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
     @IBAction func insertEditQRCode(_ sender: UIButton) {
@@ -102,12 +106,10 @@ class EditViewController: UIViewController {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        print("gogogo")
-//        print(presentationController?.presentingViewController)
-        presentationController?.presentingViewController.viewWillAppear(true)
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        self.presentationController?.presentingViewController.viewWillAppear(true)
+//    }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
@@ -141,11 +143,10 @@ class EditViewController: UIViewController {
     @objc func saveEdit() {
         // 按下儲存編輯時isTappedQR要重置，才不會影響下一筆編輯的資料判斷
         isTappedQR = 0
-        editUser(subCollection: "expenditure", documentID: data?.id ?? "")
-        editUser(subCollection: "revenue", documentID: data?.id ?? "")
-        editUser(subCollection: "account", documentID: data?.id ?? "")
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
-        homeVC?.showDetailTableView.reloadData()
+
+        // TODO: use GCD group
+        self.editAllUser()
+
     }
 
     // 從Firebase上fetch全部種類/帳戶資料
@@ -176,6 +177,9 @@ class EditViewController: UIViewController {
     // 點選對應細項編輯資料
     func editUser(subCollection: String, documentID: String) {
         let dataBase = Firestore.firestore()
+        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
+        // 進入group
+        self.group.enter()
         dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)").document("\(documentID)").updateData([
             "date": editData.dateTime,
             "amount": editData.amountTextField,
@@ -186,8 +190,21 @@ class EditViewController: UIViewController {
             if let error = error {
                 print("Error updating document: \(error)")
             } else {
-                print("Document successfully updated")
+                print("Document update successfully ")
             }
+            // 每一支API打完之後leave group
+            self.group.leave()
+        }
+    }
+
+    func editAllUser() {
+        editUser(subCollection: "expenditure", documentID: data?.id ?? "")
+        editUser(subCollection: "revenue", documentID: data?.id ?? "")
+        editUser(subCollection: "account", documentID: data?.id ?? "")
+
+        // notify放這邊是因為要等所有edit API執行完後再執行dismiss VC
+        group.notify(queue: .main) {
+            self.presentingViewController?.dismiss(animated: true, completion: nil)
         }
     }
 }
