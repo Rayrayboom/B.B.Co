@@ -36,6 +36,7 @@
 		76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608697290F74E1008EF772 /* AddNewData.storyboard */; };
 		766086A0290F7B0B008EF772 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660869F290F7B0B008EF772 /* Home.storyboard */; };
 		766086A2290F8168008EF772 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766086A1290F8168008EF772 /* TabViewController.swift */; };
+		767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -70,6 +71,7 @@
 		76608697290F74E1008EF772 /* AddNewData.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = AddNewData.storyboard; sourceTree = "<group>"; };
 		7660869F290F7B0B008EF772 /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		766086A1290F8168008EF772 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabViewController.swift; path = BreadAndBacon_CoAccounting/TabViewController.swift; sourceTree = SOURCE_ROOT; };
+		767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditQRCodeViewController.swift; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
 		CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.release.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -257,6 +259,7 @@
 			children = (
 				7660865C290BDA29008EF772 /* ViewController.swift */,
 				76265F3D2913E65400F5E341 /* EditViewController.swift */,
+				767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */,
 			);
 			path = HomePage;
 			sourceTree = "<group>";
@@ -412,6 +415,7 @@
 				76265F4829150AE400F5E341 /* EditDetailTableViewCell.swift in Sources */,
 				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
 				76265F512917AA4C00F5E341 /* PieChartTableViewCell.swift in Sources */,
+				767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */,
 				76265F2929126AC100F5E341 /* AddDateTableViewCell.swift in Sources */,
 				76265F4F2917943900F5E341 /* PieChartViewController.swift in Sources */,
 				76265F3E2913E65400F5E341 /* EditViewController.swift in Sources */,

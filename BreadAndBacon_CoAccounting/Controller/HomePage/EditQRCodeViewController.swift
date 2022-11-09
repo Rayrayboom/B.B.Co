@@ -1,20 +1,20 @@
 //
-//  QRCodeViewController.swift
+//  EditQRCodeViewController.swift
 //  BreadAndBacon_CoAccounting
 //
-//  Created by 張育睿 on 2022/10/31.
+//  Created by 張育睿 on 2022/11/9.
 //
 
 import UIKit
 import AVFoundation
 
 // QRCode掃描後的內容以protocol-delegate傳給addNewData page_detail cell
-protocol QRCodeViewControllerDelegate: AnyObject {
+protocol EditQRCodeViewControllerDelegate: AnyObject {
     func getMessage(message: String)
 }
 
-class QRCodeViewController: UIViewController {
-    weak var delegate: QRCodeViewControllerDelegate?
+class EditQRCodeViewController: UIViewController {
+    weak var delegate: EditQRCodeViewControllerDelegate?
 
     var content: String = ""
 
@@ -25,6 +25,7 @@ class QRCodeViewController: UIViewController {
     var controller = UIAlertController()
 
     @IBOutlet weak var messageLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         scanQRCode()
@@ -107,7 +108,7 @@ class QRCodeViewController: UIViewController {
 //    }
 }
 
-extension QRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
+extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         // 檢查  metadataObjects 陣列為非空值，它至少需包含一個物件
         if metadataObjects.isEmpty {

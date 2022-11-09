@@ -53,11 +53,14 @@ class AddNewDataViewController: UIViewController {
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
-//    var dataFromHomeVC: String? = "" {
-//        didSet {
-//            print("this is dataFromHomeVC \(dataFromHomeVC)")
-//        }
-//    }
+    var dateFromHomeVC: String? = ""
+    // 存QRCode掃描內容
+    var messageFromQRVC: String = "" {
+        didSet {
+            addNewDadaTableView.reloadData()
+        }
+    }
+
     // for QRCode func use
     var content: String = "" {
         didSet {
@@ -69,11 +72,14 @@ class AddNewDataViewController: UIViewController {
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
+    @IBAction func insertSpeech(_ sender: UIButton) {
+    }
     @IBAction func insertQRCode(_ sender: UIButton) {
-        // 建立一個VNDocumentCameraViewController實例，並執行delegate，delegate會導到QRCodeVC去執行process image的func
-        let documentCameraViewController = VNDocumentCameraViewController()
-        documentCameraViewController.delegate = self
-        present(documentCameraViewController, animated: true)
+        guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
+            fatalError("can not find QRScanner VC")
+        }
+        presentQRScanVC.delegate = self
+        present(presentQRScanVC, animated: true)
     }
 
     override func viewDidLoad() {
@@ -235,30 +241,9 @@ class AddNewDataViewController: UIViewController {
             }
     }
 
-    // QRCode
-    func processImage(image: UIImage) {
-        guard let cgImage = image.cgImage else {
-            print("can not get image")
-            return
-        }
-        let handler = VNImageRequestHandler(cgImage: cgImage)
-        let request = VNDetectBarcodesRequest { request, error in
-            if let observation = request.results?.first as? VNBarcodeObservation,
-               observation.symbology == .qr {
-                print("詳細資訊如下：\(observation.payloadStringValue ?? "")")
-//                self.contentLabel.text = observation.payloadStringValue ?? ""
-//                self.content.append(observation.payloadStringValue ?? "")
-                self.content = observation.payloadStringValue ?? ""
-                print("發票號碼：\(self.content.prefix(10))")
-//                print("品項：\((self.content as NSString).substring(with: NSMakeRange(150, 160)))")
-            }
-        }
-//        request.regionOfInterest = CGRect(x: 1, y: 1, width: 1, height: 1)
-        do {
-            try handler.perform([request])
-            print("this is request \(request)")
-        } catch {
-            print(error)
+    func getDataFromHomeVC() {
+        guard let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "homeVC") as? ViewController else {
+            fatalError("can not find homeVC")
         }
     }
 }
@@ -304,7 +289,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-
                 // 設定datePicker的delegate
                 dateCell.delegate = self
                 let date = Date()
@@ -312,7 +296,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
-//                dateCell.dateTextfield.text = dataFromHomeVC[indexPath.row].date
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -361,7 +344,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 detailCell.detailTextView.text = ""
-                detailCell.QRLabel.text = content
+                // 把message的值塞給detailTextView
+                detailCell.detailTextView.text = messageFromQRVC
                 detailCell.delegate = self
                 return detailCell
             }
@@ -380,7 +364,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
-//                dateCell.dateTextfield.text = dataFromHomeVC[indexPath.row].date
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -428,7 +411,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 detailCell.detailTextView.text = ""
-                detailCell.QRLabel.text = content
+                // 把message的值塞給detailTextView
+                detailCell.detailTextView.text = messageFromQRVC
                 detailCell.delegate = self
                 return detailCell
             }
@@ -515,11 +499,16 @@ extension AddNewDataViewController: DetailTableViewCellDelegate {
     }
 }
 
-// QRCode
-extension AddNewDataViewController: VNDocumentCameraViewControllerDelegate {
-    func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-        let image = scan.imageOfPage(at: scan.pageCount - 1)
-        processImage(image: image)
-        dismiss(animated: true, completion: nil)
+// date from homeVC
+extension AddNewDataViewController: ViewControllerDelegate {
+    func getDate(currentDate: String) {
+        dateFromHomeVC = currentDate
+    }
+}
+
+// QRCode text from QRCodeVC
+extension AddNewDataViewController: QRCodeViewControllerDelegate {
+    func getMessage(message: String) {
+        messageFromQRVC = message
     }
 }
