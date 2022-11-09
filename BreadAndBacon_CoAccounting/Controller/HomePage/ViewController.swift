@@ -8,7 +8,12 @@
 import UIKit
 import FirebaseFirestore
 
+protocol ViewControllerDelegate: AnyObject {
+    func getDate(currentDate: String)
+}
+
 class ViewController: UIViewController {
+    weak var delegate: ViewControllerDelegate?
     // 用來存所選日期的data
     var data: [Account] = [] {
         didSet {
@@ -66,6 +71,8 @@ class ViewController: UIViewController {
     // 把選擇的date picker日期轉成string給button顯示
     @objc func didSelectDate(_ sender: UIDatePicker) {
         self.date = sender.date
+        // 使用UserDefaults方式：先把homeVC的當前點選date存在UserDefaults，當跳到addNewDataVC時再把date拿過來用
+        UserDefaults.standard.set(self.date, forKey: "currentDate")
         // 點選date picker時顯示的格式用"yyyy/MM/dd"
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.tintColor = .black
@@ -158,13 +165,6 @@ class ViewController: UIViewController {
         let documentRef = dataBase.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document(data[indexPathRow].id)
         documentRef.delete()
     }
-
-//    func passDataToAddNewDataPage() {
-//        guard let addVC = self.storyboard?.instantiateViewController(withIdentifier: "addNewData") as? AddNewDataViewController else {
-//            fatalError("can not find addNewDataVC")
-//        }
-//        addVC.dataFromHomeVC = data[0].date
-//    }
 }
 
 extension ViewController: UITableViewDelegate {

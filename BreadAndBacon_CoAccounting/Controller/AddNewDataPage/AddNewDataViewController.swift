@@ -53,11 +53,8 @@ class AddNewDataViewController: UIViewController {
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var data = NewDataModel()
-//    var dataFromHomeVC: String? = "" {
-//        didSet {
-//            print("this is dataFromHomeVC \(dataFromHomeVC)")
-//        }
-//    }
+    var dateFromHomeVC: String? = ""
+
     // for QRCode func use
     var content: String = "" {
         didSet {
@@ -237,6 +234,12 @@ class AddNewDataViewController: UIViewController {
                 }
             }
     }
+
+    func getDataFromHomeVC() {
+        guard let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "homeVC") as? ViewController else {
+            fatalError("can not find homeVC")
+        }
+    }
 }
 
 extension AddNewDataViewController: UITableViewDelegate {
@@ -280,7 +283,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-
                 // 設定datePicker的delegate
                 dateCell.delegate = self
                 let date = Date()
@@ -288,7 +290,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
                 // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
                 dateCell.config(dateStr: dateStr)
-//                dateCell.dateTextfield.text = dataFromHomeVC[indexPath.row].date
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -488,5 +489,11 @@ extension AddNewDataViewController: DetailTableViewCellDelegate {
     func getDetail(detail: String) {
         data.detailTextView = detail
         print("======= this is detail \(data.detailTextView)")
+    }
+}
+
+extension AddNewDataViewController: ViewControllerDelegate {
+    func getDate(currentDate: String) {
+        dateFromHomeVC = currentDate
     }
 }
