@@ -45,6 +45,10 @@ class QRCodeViewController: UIViewController {
 
             // 初始化一個 AVCaptureMetadataOutput 物件並將其設定做為擷取 session 的輸出裝置
             let captureMetadataOutput = AVCaptureMetadataOutput()
+
+            // TODO: 針對特定區域掃描(待研究方框位置)
+//            captureMetadataOutput.rectOfInterest = CGRect(x: 0.0, y: 0.0, width: 5.0, height: 1.0)
+
             captureSession.addOutput(captureMetadataOutput)
             // 設定委派並使用預設的調度佇列來執行回呼（call back）
             captureMetadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)

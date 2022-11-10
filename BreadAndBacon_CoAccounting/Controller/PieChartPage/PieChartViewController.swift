@@ -169,7 +169,6 @@ class PieChartViewController: UIViewController {
         let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
         // 設定圓餅圖的顏色
         chartDataSet.colors = ChartColorTemplates.vordiplom()
-//        chartDataSet.colors = [.systemRed, .systemYellow, .systemGreen, .systemBlue, .systemBrown, .link]
         // 設定資料數值的字體大小
         chartDataSet.valueTextColor = .black
         chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)
@@ -185,7 +184,7 @@ class PieChartViewController: UIViewController {
         // 按下對應扇形後，凸出來的多寡
         chartDataSet.selectionShift = 5
         // 扇形間隔
-//        chartDataSet.sliceSpace = 5
+        chartDataSet.sliceSpace = 3
         // 設置為實心圓
         pieChartView.drawHoleEnabled = false
 

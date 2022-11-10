@@ -71,13 +71,8 @@ class ViewController: UIViewController {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.tintColor = .black
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: sender.date), for: .normal)
-        // 點擊date button後會回到當天日期，需要再fetch一次data讓他呈現當天的資料
-        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
-//        self.group.enter()
-//        queueGroup.async(group: group) {
-            self.fetchAllData()
-//            self.group.leave()
-//        }
+
+        self.fetchAllData()
     }
 
     // 點選date button後date picker和button title會回到今天日期

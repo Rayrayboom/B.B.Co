@@ -106,11 +106,6 @@ class EditViewController: UIViewController {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
 
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        self.presentationController?.presentingViewController.viewWillAppear(true)
-//    }
-
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
@@ -143,10 +138,8 @@ class EditViewController: UIViewController {
     @objc func saveEdit() {
         // 按下儲存編輯時isTappedQR要重置，才不會影響下一筆編輯的資料判斷
         isTappedQR = 0
-
-        // TODO: use GCD group
+        // 編輯(updateDocument)firebase上的data
         self.editAllUser()
-
     }
 
     // 從Firebase上fetch全部種類/帳戶資料
