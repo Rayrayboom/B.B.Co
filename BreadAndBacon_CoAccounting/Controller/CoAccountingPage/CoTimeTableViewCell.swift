@@ -27,4 +27,15 @@ class CoTimeTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+
+    func config() {
+        datePicker.addTarget(self, action: #selector(didSelectDate(_:)), for: .valueChanged)
+    }
+
+    @objc func didSelectDate(_ sender: UIDatePicker) {
+        // date delegate
+        self.delegate?.getDate(self, sender: sender)
+        // month delegate
+        self.delegate?.getMonth(self, sender: sender)
+    }
 }

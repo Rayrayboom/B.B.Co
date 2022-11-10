@@ -37,17 +37,17 @@ struct User: Codable {
 struct Account: Codable {
     var id: String
     var amount: String
-    var category: String
-    var account: String
+    var category: String?
+    var account: String?
     // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
     var date: String
     // month用string型別存取"年/月"，讓pie chart直接偵測該月份抓整月資訊
     var month: String
-    var destinationAccountId: String? // = nil
-    var sourceAccountId: String? // = nil
-    var accountId: String? // = nil
-    var expenditureId: String? // = nil
-    var revenueId: String? // = nil
+    var destinationAccountId: String?
+    var sourceAccountId: String?
+    var accountId: String?
+    var expenditureId: String?
+    var revenueId: String?
     var detail: String
 
     enum CodingKeys: String, CodingKey {

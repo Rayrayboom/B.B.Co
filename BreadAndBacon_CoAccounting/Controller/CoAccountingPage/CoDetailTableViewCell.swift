@@ -21,17 +21,17 @@ class CoDetailTableViewCell: UITableViewCell {
     var indexPath: IndexPath? {
         didSet {
             // 第一個品項cell(section 1)不需要picker，因此讓他顯示數字鍵盤
-            if indexPath?.section == 1 {
-                // contentTextField有更動時叫出黑色數字鍵盤
-                contentTextField.keyboardType = .namePhonePad
-                contentTextField.keyboardAppearance = .dark
-                return
-            } else {
+            if indexPath?.section == 3 {
                 // picker delegate & datasource
                 // 種類、帳戶需要picker，故執行picker功能
                 contentPicker.delegate = self
                 contentPicker.dataSource = self
                 contentTextField.inputView = contentPicker
+                contentTextField.keyboardAppearance = .dark
+                return
+            } else {
+                // contentTextField有更動時叫出黑色數字鍵盤
+                contentTextField.keyboardType = .namePhonePad
                 contentTextField.keyboardAppearance = .dark
             }
         }
@@ -65,30 +65,30 @@ extension CoDetailTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
     // 每列有多少行資料
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch indexPath?.section {
-        case 1:
-            return 0
-        default:
+        case 3:
             return content.count
+        default:
+            return 0
         }
     }
 
     // 每個選項顯示的資料, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch indexPath?.section {
-        case 1:
-            return nil
-        default:
+        case 3:
             return content[row]
+        default:
+            return nil
         }
     }
 
     // pickerView改變選擇後執行的動作, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch indexPath?.section {
-        case 1:
-            return
-        default:
+        case 3:
             contentTextField.text = content[row]
+        default:
+            return
         }
     }
 }
