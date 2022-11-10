@@ -23,7 +23,7 @@ class AddCoDetailViewController: UIViewController {
     let sectionTitle = ["日期", "品項", "金額", "付款人"]
     var tapIndexpath: IndexPath?
     var data = CoDataModel()
-    // 存付款者textField picker資料
+    // 存付款者textField picker資料，後續由加好友時抓取firebase資料，用didSet
     var userContent: [String] = ["Ray", "Jennifer"]
 //    {
 //        didSet {
@@ -38,6 +38,8 @@ class AddCoDetailViewController: UIViewController {
     }
 
     @IBAction func saveCoDetail(_ sender: Any) {
+        createCoUserData(subCollection: "co_expenditure")
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     override func viewDidLoad() {
@@ -51,78 +53,36 @@ class AddCoDetailViewController: UIViewController {
     }
 
     // MARK: - 上傳資料到Firebase
-//    func createUserData(subCollection: String) {
-//        let dataBase = Firestore.firestore()
-//        let fetchDocumentID = dataBase.collection("user")
-//            .document("vy4oSHvNXfzBAKzwj95x")
-//            .collection(subCollection)
-//            .document()
-//        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-//        let identifier = fetchDocumentID.documentID
-//        // 需存id，後續delete要抓取ID刪除對應資料
-//        switch subCollection {
-//        case "expenditure":
-//            let account = Account(
-//                id: identifier,
-//                amount: data.amountTextField,
-//                category: data.categoryTextField,
-//                account: data.accountTextField,
-//                date: data.dateTime,
-//                month: data.monthTime,
-//                destinationAccountId: nil,
-//                sourceAccountId: nil,
-//                accountId: "accountId",
-//                expenditureId: "expenditureId",
-//                revenueId: nil,
-//                detail: data.detailTextView)
-//            do {
-//                try fetchDocumentID.setData(from: account)
-//                print("success create document. ID: \(fetchDocumentID.documentID)")
-//            } catch {
-//                print(error)
-//            }
-//        case "revenue":
-//            let account = Account(
-//                id: identifier,
-//                amount: data.amountTextField,
-//                category: data.categoryTextField,
-//                account: data.accountTextField,
-//                date: data.dateTime,
-//                month: data.monthTime,
-//                destinationAccountId: nil,
-//                sourceAccountId: nil,
-//                accountId: "accountId",
-//                expenditureId: nil,
-//                revenueId: "revenueId",
-//                detail: data.detailTextView)
-//            do {
-//                try fetchDocumentID.setData(from: account)
-//                print("success create document. ID: \(fetchDocumentID.documentID)")
-//            } catch {
-//                print(error)
-//            }
-//        default:
-//            let account = Account(
-//                id: identifier,
-//                amount: data.amountTextField,
-//                category: data.categoryTextField,
-//                account: data.accountTextField,
-//                date: data.dateTime,
-//                month: data.monthTime,
-//                destinationAccountId: "destinationAccountId",
-//                sourceAccountId: "sourceAccountId",
-//                accountId: nil,
-//                expenditureId: nil,
-//                revenueId: nil,
-//                detail: data.detailTextView)
-//            do {
-//                try fetchDocumentID.setData(from: account)
-//                print("success create document. ID: \(fetchDocumentID.documentID)")
-//            } catch {
-//                print(error)
-//            }
-//        }
-//    }
+    func createCoUserData(subCollection: String) {
+        let dataBase = Firestore.firestore()
+        let fetchDocumentID = dataBase.collection("co-account")
+            .document("U5nzbfkDyHNIXAvVUdZD")
+            .collection(subCollection)
+            .document()
+        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
+        let identifier = fetchDocumentID.documentID
+        // 需存id，後續delete要抓取ID刪除對應資料
+        let account = Account(
+            id: identifier,
+            amount: data.amountTextField,
+            category: data.itemTextField,
+            account: nil,
+            date: data.dateTime,
+            month: data.monthTime,
+            destinationAccountId: nil,
+            sourceAccountId: nil,
+            accountId: nil,
+            expenditureId: "expenditureId",
+            revenueId: nil,
+            detail: nil,
+            user: data.userTextField)
+        do {
+            try fetchDocumentID.setData(from: account)
+            print("success create document. ID: \(fetchDocumentID.documentID)")
+        } catch {
+            print(error)
+        }
+    }
 }
 
 extension AddCoDetailViewController: UITableViewDelegate {

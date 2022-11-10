@@ -48,7 +48,8 @@ struct Account: Codable {
     var accountId: String?
     var expenditureId: String?
     var revenueId: String?
-    var detail: String
+    var detail: String?
+    var user: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -63,6 +64,7 @@ struct Account: Codable {
         case expenditureId = "expenditure_id"
         case revenueId = "revenue_id"
         case detail
+        case user
     }
 }
 
