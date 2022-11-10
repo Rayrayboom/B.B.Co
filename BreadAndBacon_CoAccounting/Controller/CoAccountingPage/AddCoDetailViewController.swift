@@ -38,7 +38,7 @@ class AddCoDetailViewController: UIViewController {
     }
 
     @IBAction func saveCoDetail(_ sender: Any) {
-        createCoUserData(subCollection: "co_expenditure")
+        createCoAccountData(subCollection: "co_expenditure")
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
@@ -48,12 +48,18 @@ class AddCoDetailViewController: UIViewController {
         coDetailTableView.dataSource = self
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("disappear")
+        presentationController?.presentingViewController.viewWillAppear(true)
+    }
+
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
 
     // MARK: - 上傳資料到Firebase
-    func createCoUserData(subCollection: String) {
+    func createCoAccountData(subCollection: String) {
         let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("co-account")
             .document("U5nzbfkDyHNIXAvVUdZD")

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 // WARNING: Change these constants according to your project's design
 private struct Const {
@@ -27,16 +28,22 @@ private struct Const {
 
 class CoAccountingViewController: UIViewController {
     private let imageView = UIImageView(image: UIImage(systemName: "plus"))
+    // 用來存所選日期的data
+    var data: [Account] = [] {
+        didSet {
+            self.bookTableView.reloadData()
+        }
+    }
 
     @IBOutlet weak var bookTableView: UITableView!
     @IBAction func addDetail(_ sender: UIButton) {
         guard let presentCoDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "addCoDetailVC") as? AddCoDetailViewController else {
             fatalError("error")
         }
+
+        presentCoDetailVC.modalPresentationStyle = .fullScreen
         present(presentCoDetailVC, animated: true)
     }
-    
-    var list = ["1", "2", "3"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +51,12 @@ class CoAccountingViewController: UIViewController {
         bookTableView.delegate = self
         bookTableView.dataSource = self
         setupUI()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchCoAccount(subCollection: "co_expenditure")
+        bookTableView.reloadData()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -54,6 +67,30 @@ class CoAccountingViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         showImage(true)
+    }
+
+    // 從Firebase上fetch共同帳本資料
+    func fetchCoAccount(subCollection: String) {
+        data = []
+        let dataBase = Firestore.firestore()
+        dataBase.collection("co-account/U5nzbfkDyHNIXAvVUdZD/\(subCollection)")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                self.data.append(contentsOf: account)
+                print("category here \(self.data)")
+            }
+    }
+
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(subCollection: String, indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("co-account").document("U5nzbfkDyHNIXAvVUdZD").collection(subCollection).document(data[indexPathRow].id)
+        documentRef.delete()
     }
 
     /// Show or hide the image from NavBar while going to next screen or back to initial screen
@@ -127,7 +164,7 @@ extension CoAccountingViewController: UITableViewDelegate {
 
 extension CoAccountingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 30
+        return data.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -135,8 +172,23 @@ extension CoAccountingViewController: UITableViewDataSource {
             fatalError("can not create listCell")
         }
 
-        listCell.label.text = "1"
+        listCell.titleLabel.text = data[indexPath.row].category
+        listCell.dateLabel.text = data[indexPath.row].date
+        listCell.userLabel.text = data[indexPath.row].user
+        listCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
 
         return listCell
+    }
+
+    // tableView右滑刪除
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            // 順序問題，需要先偵測對應indexPath資料再進行刪除
+            deleteSpecificData(subCollection: "co_expenditure", indexPathRow: indexPath.row)
+            data.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
 }
