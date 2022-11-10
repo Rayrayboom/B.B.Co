@@ -9,28 +9,41 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
+//struct User: Codable {
+//    @DocumentID var documentID: String?
+//    let id: String?
+//    let email: String?
+//    let name: String?
+//    let account: [Account]?
+//    let accountCategory: [Category]?
+//    let expenditure: [Account]?
+//    let expenditureCategory: [Category]?
+//    let revenue: [Account]?
+//    let revenueCategory: [Category]?
+//
+//    enum CodingKeys: String, CodingKey {
+//        case id
+//        case email
+//        case name
+//        case account
+//        case accountCategory = "account_category"
+//        case expenditure
+//        case expenditureCategory = "expenditure_category"
+//        case revenue
+//        case revenueCategory = "revenue_category"
+//    }
+//}
+
 struct User: Codable {
     @DocumentID var documentID: String?
-    let id: String
-    let email: String
-    let name: String
-    let account: [Account]
-    let accountCategory: [Category]
-    let expenditure: [Account]
-    let expenditureCategory: [Category]
-    let revenue: [Account]
-    let revenueCategory: [Category]
+    let id: String?
+    let email: String?
+    let name: String?
 
     enum CodingKeys: String, CodingKey {
         case id
         case email
         case name
-        case account
-        case accountCategory = "account_category"
-        case expenditure
-        case expenditureCategory = "expenditure_category"
-        case revenue
-        case revenueCategory = "revenue_category"
     }
 }
 
@@ -64,6 +77,7 @@ struct Account: Codable {
         case expenditureId = "expenditure_id"
         case revenueId = "revenue_id"
         case detail
+        // 給co_accounting用的型別，因為要記錄是哪個使用者的支出
         case user
     }
 }
@@ -72,4 +86,14 @@ struct Category: Codable {
     @DocumentID var documentID: String?
     let id: String?
     let title: String
+}
+
+struct Book: Codable {
+    let id: String
+    let userId: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userId = "user_id"
+    }
 }

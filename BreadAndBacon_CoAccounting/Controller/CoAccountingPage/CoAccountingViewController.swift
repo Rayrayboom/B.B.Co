@@ -35,12 +35,15 @@ class CoAccountingViewController: UIViewController {
         }
     }
 
+    // 用來存現有的user
+    var userContent: [User] = []
+    var userId: [String] = []
+
     @IBOutlet weak var bookTableView: UITableView!
     @IBAction func addDetail(_ sender: UIButton) {
         guard let presentCoDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "addCoDetailVC") as? AddCoDetailViewController else {
             fatalError("error")
         }
-
         presentCoDetailVC.modalPresentationStyle = .fullScreen
         present(presentCoDetailVC, animated: true)
     }
@@ -51,8 +54,11 @@ class CoAccountingViewController: UIViewController {
         bookTableView.delegate = self
         bookTableView.dataSource = self
         setupUI()
+        fetchUser()
+        saveEditData()
     }
 
+    // 當addCoDetailVC dismiss後回到coAccountingVC會呼叫viewWillAppear，重新fetch一次data並reload bookTableView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchCoAccount(subCollection: "co_expenditure")
@@ -67,6 +73,17 @@ class CoAccountingViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         showImage(true)
+    }
+
+    func saveEditData() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(saveEdit))
+    }
+
+    // 儲存並dismiss VC
+    @objc func saveEdit() {
+        // MARK: - delegate
+        print(userId, "========")
+        createCoAccountData()
     }
 
     // 從Firebase上fetch共同帳本資料
@@ -86,11 +103,64 @@ class CoAccountingViewController: UIViewController {
             }
     }
 
+    // 從Firebase上fetch共同帳本資料
+    func fetchCoBook(subCollection: String) {
+        data = []
+        let dataBase = Firestore.firestore()
+        dataBase.collection("user")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                self.data.append(contentsOf: account)
+                print("category here \(self.data)")
+            }
+    }
+
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(subCollection: String, indexPathRow: Int) {
         let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("co-account").document("U5nzbfkDyHNIXAvVUdZD").collection(subCollection).document(data[indexPathRow].id)
         documentRef.delete()
+    }
+
+    // MARK: - 上傳book資料到Firebase
+    func createCoAccountData() {
+        let dataBase = Firestore.firestore()
+        let fetchDocumentID = dataBase.collection("co-account").document()
+        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
+        let identifier = fetchDocumentID.documentID
+        // 需存id，後續delete要抓取ID刪除對應資料
+        let book = Book(id: identifier, userId: userId)
+        do {
+            try fetchDocumentID.setData(from: book)
+            print("success create document. ID: \(fetchDocumentID.documentID)")
+        } catch {
+            print(error)
+        }
+    }
+
+    // 從Firebase上fetch全部user資料，並append到userContent裡
+    func fetchUser() {
+        userId = []
+        let dataBase = Firestore.firestore()
+        dataBase.collection("user")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let user = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: User.self)
+                }
+
+                self.userContent.append(contentsOf: user)
+                for num in 0..<self.userContent.count {
+                    self.userId.append(self.userContent[num].id ?? "")
+                }
+            }
     }
 
     /// Show or hide the image from NavBar while going to next screen or back to initial screen
@@ -175,6 +245,7 @@ extension CoAccountingViewController: UITableViewDataSource {
         listCell.titleLabel.text = data[indexPath.row].category
         listCell.dateLabel.text = data[indexPath.row].date
         listCell.userLabel.text = data[indexPath.row].user
+        listCell.amountLabel.text = data[indexPath.row].amount
         listCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
 
         return listCell

@@ -8,7 +8,6 @@
 import UIKit
 import FirebaseFirestore
 
-
 // MARK: - expenditure
 struct CoDataModel {
     var itemTextField: String = ""
@@ -24,19 +23,19 @@ class AddCoDetailViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var data = CoDataModel()
     // 存付款者textField picker資料，後續由加好友時抓取firebase資料，用didSet
-    var userContent: [String] = ["Ray", "Jennifer"]
-//    {
-//        didSet {
-//            print("=== this is all userContent \(self.userContent)")
-//            coDetailTableView.reloadData()
-//        }
-//    }
+    var userContent: [User] = [] {
+        didSet {
+            print("=== this is all userContent \(self.userContent)")
+            coDetailTableView.reloadData()
+        }
+    }
 
     @IBOutlet weak var coDetailTableView: UITableView!
     @IBAction func dismissDetail(_ sender: UIButton) {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
+    // 存detail到firebase並dismiss addCoDetailVC
     @IBAction func saveCoDetail(_ sender: Any) {
         createCoAccountData(subCollection: "co_expenditure")
         self.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -46,11 +45,11 @@ class AddCoDetailViewController: UIViewController {
         super.viewDidLoad()
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
+        fetchUser()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        print("disappear")
         presentationController?.presentingViewController.viewWillAppear(true)
     }
 
@@ -88,6 +87,22 @@ class AddCoDetailViewController: UIViewController {
         } catch {
             print(error)
         }
+    }
+
+    // 從Firebase上fetch全部user資料，並append到userContent裡
+    func fetchUser() {
+        let dataBase = Firestore.firestore()
+        dataBase.collection("user")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let user = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: User.self)
+                }
+
+                self.userContent.append(contentsOf: user)
+            }
     }
 }
 
@@ -133,7 +148,7 @@ extension AddCoDetailViewController: UITableViewDataSource {
             guard let coTimeCell = tableView.dequeueReusableCell(withIdentifier: "coTimeCell") as? CoTimeTableViewCell else {
                 fatalError("can not create coTimeCell")
             }
-            
+
             coTimeCell.delegate = self
             coTimeCell.config()
             return coTimeCell
@@ -148,11 +163,14 @@ extension AddCoDetailViewController: UITableViewDataSource {
 
             switch indexPath.section {
             case 3:
-                coDetailCell.content = userContent
+                // 計算userContent裡面有幾個user的資料，因為是一筆一筆的array，所以用userContent.count，透過for迴圈把array裡的user name append進去content array裡(要塞進pickerView的資料)
+                print(coDetailCell)
+                for num in 0..<userContent.count {
+                    coDetailCell.content.append(userContent[num].name ?? "")
+                }
             default:
                 break
             }
-
             return coDetailCell
         }
     }
