@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Co Book View Controller-->
+        <!--帳本目錄-->
         <scene sceneID="Mq6-Rt-74Z">
             <objects>
                 <viewController storyboardIdentifier="coBookVC" id="oma-PF-z7l" customClass="CoBookViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
@@ -56,7 +56,7 @@
                             <constraint firstItem="3Kh-Ep-xS6" firstAttribute="bottom" secondItem="VJe-Gc-dfO" secondAttribute="bottom" id="iBa-F9-61e"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="erq-jJ-H1y"/>
+                    <navigationItem key="navigationItem" title="帳本目錄" id="erq-jJ-H1y"/>
                     <connections>
                         <outlet property="bookTableView" destination="VJe-Gc-dfO" id="xN6-3K-KCU"/>
                     </connections>
@@ -300,8 +300,8 @@
                     <tabBarItem key="tabBarItem" title="Co_accounting" image="book.closed.fill" catalog="system" id="6jj-b6-8hJ"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" largeTitles="YES" id="JzM-dF-XQd">
-                        <rect key="frame" x="0.0" y="44" width="414" height="96"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="JzM-dF-XQd">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>

@@ -100,6 +100,13 @@ class CoBookViewController: UIViewController {
                 print("book here \(self.data)")
             }
     }
+
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id)
+        documentRef.delete()
+    }
 }
 
 // 點下帳本會導到對應帳目資訊
@@ -112,6 +119,10 @@ extension CoBookViewController: UITableViewDelegate {
         pushCoAccountingVC.didSelecetedBook = data[indexPath.row].id
 
         navigationController?.pushViewController(pushCoAccountingVC, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "帳本"
     }
 }
 
@@ -129,5 +140,17 @@ extension CoBookViewController: UITableViewDataSource {
         coBookCell.bookNameLabel.text = data[indexPath.row].id
 
         return coBookCell
+    }
+
+    // tableView右滑刪除
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            // 順序問題，需要先偵測對應indexPath資料再進行刪除
+            deleteSpecificData(indexPathRow: indexPath.row)
+            data.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
 }
