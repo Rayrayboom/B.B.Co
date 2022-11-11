@@ -152,8 +152,21 @@ class PieChartViewController: UIViewController {
 
     // 圓餅圖內容
     func pieChartViewDataInput() {
-        for num in 0..<data.count {
-            pieChartDataEntries.append(PieChartDataEntry.init(value: Double(data[num].amount) ?? 0, label: data[num].category, icon: nil))
+        var total: [String: Double] = [:]
+        for num in data {
+            guard let category = num.category else { return }
+            if total[category] == nil {
+                total[num.category ?? ""] = Double(num.amount)
+            } else {
+                guard var amount = total[category] else { return }
+                amount += Double(num.amount)
+                ?? 0
+                total[category] = amount
+            }
+        }
+
+        for num in total.keys {
+            pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
         }
     }
 
