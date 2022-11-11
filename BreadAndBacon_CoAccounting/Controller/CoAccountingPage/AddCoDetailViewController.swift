@@ -22,6 +22,10 @@ class AddCoDetailViewController: UIViewController {
     let sectionTitle = ["日期", "品項", "金額", "付款人"]
     var tapIndexpath: IndexPath?
     var data = CoDataModel()
+    
+    // 用來存所點選之帳本的id(用來新增對應帳本detail)
+    var didSelecetedBook: String = ""
+
     // 存付款者textField picker資料，後續由加好友時抓取firebase資料，用didSet
     var userContent: [User] = [] {
         didSet {
@@ -37,7 +41,7 @@ class AddCoDetailViewController: UIViewController {
 
     // 存detail到firebase並dismiss addCoDetailVC
     @IBAction func saveCoDetail(_ sender: Any) {
-        createCoAccountData(subCollection: "co_expenditure")
+        createCoAccountData(document: didSelecetedBook, subCollection: "co_expenditure")
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
@@ -45,6 +49,7 @@ class AddCoDetailViewController: UIViewController {
         super.viewDidLoad()
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
+        // 抓取現有user data
         fetchUser()
     }
 
@@ -58,10 +63,10 @@ class AddCoDetailViewController: UIViewController {
     }
 
     // MARK: - 上傳資料到Firebase
-    func createCoAccountData(subCollection: String) {
+    func createCoAccountData(document: String, subCollection: String) {
         let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("co-account")
-            .document("U5nzbfkDyHNIXAvVUdZD")
+            .document(document)
             .collection(subCollection)
             .document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
@@ -101,6 +106,7 @@ class AddCoDetailViewController: UIViewController {
                     try? snapshot.data(as: User.self)
                 }
 
+                // 把fetch下來的user data append到userContent的array中
                 self.userContent.append(contentsOf: user)
             }
     }
@@ -143,34 +149,32 @@ extension AddCoDetailViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let coDetailCell = tableView.dequeueReusableCell(withIdentifier: "coDetailCell") as? CoDetailTableViewCell
+        else {
+            fatalError("can not create coDetailCell")
+        }
+        coDetailCell.indexPath = indexPath
+        coDetailCell.delegate = self
+        coDetailCell.contentTextField.textAlignment = .center
+
         switch indexPath.section {
-        case 0:
-            guard let coTimeCell = tableView.dequeueReusableCell(withIdentifier: "coTimeCell") as? CoTimeTableViewCell else {
+        case 0: // 針對time textField設定
+            guard let coTimeCell = tableView.dequeueReusableCell(withIdentifier: "coTimeCell") as? CoTimeTableViewCell
+            else {
                 fatalError("can not create coTimeCell")
             }
 
             coTimeCell.delegate = self
             coTimeCell.config()
             return coTimeCell
-        default:
-            guard let coDetailCell = tableView.dequeueReusableCell(withIdentifier: "coDetailCell") as? CoDetailTableViewCell else {
-                fatalError("can not create coDetailCell")
-            }
 
-            coDetailCell.delegate = self
-            coDetailCell.indexPath = indexPath
-            coDetailCell.contentTextField.textAlignment = .center
-
-            switch indexPath.section {
-            case 3:
-                // 計算userContent裡面有幾個user的資料，因為是一筆一筆的array，所以用userContent.count，透過for迴圈把array裡的user name append進去content array裡(要塞進pickerView的資料)
-                print(coDetailCell)
-                for num in 0..<userContent.count {
-                    coDetailCell.content.append(userContent[num].name ?? "")
-                }
-            default:
-                break
+        case 3: // 針對付款者textField設定
+            // 計算userContent裡面有幾個user的資料，因為是一筆一筆的array，所以用userContent.count，透過for迴圈把array裡的user name append進去content array裡(要塞進pickerView的資料)
+            for num in 0..<userContent.count {
+                coDetailCell.content.append(userContent[num].name ?? "")
             }
+            return coDetailCell
+        default: // 其餘共用cell但只需顯示keyboard的textField
             return coDetailCell
         }
     }

@@ -9,7 +9,7 @@ import Foundation
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 
-//struct User: Codable {
+// struct User: Codable {
 //    @DocumentID var documentID: String?
 //    let id: String?
 //    let email: String?
@@ -32,7 +32,7 @@ import FirebaseFirestoreSwift
 //        case revenue
 //        case revenueCategory = "revenue_category"
 //    }
-//}
+// }
 
 struct User: Codable {
     @DocumentID var documentID: String?

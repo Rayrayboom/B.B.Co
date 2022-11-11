@@ -8,6 +8,63 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Co Book View Controller-->
+        <scene sceneID="Mq6-Rt-74Z">
+            <objects>
+                <viewController storyboardIdentifier="coBookVC" id="oma-PF-z7l" customClass="CoBookViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Jcy-b3-oBP">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="VJe-Gc-dfO">
+                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coBookCell" id="WJP-4H-iul" customClass="CoBookTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="44.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WJP-4H-iul" id="kW7-8X-gdR">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylW-EM-kPi">
+                                                    <rect key="frame" x="20" y="10" width="48" height="24.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ylW-EM-kPi" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" constant="10" id="JYd-dq-UBC"/>
+                                                <constraint firstItem="ylW-EM-kPi" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="P6A-bS-lAZ"/>
+                                                <constraint firstAttribute="bottom" secondItem="ylW-EM-kPi" secondAttribute="bottom" constant="10" id="yFt-Hb-lXj"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="bookNameLabel" destination="ylW-EM-kPi" id="ZFG-xE-QIF"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="3Kh-Ep-xS6"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="VJe-Gc-dfO" firstAttribute="leading" secondItem="3Kh-Ep-xS6" secondAttribute="leading" id="9WK-FC-TB2"/>
+                            <constraint firstItem="VJe-Gc-dfO" firstAttribute="top" secondItem="3Kh-Ep-xS6" secondAttribute="top" id="ViG-I8-He9"/>
+                            <constraint firstItem="3Kh-Ep-xS6" firstAttribute="trailing" secondItem="VJe-Gc-dfO" secondAttribute="trailing" id="Wsh-eR-1mU"/>
+                            <constraint firstItem="3Kh-Ep-xS6" firstAttribute="bottom" secondItem="VJe-Gc-dfO" secondAttribute="bottom" id="iBa-F9-61e"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="erq-jJ-H1y"/>
+                    <connections>
+                        <outlet property="bookTableView" destination="VJe-Gc-dfO" id="xN6-3K-KCU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ivL-0H-mEr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-88" y="1383"/>
+        </scene>
         <!--Co Accounting View Controller-->
         <scene sceneID="Qei-fA-FVv">
             <objects>
@@ -17,7 +74,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="41o-AV-SrE">
-                                <rect key="frame" x="0.0" y="88" width="414" height="675"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="768"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="listCell" rowHeight="86" id="dPh-gG-FPA" customClass="ListTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -87,7 +144,7 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk2-mk-ZXx">
-                                <rect key="frame" x="170" y="763" width="75" height="50"/>
+                                <rect key="frame" x="170" y="812" width="75" height="50"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" imagePadding="0.0"/>
                                 <connections>
@@ -110,17 +167,9 @@
                     </view>
                     <navigationItem key="navigationItem" id="dpb-Bz-aGx">
                         <nil key="title"/>
-                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="cgv-7h-8M8">
-                            <rect key="frame" x="134.5" y="5.5" width="145" height="33"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <segments>
-                                <segment title="共同帳本"/>
-                                <segment title="好友清單"/>
-                            </segments>
-                        </segmentedControl>
                     </navigationItem>
                     <connections>
-                        <outlet property="bookTableView" destination="41o-AV-SrE" id="eCO-RS-hSK"/>
+                        <outlet property="bookDetailTableView" destination="41o-AV-SrE" id="eCO-RS-hSK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OyN-CM-Mew" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -257,12 +306,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="yen-n8-Qer" kind="relationship" relationship="rootViewController" id="oBa-g7-KNs"/>
+                        <segue destination="oma-PF-z7l" kind="relationship" relationship="rootViewController" id="2JZ-t3-5mT"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="phf-b4-4hE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="695.6521739130435" y="645.53571428571422"/>
+            <point key="canvasLocation" x="-88" y="626"/>
         </scene>
     </scenes>
     <resources>
