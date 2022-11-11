@@ -35,6 +35,8 @@ class CoBookViewController: UIViewController {
         super.viewWillAppear(true)
         fetchCoBook()
         bookTableView.reloadData()
+        // 回到帳本目錄時時恢復下方tabbar
+        self.tabBarController?.tabBar.isHidden = false
     }
 
 // TODO: - 需讓使用者輸入book name

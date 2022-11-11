@@ -31,7 +31,7 @@ class CoDetailTableViewCell: UITableViewCell {
                 return
             } else {
                 // contentTextField有更動時叫出黑色數字鍵盤
-                contentTextField.keyboardType = .namePhonePad
+                contentTextField.keyboardType = .numberPad
                 contentTextField.keyboardAppearance = .dark
             }
         }

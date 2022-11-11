@@ -150,15 +150,8 @@ class PieChartViewController: UIViewController {
         pieChartViewConfig()
     }
 
-// MARK: - 待實現：計算百分比％
     // 圓餅圖內容
     func pieChartViewDataInput() {
-        // 計算百分比
-//        var allAmount = 0
-//        for all in 0..<data.count {
-//            allAmount += Int(data[all].amount) ?? 0
-//        }
-
         for num in 0..<data.count {
             pieChartDataEntries.append(PieChartDataEntry.init(value: Double(data[num].amount) ?? 0, label: data[num].category, icon: nil))
         }

@@ -73,8 +73,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="41o-AV-SrE">
-                                <rect key="frame" x="0.0" y="44" width="414" height="768"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="41o-AV-SrE">
+                                <rect key="frame" x="0.0" y="404" width="414" height="427"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="listCell" rowHeight="86" id="dPh-gG-FPA" customClass="ListTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -144,7 +145,7 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk2-mk-ZXx">
-                                <rect key="frame" x="170" y="812" width="75" height="50"/>
+                                <rect key="frame" x="170" y="831" width="75" height="31"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" imagePadding="0.0"/>
                                 <connections>
@@ -156,11 +157,6 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="bk2-mk-ZXx" firstAttribute="leading" secondItem="b5w-Mf-Abh" secondAttribute="leading" constant="170" id="1Wc-tM-hRC"/>
-                            <constraint firstItem="b5w-Mf-Abh" firstAttribute="trailing" secondItem="41o-AV-SrE" secondAttribute="trailing" id="3Jh-PC-GgM"/>
-                            <constraint firstItem="bk2-mk-ZXx" firstAttribute="top" secondItem="41o-AV-SrE" secondAttribute="bottom" id="B4H-Db-XGw"/>
-                            <constraint firstItem="41o-AV-SrE" firstAttribute="top" secondItem="b5w-Mf-Abh" secondAttribute="top" id="JNa-ZN-Y7K"/>
-                            <constraint firstItem="41o-AV-SrE" firstAttribute="leading" secondItem="b5w-Mf-Abh" secondAttribute="leading" id="Zb2-VF-iLN"/>
-                            <constraint firstItem="b5w-Mf-Abh" firstAttribute="bottom" secondItem="41o-AV-SrE" secondAttribute="bottom" constant="50" id="fdN-fa-Qci"/>
                             <constraint firstItem="b5w-Mf-Abh" firstAttribute="trailing" secondItem="bk2-mk-ZXx" secondAttribute="trailing" constant="169" id="gTg-kd-Wqe"/>
                             <constraint firstItem="b5w-Mf-Abh" firstAttribute="bottom" secondItem="bk2-mk-ZXx" secondAttribute="bottom" id="qHQ-R3-EKf"/>
                         </constraints>
@@ -291,7 +287,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zvc-yT-AMb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1545" y="1383"/>
+            <point key="canvasLocation" x="1513" y="1383"/>
         </scene>
         <!--Co_accounting-->
         <scene sceneID="mz2-5l-oTb">

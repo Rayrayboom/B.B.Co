@@ -6,32 +6,22 @@
 //
 
 import UIKit
+import Charts
 import FirebaseFirestore
 
-//// WARNING: Change these constants according to your project's design
-//private struct Const {
-//    /// Image height/width for Large NavBar state
-//    static let ImageSizeForLargeState: CGFloat = 40
-//    /// Margin from right anchor of safe area to right anchor of Image
-//    static let ImageRightMargin: CGFloat = 16
-//    /// Margin from bottom anchor of NavBar to bottom anchor of Image for Large NavBar state
-//    static let ImageBottomMarginForLargeState: CGFloat = 12
-//    /// Margin from bottom anchor of NavBar to bottom anchor of Image for Small NavBar state
-//    static let ImageBottomMarginForSmallState: CGFloat = 6
-//    /// Image height/width for Small NavBar state
-//    static let ImageSizeForSmallState: CGFloat = 32
-//    /// Height of NavBar for Small state. Usually it's just 44
-//    static let NavBarHeightSmallState: CGFloat = 44
-//    /// Height of NavBar for Large state. Usually it's just 96.5 but if you have a custom font for the title, please make sure to edit this value since it changes the height for Large state of NavBar
-//    static let NavBarHeightLargeState: CGFloat = 96.5
-//}
-
 class CoAccountingViewController: UIViewController {
-    private let imageView = UIImageView(image: UIImage(systemName: "plus"))
-    // 用來存所選日期的data
+    var pieChartView: PieChartView!
+    var fillInPieChartView: UIView!
+    // pie資料
+    var pieChartDataEntries: [PieChartDataEntry] = []
+
+    // 裝firebase上的資料
     var data: [Account] = [] {
         didSet {
             self.bookDetailTableView.reloadData()
+            // 當資料有變動時就會去fetch一次data，當fetch data時 data就會有變動，有變動就會執行setupPieChartView來重畫pie chart
+            setupPieChartView()
+            bookDetailTableViewConstrains()
         }
     }
 
@@ -44,8 +34,9 @@ class CoAccountingViewController: UIViewController {
 
     @IBOutlet weak var bookDetailTableView: UITableView!
     @IBAction func addDetail(_ sender: UIButton) {
-        guard let presentCoDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "addCoDetailVC") as? AddCoDetailViewController else {
-            fatalError("error")
+        guard let presentCoDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "addCoDetailVC") as? AddCoDetailViewController
+        else {
+            fatalError("can not present CoDetailVC")
         }
 
         presentCoDetailVC.didSelecetedBook = didSelecetedBook
@@ -58,26 +49,24 @@ class CoAccountingViewController: UIViewController {
 
         bookDetailTableView.delegate = self
         bookDetailTableView.dataSource = self
-        self.navigationItem.title = "支出明細"
-//        setupUI()
+        setupUI()
+        // 畫出view來放pieChartView
+        setupfillInPieChartView()
     }
 
     // 當addCoDetailVC dismiss後回到coAccountingVC會呼叫viewWillAppear，重新fetch一次data並reload bookTableView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        // 進入帳本內部時隱藏下方tabbar
+        self.tabBarController?.tabBar.isHidden = true
+        // 畫面一有變動就會去重新fetch一次data並把資料&畫面(pie + tableView)更新到最新狀態
         fetchBookDetail(document: didSelecetedBook, subCollection: "co_expenditure")
         bookDetailTableView.reloadData()
     }
 
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        showImage(false)
-//    }
-//
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        showImage(true)
-//    }
+    func setupUI() {
+        self.navigationItem.title = "支出總覽"
+    }
 
     // 從Firebase上fetch對應book的detail資料
     func fetchBookDetail(document: String, subCollection: String) {
@@ -103,67 +92,109 @@ class CoAccountingViewController: UIViewController {
         documentRef.delete()
     }
 
-//    /// Show or hide the image from NavBar while going to next screen or back to initial screen
-//    ///
-//    /// - Parameter show: show or hide the image from NavBar
-//    private func showImage(_ show: Bool) {
-//        UIView.animate(withDuration: 0.2) {
-//            self.imageView.alpha = show ? 1.0 : 0.0
-//        }
-//    }
+// MARK: - Pie chart
+    // 建立圓餅圖view（生成物件、位置、內容）
+    func setupPieChartView() {
+        // 在要畫pie chart之前先把pie的資料&subview都清空
+        pieChartDataEntries = []
+        // 當畫面有改變時(跳出去再回來)，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+        let subviews = fillInPieChartView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+        // 生成PieChartView物件
+        pieChartView = PieChartView()
+        // pieChartView constraint
+        self.fillInPieChartView.addSubview(pieChartView)
+        pieChartView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            pieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 130),
+            pieChartView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            pieChartView.widthAnchor.constraint(equalToConstant: self.view.bounds.width - 40),
+            pieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
+        ])
+        // 圓餅圖內容
+        pieChartViewDataInput()
+        // 圓餅圖規格
+        pieChartViewConfig()
+    }
 
-//    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        guard let height = navigationController?.navigationBar.frame.height else { return }
-//        moveAndResizeImage(for: height)
-//    }
+    // 圓餅圖內容
+    func pieChartViewDataInput() {
+        // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
+        var total: [String : Double] = [:]
+        for num in data {
+            // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
+            guard let user = num.user else { return }
+            // 若total裡沒有對應的人，則新增一對key:value進去
+            if total[user] == nil {
+                total[num.user ?? ""] = Double(num.amount)
+            } else {
+                // 若total裡已有同樣的人，就把value加上去
+                guard var amount = total[user] else { return }
+                amount += Double(num.amount) ?? 0
+                // 加完後要回傳給total
+                total[user] = amount
+            }
+        }
+        // 把total裡的資料塞到pie chart裡
+        for num in total.keys {
+            pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
+        }
+    }
 
-//    private func setupUI() {
-//        navigationController?.navigationBar.prefersLargeTitles = true
-//
-//        title = "Large Title"
-//
-//        // Initial setup for image for Large NavBar state since the the screen always has Large NavBar once it gets opened
-//        guard let navigationBar = self.navigationController?.navigationBar else { return }
-//        navigationBar.addSubview(imageView)
-//        imageView.layer.cornerRadius = Const.ImageSizeForLargeState / 2
-//        imageView.clipsToBounds = true
-//        imageView.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            imageView.rightAnchor.constraint(equalTo: navigationBar.rightAnchor, constant: -Const.ImageRightMargin),
-//            imageView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: -Const.ImageBottomMarginForLargeState),
-//            imageView.heightAnchor.constraint(equalToConstant: Const.ImageSizeForLargeState),
-//            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor)
-//            ])
-//    }
-//
-//    private func moveAndResizeImage(for height: CGFloat) {
-//        let coeff: CGFloat = {
-//            let delta = height - Const.NavBarHeightSmallState
-//            let heightDifferenceBetweenStates = (Const.NavBarHeightLargeState - Const.NavBarHeightSmallState)
-//            return delta / heightDifferenceBetweenStates
-//        }()
-//
-//        let factor = Const.ImageSizeForSmallState / Const.ImageSizeForLargeState
-//
-//        let scale: CGFloat = {
-//            let sizeAddendumFactor = coeff * (1.0 - factor)
-//            return min(1.0, sizeAddendumFactor + factor)
-//        }()
-//
-//        // Value of difference between icons for large and small states
-//        let sizeDiff = Const.ImageSizeForLargeState * (1.0 - factor) // 8.0
-//        let yTranslation: CGFloat = {
-//            /// This value = 14. It equals to difference of 12 and 6 (bottom margin for large and small states). Also it adds 8.0 (size difference when the image gets smaller size)
-//            let maxYTranslation = Const.ImageBottomMarginForLargeState - Const.ImageBottomMarginForSmallState + sizeDiff
-//            return max(0, min(maxYTranslation, (maxYTranslation - coeff * (Const.ImageBottomMarginForSmallState + sizeDiff))))
-//        }()
-//
-//        let xTranslation = max(0, sizeDiff - coeff * sizeDiff)
-//
-//        imageView.transform = CGAffineTransform.identity
-//            .scaledBy(x: scale, y: scale)
-//            .translatedBy(x: xTranslation, y: yTranslation)
-//    }
+    // 圓餅圖規格
+    func pieChartViewConfig() {
+        let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
+        // 設定圓餅圖的顏色
+        chartDataSet.colors = ChartColorTemplates.vordiplom()
+        // 設定資料數值的字體大小
+        chartDataSet.valueTextColor = .black
+        chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)
+
+        let chartData = PieChartData(dataSets: [chartDataSet])
+        // 將 chartData 指派給 pieChartView
+        pieChartView.data = chartData
+        // 設定下方圖例樣式，default為圓形
+        pieChartView.legend.form = .default
+        // 是否能單點選取
+        pieChartView.highlightPerTapEnabled = true
+        // 按下對應扇形後，凸出來的多寡
+        chartDataSet.selectionShift = 5
+        // 扇形間隔
+        chartDataSet.sliceSpace = 3
+        // 設置為實心圓
+        pieChartView.drawHoleEnabled = false
+
+        // 設定數值包含$符號
+        let formatter = NumberFormatter()
+        formatter.positivePrefix = "$"
+        chartData.setValueFormatter(DefaultValueFormatter(formatter: formatter))
+    }
+
+    // 設定pieTableView constrains
+    func bookDetailTableViewConstrains() {
+        bookDetailTableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            bookDetailTableView.topAnchor.constraint(equalTo: pieChartView.bottomAnchor, constant: 0),
+            bookDetailTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            bookDetailTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            bookDetailTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+        ])
+    }
+
+    // 設定fillInPieChartView constrains, 拿來放pieChartView
+    func setupfillInPieChartView() {
+        fillInPieChartView = UIView()
+        self.view.addSubview(fillInPieChartView)
+        fillInPieChartView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            fillInPieChartView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 120),
+            fillInPieChartView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            fillInPieChartView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            fillInPieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
+        ])
+    }
 }
 
 extension CoAccountingViewController: UITableViewDelegate {
@@ -196,11 +227,11 @@ extension CoAccountingViewController: UITableViewDataSource {
         return listCell
     }
 
-    // tableView右滑刪除
+    // tableView右滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
-            // 順序問題，需要先偵測對應indexPath資料再進行刪除
+            // 刪除firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             deleteSpecificData(document: didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
