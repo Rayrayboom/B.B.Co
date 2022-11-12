@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseFirestore
+import SwiftUI
 
 protocol CoDetailTableViewCellDelegate: AnyObject {
     func getInputTextField(indexPath: IndexPath, textField: String)
@@ -20,16 +21,20 @@ class CoDetailTableViewCell: UITableViewCell {
     let contentPicker = UIPickerView()
     var indexPath: IndexPath? {
         didSet {
-            // 第一個品項cell(section 1)不需要picker，因此讓他顯示數字鍵盤
-            if indexPath?.section == 3 {
+            switch indexPath?.section {
+            case 3:
                 // picker delegate & datasource
-                // 種類、帳戶需要picker，故執行picker功能
+                // 付款者需要picker，故執行picker功能
                 contentPicker.delegate = self
                 contentPicker.dataSource = self
                 contentTextField.inputView = contentPicker
                 contentTextField.keyboardAppearance = .dark
                 return
-            } else {
+            case 2:
+                // contentTextField有更動時叫出黑色文字鍵盤
+                contentTextField.keyboardType = .namePhonePad
+                contentTextField.keyboardAppearance = .dark
+            default:
                 // contentTextField有更動時叫出黑色數字鍵盤
                 contentTextField.keyboardType = .numberPad
                 contentTextField.keyboardAppearance = .dark

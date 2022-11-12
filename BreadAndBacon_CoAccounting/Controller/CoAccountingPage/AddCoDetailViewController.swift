@@ -206,12 +206,12 @@ extension AddCoDetailViewController: UITableViewDataSource {
             coTimeCell.config()
             // 編輯狀態時偵測被點選品項並塞值給datePicker
             data.dateTime = isEdit ? (currentData?.date)! : ""
-            print(data.dateTime)
-// MARK: - have "!" issue
+// MARK: - have "!" issue & will crash (新增完品項後不能直接點編輯)
 //            guard let dateTimeInDate = BBCDateFormatter.shareFormatter.date(from: data.dateTime) else {
 //                fatalError("can not transfer date")
 //            }
-            coTimeCell.datePicker.date = isEdit ?  BBCDateFormatter.shareFormatter.date(from: data.dateTime)! : Date()
+// MARK: - crash here "BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date() : Date()"
+            coTimeCell.datePicker.date = isEdit ?  BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date() : Date()
             return coTimeCell
 
         case 3: // 針對付款者textField設定，編輯狀態時偵測被點選品項並塞值給textField
