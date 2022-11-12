@@ -8,8 +8,6 @@
 import UIKit
 import SwiftUI
 import AVFoundation
-import Vision
-import VisionKit
 import FirebaseFirestore
 
 

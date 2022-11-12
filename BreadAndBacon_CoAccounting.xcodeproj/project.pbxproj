@@ -36,7 +36,16 @@
 		76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 76608697290F74E1008EF772 /* AddNewData.storyboard */; };
 		766086A0290F7B0B008EF772 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7660869F290F7B0B008EF772 /* Home.storyboard */; };
 		766086A2290F8168008EF772 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766086A1290F8168008EF772 /* TabViewController.swift */; };
+		7673ADA9291C8E9F00A15015 /* AddCoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADA8291C8E9F00A15015 /* AddCoDetailViewController.swift */; };
+		7673ADAB291C994300A15015 /* CoDetailTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADAA291C994300A15015 /* CoDetailTableViewCell.swift */; };
+		7673ADAF291C9BE600A15015 /* CoTimeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADAE291C9BE600A15015 /* CoTimeTableViewCell.swift */; };
+		7673ADB1291E1B6B00A15015 /* CoBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADB0291E1B6B00A15015 /* CoBookViewController.swift */; };
+		7673ADB3291E1BA100A15015 /* CoBookTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADB2291E1BA100A15015 /* CoBookTableViewCell.swift */; };
 		767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */; };
+		767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 767EAFC9291BDCB30005880E /* CoAccounting.storyboard */; };
+		767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFCB291BF6730005880E /* ListTableViewCell.swift */; };
+		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
+		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -71,7 +80,16 @@
 		76608697290F74E1008EF772 /* AddNewData.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = AddNewData.storyboard; sourceTree = "<group>"; };
 		7660869F290F7B0B008EF772 /* Home.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		766086A1290F8168008EF772 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TabViewController.swift; path = BreadAndBacon_CoAccounting/TabViewController.swift; sourceTree = SOURCE_ROOT; };
+		7673ADA8291C8E9F00A15015 /* AddCoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCoDetailViewController.swift; sourceTree = "<group>"; };
+		7673ADAA291C994300A15015 /* CoDetailTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoDetailTableViewCell.swift; sourceTree = "<group>"; };
+		7673ADAE291C9BE600A15015 /* CoTimeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoTimeTableViewCell.swift; sourceTree = "<group>"; };
+		7673ADB0291E1B6B00A15015 /* CoBookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoBookViewController.swift; sourceTree = "<group>"; };
+		7673ADB2291E1BA100A15015 /* CoBookTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoBookTableViewCell.swift; sourceTree = "<group>"; };
 		767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditQRCodeViewController.swift; sourceTree = "<group>"; };
+		767EAFC9291BDCB30005880E /* CoAccounting.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CoAccounting.storyboard; sourceTree = "<group>"; };
+		767EAFCB291BF6730005880E /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
+		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
+		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
 		CCEAB5950EE70591CF59355B /* Pods-BreadAndBacon_CoAccounting.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.release.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +128,7 @@
 			children = (
 				76265F392913C21100F5E341 /* BBCoDateFormatter.swift */,
 				76265F3229138FD500F5E341 /* HomePage */,
+				7673ADAD291C9BBB00A15015 /* CoAccountingPage */,
 				76265F3329138FE300F5E341 /* AddNewDataPage */,
 				76265F4D291793EE00F5E341 /* PieChartPage */,
 				76265F362913908C00F5E341 /* User */,
@@ -121,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				76265F3529138FF200F5E341 /* HomePage */,
+				7673ADAC291C9BB100A15015 /* CoAccountingPage */,
 				76265F3429138FEC00F5E341 /* AddNewDataPage */,
 				76265F4B291793D800F5E341 /* PieChartPage */,
 			);
@@ -131,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				76608699290F79B3008EF772 /* HomePage */,
+				767EAFC3291BDA9F0005880E /* CoAccountingPage */,
 				7660866E290E2571008EF772 /* AddNewDataPage */,
 				76265F4C291793E900F5E341 /* PieChartPage */,
 			);
@@ -231,6 +252,7 @@
 				76265F3029138F8200F5E341 /* View */,
 				76265F3129138F9500F5E341 /* Controller */,
 				7660865E290BDA29008EF772 /* Main.storyboard */,
+				767EAFC9291BDCB30005880E /* CoAccounting.storyboard */,
 				76265F4929178F5B00F5E341 /* PieChart.storyboard */,
 				7660869F290F7B0B008EF772 /* Home.storyboard */,
 				76608697290F74E1008EF772 /* AddNewData.storyboard */,
@@ -270,6 +292,35 @@
 				76608695290F7129008EF772 /* UIStoryboard+Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		7673ADAC291C9BB100A15015 /* CoAccountingPage */ = {
+			isa = PBXGroup;
+			children = (
+				767EAFCB291BF6730005880E /* ListTableViewCell.swift */,
+				7673ADAE291C9BE600A15015 /* CoTimeTableViewCell.swift */,
+				7673ADAA291C994300A15015 /* CoDetailTableViewCell.swift */,
+				7673ADB2291E1BA100A15015 /* CoBookTableViewCell.swift */,
+			);
+			path = CoAccountingPage;
+			sourceTree = "<group>";
+		};
+		7673ADAD291C9BBB00A15015 /* CoAccountingPage */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CoAccountingPage;
+			sourceTree = "<group>";
+		};
+		767EAFC3291BDA9F0005880E /* CoAccountingPage */ = {
+			isa = PBXGroup;
+			children = (
+				76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */,
+				76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */,
+				7673ADA8291C8E9F00A15015 /* AddCoDetailViewController.swift */,
+				7673ADB0291E1B6B00A15015 /* CoBookViewController.swift */,
+			);
+			path = CoAccountingPage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -335,10 +386,12 @@
 			files = (
 				76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */,
 				76608662290BDA2A008EF772 /* Assets.xcassets in Resources */,
+				767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */,
 				766086A0290F7B0B008EF772 /* Home.storyboard in Resources */,
 				76265F4A29178F5B00F5E341 /* PieChart.storyboard in Resources */,
 				76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */,
 				76608660290BDA29008EF772 /* Main.storyboard in Resources */,
+				76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */,
 				76265F552918375500F5E341 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,6 +464,7 @@
 			files = (
 				76265F382913A47900F5E341 /* HomeDetailTableViewCell.swift in Sources */,
 				7660865D290BDA29008EF772 /* ViewController.swift in Sources */,
+				7673ADAF291C9BE600A15015 /* CoTimeTableViewCell.swift in Sources */,
 				76608674290E2A80008EF772 /* AddNewDataTableViewCell.swift in Sources */,
 				76265F4829150AE400F5E341 /* EditDetailTableViewCell.swift in Sources */,
 				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
@@ -421,15 +475,21 @@
 				76265F3E2913E65400F5E341 /* EditViewController.swift in Sources */,
 				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
 				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
+				7673ADAB291C994300A15015 /* CoDetailTableViewCell.swift in Sources */,
 				76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */,
+				7673ADA9291C8E9F00A15015 /* AddCoDetailViewController.swift in Sources */,
 				76265F4629150AD400F5E341 /* EditQRCodeTableViewCell.swift in Sources */,
 				76265F272911855600F5E341 /* User.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
+				767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */,
 				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
 				76265F2B29126E3100F5E341 /* QRCodeTableViewCell.swift in Sources */,
 				76265F3A2913C21100F5E341 /* BBCoDateFormatter.swift in Sources */,
 				76265F4429150ABD00F5E341 /* EditDataTableViewCell.swift in Sources */,
+				7673ADB3291E1BA100A15015 /* CoBookTableViewCell.swift in Sources */,
 				76265F4229150A9C00F5E341 /* EditTimeTableViewCell.swift in Sources */,
+				7673ADB1291E1B6B00A15015 /* CoBookViewController.swift in Sources */,
+				76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */,
 				7660865B290BDA29008EF772 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
