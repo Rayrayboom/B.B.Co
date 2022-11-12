@@ -108,6 +108,14 @@ class PieChartViewController: UIViewController {
         pieTableView.reloadData()
     }
 
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(document: String, subCollection: String, indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document(document).collection(subCollection).document(data[indexPathRow].id)
+        documentRef.delete()
+    }
+
+// MARK: - Pie Chart
     // 建立圓餅圖view（生成物件、位置、內容）
     func setupPieChartView() {
         pieChartDataEntries = []
@@ -254,5 +262,22 @@ extension PieChartViewController: UITableViewDataSource {
         pieCell.amountLabel.text = data[indexPath.row].amount
 
         return pieCell
+    }
+
+    // tableView右滑刪除 & 連動firebase
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
+            switch segmentTag {
+            case 1:
+                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "revenue", indexPathRow: indexPath.row)
+            default:
+                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "expenditure", indexPathRow: indexPath.row)
+            }
+            data.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
     }
 }

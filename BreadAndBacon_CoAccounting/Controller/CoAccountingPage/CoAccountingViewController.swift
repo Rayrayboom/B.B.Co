@@ -48,7 +48,7 @@ class CoAccountingViewController: UIViewController {
         else {
             fatalError("can not present CoDetailVC")
         }
-
+        presentCoDetailVC.isEdit = false
         presentCoDetailVC.didSelecetedBook = didSelecetedBook
         presentCoDetailVC.modalPresentationStyle = .fullScreen
         present(presentCoDetailVC, animated: true)
@@ -250,7 +250,17 @@ class CoAccountingViewController: UIViewController {
 
 extension CoAccountingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
+        guard let presentEditAddCoVC = self.storyboard?.instantiateViewController(withIdentifier: "addCoDetailVC") as? AddCoDetailViewController
+        else {
+            fatalError("can not find CoDetailVC")
+        }
+        presentEditAddCoVC.isEdit = true
+        presentEditAddCoVC.tapIndexpath = indexPath
+        presentEditAddCoVC.didSelecetedBook = didSelecetedBook
+        // 把目前已新增的資料array傳過去addCoVC(給編輯時帶入對應資料使用)
+        presentEditAddCoVC.currentData = data[indexPath.row]
+        presentEditAddCoVC.modalPresentationStyle = .fullScreen
+        present(presentEditAddCoVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

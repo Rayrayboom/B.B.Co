@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseFirestore
+import CoreAudio
 
 // MARK: - expenditure
 struct CoDataModel {
@@ -19,34 +20,45 @@ struct CoDataModel {
 }
 
 class AddCoDetailViewController: UIViewController {
+    // 判斷是否是要來編輯，true是來編輯資料，false則是新增資料
+    var isEdit: Bool = false
     let sectionTitle = ["日期", "品項", "金額", "付款人"]
     var tapIndexpath: IndexPath?
     var data = CoDataModel()
-    
+    // 用來儲存目前已新增的資料array(資料從CoAccountVC傳來)
+    var currentData: Account?
+
     // 用來存所點選之帳本的id(用來新增對應帳本detail)
     var didSelecetedBook: String = ""
 
     // 存付款者textField picker資料，後續由加好友時抓取firebase資料，用didSet
     var userContent: [User] = [] {
         didSet {
-            print("=== this is all userContent \(self.userContent)")
+//            print("=== this is all userContent \(self.userContent)")
             coDetailTableView.reloadData()
         }
     }
 
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var coDetailTableView: UITableView!
     @IBAction func dismissDetail(_ sender: UIButton) {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
+    @IBOutlet weak var saveCoDetailBO: UIButton!
     // 存detail到firebase並dismiss addCoDetailVC
     @IBAction func saveCoDetail(_ sender: Any) {
-        createCoAccountData(document: didSelecetedBook, subCollection: "co_expenditure")
+        if isEdit == false {
+            createCoAccountData(document: didSelecetedBook, subCollection: "co_expenditure")
+        } else {
+            editUser(document: didSelecetedBook, subCollection: "co_expenditure", documentID: currentData?.id ?? "")
+        }
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
         // 抓取現有user data
@@ -60,6 +72,16 @@ class AddCoDetailViewController: UIViewController {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+    }
+
+    // UI
+    func setupUI() {
+        self.titleLabel.text = isEdit ? "編輯 支出" : "新 支出"
+        if isEdit == false {
+            self.saveCoDetailBO.setTitle("Save", for: .normal)
+        } else {
+            self.saveCoDetailBO.setTitle("Edit", for: .normal)
+        }
     }
 
     // MARK: - 上傳資料到Firebase
@@ -110,11 +132,27 @@ class AddCoDetailViewController: UIViewController {
                 self.userContent.append(contentsOf: user)
             }
     }
+
+    // 點選對應細項編輯資料
+    func editUser(document: String, subCollection: String, documentID: String) {
+        let dataBase = Firestore.firestore()
+        dataBase.collection("co-account/\(document)/\(subCollection)").document("\(documentID)").updateData([
+            "date": data.dateTime,
+            "amount": data.amountTextField,
+            "category": data.itemTextField,
+            "user": data.userTextField
+        ]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document update successfully ")
+            }
+        }
+    }
 }
 
 extension AddCoDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
         // 把當前點到的indexPath傳到cell的indexPath
         tapIndexpath = indexPath
         // 點擊cell時收起鍵盤
@@ -166,15 +204,35 @@ extension AddCoDetailViewController: UITableViewDataSource {
 
             coTimeCell.delegate = self
             coTimeCell.config()
+            // 編輯狀態時偵測被點選品項並塞值給datePicker
+            data.dateTime = isEdit ? (currentData?.date)! : ""
+            print(data.dateTime)
+// MARK: - have "!" issue
+//            guard let dateTimeInDate = BBCDateFormatter.shareFormatter.date(from: data.dateTime) else {
+//                fatalError("can not transfer date")
+//            }
+            coTimeCell.datePicker.date = isEdit ?  BBCDateFormatter.shareFormatter.date(from: data.dateTime)! : Date()
             return coTimeCell
 
-        case 3: // 針對付款者textField設定
+        case 3: // 針對付款者textField設定，編輯狀態時偵測被點選品項並塞值給textField
             // 計算userContent裡面有幾個user的資料，因為是一筆一筆的array，所以用userContent.count，透過for迴圈把array裡的user name append進去content array裡(要塞進pickerView的資料)
             for num in 0..<userContent.count {
                 coDetailCell.content.append(userContent[num].name ?? "")
             }
+// MARK: - have "!" issue
+//            guard let user = currentData[tapIndexpath?.row ?? 0].user else { fatalError() }
+            data.userTextField = isEdit ? (currentData?.user)! : ""
+            coDetailCell.contentTextField.text = isEdit ? data.userTextField : ""
             return coDetailCell
-        default: // 其餘共用cell但只需顯示keyboard的textField
+        case 2: // 針對金額textField設定，編輯狀態時偵測被點選品項並塞值給textField
+            data.amountTextField = isEdit ? (currentData?.amount)! : ""
+            coDetailCell.contentTextField.text = isEdit ? data.amountTextField : ""
+            return coDetailCell
+        default: // 針對品項textField設定，編輯狀態時偵測被點選品項並塞值給textField
+// MARK: - have "!" issue
+//            guard let category = currentData[tapIndexpath?.row ?? 0].category else { fatalError() }
+            data.itemTextField = isEdit ? (currentData?.category)! : ""
+            coDetailCell.contentTextField.text = isEdit ? data.itemTextField : ""
             return coDetailCell
         }
     }

@@ -73,7 +73,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="41o-AV-SrE">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="41o-AV-SrE">
                                 <rect key="frame" x="0.0" y="404" width="414" height="427"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -292,6 +292,8 @@
                     <navigationItem key="navigationItem" id="USv-fv-m1b"/>
                     <connections>
                         <outlet property="coDetailTableView" destination="rnj-cg-wdi" id="rL3-dD-l4H"/>
+                        <outlet property="saveCoDetailBO" destination="3am-uT-LXd" id="CBB-Xl-qQz"/>
+                        <outlet property="titleLabel" destination="KFv-vr-iq4" id="sfH-pB-ZZV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zvc-yT-AMb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
