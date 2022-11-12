@@ -18,10 +18,10 @@ class CoAccountingViewController: UIViewController {
     // 裝firebase上的資料
     var data: [Account] = [] {
         didSet {
-            self.bookDetailTableView.reloadData()
             // 當資料有變動時就會去fetch一次data，當fetch data時 data就會有變動，有變動就會執行setupPieChartView來重畫pie chart
             setupPieChartView()
             bookDetailTableViewConstrains()
+            bookDetailTableView.reloadData()
         }
     }
 
@@ -55,8 +55,7 @@ class CoAccountingViewController: UIViewController {
     }
 
     @IBOutlet weak var coSegmentedControl: UISegmentedControl!
-    @IBAction func changeSegmentCategory(_ sender: UISegmentedControl) {
-    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -89,6 +88,7 @@ class CoAccountingViewController: UIViewController {
         coSegmentedControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
     }
 
+    // segmentControl - @objc
     @objc func handelSegmentControl() {
         segmentTag = coSegmentedControl.selectedSegmentIndex
         print("This is current segmentTag \(segmentTag)")

@@ -14,12 +14,12 @@ class PieChartViewController: UIViewController {
     var fillInPieChartView: UIView!
     // 圓餅圖資料陣列
     var pieChartDataEntries: [PieChartDataEntry] = []
-    // 等fetch data回來有值後，讓tableView重新更新畫面
+    // 只要有fetch data，data值就會改變，就會執行以下(tableView重新更新畫面 + 重畫pie chart)
     var data: [Account] = [] {
         didSet {
-            pieTableView.reloadData()
             setupPieChartView()
             pieTableViewConstrains()
+            pieTableView.reloadData()
         }
     }
 
@@ -27,9 +27,9 @@ class PieChartViewController: UIViewController {
     var segmentTag: Int? {
         didSet {
             if segmentTag == 0 {
-                recreateExpenditurePieChart()
+                fetchUser(subCollection: "expenditure")
             } else {
-                recreateRevenuePieChart()
+                fetchUser(subCollection: "revenue")
             }
         }
     }
@@ -64,8 +64,6 @@ class PieChartViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         monthDatePicker.center = view.center
-        // 一進頁面預設顯示支出總覽
-        fetchUser(subCollection: "expenditure")
         pieTableView.delegate = self
         pieTableView.dataSource = self
         // 選取segment control時拿SegmentIndex
@@ -78,53 +76,32 @@ class PieChartViewController: UIViewController {
         super.viewWillAppear(true)
         // 偵測monthDatePicker改值時觸發func didMonthChanged
         monthDatePicker.addTarget(self, action: #selector(didMonthChanged), for: .valueChanged)
+        // 一進頁面後預設顯示支出總覽(default)，每fetch一次資料data就會改動，在data didSet就會重新去畫pie chart
+        switch segmentTag {
+        case 1:
+            fetchUser(subCollection: "revenue")
+        default:
+            fetchUser(subCollection: "expenditure")
+        }
         pieTableView.reloadData()
     }
 
-    // 重新畫pie chart based on expenditure data
-    func recreateExpenditurePieChart() {
-        data = []
-        pieChartDataEntries = []
-        // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
-        let subviews = fillInPieChartView.subviews
-        for subview in subviews {
-            subview.removeFromSuperview()
-        }
-        // 接著重新抓取支出總覽資料
-        fetchUser(subCollection: "expenditure")
-        // 並再次生成fillInPieChartView & pieChartView
-        setupPieChartView()
-    }
-
-    // 重新畫pie chart based on revenue data
-    func recreateRevenuePieChart() {
-        data = []
-        pieChartDataEntries = []
-        // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
-        let subviews = fillInPieChartView.subviews
-        for subview in subviews {
-            subview.removeFromSuperview()
-        }
-        // 接著重新抓取支出總覽資料
-        fetchUser(subCollection: "revenue")
-        // 並再次生成fillInPieChartView & pieChartView
-        setupPieChartView()
-    }
-
-    // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)
+    // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)，只要重新fetch一次資料即可，因為每fetch一次data就會更新，data didSet就會執行重新畫pie chart的動作
     @objc func didMonthChanged() {
         if segmentTag == 0 {
-            recreateExpenditurePieChart()
+            fetchUser(subCollection: "expenditure")
         } else {
-            recreateRevenuePieChart()
+            fetchUser(subCollection: "revenue")
         }
     }
 
+    // segmentControl
     func didSelectSegmentControl() {
         // segmentControl 偵測改值狀態
         sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
     }
 
+    // segmentControl - @objc
     @objc func handelSegmentControl() {
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         print("This is current segmentTag \(segmentTag)")
@@ -133,6 +110,12 @@ class PieChartViewController: UIViewController {
 
     // 建立圓餅圖view（生成物件、位置、內容）
     func setupPieChartView() {
+        pieChartDataEntries = []
+        // 當segment選取改變時，把fillInPieChartView上的subvivew全部清掉（含pieChartView）
+        let subviews = fillInPieChartView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
         // 生成PieChartView物件
         pieChartView = PieChartView()
         // pieChartView constraint
@@ -180,7 +163,6 @@ class PieChartViewController: UIViewController {
         chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)
 
         let chartData = PieChartData(dataSets: [chartDataSet])
-//        let chartData = PieChartData(dataSets: [chartDataSet])
         // 將 chartData 指派給 pieChartView
         pieChartView.data = chartData
         // 設定下方圖例樣式，default為圓形
@@ -226,6 +208,7 @@ class PieChartViewController: UIViewController {
 
     // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
     func fetchUser(subCollection: String) {
+        data = []
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
         let dataBase = Firestore.firestore()

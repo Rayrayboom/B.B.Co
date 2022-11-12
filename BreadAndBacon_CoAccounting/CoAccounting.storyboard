@@ -170,9 +170,6 @@
                                 <segment title="付款人"/>
                                 <segment title="品項"/>
                             </segments>
-                            <connections>
-                                <action selector="changeSegmentCategory:" destination="yen-n8-Qer" eventType="valueChanged" id="yGC-KN-9B0"/>
-                            </connections>
                         </segmentedControl>
                     </navigationItem>
                     <connections>
@@ -314,7 +311,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="oma-PF-z7l" kind="relationship" relationship="rootViewController" id="kke-yc-NRb"/>
+                        <segue destination="oma-PF-z7l" kind="relationship" relationship="rootViewController" id="SJW-LU-8Zh"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="phf-b4-4hE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
