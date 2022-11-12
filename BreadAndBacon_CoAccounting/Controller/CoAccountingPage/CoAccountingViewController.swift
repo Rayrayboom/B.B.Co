@@ -25,6 +25,16 @@ class CoAccountingViewController: UIViewController {
         }
     }
 
+    // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
+    var segmentTag: Int? {
+        didSet {
+            self.bookDetailTableView.reloadData()
+            // 當資料有變動時就會去fetch一次data，當fetch data時 data就會有變動，有變動就會執行setupPieChartView來重畫pie chart
+            setupPieChartView()
+            bookDetailTableViewConstrains()
+        }
+    }
+
     // 用來存所點選之帳本的id(用來抓取對應帳本detail)
     var didSelecetedBook: String = ""
 
@@ -44,12 +54,17 @@ class CoAccountingViewController: UIViewController {
         present(presentCoDetailVC, animated: true)
     }
 
+    @IBOutlet weak var coSegmentedControl: UISegmentedControl!
+    @IBAction func changeSegmentCategory(_ sender: UISegmentedControl) {
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
         bookDetailTableView.delegate = self
         bookDetailTableView.dataSource = self
         setupUI()
+        // 選取segment control時拿SegmentIndex
+        didSelectSegmentControl()
         // 畫出view來放pieChartView
         setupfillInPieChartView()
     }
@@ -64,8 +79,20 @@ class CoAccountingViewController: UIViewController {
         bookDetailTableView.reloadData()
     }
 
+    // UI
     func setupUI() {
         self.navigationItem.title = "支出總覽"
+    }
+
+    // segmentControl
+    func didSelectSegmentControl() {
+        coSegmentedControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+    }
+
+    @objc func handelSegmentControl() {
+        segmentTag = coSegmentedControl.selectedSegmentIndex
+        print("This is current segmentTag \(segmentTag)")
+        bookDetailTableView.reloadData()
     }
 
     // 從Firebase上fetch對應book的detail資料
@@ -121,25 +148,49 @@ class CoAccountingViewController: UIViewController {
 
     // 圓餅圖內容
     func pieChartViewDataInput() {
-        // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
-        var total: [String : Double] = [:]
-        for num in data {
-            // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
-            guard let user = num.user else { return }
-            // 若total裡沒有對應的人，則新增一對key:value進去
-            if total[user] == nil {
-                total[num.user ?? ""] = Double(num.amount)
-            } else {
-                // 若total裡已有同樣的人，就把value加上去
-                guard var amount = total[user] else { return }
-                amount += Double(num.amount) ?? 0
-                // 加完後要回傳給total
-                total[user] = amount
+        switch segmentTag {
+        case 1:
+            // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
+            var total: [String : Double] = [:]
+            for num in data {
+                // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
+                guard let category = num.category else { return }
+                // 若total裡沒有對應的人，則新增一對key:value進去
+                if total[category] == nil {
+                    total[num.category ?? ""] = Double(num.amount)
+                } else {
+                    // 若total裡已有同樣的人，就把value加上去
+                    guard var amount = total[category] else { return }
+                    amount += Double(num.amount) ?? 0
+                    // 加完後要回傳給total
+                    total[category] = amount
+                }
             }
-        }
-        // 把total裡的資料塞到pie chart裡
-        for num in total.keys {
-            pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
+            // 把total裡的資料塞到pie chart裡
+            for num in total.keys {
+                pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
+            }
+        default:
+            // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
+            var total: [String : Double] = [:]
+            for num in data {
+                // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
+                guard let user = num.user else { return }
+                // 若total裡沒有對應的人，則新增一對key:value進去
+                if total[user] == nil {
+                    total[num.user ?? ""] = Double(num.amount)
+                } else {
+                    // 若total裡已有同樣的人，就把value加上去
+                    guard var amount = total[user] else { return }
+                    amount += Double(num.amount) ?? 0
+                    // 加完後要回傳給total
+                    total[user] = amount
+                }
+            }
+            // 把total裡的資料塞到pie chart裡
+            for num in total.keys {
+                pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
+            }
         }
     }
 

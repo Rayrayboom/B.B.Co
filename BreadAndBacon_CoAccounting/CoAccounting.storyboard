@@ -163,9 +163,21 @@
                     </view>
                     <navigationItem key="navigationItem" id="dpb-Bz-aGx">
                         <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="hQz-5n-dxn">
+                            <rect key="frame" x="118.5" y="5.5" width="177" height="33"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="付款人"/>
+                                <segment title="品項"/>
+                            </segments>
+                            <connections>
+                                <action selector="changeSegmentCategory:" destination="yen-n8-Qer" eventType="valueChanged" id="yGC-KN-9B0"/>
+                            </connections>
+                        </segmentedControl>
                     </navigationItem>
                     <connections>
                         <outlet property="bookDetailTableView" destination="41o-AV-SrE" id="eCO-RS-hSK"/>
+                        <outlet property="coSegmentedControl" destination="hQz-5n-dxn" id="NwS-o1-3qI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OyN-CM-Mew" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -302,7 +314,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="oma-PF-z7l" kind="relationship" relationship="rootViewController" id="2JZ-t3-5mT"/>
+                        <segue destination="oma-PF-z7l" kind="relationship" relationship="rootViewController" id="kke-yc-NRb"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="phf-b4-4hE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
