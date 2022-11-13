@@ -91,6 +91,10 @@ class QRCodeViewController: UIViewController {
 
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
+    
+    func sendInvoiceAPI() {
+        
+    }
 
     // 掃到資料後跳出提醒顯示內容
 //    func alert() {

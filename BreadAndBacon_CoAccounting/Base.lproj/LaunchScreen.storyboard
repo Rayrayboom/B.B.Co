@@ -17,13 +17,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BB_C0" translatesAutoresizingMaskIntoConstraints="NO" id="hdi-iR-Tgx">
-                                <rect key="frame" x="50" y="265" width="314" height="323"/>
+                                <rect key="frame" x="50" y="259" width="314" height="329"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="hdi-iR-Tgx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="221" id="UXA-bI-JUJ"/>
+                            <constraint firstItem="hdi-iR-Tgx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="215" id="UXA-bI-JUJ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="hdi-iR-Tgx" secondAttribute="bottom" constant="274" id="V91-0O-dVW"/>
                             <constraint firstItem="hdi-iR-Tgx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="ekg-0Y-t2V"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="hdi-iR-Tgx" secondAttribute="trailing" constant="50" id="nWl-S4-NQ0"/>
