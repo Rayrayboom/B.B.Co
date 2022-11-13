@@ -20,6 +20,9 @@ class CoBookViewController: UIViewController {
     // 用來存現有的user
     var userContent: [User] = []
     var userId: [String] = []
+    // 宣告一個alertVC
+    var controller = UIAlertController()
+    var bookName: String = ""
 
     @IBOutlet weak var bookTableView: UITableView!
 
@@ -28,7 +31,8 @@ class CoBookViewController: UIViewController {
         bookTableView.delegate = self
         bookTableView.dataSource = self
         fetchUser()
-        saveEditData()
+        // 新增共同帳本func
+        addNewCoAccountBook()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -41,14 +45,35 @@ class CoBookViewController: UIViewController {
 
 // TODO: - 需讓使用者輸入book name
     // 按下右上button來新增帳本
-    func saveEditData() {
+    func addNewCoAccountBook() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
     // 觸發新增帳本func
     @objc func saveEdit() {
-        createCoAccountData()
+        addCoAccountingBookAlert()
     }
+
+    // 新增帳本的alert，讓使用者輸入帳本名稱
+    func addCoAccountingBookAlert() {
+        controller = UIAlertController(title: "新增帳本", message: "", preferredStyle: .alert)
+        controller.addTextField { textField in
+            textField.placeholder = "帳本名稱"
+            textField.keyboardType = UIKeyboardType.default
+        }
+        // 按下OK執行新增account book(使用者輸入accounnt book name)
+        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
+            self.bookName = controller.textFields?[0].text ?? ""
+            self.createCoAccountData()
+            self.fetchCoBook()
+        }
+        controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        controller.addAction(cancelAction)
+        // 記得要present後alert才會出現
+        present(controller, animated: true)
+    }
+
 
     // MARK: - 上傳 book id & user_id 到Firebase
     func createCoAccountData() {
@@ -57,7 +82,7 @@ class CoBookViewController: UIViewController {
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
         let identifier = fetchDocumentID.documentID
         // 需存id，後續delete要抓取ID刪除對應資料
-        let book = Book(id: identifier, userId: userId)
+        let book = Book(id: identifier, name: bookName, userId: userId)
         do {
             try fetchDocumentID.setData(from: book)
             print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -139,7 +164,8 @@ extension CoBookViewController: UITableViewDataSource {
             fatalError("can not create coBookCell")
         }
 
-        coBookCell.bookNameLabel.text = data[indexPath.row].id
+        // 顯示新增account book name
+        coBookCell.bookNameLabel.text = data[indexPath.row].name
 
         return coBookCell
     }

@@ -32,11 +32,11 @@ class CoDetailTableViewCell: UITableViewCell {
                 return
             case 2:
                 // contentTextField有更動時叫出黑色文字鍵盤
-                contentTextField.keyboardType = .namePhonePad
+                contentTextField.keyboardType = .numberPad
                 contentTextField.keyboardAppearance = .dark
             default:
                 // contentTextField有更動時叫出黑色數字鍵盤
-                contentTextField.keyboardType = .numberPad
+                contentTextField.keyboardType = .namePhonePad
                 contentTextField.keyboardAppearance = .dark
             }
         }
