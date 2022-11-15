@@ -25,14 +25,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="homeDetailCell" id="AvO-iC-MAk" customClass="HomeDetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="72.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AvO-iC-MAk" id="nl2-jG-fiK">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="72.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="73"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="smh-bl-YiE">
-                                                    <rect key="frame" x="70" y="10" width="44.5" height="22"/>
+                                                    <rect key="frame" x="70" y="10" width="44.5" height="22.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -46,7 +46,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="detail" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lgs-Ma-jhU">
-                                                    <rect key="frame" x="70" y="42" width="324" height="20.5"/>
+                                                    <rect key="frame" x="70" y="42.5" width="324" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -242,19 +242,11 @@
                                                         <action selector="insertEditQRCode:" destination="NZ5-gY-QLD" eventType="touchUpInside" id="x8N-il-Ddb"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ldN-1v-UET">
-                                                    <rect key="frame" x="296" y="15" width="41.5" height="31.5"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="plain" image="mic.fill" catalog="system"/>
-                                                </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="26F-C7-QpZ" firstAttribute="leading" secondItem="ldN-1v-UET" secondAttribute="trailing" constant="15" id="3cM-Fp-GWI"/>
                                                 <constraint firstAttribute="trailing" secondItem="26F-C7-QpZ" secondAttribute="trailing" constant="15" id="KS4-Hn-jAg"/>
                                                 <constraint firstAttribute="bottom" secondItem="26F-C7-QpZ" secondAttribute="bottom" constant="15" id="R4R-9W-1wz"/>
                                                 <constraint firstItem="26F-C7-QpZ" firstAttribute="top" secondItem="7yt-9a-mb7" secondAttribute="top" constant="15" id="Wcv-Ki-58z"/>
-                                                <constraint firstAttribute="bottom" secondItem="ldN-1v-UET" secondAttribute="bottom" constant="15" id="e6i-nh-rha"/>
-                                                <constraint firstItem="ldN-1v-UET" firstAttribute="top" secondItem="7yt-9a-mb7" secondAttribute="top" constant="15" id="gJo-vn-GwF"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -360,7 +352,6 @@
     </scenes>
     <resources>
         <image name="house" catalog="system" width="128" height="106"/>
-        <image name="mic.fill" catalog="system" width="108" height="128"/>
         <image name="pen" width="128" height="128"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="qrcode.viewfinder" catalog="system" width="128" height="115"/>

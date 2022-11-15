@@ -79,8 +79,6 @@ class AddNewDataViewController: UIViewController {
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
-    @IBAction func insertSpeech(_ sender: UIButton) {
-    }
     @IBAction func insertQRCode(_ sender: UIButton) {
         guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
             fatalError("can not find QRScanner VC")
@@ -342,6 +340,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                // 轉帳不需顯示QRCode scanner
+                qrCell.qrButton.isHidden = true
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
@@ -422,6 +422,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                // 支出、收入要顯示QRCode scanner
+                qrCell.qrButton.isHidden = false
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
