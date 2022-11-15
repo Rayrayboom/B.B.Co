@@ -272,7 +272,7 @@ extension PieChartViewController: UITableViewDataSource {
         guard let pieCell = tableView.dequeueReusableCell(withIdentifier: "pieCell") as? PieChartTableViewCell else {
             fatalError("can not create cell")
         }
-        
+
         pieCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
         pieCell.nameLabel.text = totalData[indexPath.row].category//data[indexPath.row].category
         pieCell.amountLabel.text = totalData[indexPath.row].amount//data[indexPath.row].amount
