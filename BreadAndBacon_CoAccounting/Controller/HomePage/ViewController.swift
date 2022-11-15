@@ -168,7 +168,8 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let presentEditVC = self.storyboard?.instantiateViewController(withIdentifier: "editVC") as? EditViewController else {
+        guard let presentEditVC = self.storyboard?.instantiateViewController(withIdentifier: "editVC") as? EditViewController
+        else {
             fatalError("can not find editVC")
         }
         // 把homeVC自己傳給editVC

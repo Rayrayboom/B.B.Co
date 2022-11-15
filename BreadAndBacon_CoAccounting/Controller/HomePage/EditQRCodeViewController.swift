@@ -86,11 +86,11 @@ class EditQRCodeViewController: UIViewController {
         captureSession.stopRunning()
         // 執行delegate + 塞掃描內容
         self.delegate?.getMessage(message: messageLabel.text ?? "")
-        print(messageLabel.text)
+//        print(messageLabel.text)
 
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
-    
+
     // 解析invoice data
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
