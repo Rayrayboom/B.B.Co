@@ -23,6 +23,11 @@ class PieChartViewController: UIViewController {
         }
     }
 
+    // 用來裝整理完重複品項的資料dictionary
+    var total: [String : Int] = [:]
+
+    var totalData: [Account] = []
+
     // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
     var segmentTag: Int? {
         didSet {
@@ -108,12 +113,13 @@ class PieChartViewController: UIViewController {
         pieTableView.reloadData()
     }
 
+// MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(document: String, subCollection: String, indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(document).collection(subCollection).document(data[indexPathRow].id)
-        documentRef.delete()
-    }
+//    func deleteSpecificData(document: String, subCollection: String, indexPathRow: Int) {
+//        let dataBase = Firestore.firestore()
+//        let documentRef = dataBase.collection("user").document(document).collection(subCollection).document(data[indexPathRow].id)
+//        documentRef.delete()
+//    }
 
 // MARK: - Pie Chart
     // 建立圓餅圖view（生成物件、位置、內容）
@@ -143,22 +149,27 @@ class PieChartViewController: UIViewController {
 
     // 圓餅圖內容
     func pieChartViewDataInput() {
-        var total: [String: Double] = [:]
+//        var total: [String: Double] = [:]
         for num in data {
             guard let category = num.category else { return }
             if total[category] == nil {
-                total[num.category ?? ""] = Double(num.amount)
+                total[num.category ?? ""] = Int(num.amount)
             } else {
                 guard var amount = total[category] else { return }
-                amount += Double(num.amount)
+                amount += Int(num.amount)
                 ?? 0
                 total[category] = amount
             }
         }
 
         for num in total.keys {
-            pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
+            pieChartDataEntries.append(PieChartDataEntry.init(value: Double(total[num] ?? 0), label: num, icon: nil))
         }
+        
+        print("ddddd", data)
+        print("ppppp", total)
+        print("iiiii", pieChartDataEntries)
+        print("dsdsds", totalData)
     }
 
     // 圓餅圖規格
@@ -217,6 +228,8 @@ class PieChartViewController: UIViewController {
     // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
     func fetchUser(subCollection: String) {
         data = []
+        total = [:]
+        totalData = []
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
         let dataBase = Firestore.firestore()
@@ -249,35 +262,39 @@ extension PieChartViewController: UITableViewDelegate {
 
 extension PieChartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
+        for num in total.keys {
+            totalData.append(Account.init(id: "autoId", amount: String(total[num] ?? 0), category: num, date: "autoDate", month: "autoMonth"))
+        }
+        return totalData.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let pieCell = tableView.dequeueReusableCell(withIdentifier: "pieCell") as? PieChartTableViewCell else {
             fatalError("can not create cell")
         }
-
+        
         pieCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
-        pieCell.nameLabel.text = data[indexPath.row].category
-        pieCell.amountLabel.text = data[indexPath.row].amount
+        pieCell.nameLabel.text = totalData[indexPath.row].category//data[indexPath.row].category
+        pieCell.amountLabel.text = totalData[indexPath.row].amount//data[indexPath.row].amount
 
         return pieCell
     }
 
+// MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
     // tableView右滑刪除 & 連動firebase
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            tableView.beginUpdates()
-            // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
-            switch segmentTag {
-            case 1:
-                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "revenue", indexPathRow: indexPath.row)
-            default:
-                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "expenditure", indexPathRow: indexPath.row)
-            }
-            data.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            tableView.endUpdates()
-        }
-    }
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            tableView.beginUpdates()
+//            // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
+//            switch segmentTag {
+//            case 1:
+//                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "revenue", indexPathRow: indexPath.row)
+//            default:
+//                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "expenditure", indexPathRow: indexPath.row)
+//            }
+//            data.remove(at: indexPath.row)
+//            tableView.deleteRows(at: [indexPath], with: .fade)
+//            tableView.endUpdates()
+//        }
+//    }
 }
