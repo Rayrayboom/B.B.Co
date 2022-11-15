@@ -99,3 +99,21 @@ struct Book: Codable {
         case userId = "user_id"
     }
 }
+
+struct Invoice: Codable {
+    let msg, code, invNum, invoiceTime: String
+    let invStatus, sellerName, invPeriod, sellerAddress: String
+    let sellerBan, buyerBan, currency: String
+    let details: [InvDetail]
+    let invDate: String
+}
+
+struct InvDetail: Codable {
+    let unitPrice, amount, quantity, rowNum: String
+    let detailDescription: String
+
+    enum CodingKeys: String, CodingKey {
+        case unitPrice, amount, quantity, rowNum
+        case detailDescription = "description"
+    }
+}

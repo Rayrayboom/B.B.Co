@@ -58,6 +58,15 @@ class AddNewDataViewController: UIViewController {
             addNewDadaTableView.reloadData()
         }
     }
+    // 存decode後的發票資料
+    var invoice: Invoice? {
+        didSet {
+            DispatchQueue.main.async {
+                self.addNewDadaTableView.reloadData()
+            }
+        }
+    }
+    var items: String = ""
 
     // for QRCode func use
     var content: String = "" {
@@ -70,8 +79,6 @@ class AddNewDataViewController: UIViewController {
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
-    @IBAction func insertSpeech(_ sender: UIButton) {
-    }
     @IBAction func insertQRCode(_ sender: UIButton) {
         guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
             fatalError("can not find QRScanner VC")
@@ -313,7 +320,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                     default:
                         addDataCell.content = accountContent
                     }
-
                 default:
                     addDataCell.content = accountContent
                 }
@@ -334,6 +340,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                // 轉帳不需顯示QRCode scanner
+                qrCell.qrButton.isHidden = true
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
@@ -341,9 +349,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                // 轉帳頁面不需掃描發票，故給空值
                 detailCell.detailTextView.text = ""
-                // 把message的值塞給detailTextView
-                detailCell.detailTextView.text = messageFromQRVC
                 detailCell.delegate = self
                 return detailCell
             }
@@ -373,17 +380,31 @@ extension AddNewDataViewController: UITableViewDataSource {
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
+                case 0:
+                    // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
+                    if messageFromQRVC != "" {
+                        var amo = 0
+                        for num in 0..<(invoice?.details.count ?? 0) {
+                            amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
+                        }
+                        addDataCell.contentTextField.text = String(amo)
+                        print("aaaaaa", amo)
+                    }
                 case 1:
                     switch segmentTag {
                     case 0:
                         addDataCell.content = costContent
+                        addDataCell.contentTextField.text = ""
                     case 1:
                         addDataCell.content = incomeContent
+                        addDataCell.contentTextField.text = ""
                     default:
                         addDataCell.content = accountContent
+                        addDataCell.contentTextField.text = ""
                     }
                 default:
                     addDataCell.content = accountContent
+                    addDataCell.contentTextField.text = ""
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
@@ -401,6 +422,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                // 支出、收入要顯示QRCode scanner
+                qrCell.qrButton.isHidden = false
                 return qrCell
             } else {
                 guard let detailCell = tableView.dequeueReusableCell(
@@ -408,9 +431,17 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                detailCell.detailTextView.text = ""
+                // 存放invoice的string在fetch data之前要先清空
+                items = ""
                 // 把message的值塞給detailTextView
-                detailCell.detailTextView.text = messageFromQRVC
+                for item in 0..<(invoice?.details.count ?? 0) {
+                    guard let invoice = invoice else {
+                        fatalError("pass invDetail data error")
+                    }
+                    items.append("\(invoice.details[item].detailDescription)\n")
+                    detailCell.detailTextView.text = items
+                }
+
                 detailCell.delegate = self
                 return detailCell
             }
@@ -508,5 +539,13 @@ extension AddNewDataViewController: ViewControllerDelegate {
 extension AddNewDataViewController: QRCodeViewControllerDelegate {
     func getMessage(message: String) {
         messageFromQRVC = message
+    }
+
+    func getInvDetail(didGet items: Invoice) {
+        invoice = items
+    }
+
+    func getInvDetail(didFailwith error: Error) {
+        print("can not parse invoice data")
     }
 }

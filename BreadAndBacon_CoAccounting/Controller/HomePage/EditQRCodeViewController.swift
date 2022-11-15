@@ -11,6 +11,8 @@ import AVFoundation
 // QRCode掃描後的內容以protocol-delegate傳給addNewData page_detail cell
 protocol EditQRCodeViewControllerDelegate: AnyObject {
     func getMessage(message: String)
+    func getInvDetail(didGet items: Invoice)
+    func getInvDetail(didFailwith error: Error)
 }
 
 class EditQRCodeViewController: UIViewController {
@@ -84,9 +86,74 @@ class EditQRCodeViewController: UIViewController {
         captureSession.stopRunning()
         // 執行delegate + 塞掃描內容
         self.delegate?.getMessage(message: messageLabel.text ?? "")
-        print(messageLabel.text)
+//        print(messageLabel.text)
 
         self.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+
+    // 解析invoice data
+    func decodeInvoice(message: String) {
+        let invNum = message.prefix(10)
+        let encrypt = message.prefix(24)
+        var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
+        var translateYear = (Int(invYear) ?? 0) + 1911
+        invYear = String(translateYear)
+
+        let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
+        let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
+        let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
+        let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
+
+        // POST API
+        sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
+
+        print("invNum", invNum)
+        print("encrypt", encrypt)
+        print("invYear", invYear)
+        print("invMonth", invMonth)
+        print("invDay", invDay)
+        print("randomNumber", randomNumber)
+        print("sellerID", sellerID)
+    }
+
+    // POST API and parse data
+    func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
+        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=10000&randomNumber=\(randomNumber)&appID=EINV0202210362275")
+        var request = URLRequest(url: url!)
+        request.httpMethod = "POST"
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
+            if let error = error {
+                self.delegate?.getInvDetail(didFailwith: error)
+                print(error)
+                return
+            }
+
+            guard let response = response as? HTTPURLResponse,
+                  response.statusCode == 200 else {
+                print("response error")
+                return
+            }
+
+            if let data = data {
+                if let detail = self.parseData(jsonData: data) {
+                    self.delegate?.getInvDetail(didGet: detail)
+                }
+            }
+        })
+        task.resume()
+    }
+
+    func parseData(jsonData: Data) -> Invoice? {
+        do {
+            let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
+            // 測試看是否有抓到資料
+            print("=== result is \(jsonData)")
+            return result
+        }catch {
+            delegate?.getInvDetail(didFailwith: error)
+            print("result error")
+            return nil
+        }
     }
 
     // 掃到資料後跳出提醒顯示內容
@@ -128,6 +195,8 @@ extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
             if metadataObj.stringValue != nil {
                 messageLabel.text = metadataObj.stringValue
                 contentConfig()
+                // 解析invoice data
+                decodeInvoice(message: messageLabel.text ?? "")
 //                alert()
             }
         }

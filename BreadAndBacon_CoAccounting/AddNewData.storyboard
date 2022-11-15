@@ -153,22 +153,11 @@
                                                         <action selector="insertQRCode:" destination="FXA-dv-yEb" eventType="touchUpInside" id="Xwy-Z7-Qkc"/>
                                                     </connections>
                                                 </button>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AMe-Zb-hgH">
-                                                    <rect key="frame" x="296" y="15" width="41.5" height="31.5"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="plain" image="mic.fill" catalog="system"/>
-                                                    <connections>
-                                                        <action selector="insertSpeech:" destination="FXA-dv-yEb" eventType="touchUpInside" id="wSq-I7-gyb"/>
-                                                    </connections>
-                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="iRh-D2-x4X" secondAttribute="trailing" constant="15" id="G9R-So-7zt"/>
-                                                <constraint firstAttribute="bottom" secondItem="AMe-Zb-hgH" secondAttribute="bottom" constant="15" id="LyD-h0-18k"/>
-                                                <constraint firstItem="AMe-Zb-hgH" firstAttribute="top" secondItem="P8H-gH-xUJ" secondAttribute="top" constant="15" id="OHK-ju-re5"/>
                                                 <constraint firstAttribute="bottom" secondItem="iRh-D2-x4X" secondAttribute="bottom" constant="15" id="QC4-Ye-iK9"/>
                                                 <constraint firstItem="iRh-D2-x4X" firstAttribute="top" secondItem="P8H-gH-xUJ" secondAttribute="top" constant="15" id="Vvc-i7-ipt"/>
-                                                <constraint firstItem="iRh-D2-x4X" firstAttribute="leading" secondItem="AMe-Zb-hgH" secondAttribute="trailing" constant="15" id="juj-c8-LKp"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -260,7 +249,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="mic.fill" catalog="system" width="108" height="128"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="qrcode.viewfinder" catalog="system" width="128" height="115"/>
         <systemColor name="labelColor">

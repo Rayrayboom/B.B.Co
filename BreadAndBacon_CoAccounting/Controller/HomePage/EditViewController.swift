@@ -61,6 +61,16 @@ class EditViewController: UIViewController {
             editTableView.reloadData()
         }
     }
+    // 存decode後的發票資料
+    var invoice: Invoice? {
+        didSet {
+            DispatchQueue.main.async {
+                self.editTableView.reloadData()
+            }
+        }
+    }
+    var items: String = ""
+
     var content: String = "" {
         didSet {
             editTableView.reloadData()
@@ -264,8 +274,18 @@ extension EditViewController: UITableViewDataSource {
             // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
             switch indexPath.row {
             case 0:
-                editData.amountTextField = self.data?.amount ?? ""
-                editDataCell.contentTextField.text = self.data?.amount
+                // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
+                if messageFromQRVC != "" {
+                    var amo = 0
+                    for num in 0..<(invoice?.details.count ?? 0) {
+                        amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
+                    }
+                    editDataCell.contentTextField.text = String(amo)
+                    print("aaaaaa", amo)
+                } else {
+                    editData.amountTextField = self.data?.amount ?? ""
+                    editDataCell.contentTextField.text = self.data?.amount
+                }
             case 1:
                 switch segmentTag {
                 case 0:
@@ -316,8 +336,18 @@ extension EditViewController: UITableViewDataSource {
             editData.detailTextView = self.data?.detail ?? ""
             // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一班手動編輯(isTappedQR == 0)則顯示原textView資訊
             if isTappedQR == 1 {
+                // 存放invoice的string在fetch data之前要先清空
+                items = ""
                 // 把message的值塞給detailTextView
-                editDetailCell.detailTextView.text = messageFromQRVC
+                for item in 0..<(invoice?.details.count ?? 0) {
+                    guard let invoice = invoice else {
+                        fatalError("pass invDetail data error")
+                    }
+                    items.append("\(invoice.details[item].detailDescription)\n")
+                    editDetailCell.detailTextView.text = items
+                }
+                // 把message的值塞給detailTextView
+//                editDetailCell.detailTextView.text = messageFromQRVC
             } else {
                 editDetailCell.detailTextView.text = self.data?.detail
             }
@@ -404,5 +434,13 @@ extension EditViewController: EditQRCodeViewControllerDelegate {
     func getMessage(message: String) {
         print("wwwww??")
         messageFromQRVC = message
+    }
+
+    func getInvDetail(didGet items: Invoice) {
+        invoice = items
+    }
+
+    func getInvDetail(didFailwith error: Error) {
+        print("can not parse invoice data")
     }
 }
