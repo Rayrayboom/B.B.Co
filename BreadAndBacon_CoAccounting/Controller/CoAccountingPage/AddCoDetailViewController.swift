@@ -87,12 +87,12 @@ class AddCoDetailViewController: UIViewController {
     // MARK: - 上傳資料到Firebase
     func createCoAccountData(document: String, subCollection: String) {
         let dataBase = Firestore.firestore()
-        let fetchDocumentID = dataBase.collection("co-account")
+        let documentID = dataBase.collection("co-account")
             .document(document)
             .collection(subCollection)
             .document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = fetchDocumentID.documentID
+        let identifier = documentID.documentID
         // 需存id，後續delete要抓取ID刪除對應資料
         let account = Account(
             id: identifier,
@@ -109,8 +109,8 @@ class AddCoDetailViewController: UIViewController {
             detail: nil,
             user: data.userTextField)
         do {
-            try fetchDocumentID.setData(from: account)
-            print("success create document. ID: \(fetchDocumentID.documentID)")
+            try documentID.setData(from: account)
+            print("success create document. ID: \(documentID.documentID)")
         } catch {
             print(error)
         }

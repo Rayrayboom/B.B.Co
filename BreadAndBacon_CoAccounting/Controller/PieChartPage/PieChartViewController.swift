@@ -93,10 +93,10 @@ class PieChartViewController: UIViewController {
 
     // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)，只要重新fetch一次資料即可，因為每fetch一次data就會更新，data didSet就會執行重新畫pie chart的動作
     @objc func didMonthChanged() {
-        if segmentTag == 0 {
-            fetchUser(subCollection: "expenditure")
-        } else {
+        if segmentTag == 1 {
             fetchUser(subCollection: "revenue")
+        } else {
+            fetchUser(subCollection: "expenditure")
         }
     }
 
@@ -114,12 +114,12 @@ class PieChartViewController: UIViewController {
     }
 
 // MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-//    func deleteSpecificData(document: String, subCollection: String, indexPathRow: Int) {
-//        let dataBase = Firestore.firestore()
-//        let documentRef = dataBase.collection("user").document(document).collection(subCollection).document(data[indexPathRow].id)
-//        documentRef.delete()
-//    }
+//     從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(document: String, subCollection: String, indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document(document).collection(subCollection).document(data[indexPathRow].id)
+        documentRef.delete()
+    }
 
 // MARK: - Pie Chart
     // 建立圓餅圖view（生成物件、位置、內容）
@@ -149,15 +149,13 @@ class PieChartViewController: UIViewController {
 
     // 圓餅圖內容
     func pieChartViewDataInput() {
-//        var total: [String: Double] = [:]
         for num in data {
             guard let category = num.category else { return }
             if total[category] == nil {
                 total[num.category ?? ""] = Int(num.amount)
             } else {
                 guard var amount = total[category] else { return }
-                amount += Int(num.amount)
-                ?? 0
+                amount += Int(num.amount) ?? 0
                 total[category] = amount
             }
         }
@@ -165,11 +163,11 @@ class PieChartViewController: UIViewController {
         for num in total.keys {
             pieChartDataEntries.append(PieChartDataEntry.init(value: Double(total[num] ?? 0), label: num, icon: nil))
         }
-        
+
         print("ddddd", data)
         print("ppppp", total)
         print("iiiii", pieChartDataEntries)
-        print("dsdsds", totalData)
+//        print("dsdsds", totalData)
     }
 
     // 圓餅圖規格
@@ -229,7 +227,7 @@ class PieChartViewController: UIViewController {
     func fetchUser(subCollection: String) {
         data = []
         total = [:]
-        totalData = []
+//        totalData = []
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
         let dataBase = Firestore.firestore()
@@ -262,10 +260,11 @@ extension PieChartViewController: UITableViewDelegate {
 
 extension PieChartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        for num in total.keys {
-            totalData.append(Account.init(id: "autoId", amount: String(total[num] ?? 0), category: num, date: "autoDate", month: "autoMonth"))
-        }
-        return totalData.count
+//        for num in total.keys {
+//            totalData.append(Account.init(id: "autoId", amount: String(total[num] ?? 0), category: num, date: "autoDate", month: "autoMonth"))
+//        }
+//        return totalData.count
+        return data.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -274,27 +273,29 @@ extension PieChartViewController: UITableViewDataSource {
         }
 
         pieCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
-        pieCell.nameLabel.text = totalData[indexPath.row].category//data[indexPath.row].category
-        pieCell.amountLabel.text = totalData[indexPath.row].amount//data[indexPath.row].amount
+//        pieCell.nameLabel.text = totalData[indexPath.row].category//data[indexPath.row].category
+//        pieCell.amountLabel.text = totalData[indexPath.row].amount//data[indexPath.row].amount
+        pieCell.nameLabel.text = data[indexPath.row].category
+        pieCell.amountLabel.text = data[indexPath.row].amount
 
         return pieCell
     }
 
 // MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
-    // tableView右滑刪除 & 連動firebase
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            tableView.beginUpdates()
-//            // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
-//            switch segmentTag {
-//            case 1:
-//                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "revenue", indexPathRow: indexPath.row)
-//            default:
-//                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "expenditure", indexPathRow: indexPath.row)
-//            }
-//            data.remove(at: indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//            tableView.endUpdates()
-//        }
-//    }
+//     tableView右滑刪除 & 連動firebase
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            tableView.beginUpdates()
+            // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
+            switch segmentTag {
+            case 1:
+                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "revenue", indexPathRow: indexPath.row)
+            default:
+                deleteSpecificData(document: "vy4oSHvNXfzBAKzwj95x", subCollection: "expenditure", indexPathRow: indexPath.row)
+            }
+            data.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.endUpdates()
+        }
+    }
 }

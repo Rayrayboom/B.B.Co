@@ -78,14 +78,15 @@ class CoBookViewController: UIViewController {
     // MARK: - 上傳 book id & user_id 到Firebase
     func createCoAccountData() {
         let dataBase = Firestore.firestore()
-        let fetchDocumentID = dataBase.collection("co-account").document()
+        let documentID = dataBase.collection("co-account").document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = fetchDocumentID.documentID
+        let identifier = documentID.documentID
+//        let prefixID = documentID.document(identifier.prefix(5))
         // 需存id，後續delete要抓取ID刪除對應資料
         let book = Book(id: identifier, name: bookName, userId: userId)
         do {
-            try fetchDocumentID.setData(from: book)
-            print("success create document. ID: \(fetchDocumentID.documentID)")
+            try documentID.setData(from: book)
+            print("success create document. ID: \(documentID.documentID)")
         } catch {
             print(error)
         }

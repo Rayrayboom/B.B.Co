@@ -7,6 +7,7 @@
 import AuthenticationServices
 import UIKit
 import FirebaseFirestore
+import SwiftKeychainWrapper
 
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
@@ -34,9 +35,12 @@ class SignInViewController: UIViewController {
         controller.performRequests()
     }
 
+    // 建立使用者資料，document id設為user id(因為user id一人對應一組不會變)
     func createUserIdentify(id: String, email: String, name: String) {
         let dataBase = Firestore.firestore()
+        // 建立firebase路徑
         let userID = dataBase.collection("user")
+        // 於路徑中新增一筆document，document id為user id
         let identifier = userID.document(id)
         let collection = User(id: id, email: email, name: name)
 
@@ -64,7 +68,6 @@ class SignInViewController: UIViewController {
 //                self.userContent.append(contentsOf: user)
 //            }
 //    }
-
 }
 
 extension SignInViewController: ASAuthorizationControllerDelegate {
@@ -75,14 +78,25 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let credentials as ASAuthorizationAppleIDCredential:
+            let user = credentials.user
             let firstName = credentials.fullName?.givenName
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
-            createUserIdentify(id: credentials.user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
-            print(credentials.user)
-            print(firstName)
-            print(lastName)
-            print(email)
+            // 當email不為空時表示使用者為第一次登入，故新增使用者資訊
+            if email != nil {
+                createUserIdentify(id: credentials.user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
+            }
+            // 把user id存在ketchain的"id"這個key裡(key-value的概念)
+            KeychainWrapper.standard.set(user, forKey: "id")
+            // 從ketchain的"id"這個key裡取出user id(key-value的概念)
+            let getId = KeychainWrapper.standard.string(forKey: "id")
+
+            // 測試是否拿到資料
+//            print(getId)
+//            print(credentials.user)
+//            print(firstName)
+//            print(lastName)
+//            print(email)
 
             break
         default:
