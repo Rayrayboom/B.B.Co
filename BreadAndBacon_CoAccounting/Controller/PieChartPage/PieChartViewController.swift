@@ -23,10 +23,9 @@ class PieChartViewController: UIViewController {
         }
     }
 
-    // 用來裝整理完重複品項的資料dictionary
-    var total: [String : Int] = [:]
+//    var total: [String : Int] = [:]
 
-    var totalData: [Account] = []
+//    var totalData: [Account] = []
 
     // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
     var segmentTag: Int? {
@@ -149,6 +148,9 @@ class PieChartViewController: UIViewController {
 
     // 圓餅圖內容
     func pieChartViewDataInput() {
+// MARK: - total放全域變數整個pie顯示金額會錯誤（待找原因）
+        // 用來裝整理完重複品項的資料dictionary
+        var total: [String : Int] = [:]
         for num in data {
             guard let category = num.category else { return }
             if total[category] == nil {
@@ -226,7 +228,7 @@ class PieChartViewController: UIViewController {
     // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
     func fetchUser(subCollection: String) {
         data = []
-        total = [:]
+//        total = [:]
 //        totalData = []
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
