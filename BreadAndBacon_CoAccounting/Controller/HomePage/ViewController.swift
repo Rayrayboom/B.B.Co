@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseFirestore
+import SwiftKeychainWrapper
 
 protocol ViewControllerDelegate: AnyObject {
     func getDate(currentDate: String)
@@ -31,6 +32,7 @@ class ViewController: UIViewController {
 //    let queueGroup = DispatchQueue.global()
 // MARK: - 注意！
     var month: String = ""
+    var getId: String = ""
 
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -38,6 +40,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
 
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
@@ -91,7 +94,7 @@ class ViewController: UIViewController {
     }
 
     // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
-    func fetchUserSpecific(subCollection: String) {
+    func fetchUserSpecific(id: String, subCollection: String) {
 // MARK: - 注意！
 //        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
 //        month = BBCDateFormatter.shareFormatter.string(from: self.date)
@@ -103,7 +106,7 @@ class ViewController: UIViewController {
         // 進入group
         self.group.enter()
         // 因為UIDatePicker一定要在main thread做，但group是在global執行，因此先在全域宣告一個Date型別的變數，當fetch data抓date picker的日期資料時，改用全域變數的date拿到date的資料(self.date)
-        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)")
+        dataBase.collection("user/\(id)/\(subCollection)")
             .whereField("date", isEqualTo: BBCDateFormatter.shareFormatter.string(from: self.date))
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -120,12 +123,12 @@ class ViewController: UIViewController {
     }
 
     // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUserCategory(subCollection: String) {
+    func fetchUserCategory(id: String, subCollection: String) {
         let dataBase = Firestore.firestore()
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
         // 進入group
         self.group.enter()
-        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
+        dataBase.collection("user/\(id)/\(subCollection)_category")
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -144,12 +147,12 @@ class ViewController: UIViewController {
         // 點選新的日期時，先把存資料、種類的array清空，讓新fetch data塞最新資料，才不會一直append下去
         data = []
         category = []
-        fetchUserSpecific(subCollection: "expenditure")
-        fetchUserCategory(subCollection: "expenditure")
-        fetchUserSpecific(subCollection: "revenue")
-        fetchUserCategory(subCollection: "revenue")
-        fetchUserSpecific(subCollection: "account")
-        fetchUserCategory(subCollection: "account")
+        fetchUserSpecific(id: getId, subCollection: "expenditure")
+        fetchUserCategory(id: getId, subCollection: "expenditure")
+        fetchUserSpecific(id: getId, subCollection: "revenue")
+        fetchUserCategory(id: getId, subCollection: "revenue")
+        fetchUserSpecific(id: getId, subCollection: "account")
+        fetchUserCategory(id: getId, subCollection: "account")
 
         // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
         group.notify(queue: .main) {
@@ -159,9 +162,9 @@ class ViewController: UIViewController {
     }
 
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(subCollection: String, indexPathRow: Int) {
+    func deleteSpecificData(id: String, subCollection: String, indexPathRow: Int) {
         let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document(data[indexPathRow].id)
+        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(data[indexPathRow].id)
         documentRef.delete()
     }
 }
@@ -211,9 +214,9 @@ extension ViewController: UITableViewDataSource {
         if editingStyle == .delete {
             tableView.beginUpdates()
             // 順序問題，需要先偵測對應indexPath資料再進行刪除
-            deleteSpecificData(subCollection: "expenditure", indexPathRow: indexPath.row)
-            deleteSpecificData(subCollection: "revenue", indexPathRow: indexPath.row)
-            deleteSpecificData(subCollection: "account", indexPathRow: indexPath.row)
+            deleteSpecificData(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row)
+            deleteSpecificData(id: getId, subCollection: "revenue", indexPathRow: indexPath.row)
+            deleteSpecificData(id: getId, subCollection: "account", indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.endUpdates()

@@ -92,7 +92,7 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let getId = KeychainWrapper.standard.string(forKey: "id")
 
             // 測試是否拿到資料
-//            print(getId)
+//            print("ggggg", getId)
 //            print(credentials.user)
 //            print(firstName)
 //            print(lastName)

@@ -11,6 +11,7 @@ import AVFoundation
 import Vision
 import VisionKit
 import FirebaseFirestore
+import SwiftKeychainWrapper
 
 struct DataModel {
     var amountTextField: String = ""
@@ -76,7 +77,7 @@ class EditViewController: UIViewController {
             editTableView.reloadData()
         }
     }
-
+    var getId: String = ""
 
     let group = DispatchGroup()
     let queueGroup = DispatchQueue.global()
@@ -98,7 +99,7 @@ class EditViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
         editTableView.delegate = self
         editTableView.dataSource = self
 
@@ -109,9 +110,9 @@ class EditViewController: UIViewController {
         // 點選pencil時，執行更新編輯
         saveEditData()
         // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
-        fetchUser(subCollection: "expenditure")
-        fetchUser(subCollection: "revenue")
-        fetchUser(subCollection: "account")
+        fetchUser(id: getId, subCollection: "expenditure")
+        fetchUser(id: getId, subCollection: "revenue")
+        fetchUser(id: getId, subCollection: "account")
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -153,9 +154,9 @@ class EditViewController: UIViewController {
     }
 
     // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUser(subCollection: String) {
+    func fetchUser(id: String, subCollection: String) {
         let dataBase = Firestore.firestore()
-        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
+        dataBase.collection("user/\(id)/\(subCollection)_category")
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -178,12 +179,12 @@ class EditViewController: UIViewController {
     }
 
     // 點選對應細項編輯資料
-    func editUser(subCollection: String, documentID: String) {
+    func editUser(id: String, subCollection: String, documentID: String) {
         let dataBase = Firestore.firestore()
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
         // 進入group
         self.group.enter()
-        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)").document("\(documentID)").updateData([
+        dataBase.collection("user/\(id)/\(subCollection)").document("\(documentID)").updateData([
             "date": editData.dateTime,
             "amount": editData.amountTextField,
             "category": editData.categoryTextField,
@@ -201,9 +202,9 @@ class EditViewController: UIViewController {
     }
 
     func editAllUser() {
-        editUser(subCollection: "expenditure", documentID: data?.id ?? "")
-        editUser(subCollection: "revenue", documentID: data?.id ?? "")
-        editUser(subCollection: "account", documentID: data?.id ?? "")
+        editUser(id: getId, subCollection: "expenditure", documentID: data?.id ?? "")
+        editUser(id: getId, subCollection: "revenue", documentID: data?.id ?? "")
+        editUser(id: getId, subCollection: "account", documentID: data?.id ?? "")
 
         // notify放這邊是因為要等所有edit API執行完後再執行dismiss VC
         group.notify(queue: .main) {

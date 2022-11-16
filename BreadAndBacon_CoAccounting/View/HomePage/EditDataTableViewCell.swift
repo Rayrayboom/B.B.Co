@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseFirestore
+import SwiftKeychainWrapper
 
 protocol EditDataTableViewCellDelegate: AnyObject {
     func addNewContent(_ cell: EditDataTableViewCell)
@@ -44,6 +45,7 @@ class EditDataTableViewCell: UITableViewCell {
             }
         }
     }
+    var getId: String = ""
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var contentTextField: UITextField! {
@@ -56,6 +58,7 @@ class EditDataTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -88,23 +91,23 @@ class EditDataTableViewCell: UITableViewCell {
             case 0:
                 switch self.indexPath?.item {
                 case 1:
-                    self.createCategory(subCollection: "expenditure_category")
+                    self.createCategory(id: self.getId, subCollection: "expenditure_category")
                 case 2:
-                    self.createCategory(subCollection: "account_category")
+                    self.createCategory(id: self.getId, subCollection: "account_category")
                 default:
                     return
                 }
             case 1:
                 switch self.indexPath?.item {
                 case 1:
-                    self.createCategory(subCollection: "revenue_category")
+                    self.createCategory(id: self.getId, subCollection: "revenue_category")
                 case 2:
-                    self.createCategory(subCollection: "account_category")
+                    self.createCategory(id: self.getId, subCollection: "account_category")
                 default:
                     return
                 }
             default:
-                self.createCategory(subCollection: "account_category")
+                self.createCategory(id: self.getId, subCollection: "account_category")
             }
         }
 
@@ -121,9 +124,9 @@ class EditDataTableViewCell: UITableViewCell {
     }
 
     // 新增對應category細項
-    func createCategory(subCollection: String) {
+    func createCategory(id: String, subCollection: String) {
         let db = Firestore.firestore()
-        let fetchDocumentID = db.collection("user").document("vy4oSHvNXfzBAKzwj95x").collection(subCollection).document()
+        let fetchDocumentID = db.collection("user").document(id).collection(subCollection).document()
         let collection = Category(id: fetchDocumentID.documentID, title: controller.textFields?[0].text ?? "")
 
         do {

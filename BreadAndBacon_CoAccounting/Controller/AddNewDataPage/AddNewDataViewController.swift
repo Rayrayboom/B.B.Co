@@ -9,6 +9,7 @@ import UIKit
 import SwiftUI
 import AVFoundation
 import FirebaseFirestore
+import SwiftKeychainWrapper
 
 
 // MARK: - expenditure
@@ -74,6 +75,8 @@ class AddNewDataViewController: UIViewController {
             addNewDadaTableView.reloadData()
         }
     }
+    // 儲存使用者keyChain
+    var getId: String = ""
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
@@ -89,6 +92,9 @@ class AddNewDataViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // 使用者登入後就可以抓到存在keyChain裡的user id
+        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
+        print("get id", getId)
         addNewDadaTableView.delegate = self
         addNewDadaTableView.dataSource = self
         addNewDadaTableView.estimatedRowHeight = UITableView.automaticDimension
@@ -100,9 +106,9 @@ class AddNewDataViewController: UIViewController {
         // 點選+時，執行新增資料到firebase
         saveNewData()
         // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
-        fetchUserCategory(subCollection: "expenditure")
-        fetchUserCategory(subCollection: "revenue")
-        fetchUserCategory(subCollection: "account")
+        fetchUserCategory(id: getId, subCollection: "expenditure")
+        fetchUserCategory(id: getId, subCollection: "revenue")
+        fetchUserCategory(id: getId, subCollection: "account")
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -139,20 +145,20 @@ class AddNewDataViewController: UIViewController {
     @objc func savePage() {
         switch segmentTag {
         case 0:
-            createUserData(subCollection: "expenditure")
+            createUserData(id: getId, subCollection: "expenditure")
         case 1:
-            createUserData(subCollection: "revenue")
+            createUserData(id: getId, subCollection: "revenue")
         default:
-            createUserData(subCollection: "account")
+            createUserData(id: getId, subCollection: "account")
         }
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     // MARK: - 上傳資料到Firebase
-    func createUserData(subCollection: String) {
+    func createUserData(id: String, subCollection: String) {
         let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("user")
-            .document("vy4oSHvNXfzBAKzwj95x")
+            .document(id)
             .collection(subCollection)
             .document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
@@ -222,9 +228,9 @@ class AddNewDataViewController: UIViewController {
         }
     }
     // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUserCategory(subCollection: String) {
+    func fetchUserCategory(id: String, subCollection: String) {
         let dataBase = Firestore.firestore()
-        dataBase.collection("user/vy4oSHvNXfzBAKzwj95x/\(subCollection)_category")
+        dataBase.collection("user/\(id)/\(subCollection)_category")
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
