@@ -14,8 +14,16 @@ class SignInViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(signInButton)
-        signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
+        // 判斷當使用者已登入後，重開app不需再登入一次，因為登出會刪掉keychain的user id，故用這個條件來判斷
+        if (KeychainWrapper.standard.string(forKey: "id") != nil) {
+            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let viewController = mainStoryboard.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
+            UIApplication.shared.windows.first?.rootViewController = viewController
+            UIApplication.shared.windows.first?.makeKeyAndVisible()
+        } else {
+            view.addSubview(signInButton)
+            signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -52,37 +60,19 @@ class SignInViewController: UIViewController {
         }
     }
 
-    func checkUserAccount(id: String) {
-        let dataBase = Firestore.firestore()
-        let docRef = dataBase.collection("user").document(id)
-
-        docRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-                print("Document data: \(dataDescription)")
-            } else {
-                print("Document does not exist")
-            }
-        }
-    }
-    
-    
-
-//    // 從Firebase上fetch全部user資料，並append到userContent裡
-//    func fetchUser() {
+    // 確認user是否為第一次登入
+//    func checkUserAccount(id: String) {
 //        let dataBase = Firestore.firestore()
-//        dataBase.collection("user")
-//            .getDocuments { snapshot, error in
-//                guard let snapshot = snapshot else {
-//                    return
-//                }
-//                let user = snapshot.documents.compactMap { snapshot in
-//                    try? snapshot.data(as: User.self)
-//                }
+//        let docRef = dataBase.collection("user").document(id)
 //
-//                // 把fetch下來的user data append到userContent的array中
-//                self.userContent.append(contentsOf: user)
+//        docRef.getDocument { (document, error) in
+//            if let document = document, document.exists {
+//                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+//                print("Document data: \(dataDescription)")
+//            } else {
+//                print("Document does not exist")
 //            }
+//        }
 //    }
 }
 
@@ -98,7 +88,7 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let firstName = credentials.fullName?.givenName
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
-            
+
             let dataBase = Firestore.firestore()
             let docRef = dataBase.collection("user").document(user)
 
