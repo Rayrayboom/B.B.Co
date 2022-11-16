@@ -44,8 +44,11 @@ class ViewController: UIViewController {
 
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
-
-        tappedDatePicker()
+        if KeychainWrapper.standard.string(forKey: "id") == nil {
+            return
+        } else {
+            tappedDatePicker()
+        }
         dateBO.tintColor = .black
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
@@ -54,9 +57,30 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
-        self.fetchAllData()
+        print("keychain???", KeychainWrapper.standard.string(forKey: "id"))
+        if KeychainWrapper.standard.string(forKey: "id") == nil {
+            print("this is data count", data.count)
+            return
+        } else {
+            print("in VCVC")
+            // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
+            self.fetchAllData()
+        }
     }
+
+//    func checkSignInOrNot() {
+//        if KeychainWrapper.standard.string(forKey: "id") == nil {
+//            // 當tabBar點選到第一個時，需要使用者登入才可以使用co-account功能(present sign_in page)
+//            let storyboard = UIStoryboard(name: "Home", bundle: nil)
+//            guard let presentSignInVC = storyboard.instantiateViewController(withIdentifier: "signInVC") as? SignInViewController
+//            else {
+//                fatalError("ERROR: Can not find signIn page")
+//            }
+//            let navigation = UINavigationController(rootViewController: presentSignInVC)
+//            navigation.modalPresentationStyle = .fullScreen
+//            present(navigation, animated: true, completion: nil)
+//        }
+//    }
 
     // 點選date picker時偵測點選的狀態
     func tappedDatePicker() {

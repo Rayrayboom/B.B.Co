@@ -16,11 +16,19 @@ class SignInViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(signInButton)
         signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
+        cancelSignIn()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+//        if KeychainWrapper.standard.string(forKey: "id") != nil {
+//            self.presentingViewController?.dismiss(animated: true, completion: nil)
+//        }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        signInButton.frame = CGRect(x: 0, y: 0, width: 250, height: 50)
+        signInButton.frame = CGRect(x: 0, y: 0, width: 200, height: 30)
         signInButton.center = view.center
     }
 
@@ -33,6 +41,17 @@ class SignInViewController: UIViewController {
         controller.delegate = self
         controller.presentationContextProvider = self
         controller.performRequests()
+    }
+
+    // 取消登入按鈕trigger
+    func cancelSignIn() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dismissSignInPage))
+    }
+
+    // 取消並dismiss VC
+    @objc func dismissSignInPage() {
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     // 建立使用者資料，document id設為user id(因為user id一人對應一組不會變)
@@ -51,6 +70,7 @@ class SignInViewController: UIViewController {
             print(error)
         }
     }
+//    self.presentingViewController?.dismiss(animated: true, completion: nil)
 
 //    // 從Firebase上fetch全部user資料，並append到userContent裡
 //    func fetchUser() {
@@ -72,7 +92,7 @@ class SignInViewController: UIViewController {
 
 extension SignInViewController: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        print("sign in faild")
+        print("sign in failed")
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
@@ -97,7 +117,7 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
 //            print(firstName)
 //            print(lastName)
 //            print(email)
-
+            self.dismiss(animated: true, completion: nil)
             break
         default:
             break
