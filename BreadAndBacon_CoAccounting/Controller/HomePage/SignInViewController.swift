@@ -117,7 +117,11 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
 //            print(firstName)
 //            print(lastName)
 //            print(email)
-            self.dismiss(animated: true, completion: nil)
+            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let viewController = mainStoryboard.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
+            UIApplication.shared.windows.first?.rootViewController = viewController
+            UIApplication.shared.windows.first?.makeKeyAndVisible()
+
             break
         default:
             break

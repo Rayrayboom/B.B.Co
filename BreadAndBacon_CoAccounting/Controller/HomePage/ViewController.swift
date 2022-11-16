@@ -57,7 +57,6 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("keychain???", KeychainWrapper.standard.string(forKey: "id"))
         if KeychainWrapper.standard.string(forKey: "id") == nil {
             print("this is data count", data.count)
             return
