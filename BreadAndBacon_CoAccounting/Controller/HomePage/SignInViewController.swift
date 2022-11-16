@@ -16,14 +16,6 @@ class SignInViewController: UIViewController {
         super.viewDidLoad()
         view.addSubview(signInButton)
         signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
-        cancelSignIn()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-//        if KeychainWrapper.standard.string(forKey: "id") != nil {
-//            self.presentingViewController?.dismiss(animated: true, completion: nil)
-//        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -43,17 +35,6 @@ class SignInViewController: UIViewController {
         controller.performRequests()
     }
 
-    // 取消登入按鈕trigger
-    func cancelSignIn() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dismissSignInPage))
-    }
-
-    // 取消並dismiss VC
-    @objc func dismissSignInPage() {
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
-    }
-
     // 建立使用者資料，document id設為user id(因為user id一人對應一組不會變)
     func createUserIdentify(id: String, email: String, name: String) {
         let dataBase = Firestore.firestore()
@@ -70,7 +51,22 @@ class SignInViewController: UIViewController {
             print(error)
         }
     }
-//    self.presentingViewController?.dismiss(animated: true, completion: nil)
+
+    func checkUserAccount(id: String) {
+        let dataBase = Firestore.firestore()
+        let docRef = dataBase.collection("user").document(id)
+
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                print("Document data: \(dataDescription)")
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+    
+    
 
 //    // 從Firebase上fetch全部user資料，並append到userContent裡
 //    func fetchUser() {
@@ -102,9 +98,19 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let firstName = credentials.fullName?.givenName
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
-            // 當email不為空時表示使用者為第一次登入，故新增使用者資訊
-            if email != nil {
-                createUserIdentify(id: credentials.user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
+            
+            let dataBase = Firestore.firestore()
+            let docRef = dataBase.collection("user").document(user)
+
+            // 判斷user裡的document有沒有對應的user id，不存在表示沒有建立過帳號，接著建立一筆user document; 反之，若現有帳號已存在則直接導入畫面
+            docRef.getDocument { (document, error) in
+                if let document = document, document.exists {
+                    let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                    print("Document data: \(dataDescription)")
+                } else {
+                    print("Document does not exist")
+                    self.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
+                }
             }
             // 把user id存在ketchain的"id"這個key裡(key-value的概念)
             KeychainWrapper.standard.set(user, forKey: "id")
