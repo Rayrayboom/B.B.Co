@@ -9,6 +9,7 @@ import UIKit
 import SwiftKeychainWrapper
 
 class PersonalViewController: UIViewController {
+    // 登出後先移除keychain上的user id，接著跳轉回登入頁面
     @IBAction func signOut(_ sender: UIButton) {
         KeychainWrapper.standard.remove(forKey: "id")
         print("this is user id", KeychainWrapper.standard.string(forKey: "id"))
