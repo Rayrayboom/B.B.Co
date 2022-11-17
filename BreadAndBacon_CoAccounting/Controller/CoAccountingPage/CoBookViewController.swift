@@ -130,7 +130,6 @@ class CoBookViewController: UIViewController {
                         self.userName.append(item.name ?? "")
                     }
                 }
-                print("useruser", self.userName)
                 // API打完回來之後leave group
                 self.group.leave()
             }
@@ -255,6 +254,7 @@ extension CoBookViewController: UITableViewDelegate {
             fatalError("can not push coAccountingVC")
         }
         pushCoAccountingVC.didSelecetedBook = data[indexPath.row].id
+        print("datadatddtd", data)
         // 在選取帳本時把取得的user name丟給CoAccountingVC
         pushCoAccountingVC.userName = userName
 

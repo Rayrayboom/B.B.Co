@@ -32,7 +32,7 @@ class AddCoDetailViewController: UIViewController {
     var didSelecetedBook: String = ""
 
     // 存付款者textField picker資料，後續由加好友時抓取firebase資料，用didSet
-    var userContent: [User] = [] {
+    var userContent: [String] = [] {
         didSet {
 //            print("=== this is all userContent \(self.userContent)")
             coDetailTableView.reloadData()
@@ -64,7 +64,7 @@ class AddCoDetailViewController: UIViewController {
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
         // 抓取現有user data
-//        fetchUser(didSelecetedBook: didSelecetedBook)
+        fetchUser(didSelecetedBook: didSelecetedBook)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -119,21 +119,21 @@ class AddCoDetailViewController: UIViewController {
     }
 
     // 從Firebase上fetch全部user資料，並append到userContent裡
-//    func fetchUser(didSelecetedBook: String) {
-//        let dataBase = Firestore.firestore()
-//        dataBase.collection("user")
-//            .getDocuments { snapshot, error in
-//                guard let snapshot = snapshot else {
-//                    return
-//                }
-//                let user = snapshot.documents.compactMap { snapshot in
-//                    try? snapshot.data(as: User.self)
-//                }
-//
-//                // 把fetch下來的user data append到userContent的array中
-//                self.userContent.append(contentsOf: user)
-//            }
-//    }
+    func fetchUser(didSelecetedBook: String) {
+        userContent = []
+        let dataBase = Firestore.firestore()
+        let docRef = dataBase.collection("co-account").document(didSelecetedBook)
+
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists,
+               let data = try? document.data(as: Book.self)
+            {
+                self.userContent.append(contentsOf: data.userId)
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
 
     // 點選對應細項編輯資料
     func editUser(document: String, subCollection: String, documentID: String) {
@@ -219,11 +219,9 @@ extension AddCoDetailViewController: UITableViewDataSource {
 
         case 3: // 針對付款者textField設定，編輯狀態時偵測被點選品項並塞值給textField
             // 計算userContent裡面有幾個user的資料，因為是一筆一筆的array，所以用userContent.count，透過for迴圈把array裡的user name append進去content array裡(要塞進pickerView的資料)
-//            for num in 0..<userContent.count {
-//                coDetailCell.content.append(userContent[num].name ?? "")
-//            }
-            // 把輸入該本帳本的使用者名字加入帳本中成為付款者選項
-            coDetailCell.content.append(contentsOf: userName)
+            for user in userContent {
+                coDetailCell.content.append(user)
+            }
 // MARK: - have "!" issue
 //            guard let user = currentData[tapIndexpath?.row ?? 0].user else { fatalError() }
             data.userTextField = isEdit ? (currentData?.user)! : ""
