@@ -25,14 +25,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="homeDetailCell" id="AvO-iC-MAk" customClass="HomeDetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="72.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AvO-iC-MAk" id="nl2-jG-fiK">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="72.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="73"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="smh-bl-YiE">
-                                                    <rect key="frame" x="70" y="10" width="44.5" height="22"/>
+                                                    <rect key="frame" x="70" y="10" width="44.5" height="22.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -46,7 +46,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="detail" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lgs-Ma-jhU">
-                                                    <rect key="frame" x="70" y="42" width="324" height="20.5"/>
+                                                    <rect key="frame" x="70" y="42.5" width="324" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -128,11 +128,11 @@
             </objects>
             <point key="canvasLocation" x="-36" y="828"/>
         </scene>
-        <!--Home-->
+        <!--Navigation Controller-->
         <scene sceneID="pNn-O1-8aS">
             <objects>
                 <navigationController id="R55-Wp-wXX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" image="48" id="D7Z-at-0q2"/>
+                    <tabBarItem key="tabBarItem" title="" image="Home 2" selectedImage="Home-clicked_" id="D7Z-at-0q2"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="0np-Mj-aX6">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -351,7 +351,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="48" width="48" height="48"/>
+        <image name="Home 2" width="49" height="58"/>
+        <image name="Home-clicked_" width="49" height="58"/>
         <image name="pen" width="128" height="128"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="qrcode.viewfinder" catalog="system" width="128" height="115"/>

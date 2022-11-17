@@ -145,9 +145,9 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk2-mk-ZXx">
-                                <rect key="frame" x="170" y="831" width="75" height="31"/>
+                                <rect key="frame" x="170" y="790" width="75" height="72"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" imagePadding="0.0"/>
+                                <buttonConfiguration key="configuration" style="plain" image="Untitled_Artwork" imagePadding="0.0"/>
                                 <connections>
                                     <action selector="addDetail:" destination="yen-n8-Qer" eventType="touchUpInside" id="2gc-36-Vty"/>
                                 </connections>
@@ -300,11 +300,11 @@
             </objects>
             <point key="canvasLocation" x="1513" y="1383"/>
         </scene>
-        <!--Co_accounting-->
+        <!--Navigation Controller-->
         <scene sceneID="mz2-5l-oTb">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="uPc-Fa-FTd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Co_accounting" image="book.closed.fill" catalog="system" id="6jj-b6-8hJ"/>
+                    <tabBarItem key="tabBarItem" title="" image="COACC-unclick_" selectedImage="CoAcc-clicked" id="6jj-b6-8hJ"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="JzM-dF-XQd">
@@ -322,8 +322,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="book.closed.fill" catalog="system" width="115" height="128"/>
-        <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="COACC-unclick_" width="49" height="58"/>
+        <image name="CoAcc-clicked" width="49" height="58"/>
+        <image name="Untitled_Artwork" width="49" height="58"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
