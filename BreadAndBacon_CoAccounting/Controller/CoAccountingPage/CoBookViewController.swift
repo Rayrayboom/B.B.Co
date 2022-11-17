@@ -7,12 +7,11 @@
 
 import UIKit
 import FirebaseFirestore
-//import SwiftKeychainWrapper
+import SwiftKeychainWrapper
 
 class CoBookViewController: UIViewController {
     var data: [Book] = [] {
         didSet {
-            print(data)
             bookTableView.reloadData()
         }
     }
@@ -20,22 +19,23 @@ class CoBookViewController: UIViewController {
 
     // 用來存現有的user
     var userContent: [User] = []
-    var userId: [String] = []
+    // 用來存user name
+    var userName: [String] = []
     // 宣告一個alertVC
     var controller = UIAlertController()
     var bookName: String = ""
     var inputBookID: String = ""
     var specificBook: [Book] = []
-//    var getId: String = ""
+    var getId: String = ""
+    let group = DispatchGroup()
 
     @IBOutlet weak var bookTableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
+        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
         bookTableView.delegate = self
         bookTableView.dataSource = self
-        fetchUser()
         // 新增共同帳本func
         addNewCoAccountBook()
         // 加入共同帳本func
@@ -109,6 +109,46 @@ class CoBookViewController: UIViewController {
         present(controller, animated: true)
     }
 
+    func updateUserToBook(bookIdentifier: String) {
+        userName = []
+        let dataBase = Firestore.firestore()
+        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再update user_is data
+        // 進入group
+        self.group.enter()
+        dataBase.collection("user")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let user = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: User.self)
+                }
+
+                self.userContent.append(contentsOf: user)
+                self.userContent.forEach { item in
+                    if item.id == self.getId {
+                        self.userName.append(item.name ?? "")
+                    }
+                }
+                print("useruser", self.userName)
+                // API打完回來之後leave group
+                self.group.leave()
+            }
+
+        // 等API執行完後notify它去updateData
+        group.notify(queue: .main) {
+            dataBase.collection("co-account")
+                .document(bookIdentifier)
+                .updateData(["user_id": FieldValue.arrayUnion(self.userName)]) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document update successfully in ID: \(self.userName)")
+                }
+            }
+        }
+    }
+
     // 從Firebase上抓符合book id的document，並fetch資料下來
     func fetchBookSpecific(inputID: String) {
         specificBook = []
@@ -123,10 +163,23 @@ class CoBookViewController: UIViewController {
                     try? snapshot.data(as: Book.self)
                 }
                 self.specificBook.append(contentsOf: book)
-//                self.fetchUser(id: self.getId)
+                self.updateUserToBook(bookIdentifier: self.specificBook[0].id)
                 print("I find the document \(self.specificBook)")
             }
     }
+    // 針對對應的帳本新增付款人資訊
+//    func createBookSpecific(bookIdentifier: String) {
+//        let dataBase = Firestore.firestore()
+//        print("useruser", self.userName)
+//        dataBase.collection("co-account").document(bookIdentifier)
+//            .updateData(["user_id": FieldValue.arrayUnion(userName)]) { error in
+//            if let error = error {
+//                print("Error updating document: \(error)")
+//            } else {
+//                print("Document update successfully in ID: \(self.userName)")
+//            }
+//        }
+//    }
 
     // MARK: - 上傳 book id & user_id 到Firebase
     func createCoAccountData() {
@@ -136,7 +189,7 @@ class CoBookViewController: UIViewController {
         let identifier = documentID.documentID
         let prefixID = identifier.prefix(5)
         // 需存id，後續delete要抓取ID刪除對應資料
-        let book = Book(id: identifier, roomId: String(prefixID), name: bookName, userId: userId)
+        let book = Book(id: identifier, roomId: String(prefixID), name: bookName, userId: userName)
         do {
             try documentID.setData(from: book)
             print("success create document. ID: \(documentID.documentID)")
@@ -145,27 +198,29 @@ class CoBookViewController: UIViewController {
         }
     }
 
-    // 從Firebase上fetch全部user資料，要放進帳本的user_id(這本帳本有多少人有存取權限)
-    func fetchUser() {
-        userId = []
-        let dataBase = Firestore.firestore()
-        dataBase.collection("user")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let user = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: User.self)
-                }
-
-                self.userContent.append(contentsOf: user)
-                for num in 0..<self.userContent.count {
-                    self.userId.append(self.userContent[num].id ?? "")
-                }
-                print("userContent", self.userContent)
-                print("userId", self.userId)
-            }
-    }
+    // 從Firebase上fetch全部user資料，判斷目前使用者的id後取得name並append到userId array裡
+//    func fetchUser() {
+//        userName = []
+//        let dataBase = Firestore.firestore()
+//        dataBase.collection("user")
+//            .getDocuments { snapshot, error in
+//                guard let snapshot = snapshot else {
+//                    return
+//                }
+//                let user = snapshot.documents.compactMap { snapshot in
+//                    try? snapshot.data(as: User.self)
+//                }
+//
+//                self.userContent.append(contentsOf: user)
+//                self.userContent.forEach { item in
+//                    if item.id == self.getId {
+//                        self.userName.append(item.name ?? "")
+//                    }
+//                }
+//                print("userContent", self.userContent)
+//                print("userName", self.userName)
+//            }
+//    }
 
     // 從Firebase上fetch有幾本帳本book
     func fetchCoBook() {
@@ -200,6 +255,8 @@ extension CoBookViewController: UITableViewDelegate {
             fatalError("can not push coAccountingVC")
         }
         pushCoAccountingVC.didSelecetedBook = data[indexPath.row].id
+        // 在選取帳本時把取得的user name丟給CoAccountingVC
+        pushCoAccountingVC.userName = userName
 
         navigationController?.pushViewController(pushCoAccountingVC, animated: true)
     }

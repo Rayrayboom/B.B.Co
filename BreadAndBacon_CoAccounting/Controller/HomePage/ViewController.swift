@@ -137,7 +137,7 @@ class ViewController: UIViewController {
                 }
                 self.category.append(contentsOf: category)
                 print("category here \(self.category)")
-                // 每一支API打完之後leave group
+                // 每一支API打完回來之後leave group
                 self.group.leave()
             }
     }
