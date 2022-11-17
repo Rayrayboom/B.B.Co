@@ -90,11 +90,13 @@ struct Category: Codable {
 
 struct Book: Codable {
     let id: String
+    let roomId: String
     let name: String
     let userId: [String]
 
     enum CodingKeys: String, CodingKey {
         case id
+        case roomId = "room_id"
         case name
         case userId = "user_id"
     }

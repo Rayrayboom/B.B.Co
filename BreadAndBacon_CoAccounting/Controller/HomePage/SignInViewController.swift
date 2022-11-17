@@ -91,7 +91,6 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
 
             let dataBase = Firestore.firestore()
             let docRef = dataBase.collection("user").document(user)
-
             // 判斷user裡的document有沒有對應的user id，不存在表示沒有建立過帳號，接著建立一筆user document; 反之，若現有帳號已存在則直接導入畫面
             docRef.getDocument { (document, error) in
                 if let document = document, document.exists {

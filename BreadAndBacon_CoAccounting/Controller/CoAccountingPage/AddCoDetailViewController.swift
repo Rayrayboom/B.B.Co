@@ -157,6 +157,7 @@ extension AddCoDetailViewController: UITableViewDelegate {
         tapIndexpath = indexPath
         // 點擊cell時收起鍵盤
         view.endEditing(true)
+        print(indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

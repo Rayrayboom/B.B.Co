@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseFirestore
+//import SwiftKeychainWrapper
 
 class CoBookViewController: UIViewController {
     var data: [Book] = [] {
@@ -23,16 +24,22 @@ class CoBookViewController: UIViewController {
     // 宣告一個alertVC
     var controller = UIAlertController()
     var bookName: String = ""
+    var inputBookID: String = ""
+    var specificBook: [Book] = []
+//    var getId: String = ""
 
     @IBOutlet weak var bookTableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
+//        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
         bookTableView.delegate = self
         bookTableView.dataSource = self
         fetchUser()
         // 新增共同帳本func
         addNewCoAccountBook()
+        // 加入共同帳本func
+        joinCoAccountBook()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -43,8 +50,7 @@ class CoBookViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = false
     }
 
-// TODO: - 需讓使用者輸入book name
-    // 按下右上button來新增帳本
+    // 按下右上button讓使用者輸入book name並新增帳本
     func addNewCoAccountBook() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(saveEdit))
     }
@@ -74,6 +80,53 @@ class CoBookViewController: UIViewController {
         present(controller, animated: true)
     }
 
+    // 按下左上button讓使用者輸入帳本id來加入帳本
+    func joinCoAccountBook() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "book"), style: .plain, target: self, action: #selector(checkRoomId))
+    }
+
+    // 觸發加入帳本func
+    @objc func checkRoomId() {
+        joinCoAccountingBookAlert()
+    }
+
+    // 加入帳本的alert，讓使用者輸入帳本id
+    func joinCoAccountingBookAlert() {
+        controller = UIAlertController(title: "Co-Account book ID", message: "請輸入帳本ID加入共同記帳", preferredStyle: .alert)
+        controller.addTextField { textField in
+            textField.placeholder = "Account book ID"
+            textField.keyboardType = UIKeyboardType.default
+        }
+        // 按下OK執行新增account book(使用者輸入accounnt book name)
+        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
+            self.inputBookID = controller.textFields?[0].text ?? ""
+            self.fetchBookSpecific(inputID: self.inputBookID)
+        }
+        controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        controller.addAction(cancelAction)
+        // 記得要present後alert才會出現
+        present(controller, animated: true)
+    }
+
+    // 從Firebase上抓符合book id的document，並fetch資料下來
+    func fetchBookSpecific(inputID: String) {
+        specificBook = []
+        let dataBase = Firestore.firestore()
+        dataBase.collection("co-account")
+            .whereField("room_id", isEqualTo: inputID)
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let book = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Book.self)
+                }
+                self.specificBook.append(contentsOf: book)
+//                self.fetchUser(id: self.getId)
+                print("I find the document \(self.specificBook)")
+            }
+    }
 
     // MARK: - 上傳 book id & user_id 到Firebase
     func createCoAccountData() {
@@ -81,9 +134,9 @@ class CoBookViewController: UIViewController {
         let documentID = dataBase.collection("co-account").document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
         let identifier = documentID.documentID
-//        let prefixID = documentID.document(identifier.prefix(5))
+        let prefixID = identifier.prefix(5)
         // 需存id，後續delete要抓取ID刪除對應資料
-        let book = Book(id: identifier, name: bookName, userId: userId)
+        let book = Book(id: identifier, roomId: String(prefixID), name: bookName, userId: userId)
         do {
             try documentID.setData(from: book)
             print("success create document. ID: \(documentID.documentID)")
@@ -109,6 +162,8 @@ class CoBookViewController: UIViewController {
                 for num in 0..<self.userContent.count {
                     self.userId.append(self.userContent[num].id ?? "")
                 }
+                print("userContent", self.userContent)
+                print("userId", self.userId)
             }
     }
 
