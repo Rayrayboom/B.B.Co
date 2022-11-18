@@ -85,7 +85,8 @@ class EditViewController: UIViewController {
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
     @IBAction func insertEditQRCode(_ sender: UIButton) {
-        guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "editQRScanVC") as? EditQRCodeViewController else {
+        guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "editQRScanVC") as? EditQRCodeViewController
+        else {
             fatalError("can not find EditQRScanner VC")
         }
         // 當內容是透過QR scanner拿取，isTappedQR == 1

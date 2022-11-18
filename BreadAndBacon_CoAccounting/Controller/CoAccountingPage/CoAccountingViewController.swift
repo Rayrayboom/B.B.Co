@@ -287,7 +287,7 @@ extension CoAccountingViewController: UITableViewDataSource {
         return listCell
     }
 
-    // tableView右滑刪除 & 連動firebase
+    // tableView左滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()

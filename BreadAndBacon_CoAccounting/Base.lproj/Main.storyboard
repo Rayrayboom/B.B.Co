@@ -23,7 +23,6 @@
                         <segue destination="vQN-cu-USb" kind="relationship" relationship="viewControllers" id="Nf6-nP-ltV"/>
                         <segue destination="tDh-Ht-LeE" kind="relationship" relationship="viewControllers" id="pMx-OV-ttU"/>
                         <segue destination="DMI-bA-0bO" kind="relationship" relationship="viewControllers" id="LMG-YK-gnP"/>
-                        <segue destination="h2O-bG-HoX" kind="relationship" relationship="viewControllers" id="5m1-vk-fH2"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="No7-hc-oCR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -38,7 +37,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TXV-h0-ZCp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-475" y="830"/>
+            <point key="canvasLocation" x="-344" y="828"/>
         </scene>
         <!--Home-->
         <scene sceneID="xlQ-du-kDK">
@@ -58,17 +57,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o9k-R9-Yow" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-692" y="830"/>
-        </scene>
-        <!--Personal-->
-        <scene sceneID="p47-9B-zOv">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Personal" id="h2O-bG-HoX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="4s0-vo-yc3"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zGf-Y7-n5T" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2" y="830"/>
+            <point key="canvasLocation" x="-649" y="828"/>
         </scene>
         <!--PieChart-->
         <scene sceneID="05f-e6-SIj">
@@ -78,7 +67,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VwR-Uh-m5K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-236" y="830"/>
+            <point key="canvasLocation" x="-78" y="828"/>
         </scene>
         <!--Sign In View Controller-->
         <scene sceneID="9Tp-UZ-9FO">

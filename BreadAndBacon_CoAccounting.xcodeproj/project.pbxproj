@@ -43,7 +43,8 @@
 		7673ADB3291E1BA100A15015 /* CoBookTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADB2291E1BA100A15015 /* CoBookTableViewCell.swift */; };
 		7673ADC529236D1200A15015 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADC429236D1200A15015 /* SignInViewController.swift */; };
 		7673ADCD2924A8FC00A15015 /* PersonalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADCC2924A8FC00A15015 /* PersonalViewController.swift */; };
-		7673ADD12924A96600A15015 /* Personal.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7673ADD02924A96600A15015 /* Personal.storyboard */; };
+		7673ADD3292772B800A15015 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADD2292772B800A15015 /* CategoryViewController.swift */; };
+		7673ADD52927744B00A15015 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADD42927744B00A15015 /* CategoryTableViewCell.swift */; };
 		767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */; };
 		767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 767EAFC9291BDCB30005880E /* CoAccounting.storyboard */; };
 		767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFCB291BF6730005880E /* ListTableViewCell.swift */; };
@@ -91,7 +92,8 @@
 		7673ADC329236CD300A15015 /* BreadAndBacon_CoAccounting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BreadAndBacon_CoAccounting.entitlements; sourceTree = "<group>"; };
 		7673ADC429236D1200A15015 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		7673ADCC2924A8FC00A15015 /* PersonalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalViewController.swift; sourceTree = "<group>"; };
-		7673ADD02924A96600A15015 /* Personal.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Personal.storyboard; sourceTree = "<group>"; };
+		7673ADD2292772B800A15015 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		7673ADD42927744B00A15015 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditQRCodeViewController.swift; sourceTree = "<group>"; };
 		767EAFC9291BDCB30005880E /* CoAccounting.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CoAccounting.storyboard; sourceTree = "<group>"; };
 		767EAFCB291BF6730005880E /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				76265F4329150ABD00F5E341 /* EditDataTableViewCell.swift */,
 				76265F4529150AD400F5E341 /* EditQRCodeTableViewCell.swift */,
 				76265F4729150AE400F5E341 /* EditDetailTableViewCell.swift */,
+				7673ADD42927744B00A15015 /* CategoryTableViewCell.swift */,
 			);
 			path = HomePage;
 			sourceTree = "<group>";
@@ -261,7 +264,6 @@
 				76265F3029138F8200F5E341 /* View */,
 				76265F3129138F9500F5E341 /* Controller */,
 				7660865E290BDA29008EF772 /* Main.storyboard */,
-				7673ADD02924A96600A15015 /* Personal.storyboard */,
 				767EAFC9291BDCB30005880E /* CoAccounting.storyboard */,
 				76265F4929178F5B00F5E341 /* PieChart.storyboard */,
 				7660869F290F7B0B008EF772 /* Home.storyboard */,
@@ -289,6 +291,7 @@
 		76608699290F79B3008EF772 /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				7673ADD2292772B800A15015 /* CategoryViewController.swift */,
 				7673ADC429236D1200A15015 /* SignInViewController.swift */,
 				7660865C290BDA29008EF772 /* ViewController.swift */,
 				76265F3D2913E65400F5E341 /* EditViewController.swift */,
@@ -409,7 +412,6 @@
 				766086A0290F7B0B008EF772 /* Home.storyboard in Resources */,
 				76265F4A29178F5B00F5E341 /* PieChart.storyboard in Resources */,
 				76608698290F74E1008EF772 /* AddNewData.storyboard in Resources */,
-				7673ADD12924A96600A15015 /* Personal.storyboard in Resources */,
 				76608660290BDA29008EF772 /* Main.storyboard in Resources */,
 				76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */,
 				76265F552918375500F5E341 /* GoogleService-Info.plist in Resources */,
@@ -499,9 +501,11 @@
 				7673ADAB291C994300A15015 /* CoDetailTableViewCell.swift in Sources */,
 				76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */,
 				7673ADA9291C8E9F00A15015 /* AddCoDetailViewController.swift in Sources */,
+				7673ADD52927744B00A15015 /* CategoryTableViewCell.swift in Sources */,
 				76265F4629150AD400F5E341 /* EditQRCodeTableViewCell.swift in Sources */,
 				76265F272911855600F5E341 /* User.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
+				7673ADD3292772B800A15015 /* CategoryViewController.swift in Sources */,
 				767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */,
 				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
 				76265F2B29126E3100F5E341 /* QRCodeTableViewCell.swift in Sources */,

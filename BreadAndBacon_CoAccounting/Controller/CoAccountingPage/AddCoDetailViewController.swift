@@ -158,7 +158,8 @@ class AddCoDetailViewController: UIViewController {
 
 extension AddCoDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
+        // 點選cell時觸發點選效果
+        tableView.deselectRow(at: indexPath, animated: true)
         // 把當前點到的indexPath傳到cell的indexPath
         tapIndexpath = indexPath
         // 點擊cell時收起鍵盤

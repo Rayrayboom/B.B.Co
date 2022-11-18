@@ -294,7 +294,7 @@ extension CoBookViewController: UITableViewDataSource {
         return coBookCell
     }
 
-    // tableView右滑刪除
+    // tableView左滑刪除
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()

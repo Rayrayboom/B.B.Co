@@ -288,7 +288,7 @@ extension PieChartViewController: UITableViewDataSource {
     }
 
 // MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
-//     tableView右滑刪除 & 連動firebase
+//     tableView左滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
