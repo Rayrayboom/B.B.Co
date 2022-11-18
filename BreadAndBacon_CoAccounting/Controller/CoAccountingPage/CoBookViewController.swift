@@ -26,14 +26,20 @@ class CoBookViewController: UIViewController {
     var bookName: String = ""
     var inputBookID: String = ""
     var specificBook: [Book] = []
+    // 存keychain user id
     var getId: String = ""
+    // 存keychain user name
+    var getName: String = ""
     let group = DispatchGroup()
+    // 新增co_account book時儲存自動生成的document id
+    var identifier: String = ""
 
     @IBOutlet weak var bookTableView: UITableView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
+        getName = KeychainWrapper.standard.string(forKey: "name") ?? ""
         bookTableView.delegate = self
         bookTableView.dataSource = self
         // 新增共同帳本func
@@ -72,6 +78,8 @@ class CoBookViewController: UIViewController {
             self.bookName = controller.textFields?[0].text ?? ""
             self.createCoAccountData()
             self.fetchCoBook()
+            // 按下新增帳本時，在該帳本的付款人會先預設加上本人
+            self.updateUserToBook(bookIdentifier: self.identifier)
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -100,7 +108,8 @@ class CoBookViewController: UIViewController {
         // 按下OK執行新增account book(使用者輸入accounnt book name)
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
-            self.fetchBookSpecific(inputID: self.inputBookID)
+            self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
+            self.fetchCoBook()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -110,6 +119,7 @@ class CoBookViewController: UIViewController {
     }
 
     func updateUserToBook(bookIdentifier: String) {
+        userContent = []
         userName = []
         let dataBase = Firestore.firestore()
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再update user_is data
@@ -134,7 +144,7 @@ class CoBookViewController: UIViewController {
                 self.group.leave()
             }
 
-        // 等API執行完後notify它去updateData
+        // 等API執行完後notify它去updateData(用arrayUnion)
         group.notify(queue: .main) {
             dataBase.collection("co-account")
                 .document(bookIdentifier)
@@ -149,11 +159,11 @@ class CoBookViewController: UIViewController {
     }
 
     // 從Firebase上抓符合book id的document，並fetch資料下來
-    func fetchBookSpecific(inputID: String) {
+    func fetchBookSpecific(collection: String, field: String, inputID: String) {
         specificBook = []
         let dataBase = Firestore.firestore()
-        dataBase.collection("co-account")
-            .whereField("room_id", isEqualTo: inputID)
+        dataBase.collection(collection)
+            .whereField(field, isEqualTo: inputID)
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -166,6 +176,7 @@ class CoBookViewController: UIViewController {
                 print("I find the document \(self.specificBook)")
             }
     }
+
     // 針對對應的帳本新增付款人資訊
 //    func createBookSpecific(bookIdentifier: String) {
 //        let dataBase = Firestore.firestore()
@@ -185,7 +196,7 @@ class CoBookViewController: UIViewController {
         let dataBase = Firestore.firestore()
         let documentID = dataBase.collection("co-account").document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = documentID.documentID
+        identifier = documentID.documentID
         let prefixID = identifier.prefix(5)
         // 需存id，後續delete要抓取ID刪除對應資料
         let book = Book(id: identifier, roomId: String(prefixID), name: bookName, userId: userName)
@@ -221,11 +232,13 @@ class CoBookViewController: UIViewController {
 //            }
 //    }
 
-    // 從Firebase上fetch有幾本帳本book
+    // 從Firebase上fetch有幾本帳本user id是有我自己的
     func fetchCoBook() {
         data = []
         let dataBase = Firestore.firestore()
-        dataBase.collection("co-account")
+        // 進入group
+        self.group.enter()
+        dataBase.collection("co-account").whereField("user_id", isEqualTo: [getName])
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -235,7 +248,11 @@ class CoBookViewController: UIViewController {
                 }
                 self.data.append(contentsOf: book)
                 print("book here \(self.data)")
+                self.group.leave()
             }
+        group.notify(queue: .main) {
+            self.bookTableView.reloadData()
+        }
     }
 
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑

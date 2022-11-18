@@ -11,6 +11,7 @@ import SwiftKeychainWrapper
 
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
+    var userData = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,22 +90,48 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
 
-            let dataBase = Firestore.firestore()
-            let docRef = dataBase.collection("user").document(user)
-            // 判斷user裡的document有沒有對應的user id，不存在表示沒有建立過帳號，接著建立一筆user document; 反之，若現有帳號已存在則直接導入畫面
-            docRef.getDocument { (document, error) in
-                if let document = document, document.exists {
-                    let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-                    print("Document data: \(dataDescription)")
-                } else {
-                    print("Document does not exist")
-                    self.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
+            // first login
+            if let firstName = firstName, let lastName = lastName {
+                // 把user id存在ketchain的"id"這個key裡(key-value的概念)
+                KeychainWrapper.standard.set(user, forKey: "id")
+                // 把user name存在ketchain的"name"這個key裡(key-value的概念)-只有第一次apple會給值
+                KeychainWrapper.standard.set((lastName ?? "") + (firstName ?? ""), forKey: "name")
+                let dataBase = Firestore.firestore()
+                let docRef = dataBase.collection("user").document(user)
+                // 判斷user裡的document有沒有對應的user id，不存在表示沒有建立過帳號，接著建立一筆user document; 反之，若現有帳號已存在則直接導入畫面
+                docRef.getDocument { (document, error) in
+                    if let document = document, document.exists {
+                        let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                        print("Document data: \(dataDescription)")
+                    } else {
+                        print("Document does not exist")
+                        self.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
+                    }
                 }
+                print("first", KeychainWrapper.standard.string(forKey: "name") ?? "")
             }
-            // 把user id存在ketchain的"id"這個key裡(key-value的概念)
-            KeychainWrapper.standard.set(user, forKey: "id")
-            // 從ketchain的"id"這個key裡取出user id(key-value的概念)
-            let getId = KeychainWrapper.standard.string(forKey: "id")
+
+            // second login
+            else {
+                // TODO: - get name -> vc name
+                // TODO: - get name from firebase "id"
+                let dataBase = Firestore.firestore()
+                let docRef = dataBase.collection("user").document(user)
+                // 判斷user裡的document有沒有對應的user id，有的話表示已登入過，直接進到user document拿user name(因為第二次登入後apple不會再給name,email)，不存在表示沒有建立過帳號
+                docRef.getDocument { (document, error) in
+                    if let document = document, document.exists,
+                        let user = try? document.data(as: User.self)
+                    {
+                        self.userData = user.name ?? ""
+                        KeychainWrapper.standard.set(self.userData, forKey: "name")
+                    } else {
+                        print("Document does not exist")
+                    }
+                }
+                // TODO: - keychain set name
+                // 把user id存在ketchain的"id"這個key裡(key-value的概念)
+                KeychainWrapper.standard.set(user, forKey: "id")
+            }
 
             // 測試是否拿到資料
 //            print("ggggg", getId)
