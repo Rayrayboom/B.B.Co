@@ -779,6 +779,7 @@ PODS:
   - nanopb/encode (2.30909.0)
   - PromisesObjC (2.1.1)
   - SwiftAlgorithms (1.0.0)
+  - SwiftKeychainWrapper (4.0.1)
 
 DEPENDENCIES:
   - Charts
@@ -786,6 +787,7 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Firestore
   - FirebaseFirestoreSwift
+  - SwiftKeychainWrapper
 
 SPEC REPOS:
   trunk:
@@ -812,6 +814,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - SwiftAlgorithms
+    - SwiftKeychainWrapper
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
@@ -837,7 +840,8 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   SwiftAlgorithms: 38dda4731d19027fdeee1125f973111bf3386b53
+  SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 316f6349e7fa8fb842b345eecde978fc608f12ce
+PODFILE CHECKSUM: e6dbaa0b00411c8b27df9d8fb2d785a59d33c2fd
 
 COCOAPODS: 1.11.3

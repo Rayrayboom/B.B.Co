@@ -20,28 +20,38 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coBookCell" id="WJP-4H-iul" customClass="CoBookTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="44.5"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coBookCell" rowHeight="73" id="WJP-4H-iul" customClass="CoBookTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WJP-4H-iul" id="kW7-8X-gdR">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="73"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylW-EM-kPi">
-                                                    <rect key="frame" x="20" y="10" width="48" height="24.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="bookNameLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylW-EM-kPi">
+                                                    <rect key="frame" x="20" y="10" width="143.5" height="24"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="roomIDLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x2v-0C-WS1">
+                                                    <rect key="frame" x="20" y="44" width="94" height="19"/>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="x2v-0C-WS1" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="I0O-9k-980"/>
                                                 <constraint firstItem="ylW-EM-kPi" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" constant="10" id="JYd-dq-UBC"/>
+                                                <constraint firstItem="x2v-0C-WS1" firstAttribute="top" secondItem="ylW-EM-kPi" secondAttribute="bottom" constant="10" id="NxK-aF-43V"/>
                                                 <constraint firstItem="ylW-EM-kPi" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="P6A-bS-lAZ"/>
-                                                <constraint firstAttribute="bottom" secondItem="ylW-EM-kPi" secondAttribute="bottom" constant="10" id="yFt-Hb-lXj"/>
+                                                <constraint firstAttribute="bottom" secondItem="x2v-0C-WS1" secondAttribute="bottom" constant="10" id="Qsc-ZR-1Fc"/>
+                                                <constraint firstAttribute="trailing" secondItem="x2v-0C-WS1" secondAttribute="trailing" constant="300" id="urs-Gc-oDn"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="bookNameLabel" destination="ylW-EM-kPi" id="ZFG-xE-QIF"/>
+                                            <outlet property="roomIDLabel" destination="x2v-0C-WS1" id="jo3-mP-sNX"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -63,7 +73,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ivL-0H-mEr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-88" y="1383"/>
+            <point key="canvasLocation" x="-88.405797101449281" y="1382.8125"/>
         </scene>
         <!--Co Accounting View Controller-->
         <scene sceneID="Qei-fA-FVv">
@@ -145,9 +155,9 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk2-mk-ZXx">
-                                <rect key="frame" x="170" y="831" width="75" height="31"/>
+                                <rect key="frame" x="170" y="790" width="75" height="72"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" imagePadding="0.0"/>
+                                <buttonConfiguration key="configuration" style="plain" image="Untitled_Artwork" imagePadding="0.0"/>
                                 <connections>
                                     <action selector="addDetail:" destination="yen-n8-Qer" eventType="touchUpInside" id="2gc-36-Vty"/>
                                 </connections>
@@ -217,7 +227,7 @@
                                     <action selector="saveCoDetail:" destination="LUQ-nm-wQd" eventType="touchUpInside" id="2Aq-FM-1Uu"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rnj-cg-wdi">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rnj-cg-wdi">
                                 <rect key="frame" x="0.0" y="85" width="414" height="697"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
@@ -300,11 +310,11 @@
             </objects>
             <point key="canvasLocation" x="1513" y="1383"/>
         </scene>
-        <!--Co_accounting-->
+        <!--Navigation Controller-->
         <scene sceneID="mz2-5l-oTb">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="uPc-Fa-FTd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Co_accounting" image="book.closed.fill" catalog="system" id="6jj-b6-8hJ"/>
+                    <tabBarItem key="tabBarItem" title="" image="COACC-unclick_" selectedImage="CoAcc-clicked" id="6jj-b6-8hJ"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="JzM-dF-XQd">
@@ -322,8 +332,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="book.closed.fill" catalog="system" width="115" height="128"/>
-        <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="COACC-unclick_" width="49" height="58"/>
+        <image name="CoAcc-clicked" width="49" height="58"/>
+        <image name="Untitled_Artwork" width="49" height="58"/>
         <image name="xmark" catalog="system" width="128" height="113"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

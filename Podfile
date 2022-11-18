@@ -11,5 +11,5 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'Firebase/Firestore'
 	pod 'FirebaseFirestoreSwift'
 	pod 'Charts'
-
+	pod 'SwiftKeychainWrapper'
 end

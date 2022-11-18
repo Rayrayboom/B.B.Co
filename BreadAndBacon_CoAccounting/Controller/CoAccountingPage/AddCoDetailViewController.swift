@@ -32,9 +32,8 @@ class AddCoDetailViewController: UIViewController {
     var didSelecetedBook: String = ""
 
     // 存付款者textField picker資料，後續由加好友時抓取firebase資料，用didSet
-    var userContent: [User] = [] {
+    var userContent: [String] = [] {
         didSet {
-//            print("=== this is all userContent \(self.userContent)")
             coDetailTableView.reloadData()
         }
     }
@@ -62,7 +61,7 @@ class AddCoDetailViewController: UIViewController {
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
         // 抓取現有user data
-        fetchUser()
+        fetchUser(didSelecetedBook: didSelecetedBook)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -87,12 +86,12 @@ class AddCoDetailViewController: UIViewController {
     // MARK: - 上傳資料到Firebase
     func createCoAccountData(document: String, subCollection: String) {
         let dataBase = Firestore.firestore()
-        let fetchDocumentID = dataBase.collection("co-account")
+        let documentID = dataBase.collection("co-account")
             .document(document)
             .collection(subCollection)
             .document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = fetchDocumentID.documentID
+        let identifier = documentID.documentID
         // 需存id，後續delete要抓取ID刪除對應資料
         let account = Account(
             id: identifier,
@@ -109,35 +108,41 @@ class AddCoDetailViewController: UIViewController {
             detail: nil,
             user: data.userTextField)
         do {
-            try fetchDocumentID.setData(from: account)
-            print("success create document. ID: \(fetchDocumentID.documentID)")
+            try documentID.setData(from: account)
+            print("success create document. ID: \(documentID.documentID)")
         } catch {
             print(error)
         }
     }
 
     // 從Firebase上fetch全部user資料，並append到userContent裡
-    func fetchUser() {
+    func fetchUser(didSelecetedBook: String) {
+        userContent = []
         let dataBase = Firestore.firestore()
-        dataBase.collection("user")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let user = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: User.self)
-                }
+        let docRef = dataBase.collection("co-account").document(didSelecetedBook)
 
-                // 把fetch下來的user data append到userContent的array中
-                self.userContent.append(contentsOf: user)
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists,
+               let data = try? document.data(as: Book.self)
+            {
+                self.userContent.append(contentsOf: data.userId)
+            } else {
+                print("Document does not exist")
             }
+        }
     }
 
     // 點選對應細項編輯資料
     func editUser(document: String, subCollection: String, documentID: String) {
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
+        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
+        guard let cell = coDetailTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell else {
+            fatalError("can not find CoTimeTableViewCell")
+        }
         let dataBase = Firestore.firestore()
         dataBase.collection("co-account/\(document)/\(subCollection)").document("\(documentID)").updateData([
-            "date": data.dateTime,
+            // 針對date讓一開始顯示畫面時就先吃到datePicker的資料，不用等到點選變更後才塞資料
+            "date": BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date),
             "amount": data.amountTextField,
             "category": data.itemTextField,
             "user": data.userTextField
@@ -153,10 +158,12 @@ class AddCoDetailViewController: UIViewController {
 
 extension AddCoDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
         // 把當前點到的indexPath傳到cell的indexPath
         tapIndexpath = indexPath
         // 點擊cell時收起鍵盤
         view.endEditing(true)
+        print(indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -202,10 +209,8 @@ extension AddCoDetailViewController: UITableViewDataSource {
                 fatalError("can not create coTimeCell")
             }
 
-            coTimeCell.delegate = self
-            coTimeCell.config()
-            // 編輯狀態時偵測被點選品項並塞值給datePicker
-            data.dateTime = isEdit ? (currentData?.date)! : ""
+            // 編輯狀態時偵測被點選品項並塞值給datePicker，若非編輯狀態(新增)則帶入當天日期
+            data.dateTime = isEdit ? (currentData?.date)! : BBCDateFormatter.shareFormatter.string(from: coTimeCell.datePicker.date)
 // MARK: - have "!" issue & will crash (新增完品項後不能直接點編輯)
 //            guard let dateTimeInDate = BBCDateFormatter.shareFormatter.date(from: data.dateTime) else {
 //                fatalError("can not transfer date")
@@ -216,8 +221,8 @@ extension AddCoDetailViewController: UITableViewDataSource {
 
         case 3: // 針對付款者textField設定，編輯狀態時偵測被點選品項並塞值給textField
             // 計算userContent裡面有幾個user的資料，因為是一筆一筆的array，所以用userContent.count，透過for迴圈把array裡的user name append進去content array裡(要塞進pickerView的資料)
-            for num in 0..<userContent.count {
-                coDetailCell.content.append(userContent[num].name ?? "")
+            for user in userContent {
+                coDetailCell.content.append(user)
             }
 // MARK: - have "!" issue
 //            guard let user = currentData[tapIndexpath?.row ?? 0].user else { fatalError() }
@@ -235,24 +240,6 @@ extension AddCoDetailViewController: UITableViewDataSource {
             coDetailCell.contentTextField.text = isEdit ? data.itemTextField : ""
             return coDetailCell
         }
-    }
-}
-
-// date cell
-extension AddCoDetailViewController: CoTimeTableViewCellDelegate {
-    // 用delegate把cell和點選的sender傳過來，進行給新值的動作
-    func getDate(_ cell: CoTimeTableViewCell, sender: UIDatePicker) {
-        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
-        data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
-        print("this is dateTime \(data.dateTime)")
-    }
-
-    // 用delegate把cell和點選的sender傳過來，進行給month值
-    func getMonth(_ cell: CoTimeTableViewCell, sender: UIDatePicker) {
-        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
-        data.monthTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
-        print("this is monthTime \(data.monthTime)")
     }
 }
 

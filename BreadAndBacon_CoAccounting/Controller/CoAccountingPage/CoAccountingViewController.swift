@@ -38,9 +38,8 @@ class CoAccountingViewController: UIViewController {
     // 用來存所點選之帳本的id(用來抓取對應帳本detail)
     var didSelecetedBook: String = ""
 
-    // 用來存現有的user
-    var userContent: [User] = []
-    var userId: [String] = []
+    // 用來存有哪些user可以有權限編輯共同帳本
+    var userName: [String] = []
 
     @IBOutlet weak var bookDetailTableView: UITableView!
     @IBAction func addDetail(_ sender: UIButton) {
