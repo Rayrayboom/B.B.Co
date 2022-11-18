@@ -152,6 +152,7 @@ class CoBookViewController: UIViewController {
                     print("Error updating document: \(error)")
                 } else {
                     print("Document update successfully in ID: \(self.userName)")
+                    // 等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示
                     self.fetchCoBook()
                 }
             }
@@ -266,8 +267,6 @@ extension CoBookViewController: UITableViewDelegate {
         }
         pushCoAccountingVC.didSelecetedBook = data[indexPath.row].id
         print("datadatddtd", data)
-        // 在選取帳本時把取得的user name丟給CoAccountingVC
-        pushCoAccountingVC.userName = userName
 
         navigationController?.pushViewController(pushCoAccountingVC, animated: true)
     }
@@ -288,8 +287,9 @@ extension CoBookViewController: UITableViewDataSource {
             fatalError("can not create coBookCell")
         }
 
-        // 顯示新增account book name
+        // 顯示新增account book name & roomId
         coBookCell.bookNameLabel.text = data[indexPath.row].name
+        coBookCell.roomIDLabel.text = "ID: \(data[indexPath.row].roomId)"
 
         return coBookCell
     }

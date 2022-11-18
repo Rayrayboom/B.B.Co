@@ -9,7 +9,8 @@ import UIKit
 
 class CoBookTableViewCell: UITableViewCell {
     @IBOutlet weak var bookNameLabel: UILabel!
-
+    @IBOutlet weak var roomIDLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

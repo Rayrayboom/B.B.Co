@@ -49,8 +49,6 @@ class CoAccountingViewController: UIViewController {
         }
         presentCoDetailVC.isEdit = false
         presentCoDetailVC.didSelecetedBook = didSelecetedBook
-        // 在按下新增時把user name資料傳給CoDetailVC
-        presentCoDetailVC.userName = userName
         presentCoDetailVC.modalPresentationStyle = .fullScreen
         present(presentCoDetailVC, animated: true)
     }
