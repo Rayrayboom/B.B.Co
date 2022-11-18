@@ -35,6 +35,8 @@ class ViewController: UIViewController {
 // MARK: - 注意！
     var month: String = ""
     var getId: String = ""
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
 
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -60,12 +62,28 @@ class ViewController: UIViewController {
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshDetail()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
             // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
             self.fetchAllData()
+    }
+    
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshDetail() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        showDetailTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.fetchAllData()
+            self.refreshControl.endRefreshing()
+        }
     }
 
     // 點選date picker時偵測點選的狀態
@@ -258,7 +276,6 @@ class MenuListController: UITableViewController {
                 present(presentCategoryVC, animated: true)
             }
         }
-        
     }
 }
 

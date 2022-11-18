@@ -33,6 +33,8 @@ class CoBookViewController: UIViewController {
     let group = DispatchGroup()
     // 新增co_account book時儲存自動生成的document id
     var identifier: String = ""
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
 
     @IBOutlet weak var bookTableView: UITableView!
 
@@ -46,6 +48,8 @@ class CoBookViewController: UIViewController {
         addNewCoAccountBook()
         // 加入共同帳本func
         joinCoAccountBook()
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshBooks()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -54,6 +58,20 @@ class CoBookViewController: UIViewController {
         bookTableView.reloadData()
         // 回到帳本目錄時時恢復下方tabbar
         self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshBooks() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        bookTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.fetchCoBook()
+            self.refreshControl.endRefreshing()
+        }
     }
 
     // 按下右上button讓使用者輸入book name並新增帳本
