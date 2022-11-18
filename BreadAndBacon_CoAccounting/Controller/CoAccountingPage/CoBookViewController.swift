@@ -109,7 +109,6 @@ class CoBookViewController: UIViewController {
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
             self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
-            self.fetchCoBook()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -153,6 +152,7 @@ class CoBookViewController: UIViewController {
                     print("Error updating document: \(error)")
                 } else {
                     print("Document update successfully in ID: \(self.userName)")
+                    self.fetchCoBook()
                 }
             }
         }
@@ -232,13 +232,11 @@ class CoBookViewController: UIViewController {
 //            }
 //    }
 
-    // 從Firebase上fetch有幾本帳本user id是有我自己的
+    // 從Firebase上fetch有幾本帳本user id是有我自己的(因為user_id是array，因此要用whereField-arrayContains來判斷array裡的元素)
     func fetchCoBook() {
         data = []
         let dataBase = Firestore.firestore()
-        // 進入group
-        self.group.enter()
-        dataBase.collection("co-account").whereField("user_id", isEqualTo: [getName])
+        dataBase.collection("co-account").whereField("user_id", arrayContains: getName)
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -248,11 +246,7 @@ class CoBookViewController: UIViewController {
                 }
                 self.data.append(contentsOf: book)
                 print("book here \(self.data)")
-                self.group.leave()
             }
-        group.notify(queue: .main) {
-            self.bookTableView.reloadData()
-        }
     }
 
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
