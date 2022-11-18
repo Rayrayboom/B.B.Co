@@ -13,4 +13,5 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'Charts'
 	pod 'SwiftKeychainWrapper'
 	pod 'SideMenu'
+	pod 'IQKeyboardManagerSwift'
 end

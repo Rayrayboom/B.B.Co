@@ -42,7 +42,6 @@
 		7673ADB1291E1B6B00A15015 /* CoBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADB0291E1B6B00A15015 /* CoBookViewController.swift */; };
 		7673ADB3291E1BA100A15015 /* CoBookTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADB2291E1BA100A15015 /* CoBookTableViewCell.swift */; };
 		7673ADC529236D1200A15015 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADC429236D1200A15015 /* SignInViewController.swift */; };
-		7673ADCD2924A8FC00A15015 /* PersonalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADCC2924A8FC00A15015 /* PersonalViewController.swift */; };
 		7673ADD3292772B800A15015 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADD2292772B800A15015 /* CategoryViewController.swift */; };
 		7673ADD52927744B00A15015 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADD42927744B00A15015 /* CategoryTableViewCell.swift */; };
 		767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */; };
@@ -91,7 +90,6 @@
 		7673ADB2291E1BA100A15015 /* CoBookTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoBookTableViewCell.swift; sourceTree = "<group>"; };
 		7673ADC329236CD300A15015 /* BreadAndBacon_CoAccounting.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BreadAndBacon_CoAccounting.entitlements; sourceTree = "<group>"; };
 		7673ADC429236D1200A15015 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
-		7673ADCC2924A8FC00A15015 /* PersonalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalViewController.swift; sourceTree = "<group>"; };
 		7673ADD2292772B800A15015 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		7673ADD42927744B00A15015 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditQRCodeViewController.swift; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 				767EAFC3291BDA9F0005880E /* CoAccountingPage */,
 				7660866E290E2571008EF772 /* AddNewDataPage */,
 				76265F4C291793E900F5E341 /* PieChartPage */,
-				7673ADCA2924A8C800A15015 /* Personal */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -324,14 +321,6 @@
 			children = (
 			);
 			path = CoAccountingPage;
-			sourceTree = "<group>";
-		};
-		7673ADCA2924A8C800A15015 /* Personal */ = {
-			isa = PBXGroup;
-			children = (
-				7673ADCC2924A8FC00A15015 /* PersonalViewController.swift */,
-			);
-			path = Personal;
 			sourceTree = "<group>";
 		};
 		767EAFC3291BDA9F0005880E /* CoAccountingPage */ = {
@@ -511,7 +500,6 @@
 				76265F2B29126E3100F5E341 /* QRCodeTableViewCell.swift in Sources */,
 				76265F3A2913C21100F5E341 /* BBCoDateFormatter.swift in Sources */,
 				76265F4429150ABD00F5E341 /* EditDataTableViewCell.swift in Sources */,
-				7673ADCD2924A8FC00A15015 /* PersonalViewController.swift in Sources */,
 				7673ADB3291E1BA100A15015 /* CoBookTableViewCell.swift in Sources */,
 				76265F4229150A9C00F5E341 /* EditTimeTableViewCell.swift in Sources */,
 				7673ADB1291E1B6B00A15015 /* CoBookViewController.swift in Sources */,

@@ -10,11 +10,15 @@ import Firebase
 import FirebaseCore
 import FirebaseFirestore
 import FirebaseFirestoreSwift
+import IQKeyboardManagerSwift
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
+        // IQKeyboardManagerSwift
+        IQKeyboardManager.shared.enable = true
 
         // cocoa pods安裝完Firebase後補上如下
         FirebaseApp.configure()

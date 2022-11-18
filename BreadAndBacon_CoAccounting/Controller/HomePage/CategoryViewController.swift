@@ -26,11 +26,11 @@ class CategoryViewController: UIViewController {
         tapDismiss()
         // 判斷點選side menu對應cell時fetch不同category資料
         switch indexPathRow {
-        case 1:
+        case 0:
             fetchUserCategory(id: getId, subCollection: "expenditure")
-        case 2:
+        case 1:
             fetchUserCategory(id: getId, subCollection: "revenue")
-        case 3:
+        case 2:
             fetchUserCategory(id: getId, subCollection: "account")
         default:
             break
@@ -41,7 +41,11 @@ class CategoryViewController: UIViewController {
     }
 
     func tapDismiss() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dismissCategory))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "xmark"),
+            style: .plain,
+            target: self,
+            action: #selector(dismissCategory))
     }
 
     @objc func dismissCategory() {
@@ -67,7 +71,11 @@ class CategoryViewController: UIViewController {
     // 用category_id從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(id: String, subCollection: String, indexPathRow: Int) {
         let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(id).collection("\(subCollection)_category").document(category[indexPathRow].id ?? "")
+        let documentRef = dataBase
+            .collection("user")
+            .document(id)
+            .collection("\(subCollection)_category")
+            .document(category[indexPathRow].id ?? "")
         documentRef.delete()
     }
 }
