@@ -76,8 +76,9 @@ class PieChartViewController: UIViewController {
         monthDatePicker.center = view.center
         pieTableView.delegate = self
         pieTableView.dataSource = self
-        // 選取segment control時拿SegmentIndex
+        // 選取segment control時偵測改值狀態
         didSelectSegmentControl()
+        setupUI()
         // 畫出view放pieChartView
         setupfillInPieChartView()
         // 加上refreshControl下拉更新(重fetch data)
@@ -125,6 +126,18 @@ class PieChartViewController: UIViewController {
         }
     }
 
+    func setupUI() {
+        // segmented control邊框
+        sourceSegmentControl.layer.borderWidth = 2.0
+        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
+        // 預設一進去segmented所選文字為白色+黃底
+        if sourceSegmentControl.selectedSegmentIndex == 0 {
+            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+        }
+    }
+
     // segmentControl
     func didSelectSegmentControl() {
         // segmentControl 偵測改值狀態
@@ -133,8 +146,19 @@ class PieChartViewController: UIViewController {
 
     // segmentControl - @objc
     @objc func handelSegmentControl() {
+        // 設置segmented control被選取時文字、button顏色
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+
+        // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
-        print("This is current segmentTag \(segmentTag)")
+        switch segmentTag {
+        case 1:
+            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+        default:
+            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+        }
         pieTableView.reloadData()
     }
 

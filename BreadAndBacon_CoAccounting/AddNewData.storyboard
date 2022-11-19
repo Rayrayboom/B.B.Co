@@ -109,7 +109,7 @@
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u9x-qB-yCX">
-                                                    <rect key="frame" x="20" y="20" width="42" height="21"/>
+                                                    <rect key="frame" x="20" y="20" width="42" height="37"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -127,7 +127,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="EdB-Bk-acO" secondAttribute="trailing" id="KuH-5M-85z"/>
                                                 <constraint firstItem="OJi-0S-5nV" firstAttribute="top" secondItem="j4T-KR-TcS" secondAttribute="top" constant="20" id="YRp-ue-w17"/>
                                                 <constraint firstAttribute="bottom" secondItem="EdB-Bk-acO" secondAttribute="bottom" constant="20" id="eEu-dd-ZE3"/>
-                                                <constraint firstAttribute="bottom" secondItem="u9x-qB-yCX" secondAttribute="bottom" priority="250" constant="20" id="itL-1u-bqp"/>
+                                                <constraint firstAttribute="bottom" secondItem="u9x-qB-yCX" secondAttribute="bottom" constant="20" id="itL-1u-bqp"/>
                                                 <constraint firstItem="u9x-qB-yCX" firstAttribute="leading" secondItem="j4T-KR-TcS" secondAttribute="leading" constant="20" id="kCb-9o-ffd"/>
                                                 <constraint firstItem="u9x-qB-yCX" firstAttribute="top" secondItem="j4T-KR-TcS" secondAttribute="top" constant="20" id="pHY-pp-Pgx"/>
                                             </constraints>

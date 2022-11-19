@@ -101,6 +101,7 @@ class AddNewDataViewController: UIViewController {
 
         // segmentControl 偵測改值狀態
         didSelectsegmentedControl()
+        setupUI()
         // 點選X時，執行取消新增
         cancelNewData()
         // 點選+時，執行新增資料到firebase
@@ -115,6 +116,18 @@ class AddNewDataViewController: UIViewController {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+    }
+    
+    func setupUI() {
+        // segmented control邊框
+        sourceSegmentControl.layer.borderWidth = 2.0
+        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
+        // 預設一進去segmented所選文字為白色+黃底
+        if sourceSegmentControl.selectedSegmentIndex == 0 {
+            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+        }
     }
 
     // segmentControl 偵測改值狀態
@@ -298,14 +311,32 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
+        switch section {
+        case 0:
             return 1
-        } else if section == 1 {
+        case 1:
             return costCategory.count
-        } else if section == 2 {
+        case 2:
             return 1
-        } else {
+        default:
             return 1
+        }
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "選擇日期"
+        case 1:
+            return "輸入細項"
+        case 2:
+            if segmentTag == 2 {
+                return ""
+            } else {
+                return "使用QRCode"
+            }
+        default:
+            return "備註"
         }
     }
 

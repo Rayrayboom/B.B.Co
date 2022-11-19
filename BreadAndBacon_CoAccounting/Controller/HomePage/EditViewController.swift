@@ -106,6 +106,7 @@ class EditViewController: UIViewController {
 
         // segmentControl 偵測改值狀態
         didSelectsegmentedControl()
+        setupUI()
         // 點選X時，執行取消新增
         cancelNewData()
         // 點選pencil時，執行更新編輯
@@ -120,6 +121,18 @@ class EditViewController: UIViewController {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
+    }
+
+    func setupUI() {
+        // segmented control邊框
+        sourceSegmentControl.layer.borderWidth = 2.0
+        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
+        // 預設一進去segmented所選文字為白色+黃底
+        if sourceSegmentControl.selectedSegmentIndex == 0 {
+            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+        }
     }
 
     // segmentControl 偵測改值狀態
@@ -262,6 +275,19 @@ extension EditViewController: UITableViewDataSource {
             return 1
         default:
             return 1
+        }
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "選擇日期"
+        case 1:
+            return "輸入細項"
+        case 2:
+            return "使用QRCode"
+        default:
+            return "備註"
         }
     }
 
