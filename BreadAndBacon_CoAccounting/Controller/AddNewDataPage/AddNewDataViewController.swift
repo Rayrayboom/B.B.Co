@@ -100,7 +100,7 @@ class AddNewDataViewController: UIViewController {
         addNewDadaTableView.estimatedRowHeight = UITableView.automaticDimension
 
         // segmentControl 偵測改值狀態
-        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+        didSelectsegmentedControl()
         // 點選X時，執行取消新增
         cancelNewData()
         // 點選+時，執行新增資料到firebase
@@ -117,10 +117,27 @@ class AddNewDataViewController: UIViewController {
         view.endEditing(true)
     }
 
+    // segmentControl 偵測改值狀態
+    func didSelectsegmentedControl() {
+        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+    }
+
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
+        // 設置segmented control被選取時文字、button顏色
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+
+        // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
-        print("This is current segmentTag \(segmentTag)")
+        switch segmentTag {
+        case 1:
+            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+        case 2:
+            sourceSegmentControl.selectedSegmentTintColor = .systemBrown
+        default:
+            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+        }
         addNewDadaTableView.reloadData()
     }
 
@@ -138,7 +155,7 @@ class AddNewDataViewController: UIViewController {
     // 新增資料按鈕trigger
     func saveNewData() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(savePage))
+            image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(savePage))
     }
 
     // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面

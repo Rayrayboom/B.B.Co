@@ -40,6 +40,8 @@ class PieChartViewController: UIViewController {
             }
         }
     }
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
 
 // MARK: - 待處理month pie chart
     @IBAction func goToLastMonth(_ sender: UIButton) {
@@ -78,6 +80,8 @@ class PieChartViewController: UIViewController {
         didSelectSegmentControl()
         // 畫出view放pieChartView
         setupfillInPieChartView()
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshPieDetail()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -100,6 +104,24 @@ class PieChartViewController: UIViewController {
             fetchUser(id: getId, subCollection: "revenue")
         } else {
             fetchUser(id: getId, subCollection: "expenditure")
+        }
+    }
+
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshPieDetail() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        pieTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            if self.segmentTag == 0 {
+                self.fetchUser(id: self.getId, subCollection: "expenditure")
+            } else {
+                self.fetchUser(id: self.getId, subCollection: "revenue")
+            }
+            self.refreshControl.endRefreshing()
         }
     }
 

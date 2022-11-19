@@ -21,14 +21,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="categoryCell" id="oo2-YM-olE" customClass="CategoryTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="41.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="41"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oo2-YM-olE" id="gCD-Ka-3CF">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="41.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="41"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AYg-Gt-qI3">
-                                                    <rect key="frame" x="20" y="10" width="42" height="21.5"/>
+                                                    <rect key="frame" x="20" y="10" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -82,14 +82,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="homeDetailCell" id="AvO-iC-MAk" customClass="HomeDetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="72.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AvO-iC-MAk" id="nl2-jG-fiK">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="72.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="73"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="smh-bl-YiE">
-                                                    <rect key="frame" x="70" y="10" width="44.5" height="22"/>
+                                                    <rect key="frame" x="70" y="10" width="44.5" height="22.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -103,7 +103,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="detail" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lgs-Ma-jhU">
-                                                    <rect key="frame" x="70" y="42" width="324" height="20.5"/>
+                                                    <rect key="frame" x="70" y="42.5" width="324" height="20.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -152,13 +152,14 @@
                     </view>
                     <navigationItem key="navigationItem" id="syv-hv-bx8">
                         <nil key="title"/>
-                        <barButtonItem key="leftBarButtonItem" title="Menu" id="PHs-15-gMU">
+                        <barButtonItem key="leftBarButtonItem" title="Menu" image="ellipsis" catalog="system" id="PHs-15-gMU">
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
                                 <action selector="didTapMenu" destination="BYZ-38-t0r" id="qnU-YQ-Eg4"/>
                             </connections>
                         </barButtonItem>
                         <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="aQr-iC-ZiH">
-                            <rect key="frame" x="107.5" y="4.5" width="199" height="35"/>
+                            <rect key="frame" x="165" y="4.5" width="199" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain"/>
@@ -358,17 +359,16 @@
                     </view>
                     <navigationItem key="navigationItem" id="onj-ih-nmn">
                         <nil key="title"/>
-                        <barButtonItem key="leftBarButtonItem" style="plain" systemItem="cancel" id="r22-ti-43k"/>
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="oIA-X6-6St">
-                            <rect key="frame" x="81.5" y="5.5" width="167.5" height="33"/>
+                            <rect key="frame" x="84.5" y="5.5" width="245" height="33"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <segments>
                                 <segment title="支出"/>
                                 <segment title="收入"/>
                                 <segment title="轉帳"/>
                             </segments>
+                            <color key="selectedSegmentTintColor" systemColor="systemYellowColor"/>
                         </segmentedControl>
-                        <barButtonItem key="rightBarButtonItem" image="pen" style="plain" id="gEc-53-XtD"/>
                     </navigationItem>
                     <connections>
                         <outlet property="editTableView" destination="Bz3-bR-Hfh" id="jua-Wn-lLE"/>
@@ -377,7 +377,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cLL-Cd-dM8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-36" y="1598"/>
+            <point key="canvasLocation" x="-36.231884057971016" y="1597.7678571428571"/>
         </scene>
         <!--EditQR Code View Controller-->
         <scene sceneID="L1P-hG-pst">
@@ -435,7 +435,7 @@
     <resources>
         <image name="Home 2" width="32" height="38"/>
         <image name="Home-clicked" width="32" height="38"/>
-        <image name="pen" width="128" height="128"/>
+        <image name="ellipsis" catalog="system" width="128" height="37"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="qrcode.viewfinder" catalog="system" width="128" height="115"/>
         <systemColor name="labelColor">
@@ -443,6 +443,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemYellowColor">
+            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

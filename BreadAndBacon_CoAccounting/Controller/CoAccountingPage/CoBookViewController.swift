@@ -59,7 +59,7 @@ class CoBookViewController: UIViewController {
         // 回到帳本目錄時時恢復下方tabbar
         self.tabBarController?.tabBar.isHidden = false
     }
-    
+
     // 加上refreshControl下拉更新(重fetch data)
     func refreshBooks() {
         refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)

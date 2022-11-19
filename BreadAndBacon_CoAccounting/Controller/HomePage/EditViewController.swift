@@ -105,7 +105,7 @@ class EditViewController: UIViewController {
         editTableView.dataSource = self
 
         // segmentControl 偵測改值狀態
-        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+        didSelectsegmentedControl()
         // 點選X時，執行取消新增
         cancelNewData()
         // 點選pencil時，執行更新編輯
@@ -122,10 +122,27 @@ class EditViewController: UIViewController {
         view.endEditing(true)
     }
 
+    // segmentControl 偵測改值狀態
+    func didSelectsegmentedControl() {
+        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+    }
+
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
+        // 設置segmented control被選取時文字、button顏色
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+
+        // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
-        print("This is current segmentTag \(segmentTag)")
+        switch segmentTag {
+        case 1:
+            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+        case 2:
+            sourceSegmentControl.selectedSegmentTintColor = .systemBrown
+        default:
+            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+        }
         editTableView.reloadData()
     }
 

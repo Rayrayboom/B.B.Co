@@ -40,6 +40,9 @@ class CoAccountingViewController: UIViewController {
 
     // 用來存有哪些user可以有權限編輯共同帳本
     var userName: [String] = []
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
+
 
     @IBOutlet weak var bookDetailTableView: UITableView!
     @IBAction func addDetail(_ sender: UIButton) {
@@ -65,6 +68,8 @@ class CoAccountingViewController: UIViewController {
         didSelectSegmentControl()
         // 畫出view來放pieChartView
         setupfillInPieChartView()
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshBookDetail()
     }
 
     // 當addCoDetailVC dismiss後回到coAccountingVC會呼叫viewWillAppear，重新fetch一次data並reload bookTableView
@@ -80,6 +85,20 @@ class CoAccountingViewController: UIViewController {
     // UI
     func setupUI() {
         self.navigationItem.title = "支出總覽"
+    }
+
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshBookDetail() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        bookDetailTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.fetchBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
+            self.refreshControl.endRefreshing()
+        }
     }
 
     // segmentControl
