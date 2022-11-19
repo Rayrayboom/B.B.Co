@@ -110,11 +110,11 @@ extension CategoryViewController: UITableViewDataSource {
             tableView.beginUpdates()
             // 刪除firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             switch indexPathRow {
-            case 1:
+            case 0:
                 deleteSpecificData(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row)
-            case 2:
+            case 1:
                 deleteSpecificData(id: getId, subCollection: "revenue", indexPathRow: indexPath.row)
-            case 3:
+            case 2:
                 deleteSpecificData(id: getId, subCollection: "account", indexPathRow: indexPath.row)
             default:
                 break
