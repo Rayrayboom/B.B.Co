@@ -183,20 +183,23 @@ class AddNewDataViewController: UIViewController {
             createUserData(id: getId, subCollection: "account")
         }
 
-        let animation = LottieAnimationView(name: "96081-successful-animation")
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
 
-        animation.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
-        animation.center = self.view.center
-        animation.contentMode = .scaleAspectFill
-        view.addSubview(animation)
-        animation.animationSpeed = 5
-        animation.play()
-
-        UIView.animate(withDuration: 2) {
-            self.view.layoutIfNeeded()
-        } completion: { _ in
-            self.presentingViewController?.dismiss(animated: true, completion: nil)
-        }
+        // TODO: - lottie動畫（待修bug）
+//        let animation = LottieAnimationView(name: "96081-successful-animation")
+//
+//        animation.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
+//        animation.center = self.view.center
+//        animation.contentMode = .scaleAspectFill
+//        view.addSubview(animation)
+//        animation.animationSpeed = 5
+//        animation.play()
+//
+//        UIView.animate(withDuration: 2) {
+//            self.view.layoutIfNeeded()
+//        } completion: { _ in
+//            self.presentingViewController?.dismiss(animated: true, completion: nil)
+//        }
     }
 
     // MARK: - 上傳資料到Firebase
@@ -372,6 +375,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
 
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
+
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -436,6 +440,11 @@ extension AddNewDataViewController: UITableViewDataSource {
                 data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
 
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
+
+                // 取dateTime前面到月份的string(pir chart會使用到)
+                let monthData = data.dateTime.prefix(11)
+                data.monthTime = String(monthData)
+
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(

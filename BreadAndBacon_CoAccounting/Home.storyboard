@@ -21,14 +21,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="categoryCell" id="oo2-YM-olE" customClass="CategoryTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="41"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="41.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oo2-YM-olE" id="gCD-Ka-3CF">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="41"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="41.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AYg-Gt-qI3">
-                                                    <rect key="frame" x="20" y="10" width="42" height="21"/>
+                                                    <rect key="frame" x="20" y="10" width="42" height="21.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -103,7 +103,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="detail" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lgs-Ma-jhU">
-                                                    <rect key="frame" x="55" y="30.5" width="339" height="16"/>
+                                                    <rect key="frame" x="55" y="30.5" width="279" height="16"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleCallout"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -124,8 +124,9 @@
                                                 <constraint firstItem="UOj-fS-2sh" firstAttribute="top" secondItem="nl2-jG-fiK" secondAttribute="top" constant="10" id="eZ5-tl-D4Q"/>
                                                 <constraint firstAttribute="trailing" secondItem="UvC-xT-LLi" secondAttribute="trailing" constant="30" id="hEv-Hb-ePY"/>
                                                 <constraint firstItem="UvC-xT-LLi" firstAttribute="top" secondItem="nl2-jG-fiK" secondAttribute="top" constant="20" id="lg1-9Y-UTQ"/>
+                                                <constraint firstAttribute="bottom" secondItem="UvC-xT-LLi" secondAttribute="bottom" constant="15.5" id="ls3-MG-gTC"/>
                                                 <constraint firstItem="Lgs-Ma-jhU" firstAttribute="top" secondItem="smh-bl-YiE" secondAttribute="bottom" constant="2" id="v7A-aq-ouz"/>
-                                                <constraint firstAttribute="trailing" secondItem="Lgs-Ma-jhU" secondAttribute="trailing" constant="20" id="xIm-jm-ZDu"/>
+                                                <constraint firstAttribute="trailing" secondItem="Lgs-Ma-jhU" secondAttribute="trailing" constant="80" id="xIm-jm-ZDu"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -231,7 +232,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="j7w-Fp-ZbT">
-                                                    <rect key="frame" x="50" y="10" width="229" height="32"/>
+                                                    <rect key="frame" x="50" y="10" width="229" height="31.5"/>
                                                 </datePicker>
                                             </subviews>
                                             <constraints>
