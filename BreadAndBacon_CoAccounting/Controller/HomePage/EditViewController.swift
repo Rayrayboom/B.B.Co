@@ -211,12 +211,17 @@ class EditViewController: UIViewController {
 
     // 點選對應細項編輯資料
     func editUser(id: String, subCollection: String, documentID: String) {
+        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
+        guard let cell = editTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? EditTimeTableViewCell
+        else {
+            fatalError("can not find AddDateTableViewCell")
+        }
         let dataBase = Firestore.firestore()
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
         // 進入group
         self.group.enter()
         dataBase.collection("user/\(id)/\(subCollection)").document("\(documentID)").updateData([
-            "date": editData.dateTime,
+            "date": BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
             "amount": editData.amountTextField,
             "category": editData.categoryTextField,
             "account": editData.accountTextField,
@@ -246,7 +251,6 @@ class EditViewController: UIViewController {
 
 extension EditViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
         // 點擊cell時收起鍵盤
         view.endEditing(true)
     }
@@ -298,18 +302,11 @@ extension EditViewController: UITableViewDataSource {
             else {
                 fatalError("can not create cell")
             }
+            // 由homeVC傳被點選的cell對應資料data過來，editVC用data接，裡面的date資料就是該筆資料的日期
+            editData.dateTime = data?.date ?? ""
 
-            // 設定datePicker的delegate
-            editTimeCell.delegate = self
-            let date = Date()
-            // formatter把日期(date)轉成String塞給dateStr
-            let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
-            // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
-            editTimeCell.config(dateStr: dateStr)
-            // 在生成editDataCell時先把已經從firebase抓下來的單筆對應資料的值塞給struct(editData)
-            editData.dateTime = self.data?.date ?? ""
-            // 接著把已經從firebase抓下來的單筆對應資料的值塞給editVC中的dateTextField.text顯示
-            editTimeCell.dateTextfield.text = self.data?.date ?? ""
+            editTimeCell.editDatePicker.date = BBCDateFormatter.shareFormatter.date(from: editData.dateTime) ?? Date()
+
             return editTimeCell
         } else if indexPath.section == 1 {
             guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
@@ -399,17 +396,6 @@ extension EditViewController: UITableViewDataSource {
             editDetailCell.delegate = self
             return editDetailCell
         }
-    }
-}
-
-// date cell
-extension EditViewController: EditTimeTableViewCellDelegate {
-    // 用delegate把cell和點選的sender傳過來，進行給新值的動作
-    func getDate(_ cell: EditTimeTableViewCell, sender: UIDatePicker, textField: String) {
-        // 當date picker改變時，執行此func，把當前改變的date塞給textfield
-        cell.dateTextfield.text = BBCDateFormatter.shareFormatter.string(from: sender.date)
-        // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
-        editData.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
     }
 }
 

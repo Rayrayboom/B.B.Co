@@ -204,7 +204,7 @@ extension AddCoDetailViewController: UITableViewDataSource {
         coDetailCell.contentTextField.textAlignment = .center
 
         switch indexPath.section {
-        case 0: // 針對time textField設定
+        case 0: // 針對time設定
             guard let coTimeCell = tableView.dequeueReusableCell(withIdentifier: "coTimeCell") as? CoTimeTableViewCell
             else {
                 fatalError("can not create coTimeCell")

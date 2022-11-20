@@ -21,14 +21,14 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="categoryCell" id="oo2-YM-olE" customClass="CategoryTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="41.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="41"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="oo2-YM-olE" id="gCD-Ka-3CF">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="41.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="41"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AYg-Gt-qI3">
-                                                    <rect key="frame" x="20" y="10" width="42" height="21.5"/>
+                                                    <rect key="frame" x="20" y="10" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -224,31 +224,29 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="editTimeCell" id="p2y-U3-pUX" customClass="EditTimeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="74.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="51.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="p2y-U3-pUX" id="8zE-af-DNX">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="74.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="51.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Vv4-cX-EB7">
-                                                    <rect key="frame" x="50" y="20" width="314" height="34.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                </textField>
+                                                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="j7w-Fp-ZbT">
+                                                    <rect key="frame" x="50" y="10" width="229" height="32"/>
+                                                </datePicker>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="Vv4-cX-EB7" firstAttribute="leading" secondItem="8zE-af-DNX" secondAttribute="leading" constant="50" id="0w4-2b-lzB"/>
-                                                <constraint firstAttribute="trailing" secondItem="Vv4-cX-EB7" secondAttribute="trailing" constant="50" id="CJZ-Ao-tq7"/>
-                                                <constraint firstItem="Vv4-cX-EB7" firstAttribute="top" secondItem="8zE-af-DNX" secondAttribute="top" constant="20" id="KUe-Oy-Esh"/>
-                                                <constraint firstAttribute="bottom" secondItem="Vv4-cX-EB7" secondAttribute="bottom" constant="20" id="UKa-Gu-sma"/>
+                                                <constraint firstAttribute="trailing" secondItem="j7w-Fp-ZbT" secondAttribute="trailing" constant="135" id="BQn-ct-9gk"/>
+                                                <constraint firstItem="j7w-Fp-ZbT" firstAttribute="leading" secondItem="8zE-af-DNX" secondAttribute="leading" constant="50" id="czP-VX-ao3"/>
+                                                <constraint firstItem="j7w-Fp-ZbT" firstAttribute="top" secondItem="8zE-af-DNX" secondAttribute="top" constant="10" id="d7S-O3-lBi"/>
+                                                <constraint firstAttribute="bottom" secondItem="j7w-Fp-ZbT" secondAttribute="bottom" constant="10" id="mBI-0p-gW2"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="editDatePicker" destination="Vv4-cX-EB7" id="aYh-ha-aB1"/>
+                                            <outlet property="editDatePicker" destination="j7w-Fp-ZbT" id="sGP-dP-MN2"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="editDataCell" rowHeight="77" id="GiS-ep-GZe" customClass="EditDataTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="119" width="414" height="77"/>
+                                        <rect key="frame" x="0.0" y="96" width="414" height="77"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GiS-ep-GZe" id="gQM-0E-RYO">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="77"/>
@@ -293,7 +291,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="editQRCell" id="Jv1-JI-c5L" customClass="EditQRCodeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="196" width="414" height="51.5"/>
+                                        <rect key="frame" x="0.0" y="173" width="414" height="51.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Jv1-JI-c5L" id="7yt-9a-mb7">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="51.5"/>
@@ -319,7 +317,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="editDetailCell" id="M4u-fs-xUn" customClass="EditDetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="247.5" width="414" height="40.5"/>
+                                        <rect key="frame" x="0.0" y="224.5" width="414" height="40.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="M4u-fs-xUn" id="ZED-xO-0o4">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="40.5"/>
