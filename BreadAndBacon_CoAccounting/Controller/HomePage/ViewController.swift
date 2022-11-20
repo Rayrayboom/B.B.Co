@@ -65,12 +65,17 @@ class ViewController: UIViewController {
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
         // 加上refreshControl下拉更新(重fetch data)
         refreshDetail()
+        setupUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
             // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
             self.fetchAllData()
+    }
+
+    func setupUI() {
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
     }
 
     // 加上refreshControl下拉更新(重fetch data)

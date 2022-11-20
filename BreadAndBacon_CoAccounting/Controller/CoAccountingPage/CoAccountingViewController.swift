@@ -94,6 +94,7 @@ class CoAccountingViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             coSegmentedControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
     }
 
     // 加上refreshControl下拉更新(重fetch data)

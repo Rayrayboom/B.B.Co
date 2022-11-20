@@ -77,7 +77,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="nzW-U8-h5B">
-                                                    <rect key="frame" x="50" y="10" width="229" height="32"/>
+                                                    <rect key="frame" x="50" y="10" width="229" height="31.5"/>
                                                 </datePicker>
                                             </subviews>
                                             <constraints>
@@ -144,7 +144,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iRh-D2-x4X">
-                                                    <rect key="frame" x="352.5" y="10" width="46.5" height="31.5"/>
+                                                    <rect key="frame" x="184" y="10" width="46.5" height="31.5"/>
                                                     <state key="normal" title="Button"/>
                                                     <buttonConfiguration key="configuration" style="plain" image="qrcode.viewfinder" catalog="system"/>
                                                     <connections>
@@ -153,9 +153,9 @@
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="iRh-D2-x4X" secondAttribute="trailing" constant="15" id="G9R-So-7zt"/>
                                                 <constraint firstAttribute="bottom" secondItem="iRh-D2-x4X" secondAttribute="bottom" constant="10" id="QC4-Ye-iK9"/>
                                                 <constraint firstItem="iRh-D2-x4X" firstAttribute="top" secondItem="P8H-gH-xUJ" secondAttribute="top" constant="10" id="Vvc-i7-ipt"/>
+                                                <constraint firstItem="iRh-D2-x4X" firstAttribute="centerX" secondItem="P8H-gH-xUJ" secondAttribute="centerX" id="jhJ-6e-Npt"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -229,7 +229,8 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="xzH-En-JyY" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="add" id="X9M-Hp-EEm">
-                        <imageReference key="image" image="plus" catalog="system" symbolScale="large"/>
+                        <imageReference key="image" image="Add-clicked" symbolScale="large"/>
+                        <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="4"/>
                     </tabBarItem>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
@@ -248,6 +249,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Add-clicked" width="32" height="38"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="qrcode.viewfinder" catalog="system" width="128" height="115"/>
         <systemColor name="labelColor">

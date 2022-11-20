@@ -128,6 +128,7 @@ class AddNewDataViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
     }
 
     // segmentControl 偵測改值狀態

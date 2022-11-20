@@ -50,6 +50,7 @@ class CoBookViewController: UIViewController {
         joinCoAccountBook()
         // 加上refreshControl下拉更新(重fetch data)
         refreshBooks()
+        setupUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +59,10 @@ class CoBookViewController: UIViewController {
         bookTableView.reloadData()
         // 回到帳本目錄時時恢復下方tabbar
         self.tabBarController?.tabBar.isHidden = false
+    }
+
+    func setupUI() {
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -76,7 +81,7 @@ class CoBookViewController: UIViewController {
 
     // 按下右上button讓使用者輸入book name並新增帳本
     func addNewCoAccountBook() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(saveEdit))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
     // 觸發新增帳本func
@@ -91,10 +96,9 @@ class CoBookViewController: UIViewController {
             textField.placeholder = "帳本名稱"
             textField.keyboardType = UIKeyboardType.default
             textField.keyboardAppearance = .dark
-
         }
         // 按下OK執行新增account book(使用者輸入accounnt book name)
-        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
+        let okAction = UIAlertAction(title: "新增", style: .default) { [unowned controller] _ in
             self.bookName = controller.textFields?[0].text ?? ""
             self.createCoAccountData()
             self.fetchCoBook()
@@ -102,7 +106,7 @@ class CoBookViewController: UIViewController {
             self.updateUserToBook(bookIdentifier: self.identifier)
         }
         controller.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         controller.addAction(cancelAction)
         // 記得要present後alert才會出現
         present(controller, animated: true)
@@ -127,7 +131,7 @@ class CoBookViewController: UIViewController {
             textField.keyboardAppearance = .dark
         }
         // 按下OK執行新增account book(使用者輸入accounnt book name)
-        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
+        let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
             self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
 //            if self.inputBookID == data{
@@ -137,7 +141,7 @@ class CoBookViewController: UIViewController {
 //            }
         }
         controller.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         controller.addAction(cancelAction)
         // 記得要present後alert才會出現
         present(controller, animated: true)

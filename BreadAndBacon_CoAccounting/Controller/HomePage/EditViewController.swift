@@ -25,6 +25,7 @@ struct DataModel {
 }
 
 class EditViewController: UIViewController {
+    // 接homeVC點選對應cell的單筆資料
     var data: Account?
     var category: [Category] = []
     var costCategory: [String] = ["金額", "種類", "帳戶"]
@@ -133,6 +134,7 @@ class EditViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
     }
 
     // segmentControl 偵測改值狀態
@@ -172,7 +174,7 @@ class EditViewController: UIViewController {
 
     // 儲存已編輯完成的data
     func saveEditData() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "pencil"), style: .plain, target: self, action: #selector(saveEdit))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Pencil"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
 // MARK: -如下edit func先全部執行，目前可以照預期的呈現，後續再來想判斷式
