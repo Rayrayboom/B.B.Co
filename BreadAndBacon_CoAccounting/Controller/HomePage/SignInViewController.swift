@@ -15,7 +15,7 @@ class SignInViewController: UIViewController {
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // 判斷當使用者已登入後，重開app不需再登入一次，因為登出會刪掉keychain的user id，故用這個條件來判斷

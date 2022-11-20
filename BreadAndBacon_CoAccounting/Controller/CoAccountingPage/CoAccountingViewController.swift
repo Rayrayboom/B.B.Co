@@ -85,6 +85,15 @@ class CoAccountingViewController: UIViewController {
     // UI
     func setupUI() {
         self.navigationItem.title = "支出總覽"
+        // segmented control邊框
+        coSegmentedControl.layer.borderWidth = 2.0
+        coSegmentedControl.layer.borderColor = UIColor.black.cgColor
+        // 預設一進去segmented所選文字為白色+黃底
+        if coSegmentedControl.selectedSegmentIndex == 0 {
+            coSegmentedControl.selectedSegmentTintColor = UIColor.systemYellow
+            let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            coSegmentedControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+        }
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -108,8 +117,18 @@ class CoAccountingViewController: UIViewController {
 
     // segmentControl - @objc
     @objc func handelSegmentControl() {
+        // 設置segmented control被選取時文字、button顏色
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        coSegmentedControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+
+        // 設置對應segmentTag顏色
         segmentTag = coSegmentedControl.selectedSegmentIndex
-        print("This is current segmentTag \(segmentTag)")
+        switch segmentTag {
+        case 1:
+            coSegmentedControl.selectedSegmentTintColor = .systemCyan
+        default:
+            coSegmentedControl.selectedSegmentTintColor = .systemYellow
+        }
         bookDetailTableView.reloadData()
     }
 

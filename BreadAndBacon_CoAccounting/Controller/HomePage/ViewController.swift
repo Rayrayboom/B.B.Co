@@ -42,7 +42,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var showDetailTableView: UITableView!
     @IBAction func didTapMenu() {
-        present(menu!, animated: true)
+        guard let menu = menu else { fatalError("can not present side menu") }
+        present(menu, animated: true)
     }
 
     override func viewDidLoad() {
@@ -71,7 +72,7 @@ class ViewController: UIViewController {
             // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
             self.fetchAllData()
     }
-    
+
     // 加上refreshControl下拉更新(重fetch data)
     func refreshDetail() {
         refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
@@ -202,6 +203,7 @@ class MenuListController: UITableViewController {
     var items = ["支出種類", "收入種類", "帳戶種類", "登出"]
     let darkColor = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
     var getName: String = ""
+    var alertController = UIAlertController()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -231,7 +233,7 @@ class MenuListController: UITableViewController {
             personalCell.textLabel?.text = "哈囉~ \(getName)"
             personalCell.textLabel?.textColor = .white
             personalCell.backgroundColor = darkColor
-            
+
             return personalCell
         default:
             let sideMenuCategoryCell = tableView.dequeueReusableCell(withIdentifier: "sideMenuCategoryCell", for: indexPath)
@@ -253,15 +255,7 @@ class MenuListController: UITableViewController {
         default:
             switch indexPath.row {
             case 3: // sign out
-                KeychainWrapper.standard.remove(forKey: "id")
-                KeychainWrapper.standard.remove(forKey: "name")
-
-                print("this is user id", KeychainWrapper.standard.string(forKey: "id") ?? "")
-                print("this is user name", KeychainWrapper.standard.string(forKey: "name") ?? "")
-                let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let viewController = mainStoryboard.instantiateViewController(withIdentifier: "signInVC") as! SignInViewController
-                UIApplication.shared.windows.first?.rootViewController = viewController
-                UIApplication.shared.windows.first?.makeKeyAndVisible()
+                signOutAlert()
             default: // category list
                 // 先指定storyboard(避免self.storyboard為nil的狀況)
                 let homeStoryboard = UIStoryboard(name: "Home", bundle: nil)
@@ -276,6 +270,29 @@ class MenuListController: UITableViewController {
                 present(presentCategoryVC, animated: true)
             }
         }
+    }
+
+    // 登出跳出下方選單
+    func signOutAlert() {
+        alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let name = "登出"
+        let action = UIAlertAction(title: name, style: .default) { action in
+            print(action.title ?? "")
+            KeychainWrapper.standard.remove(forKey: "id")
+            KeychainWrapper.standard.remove(forKey: "name")
+
+            print("this is user id", KeychainWrapper.standard.string(forKey: "id") ?? "")
+            print("this is user name", KeychainWrapper.standard.string(forKey: "name") ?? "")
+            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let viewController = mainStoryboard.instantiateViewController(withIdentifier: "signInVC") as! SignInViewController
+            UIApplication.shared.windows.first?.rootViewController = viewController
+            UIApplication.shared.windows.first?.makeKeyAndVisible()
+        }
+        alertController.addAction(action)
+
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 

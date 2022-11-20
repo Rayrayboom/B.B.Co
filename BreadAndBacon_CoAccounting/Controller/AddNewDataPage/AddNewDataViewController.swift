@@ -117,7 +117,7 @@ class AddNewDataViewController: UIViewController {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
-    
+
     func setupUI() {
         // segmented control邊框
         sourceSegmentControl.layer.borderWidth = 2.0
