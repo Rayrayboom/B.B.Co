@@ -10,7 +10,7 @@ import SwiftUI
 import AVFoundation
 import FirebaseFirestore
 import SwiftKeychainWrapper
-
+import Lottie
 
 // MARK: - expenditure
 struct NewDataModel {
@@ -75,7 +75,7 @@ class AddNewDataViewController: UIViewController {
             addNewDadaTableView.reloadData()
         }
     }
-    // 儲存使用者keyChain
+    // 儲存user id到keyChain
     var getId: String = ""
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
@@ -100,7 +100,8 @@ class AddNewDataViewController: UIViewController {
         addNewDadaTableView.estimatedRowHeight = UITableView.automaticDimension
 
         // segmentControl 偵測改值狀態
-        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+        didSelectsegmentedControl()
+        setupUI()
         // 點選X時，執行取消新增
         cancelNewData()
         // 點選+時，執行新增資料到firebase
@@ -117,17 +118,47 @@ class AddNewDataViewController: UIViewController {
         view.endEditing(true)
     }
 
+    func setupUI() {
+        // segmented control邊框
+        sourceSegmentControl.layer.borderWidth = 2.0
+        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
+        // 預設一進去segmented所選文字為白色+黃底
+        if sourceSegmentControl.selectedSegmentIndex == 0 {
+            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+        }
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+    }
+
+    // segmentControl 偵測改值狀態
+    func didSelectsegmentedControl() {
+        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+    }
+
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
+        // 設置segmented control被選取時文字、button顏色
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+
+        // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
-        print("This is current segmentTag \(segmentTag)")
+        switch segmentTag {
+        case 1:
+            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+        case 2:
+            sourceSegmentControl.selectedSegmentTintColor = .systemBrown
+        default:
+            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+        }
         addNewDadaTableView.reloadData()
     }
 
     // 取消新增資料按鈕trigger
     func cancelNewData() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dismissPage))
+            image: UIImage(named: "Cancel"), style: .plain, target: self, action: #selector(dismissPage))
     }
 
     // 取消並dismiss VC
@@ -138,7 +169,7 @@ class AddNewDataViewController: UIViewController {
     // 新增資料按鈕trigger
     func saveNewData() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(savePage))
+            image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(savePage))
     }
 
     // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面
@@ -151,11 +182,33 @@ class AddNewDataViewController: UIViewController {
         default:
             createUserData(id: getId, subCollection: "account")
         }
+
         self.presentingViewController?.dismiss(animated: true, completion: nil)
+
+        // TODO: - lottie動畫（待修bug）
+//        let animation = LottieAnimationView(name: "96081-successful-animation")
+//
+//        animation.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
+//        animation.center = self.view.center
+//        animation.contentMode = .scaleAspectFill
+//        view.addSubview(animation)
+//        animation.animationSpeed = 5
+//        animation.play()
+//
+//        UIView.animate(withDuration: 2) {
+//            self.view.layoutIfNeeded()
+//        } completion: { _ in
+//            self.presentingViewController?.dismiss(animated: true, completion: nil)
+//        }
     }
 
     // MARK: - 上傳資料到Firebase
     func createUserData(id: String, subCollection: String) {
+        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
+        guard let cell = addNewDadaTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? AddDateTableViewCell
+        else {
+            fatalError("can not find AddDateTableViewCell")
+        }
         let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("user")
             .document(id)
@@ -171,7 +224,8 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: data.dateTime,
+                // date直接取得datePicker的資料，就不需像textField一樣得進去編輯完後才吃得到值
+                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -191,7 +245,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: data.dateTime,
+                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -211,7 +265,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: data.dateTime,
+                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
                 month: data.monthTime,
                 destinationAccountId: "destinationAccountId",
                 sourceAccountId: "sourceAccountId",
@@ -281,14 +335,32 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
+        switch section {
+        case 0:
             return 1
-        } else if section == 1 {
+        case 1:
             return costCategory.count
-        } else if section == 2 {
+        case 2:
             return 1
-        } else {
+        default:
             return 1
+        }
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch section {
+        case 0:
+            return "選擇日期"
+        case 1:
+            return "輸入細項"
+        case 2:
+            if segmentTag == 2 {
+                return ""
+            } else {
+                return "使用QRCode"
+            }
+        default:
+            return "備註"
         }
     }
 
@@ -300,13 +372,10 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                // 設定datePicker的delegate
-                dateCell.delegate = self
-                let date = Date()
-                // formatter把日期(date)轉成String塞給dateStr
-                let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
-                // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
-                dateCell.config(dateStr: dateStr)
+                data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
+
+                dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
+
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -368,13 +437,14 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
 
-                // 設定datePicker的delegate
-                dateCell.delegate = self
-                let date = Date()
-                // formatter把日期(date)轉成String塞給dateStr
-                let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
-                // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
-                dateCell.config(dateStr: dateStr)
+                data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
+
+                dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
+
+                // 取dateTime前面到月份的string(pir chart會使用到)
+                let monthData = data.dateTime.prefix(11)
+                data.monthTime = String(monthData)
+
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -460,8 +530,6 @@ extension AddNewDataViewController: AddDateTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        // 當date picker改變時，執行此func，把當前改變的date塞給textfield
-        cell.dateTextfield.text = BBCDateFormatter.shareFormatter.string(from: sender.date)
         // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
         data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
     }

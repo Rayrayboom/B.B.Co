@@ -27,7 +27,7 @@ class PieChartViewController: UIViewController {
 //    var total: [String : Int] = [:]
 
 //    var totalData: [Account] = []
-    
+
     var getId: String = ""
 
     // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
@@ -40,6 +40,8 @@ class PieChartViewController: UIViewController {
             }
         }
     }
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
 
 // MARK: - 待處理month pie chart
     @IBAction func goToLastMonth(_ sender: UIButton) {
@@ -74,10 +76,13 @@ class PieChartViewController: UIViewController {
         monthDatePicker.center = view.center
         pieTableView.delegate = self
         pieTableView.dataSource = self
-        // 選取segment control時拿SegmentIndex
+        // 選取segment control時偵測改值狀態
         didSelectSegmentControl()
+        setupUI()
         // 畫出view放pieChartView
         setupfillInPieChartView()
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshPieDetail()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -103,6 +108,37 @@ class PieChartViewController: UIViewController {
         }
     }
 
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshPieDetail() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        pieTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            if self.segmentTag == 0 {
+                self.fetchUser(id: self.getId, subCollection: "expenditure")
+            } else {
+                self.fetchUser(id: self.getId, subCollection: "revenue")
+            }
+            self.refreshControl.endRefreshing()
+        }
+    }
+
+    func setupUI() {
+        // segmented control邊框
+        sourceSegmentControl.layer.borderWidth = 2.0
+        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
+        // 預設一進去segmented所選文字為白色+黃底
+        if sourceSegmentControl.selectedSegmentIndex == 0 {
+            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+        }
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+    }
+
     // segmentControl
     func didSelectSegmentControl() {
         // segmentControl 偵測改值狀態
@@ -111,8 +147,19 @@ class PieChartViewController: UIViewController {
 
     // segmentControl - @objc
     @objc func handelSegmentControl() {
+        // 設置segmented control被選取時文字、button顏色
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+
+        // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
-        print("This is current segmentTag \(segmentTag)")
+        switch segmentTag {
+        case 1:
+            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+        default:
+            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+        }
         pieTableView.reloadData()
     }
 
@@ -288,7 +335,7 @@ extension PieChartViewController: UITableViewDataSource {
     }
 
 // MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
-//     tableView右滑刪除 & 連動firebase
+//     tableView左滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()

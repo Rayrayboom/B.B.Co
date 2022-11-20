@@ -765,6 +765,7 @@ PODS:
     - Libuv-gRPC (= 0.0.10)
   - gRPC-Core/Interface (1.44.0)
   - GTMSessionFetcher/Core (2.1.0)
+  - IQKeyboardManagerSwift (6.5.10)
   - leveldb-library (1.22.1)
   - Libuv-gRPC (0.0.10):
     - Libuv-gRPC/Implementation (= 0.0.10)
@@ -772,12 +773,14 @@ PODS:
   - Libuv-gRPC/Implementation (0.0.10):
     - Libuv-gRPC/Interface (= 0.0.10)
   - Libuv-gRPC/Interface (0.0.10)
+  - lottie-ios (3.5.0)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - PromisesObjC (2.1.1)
+  - SideMenu (6.5.0)
   - SwiftAlgorithms (1.0.0)
   - SwiftKeychainWrapper (4.0.1)
 
@@ -787,6 +790,9 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Firestore
   - FirebaseFirestoreSwift
+  - IQKeyboardManagerSwift
+  - lottie-ios
+  - SideMenu
   - SwiftKeychainWrapper
 
 SPEC REPOS:
@@ -809,10 +815,13 @@ SPEC REPOS:
     - "gRPC-C++"
     - gRPC-Core
     - GTMSessionFetcher
+    - IQKeyboardManagerSwift
     - leveldb-library
     - Libuv-gRPC
+    - lottie-ios
     - nanopb
     - PromisesObjC
+    - SideMenu
     - SwiftAlgorithms
     - SwiftKeychainWrapper
 
@@ -835,13 +844,16 @@ SPEC CHECKSUMS:
   "gRPC-C++": 9675f953ace2b3de7c506039d77be1f2e77a8db2
   gRPC-Core: 943e491cb0d45598b0b0eb9e910c88080369290b
   GTMSessionFetcher: ffbb25ec00ebcb5201adab0a56d808f6f1902d9f
+  IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
+  lottie-ios: c55158d67d0629a260625cc2ded2052b829e3c3e
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
+  SideMenu: f583187d21c5b1dd04c72002be544b555a2627a2
   SwiftAlgorithms: 38dda4731d19027fdeee1125f973111bf3386b53
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: e6dbaa0b00411c8b27df9d8fb2d785a59d33c2fd
+PODFILE CHECKSUM: d755d4864c60ef08bf68ec94c9c6dcb954b1180d
 
 COCOAPODS: 1.11.3

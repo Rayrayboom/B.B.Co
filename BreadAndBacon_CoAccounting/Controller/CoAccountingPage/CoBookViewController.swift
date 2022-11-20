@@ -33,6 +33,8 @@ class CoBookViewController: UIViewController {
     let group = DispatchGroup()
     // 新增co_account book時儲存自動生成的document id
     var identifier: String = ""
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
 
     @IBOutlet weak var bookTableView: UITableView!
 
@@ -46,6 +48,9 @@ class CoBookViewController: UIViewController {
         addNewCoAccountBook()
         // 加入共同帳本func
         joinCoAccountBook()
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshBooks()
+        setupUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -56,9 +61,27 @@ class CoBookViewController: UIViewController {
         self.tabBarController?.tabBar.isHidden = false
     }
 
+    func setupUI() {
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+    }
+
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshBooks() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        bookTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.fetchCoBook()
+            self.refreshControl.endRefreshing()
+        }
+    }
+
     // 按下右上button讓使用者輸入book name並新增帳本
     func addNewCoAccountBook() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus"), style: .plain, target: self, action: #selector(saveEdit))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
     // 觸發新增帳本func
@@ -72,9 +95,10 @@ class CoBookViewController: UIViewController {
         controller.addTextField { textField in
             textField.placeholder = "帳本名稱"
             textField.keyboardType = UIKeyboardType.default
+            textField.keyboardAppearance = .dark
         }
         // 按下OK執行新增account book(使用者輸入accounnt book name)
-        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
+        let okAction = UIAlertAction(title: "新增", style: .default) { [unowned controller] _ in
             self.bookName = controller.textFields?[0].text ?? ""
             self.createCoAccountData()
             self.fetchCoBook()
@@ -82,7 +106,7 @@ class CoBookViewController: UIViewController {
             self.updateUserToBook(bookIdentifier: self.identifier)
         }
         controller.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         controller.addAction(cancelAction)
         // 記得要present後alert才會出現
         present(controller, animated: true)
@@ -90,7 +114,7 @@ class CoBookViewController: UIViewController {
 
     // 按下左上button讓使用者輸入帳本id來加入帳本
     func joinCoAccountBook() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "book"), style: .plain, target: self, action: #selector(checkRoomId))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Accounting_book"), style: .plain, target: self, action: #selector(checkRoomId))
     }
 
     // 觸發加入帳本func
@@ -104,14 +128,20 @@ class CoBookViewController: UIViewController {
         controller.addTextField { textField in
             textField.placeholder = "Account book ID"
             textField.keyboardType = UIKeyboardType.default
+            textField.keyboardAppearance = .dark
         }
         // 按下OK執行新增account book(使用者輸入accounnt book name)
-        let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
+        let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
             self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
+//            if self.inputBookID == data{
+//                self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
+//            } else {
+//                return
+//            }
         }
         controller.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         controller.addAction(cancelAction)
         // 記得要present後alert才會出現
         present(controller, animated: true)
@@ -166,6 +196,10 @@ class CoBookViewController: UIViewController {
         dataBase.collection(collection)
             .whereField(field, isEqualTo: inputID)
             .getDocuments { snapshot, error in
+                if let error = error {
+                    print("輸入錯誤")
+                }
+
                 guard let snapshot = snapshot else {
                     return
                 }
@@ -177,20 +211,6 @@ class CoBookViewController: UIViewController {
                 print("I find the document \(self.specificBook)")
             }
     }
-
-    // 針對對應的帳本新增付款人資訊
-//    func createBookSpecific(bookIdentifier: String) {
-//        let dataBase = Firestore.firestore()
-//        print("useruser", self.userName)
-//        dataBase.collection("co-account").document(bookIdentifier)
-//            .updateData(["user_id": FieldValue.arrayUnion(userName)]) { error in
-//            if let error = error {
-//                print("Error updating document: \(error)")
-//            } else {
-//                print("Document update successfully in ID: \(self.userName)")
-//            }
-//        }
-//    }
 
     // MARK: - 上傳 book id & user_id 到Firebase
     func createCoAccountData() {
@@ -208,30 +228,6 @@ class CoBookViewController: UIViewController {
             print(error)
         }
     }
-
-    // 從Firebase上fetch全部user資料，判斷目前使用者的id後取得name並append到userId array裡
-//    func fetchUser() {
-//        userName = []
-//        let dataBase = Firestore.firestore()
-//        dataBase.collection("user")
-//            .getDocuments { snapshot, error in
-//                guard let snapshot = snapshot else {
-//                    return
-//                }
-//                let user = snapshot.documents.compactMap { snapshot in
-//                    try? snapshot.data(as: User.self)
-//                }
-//
-//                self.userContent.append(contentsOf: user)
-//                self.userContent.forEach { item in
-//                    if item.id == self.getId {
-//                        self.userName.append(item.name ?? "")
-//                    }
-//                }
-//                print("userContent", self.userContent)
-//                print("userName", self.userName)
-//            }
-//    }
 
     // 從Firebase上fetch有幾本帳本user id是有我自己的(因為user_id是array，因此要用whereField-arrayContains來判斷array裡的元素)
     func fetchCoBook() {
@@ -272,7 +268,7 @@ extension CoBookViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "帳本"
+        return "我的帳本"
     }
 }
 
@@ -294,7 +290,7 @@ extension CoBookViewController: UITableViewDataSource {
         return coBookCell
     }
 
-    // tableView右滑刪除
+    // tableView左滑刪除
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()

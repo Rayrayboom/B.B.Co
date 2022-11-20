@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--帳本目錄-->
+        <!--帳本列表-->
         <scene sceneID="Mq6-Rt-74Z">
             <objects>
                 <viewController storyboardIdentifier="coBookVC" id="oma-PF-z7l" customClass="CoBookViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
@@ -28,13 +28,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="bookNameLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylW-EM-kPi">
-                                                    <rect key="frame" x="20" y="10" width="143.5" height="24"/>
+                                                    <rect key="frame" x="20" y="5" width="143.5" height="24"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="roomIDLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x2v-0C-WS1">
-                                                    <rect key="frame" x="20" y="44" width="94" height="19"/>
+                                                    <rect key="frame" x="20" y="29" width="94" height="39"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -42,10 +42,10 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="x2v-0C-WS1" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="I0O-9k-980"/>
-                                                <constraint firstItem="ylW-EM-kPi" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" constant="10" id="JYd-dq-UBC"/>
-                                                <constraint firstItem="x2v-0C-WS1" firstAttribute="top" secondItem="ylW-EM-kPi" secondAttribute="bottom" constant="10" id="NxK-aF-43V"/>
+                                                <constraint firstItem="ylW-EM-kPi" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" constant="5" id="JYd-dq-UBC"/>
+                                                <constraint firstItem="x2v-0C-WS1" firstAttribute="top" secondItem="ylW-EM-kPi" secondAttribute="bottom" id="NxK-aF-43V"/>
                                                 <constraint firstItem="ylW-EM-kPi" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="P6A-bS-lAZ"/>
-                                                <constraint firstAttribute="bottom" secondItem="x2v-0C-WS1" secondAttribute="bottom" constant="10" id="Qsc-ZR-1Fc"/>
+                                                <constraint firstAttribute="bottom" secondItem="x2v-0C-WS1" secondAttribute="bottom" constant="5" id="Qsc-ZR-1Fc"/>
                                                 <constraint firstAttribute="trailing" secondItem="x2v-0C-WS1" secondAttribute="trailing" constant="300" id="urs-Gc-oDn"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -66,7 +66,7 @@
                             <constraint firstItem="3Kh-Ep-xS6" firstAttribute="bottom" secondItem="VJe-Gc-dfO" secondAttribute="bottom" id="iBa-F9-61e"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="帳本目錄" id="erq-jJ-H1y"/>
+                    <navigationItem key="navigationItem" title="帳本列表" id="erq-jJ-H1y"/>
                     <connections>
                         <outlet property="bookTableView" destination="VJe-Gc-dfO" id="xN6-3K-KCU"/>
                     </connections>
@@ -155,9 +155,9 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk2-mk-ZXx">
-                                <rect key="frame" x="170" y="790" width="75" height="72"/>
+                                <rect key="frame" x="170" y="771" width="75" height="91"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="Untitled_Artwork" imagePadding="0.0"/>
+                                <buttonConfiguration key="configuration" style="plain" image="Add_coData" imagePadding="0.0"/>
                                 <connections>
                                     <action selector="addDetail:" destination="yen-n8-Qer" eventType="touchUpInside" id="2gc-36-Vty"/>
                                 </connections>
@@ -200,16 +200,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="新 支出" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KFv-vr-iq4">
-                                <rect key="frame" x="179" y="64" width="56.5" height="21"/>
+                                <rect key="frame" x="179" y="64" width="56.5" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zye-uA-1aV">
-                                <rect key="frame" x="20" y="62" width="60" height="31"/>
+                                <rect key="frame" x="20" y="49" width="60" height="65"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="xmark" catalog="system"/>
+                                <buttonConfiguration key="configuration" style="plain" image="Cancel_co"/>
                                 <connections>
                                     <action selector="dismissDetail:" destination="LUQ-nm-wQd" eventType="touchUpInside" id="f49-ex-6gN"/>
                                 </connections>
@@ -228,7 +228,7 @@
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rnj-cg-wdi">
-                                <rect key="frame" x="0.0" y="85" width="414" height="697"/>
+                                <rect key="frame" x="0.0" y="108" width="414" height="674"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coTimeCell" rowHeight="71" id="igE-Uf-rPr" customClass="CoTimeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -239,11 +239,11 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="OPg-o6-Gvr">
-                                                    <rect key="frame" x="50" y="20" width="224" height="31"/>
+                                                    <rect key="frame" x="50" y="20" width="229" height="31"/>
                                                 </datePicker>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="OPg-o6-Gvr" secondAttribute="trailing" constant="140" id="LdO-Ih-QHs"/>
+                                                <constraint firstAttribute="trailing" secondItem="OPg-o6-Gvr" secondAttribute="trailing" constant="135" id="LdO-Ih-QHs"/>
                                                 <constraint firstItem="OPg-o6-Gvr" firstAttribute="top" secondItem="9Ra-SU-IdB" secondAttribute="top" constant="20" id="f1Q-0y-6Id"/>
                                                 <constraint firstItem="OPg-o6-Gvr" firstAttribute="leading" secondItem="9Ra-SU-IdB" secondAttribute="leading" constant="50" id="r53-fh-sBt"/>
                                                 <constraint firstAttribute="bottom" secondItem="OPg-o6-Gvr" secondAttribute="bottom" constant="20" id="v95-CJ-qNU"/>
@@ -254,14 +254,14 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coDetailCell" id="j6H-xl-akz" customClass="CoDetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="115.5" width="414" height="74.5"/>
+                                        <rect key="frame" x="0.0" y="115.5" width="414" height="54.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="j6H-xl-akz" id="IWR-Gj-9F7">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="74.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="54.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="YaR-ST-TqM">
-                                                    <rect key="frame" x="50" y="20" width="314" height="34.5"/>
+                                                    <rect key="frame" x="50" y="10" width="314" height="34.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits"/>
                                                 </textField>
@@ -269,8 +269,8 @@
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="YaR-ST-TqM" secondAttribute="trailing" constant="50" id="8PV-au-P5F"/>
                                                 <constraint firstItem="YaR-ST-TqM" firstAttribute="leading" secondItem="IWR-Gj-9F7" secondAttribute="leading" constant="50" id="ESy-FW-WHn"/>
-                                                <constraint firstItem="YaR-ST-TqM" firstAttribute="top" secondItem="IWR-Gj-9F7" secondAttribute="top" constant="20" id="Rlo-rx-36K"/>
-                                                <constraint firstAttribute="bottom" secondItem="YaR-ST-TqM" secondAttribute="bottom" constant="20" id="pQP-zo-ts9"/>
+                                                <constraint firstItem="YaR-ST-TqM" firstAttribute="top" secondItem="IWR-Gj-9F7" secondAttribute="top" constant="10" id="Rlo-rx-36K"/>
+                                                <constraint firstAttribute="bottom" secondItem="YaR-ST-TqM" secondAttribute="bottom" constant="10" id="pQP-zo-ts9"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
@@ -293,7 +293,7 @@
                             <constraint firstItem="rnj-cg-wdi" firstAttribute="top" secondItem="KFv-vr-iq4" secondAttribute="bottom" id="Uop-we-QkS"/>
                             <constraint firstItem="3am-uT-LXd" firstAttribute="centerX" secondItem="d5y-Cy-LVD" secondAttribute="centerX" id="V9Q-7V-Rfx"/>
                             <constraint firstItem="XPf-fw-Rrr" firstAttribute="trailing" secondItem="rnj-cg-wdi" secondAttribute="trailing" id="WiA-sS-OO3"/>
-                            <constraint firstItem="zye-uA-1aV" firstAttribute="top" secondItem="XPf-fw-Rrr" secondAttribute="top" constant="18" id="Zty-re-lJp"/>
+                            <constraint firstItem="zye-uA-1aV" firstAttribute="top" secondItem="XPf-fw-Rrr" secondAttribute="top" constant="5" id="Zty-re-lJp"/>
                             <constraint firstItem="XPf-fw-Rrr" firstAttribute="bottom" secondItem="3am-uT-LXd" secondAttribute="bottom" constant="30" id="eGY-QG-5lv"/>
                             <constraint firstItem="KFv-vr-iq4" firstAttribute="top" secondItem="XPf-fw-Rrr" secondAttribute="top" constant="20" id="gpg-sC-fO6"/>
                             <constraint firstItem="KFv-vr-iq4" firstAttribute="centerX" secondItem="d5y-Cy-LVD" secondAttribute="centerX" id="rkk-Z6-EPJ"/>
@@ -310,11 +310,13 @@
             </objects>
             <point key="canvasLocation" x="1513" y="1383"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Co_Accounting-->
         <scene sceneID="mz2-5l-oTb">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="uPc-Fa-FTd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="COACC-unclick_" selectedImage="CoAcc-clicked" id="6jj-b6-8hJ"/>
+                    <tabBarItem key="tabBarItem" title="Co_Accounting" image="COACC-unclick" selectedImage="CoAcc-clicked" id="6jj-b6-8hJ">
+                        <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="4"/>
+                    </tabBarItem>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="JzM-dF-XQd">
@@ -332,10 +334,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="COACC-unclick_" width="49" height="58"/>
-        <image name="CoAcc-clicked" width="49" height="58"/>
-        <image name="Untitled_Artwork" width="49" height="58"/>
-        <image name="xmark" catalog="system" width="128" height="113"/>
+        <image name="Add_coData" width="65" height="77"/>
+        <image name="COACC-unclick" width="32" height="38"/>
+        <image name="Cancel_co" width="43" height="51"/>
+        <image name="CoAcc-clicked" width="32" height="38"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

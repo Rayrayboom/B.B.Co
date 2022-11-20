@@ -40,6 +40,9 @@ class CoAccountingViewController: UIViewController {
 
     // 用來存有哪些user可以有權限編輯共同帳本
     var userName: [String] = []
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
+
 
     @IBOutlet weak var bookDetailTableView: UITableView!
     @IBAction func addDetail(_ sender: UIButton) {
@@ -65,6 +68,8 @@ class CoAccountingViewController: UIViewController {
         didSelectSegmentControl()
         // 畫出view來放pieChartView
         setupfillInPieChartView()
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshBookDetail()
     }
 
     // 當addCoDetailVC dismiss後回到coAccountingVC會呼叫viewWillAppear，重新fetch一次data並reload bookTableView
@@ -80,6 +85,30 @@ class CoAccountingViewController: UIViewController {
     // UI
     func setupUI() {
         self.navigationItem.title = "支出總覽"
+        // segmented control邊框
+        coSegmentedControl.layer.borderWidth = 2.0
+        coSegmentedControl.layer.borderColor = UIColor.black.cgColor
+        // 預設一進去segmented所選文字為白色+黃底
+        if coSegmentedControl.selectedSegmentIndex == 0 {
+            coSegmentedControl.selectedSegmentTintColor = UIColor.systemYellow
+            let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+            coSegmentedControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+        }
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+    }
+
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshBookDetail() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        bookDetailTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.fetchBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
+            self.refreshControl.endRefreshing()
+        }
     }
 
     // segmentControl
@@ -89,8 +118,18 @@ class CoAccountingViewController: UIViewController {
 
     // segmentControl - @objc
     @objc func handelSegmentControl() {
+        // 設置segmented control被選取時文字、button顏色
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        coSegmentedControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
+
+        // 設置對應segmentTag顏色
         segmentTag = coSegmentedControl.selectedSegmentIndex
-        print("This is current segmentTag \(segmentTag)")
+        switch segmentTag {
+        case 1:
+            coSegmentedControl.selectedSegmentTintColor = .systemCyan
+        default:
+            coSegmentedControl.selectedSegmentTintColor = .systemYellow
+        }
         bookDetailTableView.reloadData()
     }
 
@@ -287,7 +326,7 @@ extension CoAccountingViewController: UITableViewDataSource {
         return listCell
     }
 
-    // tableView右滑刪除 & 連動firebase
+    // tableView左滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()

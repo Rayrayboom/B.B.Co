@@ -13,6 +13,9 @@ class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
     var userData = ""
 
+    @IBOutlet weak var BBCoImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // 判斷當使用者已登入後，重開app不需再登入一次，因為登出會刪掉keychain的user id，故用這個條件來判斷
@@ -22,6 +25,7 @@ class SignInViewController: UIViewController {
             UIApplication.shared.windows.first?.rootViewController = viewController
             UIApplication.shared.windows.first?.makeKeyAndVisible()
         } else {
+            // 先把sign in button加入畫面
             view.addSubview(signInButton)
             signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
         }
@@ -29,9 +33,22 @@ class SignInViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        signInButton.frame = CGRect(x: 0, y: 0, width: 200, height: 30)
-        signInButton.center = view.center
+        setupSignInUI()
     }
+
+    // 設定pieTableView constrains
+    func setupSignInUI() {
+        titleLabel.text = "登入，為個人、共同帳本啟用同步和備份 功能"
+        titleLabel.textColor = .lightGray
+        signInButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            signInButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 50),
+            signInButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50),
+            signInButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50),
+            signInButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -300)
+        ])
+    }
+
 
     @objc func didTapSignIn() {
         let provider = ASAuthorizationAppleIDProvider()

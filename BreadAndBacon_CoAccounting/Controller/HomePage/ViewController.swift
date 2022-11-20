@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseFirestore
 import SwiftKeychainWrapper
+import SideMenu
 
 protocol ViewControllerDelegate: AnyObject {
     func getDate(currentDate: String)
@@ -15,6 +16,7 @@ protocol ViewControllerDelegate: AnyObject {
 
 class ViewController: UIViewController {
     weak var delegate: ViewControllerDelegate?
+    var menu: SideMenuNavigationController?
     // 用來存所選日期的data
     var data: [Account] = [] {
         didSet {
@@ -33,14 +35,26 @@ class ViewController: UIViewController {
 // MARK: - 注意！
     var month: String = ""
     var getId: String = ""
+    // 生成refreshControl實例
+    var refreshControl = UIRefreshControl()
 
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var showDetailTableView: UITableView!
+    @IBAction func didTapMenu() {
+        guard let menu = menu else { fatalError("can not present side menu") }
+        present(menu, animated: true)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
+        // 生成side menu，最下面有class MenuListController
+        menu = SideMenuNavigationController(rootViewController: MenuListController())
+        menu?.leftSide = true
+        menu?.setNavigationBarHidden(true, animated: false)
+        SideMenuManager.default.leftMenuNavigationController = menu
+        SideMenuManager.default.addPanGestureToPresent(toView: self.view)
 
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
@@ -49,12 +63,33 @@ class ViewController: UIViewController {
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+        // 加上refreshControl下拉更新(重fetch data)
+        refreshDetail()
+        setupUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
             // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
             self.fetchAllData()
+    }
+
+    func setupUI() {
+        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+    }
+
+    // 加上refreshControl下拉更新(重fetch data)
+    func refreshDetail() {
+        refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+        showDetailTableView.addSubview(refreshControl)
+    }
+
+    // refreshControl func
+    @objc func refresh(sender: UIRefreshControl) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.fetchAllData()
+            self.refreshControl.endRefreshing()
+        }
     }
 
     // 點選date picker時偵測點選的狀態
@@ -168,6 +203,104 @@ class ViewController: UIViewController {
     }
 }
 
+// 建立side menu tableView
+class MenuListController: UITableViewController {
+    var items = ["支出種類", "收入種類", "帳戶種類", "登出"]
+    let darkColor = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
+    var getName: String = ""
+    var alertController = UIAlertController()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        getName = KeychainWrapper.standard.string(forKey: "name") ?? ""
+        tableView.backgroundColor = darkColor
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "personalCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "sideMenuCategoryCell")
+    }
+
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return 1
+        default:
+            return items.count
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 0:
+            let personalCell = tableView.dequeueReusableCell(withIdentifier: "personalCell", for: indexPath)
+            personalCell.textLabel?.text = "哈囉~ \(getName)"
+            personalCell.textLabel?.textColor = .white
+            personalCell.backgroundColor = darkColor
+
+            return personalCell
+        default:
+            let sideMenuCategoryCell = tableView.dequeueReusableCell(withIdentifier: "sideMenuCategoryCell", for: indexPath)
+            sideMenuCategoryCell.textLabel?.text = items[indexPath.row]
+            sideMenuCategoryCell.textLabel?.textColor = .white
+            sideMenuCategoryCell.backgroundColor = darkColor
+
+            return sideMenuCategoryCell
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 點選cell時觸發點選效果
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        switch indexPath.section {
+        case 0:
+            print("side menu")
+        default:
+            switch indexPath.row {
+            case 3: // sign out
+                signOutAlert()
+            default: // category list
+                // 先指定storyboard(避免self.storyboard為nil的狀況)
+                let homeStoryboard = UIStoryboard(name: "Home", bundle: nil)
+                guard let presentCategoryVC = homeStoryboard
+                    .instantiateViewController(withIdentifier: "categoryVC") as? CategoryViewController
+                else {
+                    fatalError("can not present categoryVC")
+                }
+
+                presentCategoryVC.indexPathRow = indexPath.row
+                presentCategoryVC.modalPresentationStyle = .automatic
+                present(presentCategoryVC, animated: true)
+            }
+        }
+    }
+
+    // 登出跳出下方選單
+    func signOutAlert() {
+        alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let name = "登出"
+        let action = UIAlertAction(title: name, style: .default) { action in
+            print(action.title ?? "")
+            KeychainWrapper.standard.remove(forKey: "id")
+            KeychainWrapper.standard.remove(forKey: "name")
+
+            print("this is user id", KeychainWrapper.standard.string(forKey: "id") ?? "")
+            print("this is user name", KeychainWrapper.standard.string(forKey: "name") ?? "")
+            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let viewController = mainStoryboard.instantiateViewController(withIdentifier: "signInVC") as! SignInViewController
+            UIApplication.shared.windows.first?.rootViewController = viewController
+            UIApplication.shared.windows.first?.makeKeyAndVisible()
+        }
+        alertController.addAction(action)
+
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel)
+        alertController.addAction(cancelAction)
+        present(alertController, animated: true, completion: nil)
+    }
+}
+
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let presentEditVC = self.storyboard?.instantiateViewController(withIdentifier: "editVC") as? EditViewController
@@ -208,7 +341,7 @@ extension ViewController: UITableViewDataSource {
         return homeDetailCell
     }
 
-    // tableView右滑刪除
+    // tableView左滑刪除
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()

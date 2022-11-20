@@ -18,7 +18,7 @@ class EditDetailTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         detailTextView.delegate = self
         super.awakeFromNib()
-        // Initialization code
+        detailTextView.keyboardAppearance = .dark
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

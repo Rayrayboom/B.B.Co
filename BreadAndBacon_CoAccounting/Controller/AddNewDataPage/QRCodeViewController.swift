@@ -24,7 +24,7 @@ class QRCodeViewController: UIViewController {
     var captureSession = AVCaptureSession()
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var qrCodeFrameView: UIView?
-    var controller = UIAlertController()
+    let controller = UIAlertController()
 
     @IBOutlet weak var messageLabel: UILabel!
     override func viewDidLoad() {

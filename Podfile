@@ -12,4 +12,7 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'FirebaseFirestoreSwift'
 	pod 'Charts'
 	pod 'SwiftKeychainWrapper'
+	pod 'SideMenu'
+	pod 'IQKeyboardManagerSwift'
+	pod 'lottie-ios'
 end
