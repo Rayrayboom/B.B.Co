@@ -132,7 +132,7 @@
         <scene sceneID="tbZ-a9-jMs">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="rQG-gP-Ank" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Pie Chart" image="chart.pie.fill" catalog="system" id="DD1-CQ-4I1"/>
+                    <tabBarItem key="tabBarItem" title="Pie Chart" image="Pie_unclicked" selectedImage="Pie_clicked" id="DD1-CQ-4I1"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="GkC-cK-Xrq">
@@ -150,7 +150,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="chart.pie.fill" catalog="system" width="128" height="121"/>
+        <image name="Pie_clicked" width="49" height="58"/>
+        <image name="Pie_unclicked" width="49" height="58"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

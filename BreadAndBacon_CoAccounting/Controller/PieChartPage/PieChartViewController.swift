@@ -27,7 +27,7 @@ class PieChartViewController: UIViewController {
 //    var total: [String : Int] = [:]
 
 //    var totalData: [Account] = []
-    
+
     var getId: String = ""
 
     // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)

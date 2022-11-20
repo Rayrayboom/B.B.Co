@@ -114,7 +114,7 @@ class CoBookViewController: UIViewController {
 
     // 按下左上button讓使用者輸入帳本id來加入帳本
     func joinCoAccountBook() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "book"), style: .plain, target: self, action: #selector(checkRoomId))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Accounting_book"), style: .plain, target: self, action: #selector(checkRoomId))
     }
 
     // 觸發加入帳本func
