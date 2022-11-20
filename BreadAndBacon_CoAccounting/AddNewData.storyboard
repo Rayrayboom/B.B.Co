@@ -70,31 +70,29 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="dateCell" id="J0J-e7-hxz" customClass="AddDateTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="74.5"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="51.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="J0J-e7-hxz" id="qSo-Is-oIo">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="74.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="51.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="27v-Vr-bR8">
-                                                    <rect key="frame" x="50" y="20" width="314" height="34.5"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
-                                                </textField>
+                                                <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="compact" translatesAutoresizingMaskIntoConstraints="NO" id="nzW-U8-h5B">
+                                                    <rect key="frame" x="50" y="10" width="229" height="32"/>
+                                                </datePicker>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottom" secondItem="27v-Vr-bR8" secondAttribute="bottom" constant="20" id="8cJ-Ip-8XP"/>
-                                                <constraint firstAttribute="trailing" secondItem="27v-Vr-bR8" secondAttribute="trailing" constant="50" id="B4I-el-YYL"/>
-                                                <constraint firstItem="27v-Vr-bR8" firstAttribute="leading" secondItem="qSo-Is-oIo" secondAttribute="leading" constant="50" id="Jgq-w5-tng"/>
-                                                <constraint firstItem="27v-Vr-bR8" firstAttribute="top" secondItem="qSo-Is-oIo" secondAttribute="top" constant="20" id="gRC-4r-OkF"/>
+                                                <constraint firstAttribute="bottom" secondItem="nzW-U8-h5B" secondAttribute="bottom" constant="10" id="0D6-Je-ixi"/>
+                                                <constraint firstAttribute="trailing" secondItem="nzW-U8-h5B" secondAttribute="trailing" constant="135" id="1s8-vj-UxF"/>
+                                                <constraint firstItem="nzW-U8-h5B" firstAttribute="top" secondItem="qSo-Is-oIo" secondAttribute="top" constant="10" id="NIg-Kc-rwV"/>
+                                                <constraint firstItem="nzW-U8-h5B" firstAttribute="leading" secondItem="qSo-Is-oIo" secondAttribute="leading" constant="50" id="ojr-v0-J9z"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="dateTextfield" destination="27v-Vr-bR8" id="ZNS-pc-zjt"/>
+                                            <outlet property="addDatePicker" destination="nzW-U8-h5B" id="Y7t-Bu-zn9"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="addDataCell" rowHeight="77" id="zWS-Sh-WCX" customClass="AddNewDataTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="119" width="414" height="77"/>
+                                        <rect key="frame" x="0.0" y="96" width="414" height="77"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zWS-Sh-WCX" id="j4T-KR-TcS">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="77"/>
@@ -139,7 +137,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="QRCell" id="2Ut-UO-eFt" customClass="QRCodeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="196" width="414" height="51.5"/>
+                                        <rect key="frame" x="0.0" y="173" width="414" height="51.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2Ut-UO-eFt" id="P8H-gH-xUJ">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="51.5"/>
@@ -165,7 +163,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="detailCell" rowHeight="213" id="5BP-Wq-8Iq" customClass="DetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="247.5" width="414" height="213"/>
+                                        <rect key="frame" x="0.0" y="224.5" width="414" height="213"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5BP-Wq-8Iq" id="plV-aR-FyR">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="213"/>

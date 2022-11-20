@@ -200,6 +200,11 @@ class AddNewDataViewController: UIViewController {
 
     // MARK: - 上傳資料到Firebase
     func createUserData(id: String, subCollection: String) {
+        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
+        guard let cell = addNewDadaTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? AddDateTableViewCell
+        else {
+            fatalError("can not find AddDateTableViewCell")
+        }
         let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("user")
             .document(id)
@@ -215,7 +220,8 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: data.dateTime,
+                // date直接取得datePicker的資料，就不需像textField一樣得進去編輯完後才吃得到值
+                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -235,7 +241,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: data.dateTime,
+                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -255,7 +261,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: data.dateTime,
+                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
                 month: data.monthTime,
                 destinationAccountId: "destinationAccountId",
                 sourceAccountId: "sourceAccountId",
@@ -362,13 +368,9 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                // 設定datePicker的delegate
-                dateCell.delegate = self
-                let date = Date()
-                // formatter把日期(date)轉成String塞給dateStr
-                let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
-                // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
-                dateCell.config(dateStr: dateStr)
+                data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
+
+                dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -430,13 +432,9 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
 
-                // 設定datePicker的delegate
-                dateCell.delegate = self
-                let date = Date()
-                // formatter把日期(date)轉成String塞給dateStr
-                let dateStr = BBCDateFormatter.shareFormatter.string(from: date)
-                // 把存著date的dateStr用cell的func config()塞值給cell裡面的textField
-                dateCell.config(dateStr: dateStr)
+                data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
+
+                dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -522,8 +520,6 @@ extension AddNewDataViewController: AddDateTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        // 當date picker改變時，執行此func，把當前改變的date塞給textfield
-        cell.dateTextfield.text = BBCDateFormatter.shareFormatter.string(from: sender.date)
         // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
         data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
     }
