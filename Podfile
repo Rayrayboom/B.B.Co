@@ -14,4 +14,5 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'SwiftKeychainWrapper'
 	pod 'SideMenu'
 	pod 'IQKeyboardManagerSwift'
+	pod 'lottie-ios'
 end

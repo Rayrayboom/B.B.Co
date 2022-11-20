@@ -41,7 +41,6 @@ extension TabViewController: UITabBarControllerDelegate {
             // 當tabBar點選到第二個時，present addNewData page
             if viewController == viewControllers[2] {
                 if KeychainWrapper.standard.string(forKey: "id") == nil {
-                    // 當tabBar點選到第一個時，需要使用者登入才可以使用co-account功能(present sign_in page)
                     let storyboard = UIStoryboard(name: "Home", bundle: nil)
                     guard let presentSignInVC = storyboard.instantiateViewController(withIdentifier: "signInVC") as? SignInViewController
                     else {

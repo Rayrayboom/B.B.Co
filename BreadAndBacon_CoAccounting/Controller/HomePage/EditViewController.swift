@@ -162,7 +162,7 @@ class EditViewController: UIViewController {
     // 取消新增資料按鈕trigger
     func cancelNewData() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dismissPage))
+            image: UIImage(named: "Cancel"), style: .plain, target: self, action: #selector(dismissPage))
     }
 
     // 取消並dismiss VC

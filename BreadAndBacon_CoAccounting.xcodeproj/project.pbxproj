@@ -44,6 +44,7 @@
 		7673ADC529236D1200A15015 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADC429236D1200A15015 /* SignInViewController.swift */; };
 		7673ADD3292772B800A15015 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADD2292772B800A15015 /* CategoryViewController.swift */; };
 		7673ADD52927744B00A15015 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7673ADD42927744B00A15015 /* CategoryTableViewCell.swift */; };
+		7673ADDC292A0C9700A15015 /* 96081-successful-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 7673ADDB292A0C9700A15015 /* 96081-successful-animation.json */; };
 		767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */; };
 		767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 767EAFC9291BDCB30005880E /* CoAccounting.storyboard */; };
 		767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFCB291BF6730005880E /* ListTableViewCell.swift */; };
@@ -92,6 +93,7 @@
 		7673ADC429236D1200A15015 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
 		7673ADD2292772B800A15015 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		7673ADD42927744B00A15015 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
+		7673ADDB292A0C9700A15015 /* 96081-successful-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "96081-successful-animation.json"; sourceTree = "<group>"; };
 		767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditQRCodeViewController.swift; sourceTree = "<group>"; };
 		767EAFC9291BDCB30005880E /* CoAccounting.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CoAccounting.storyboard; sourceTree = "<group>"; };
 		767EAFCB291BF6730005880E /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				7673ADC329236CD300A15015 /* BreadAndBacon_CoAccounting.entitlements */,
+				7673ADDA292A0B3C00A15015 /* Lottie Demo */,
 				7660869A290F79CC008EF772 /* Extension */,
 				76265F2F29138F7C00F5E341 /* Model */,
 				76265F3029138F8200F5E341 /* View */,
@@ -321,6 +324,14 @@
 			children = (
 			);
 			path = CoAccountingPage;
+			sourceTree = "<group>";
+		};
+		7673ADDA292A0B3C00A15015 /* Lottie Demo */ = {
+			isa = PBXGroup;
+			children = (
+				7673ADDB292A0C9700A15015 /* 96081-successful-animation.json */,
+			);
+			path = "Lottie Demo";
 			sourceTree = "<group>";
 		};
 		767EAFC3291BDA9F0005880E /* CoAccountingPage */ = {
@@ -396,6 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */,
+				7673ADDC292A0C9700A15015 /* 96081-successful-animation.json in Resources */,
 				76608662290BDA2A008EF772 /* Assets.xcassets in Resources */,
 				767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */,
 				766086A0290F7B0B008EF772 /* Home.storyboard in Resources */,

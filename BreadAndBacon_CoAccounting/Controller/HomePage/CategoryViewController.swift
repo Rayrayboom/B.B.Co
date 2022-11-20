@@ -42,14 +42,15 @@ class CategoryViewController: UIViewController {
 
     func tapDismiss() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "xmark"),
+            image: UIImage(named: "Cancel"),
             style: .plain,
             target: self,
             action: #selector(dismissCategory))
     }
 
     @objc func dismissCategory() {
-        navigationController?.dismiss(animated: true)
+//        navigationController?.dismiss(animated: true)
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     // 從Firebase上fetch種類/帳戶資料

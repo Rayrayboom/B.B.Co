@@ -10,7 +10,7 @@ import SwiftUI
 import AVFoundation
 import FirebaseFirestore
 import SwiftKeychainWrapper
-
+import Lottie
 
 // MARK: - expenditure
 struct NewDataModel {
@@ -75,7 +75,7 @@ class AddNewDataViewController: UIViewController {
             addNewDadaTableView.reloadData()
         }
     }
-    // 儲存使用者keyChain
+    // 儲存user id到keyChain
     var getId: String = ""
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
@@ -157,7 +157,7 @@ class AddNewDataViewController: UIViewController {
     // 取消新增資料按鈕trigger
     func cancelNewData() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "xmark"), style: .plain, target: self, action: #selector(dismissPage))
+            image: UIImage(named: "Cancel"), style: .plain, target: self, action: #selector(dismissPage))
     }
 
     // 取消並dismiss VC
@@ -181,7 +181,21 @@ class AddNewDataViewController: UIViewController {
         default:
             createUserData(id: getId, subCollection: "account")
         }
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
+
+        let animation = LottieAnimationView(name: "96081-successful-animation")
+
+        animation.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
+        animation.center = self.view.center
+        animation.contentMode = .scaleAspectFill
+        view.addSubview(animation)
+        animation.animationSpeed = 5
+        animation.play()
+
+        UIView.animate(withDuration: 2) {
+            self.view.layoutIfNeeded()
+        } completion: { _ in
+            self.presentingViewController?.dismiss(animated: true, completion: nil)
+        }
     }
 
     // MARK: - 上傳資料到Firebase
