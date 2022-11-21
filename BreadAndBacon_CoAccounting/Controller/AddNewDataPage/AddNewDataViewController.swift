@@ -139,7 +139,7 @@ class AddNewDataViewController: UIViewController {
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色
@@ -225,7 +225,7 @@ class AddNewDataViewController: UIViewController {
                 category: data.categoryTextField,
                 account: data.accountTextField,
                 // date直接取得datePicker的資料，就不需像textField一樣得進去編輯完後才吃得到值
-                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
+                date: data.dateTime,//BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -245,7 +245,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
+                date: data.dateTime,
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -265,7 +265,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
+                date: data.dateTime,
                 month: data.monthTime,
                 destinationAccountId: "destinationAccountId",
                 sourceAccountId: "sourceAccountId",
@@ -436,15 +436,18 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                dateCell.delegate = self
+                if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date {
+                    let current = BBCDateFormatter.shareFormatter.string(from: dateFromVC)
+                    data.dateTime = current
+                    dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
+                }
 
-                data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
-
-                dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
-
-                // 取dateTime前面到月份的string(pir chart會使用到)
+                // 執行點選cell的datePicker時給值，回傳給homeVC的data.dateTime & data.monthTime
+                dateCell.config()
+                // 取dateTime前面到月份formatter的string(pir chart會使用到) - 從homeVC點選月曆時吃的資料
                 let monthData = data.dateTime.prefix(11)
                 data.monthTime = String(monthData)
-
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -525,7 +528,7 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 }
 
-// date cell
+// date cell - 從addDateCell點選月曆時吃的資料
 extension AddNewDataViewController: AddDateTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {
