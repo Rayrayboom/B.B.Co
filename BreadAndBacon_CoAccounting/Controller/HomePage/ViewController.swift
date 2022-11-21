@@ -63,6 +63,8 @@ class ViewController: UIViewController {
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+        // 讓UserDefaults一起畫面就先拿到當天的日期資訊，addNewData時才會一開始就顯示當天(而非偵測到點選後才拿到變動的值)
+        UserDefaults.standard.set(self.datePicker.date, forKey: "currentDate")
         // 加上refreshControl下拉更新(重fetch data)
         refreshDetail()
         setupUI()
@@ -119,6 +121,8 @@ class ViewController: UIViewController {
         let today = Date(timeIntervalSinceNow: 0)
         // 按下date button之後要把當天date的值(let today)給外部變數的date，因為在fetch指定日期data時是抓date的日期
         date = today
+        // 讓UserDefaults在按下上方button時拿到當天日期資訊，addNewData時才會一開始就顯示當天時間(而非偵測到點選後才拿到變動的值)
+        UserDefaults.standard.set(self.date, forKey: "currentDate")
         // 按下date button之後要把date picker顯示的顏色區塊改為當天
         datePicker.setDate(today, animated: true)
         // date button顯示date picker拿到的日期(也就是today的日期)

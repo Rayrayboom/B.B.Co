@@ -204,11 +204,6 @@ class AddNewDataViewController: UIViewController {
 
     // MARK: - 上傳資料到Firebase
     func createUserData(id: String, subCollection: String) {
-        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
-        guard let cell = addNewDadaTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? AddDateTableViewCell
-        else {
-            fatalError("can not find AddDateTableViewCell")
-        }
         let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("user")
             .document(id)
@@ -224,8 +219,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                // date直接取得datePicker的資料，就不需像textField一樣得進去編輯完後才吃得到值
-                date: data.dateTime,//BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
+                date: data.dateTime,
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -440,6 +434,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date {
                     let current = BBCDateFormatter.shareFormatter.string(from: dateFromVC)
                     data.dateTime = current
+                    // 讓addNewData的date cell datePicker顯示當前所選取細項的date
                     dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
                 }
 

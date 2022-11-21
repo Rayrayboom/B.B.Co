@@ -141,8 +141,9 @@ class AddCoDetailViewController: UIViewController {
         }
         let dataBase = Firestore.firestore()
         dataBase.collection("co-account/\(document)/\(subCollection)").document("\(documentID)").updateData([
-            // 針對date讓一開始顯示畫面時就先吃到datePicker的資料，不用等到點選變更後才塞資料
-            "date": BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date),
+            // 這邊兩種方法都可以，因為data.dateTime也透過cell的delegate塞了cell的date資料了，(針對date讓一開始顯示畫面時就先吃到datePicker的資料，不用等到點選變更後才塞資料)
+            "date": data.dateTime,
+            //BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date),
             "amount": data.amountTextField,
             "category": data.itemTextField,
             "user": data.userTextField
@@ -210,13 +211,17 @@ extension AddCoDetailViewController: UITableViewDataSource {
                 fatalError("can not create coTimeCell")
             }
 
+            coTimeCell.delegate = self
+            // 執行點選cell的datePicker時給值，回傳給coAccountVC的data.dateTime
+            coTimeCell.config()
             // 編輯狀態時偵測被點選品項並塞值給datePicker，若非編輯狀態(新增)則帶入當天日期
-            data.dateTime = isEdit ? (currentData?.date)! : BBCDateFormatter.shareFormatter.string(from: coTimeCell.datePicker.date)
+            data.dateTime = isEdit ? (currentData?.date)! : data.dateTime
 // MARK: - have "!" issue & will crash (新增完品項後不能直接點編輯)
 //            guard let dateTimeInDate = BBCDateFormatter.shareFormatter.date(from: data.dateTime) else {
 //                fatalError("can not transfer date")
 //            }
 // MARK: - crash here "BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date() : Date()"
+            // 讓edit/addNew的time cell datePicker顯示當前所選取細項的date
             coTimeCell.datePicker.date = isEdit ?  BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date() : Date()
             return coTimeCell
 
@@ -241,6 +246,14 @@ extension AddCoDetailViewController: UITableViewDataSource {
             coDetailCell.contentTextField.text = isEdit ? data.itemTextField : ""
             return coDetailCell
         }
+    }
+}
+
+extension AddCoDetailViewController: CoTimeTableViewCellDelegate {
+    func getDate(_: CoTimeTableViewCell, sender: UIDatePicker) {
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
+        data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
+        print("=== is delegate datetime", data.dateTime)
     }
 }
 
