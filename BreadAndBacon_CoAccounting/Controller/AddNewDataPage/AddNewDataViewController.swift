@@ -11,6 +11,7 @@ import AVFoundation
 import FirebaseFirestore
 import SwiftKeychainWrapper
 import Lottie
+import SPAlert
 
 // MARK: - expenditure
 struct NewDataModel {
@@ -183,23 +184,10 @@ class AddNewDataViewController: UIViewController {
             createUserData(id: getId, subCollection: "account")
         }
 
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
+        // success alert animation
+        SPAlert.successAlert()
 
-        // TODO: - lottie動畫（待修bug）
-//        let animation = LottieAnimationView(name: "96081-successful-animation")
-//
-//        animation.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
-//        animation.center = self.view.center
-//        animation.contentMode = .scaleAspectFill
-//        view.addSubview(animation)
-//        animation.animationSpeed = 5
-//        animation.play()
-//
-//        UIView.animate(withDuration: 2) {
-//            self.view.layoutIfNeeded()
-//        } completion: { _ in
-//            self.presentingViewController?.dismiss(animated: true, completion: nil)
-//        }
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     // MARK: - 上傳資料到Firebase

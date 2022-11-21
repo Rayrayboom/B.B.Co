@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseFirestore
 import CoreAudio
+import SPAlert
 
 // MARK: - expenditure
 struct CoDataModel {
@@ -52,6 +53,8 @@ class AddCoDetailViewController: UIViewController {
         } else {
             editUser(document: didSelecetedBook, subCollection: "co_expenditure", documentID: currentData?.id ?? "")
         }
+        // success alert animation
+        SPAlert.successAlert()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 

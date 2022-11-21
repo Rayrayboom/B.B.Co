@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseFirestore
 import SwiftKeychainWrapper
+import SPAlert
 
 class CoBookViewController: UIViewController {
     var data: [Book] = [] {
@@ -104,6 +105,8 @@ class CoBookViewController: UIViewController {
             self.fetchCoBook()
             // 按下新增帳本時，在該帳本的付款人會先預設加上本人
             self.updateUserToBook(bookIdentifier: self.identifier)
+            // success alert animation
+            SPAlert.successAlert()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -134,11 +137,8 @@ class CoBookViewController: UIViewController {
         let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
             self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
-//            if self.inputBookID == data{
-//                self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
-//            } else {
-//                return
-//            }
+            // success alert animation
+            SPAlert.successAlert()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)

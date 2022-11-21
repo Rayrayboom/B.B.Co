@@ -320,7 +320,7 @@ extension CoAccountingViewController: UITableViewDataSource {
         listCell.titleLabel.text = data[indexPath.row].category
         listCell.dateLabel.text = data[indexPath.row].date
         listCell.userLabel.text = data[indexPath.row].user
-        listCell.amountLabel.text = data[indexPath.row].amount
+        listCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
         listCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
 
         return listCell

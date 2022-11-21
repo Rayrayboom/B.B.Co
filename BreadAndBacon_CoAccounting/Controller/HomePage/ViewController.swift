@@ -339,7 +339,7 @@ extension ViewController: UITableViewDataSource {
 
         homeDetailCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
         homeDetailCell.nameLabel.text = data[indexPath.row].category
-        homeDetailCell.amountLabel.text = data[indexPath.row].amount
+        homeDetailCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
         homeDetailCell.detailLabel.text = data[indexPath.row].detail
 
         return homeDetailCell

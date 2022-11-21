@@ -48,6 +48,7 @@
 		767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */; };
 		767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 767EAFC9291BDCB30005880E /* CoAccounting.storyboard */; };
 		767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767EAFCB291BF6730005880E /* ListTableViewCell.swift */; };
+		769D8E4B292B7BF8001944EF /* SPAlert + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E4A292B7BF8001944EF /* SPAlert + Extension.swift */; };
 		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
 		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
@@ -97,6 +98,7 @@
 		767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditQRCodeViewController.swift; sourceTree = "<group>"; };
 		767EAFC9291BDCB30005880E /* CoAccounting.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CoAccounting.storyboard; sourceTree = "<group>"; };
 		767EAFCB291BF6730005880E /* ListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
+		769D8E4A292B7BF8001944EF /* SPAlert + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SPAlert + Extension.swift"; sourceTree = "<group>"; };
 		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
 		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 			isa = PBXGroup;
 			children = (
 				76608695290F7129008EF772 /* UIStoryboard+Extension.swift */,
+				769D8E4A292B7BF8001944EF /* SPAlert + Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -492,6 +495,7 @@
 				76265F4829150AE400F5E341 /* EditDetailTableViewCell.swift in Sources */,
 				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
 				76265F512917AA4C00F5E341 /* PieChartTableViewCell.swift in Sources */,
+				769D8E4B292B7BF8001944EF /* SPAlert + Extension.swift in Sources */,
 				767EAFC2291B3D9A0005880E /* EditQRCodeViewController.swift in Sources */,
 				7673ADC529236D1200A15015 /* SignInViewController.swift in Sources */,
 				76265F2929126AC100F5E341 /* AddDateTableViewCell.swift in Sources */,

@@ -326,10 +326,10 @@ extension PieChartViewController: UITableViewDataSource {
         }
 
         pieCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
-//        pieCell.nameLabel.text = totalData[indexPath.row].category//data[indexPath.row].category
-//        pieCell.amountLabel.text = totalData[indexPath.row].amount//data[indexPath.row].amount
+//        pieCell.nameLabel.text = totalData[indexPath.row].category
+//        pieCell.amountLabel.text = totalData[indexPath.row].amount
         pieCell.nameLabel.text = data[indexPath.row].category
-        pieCell.amountLabel.text = data[indexPath.row].amount
+        pieCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
 
         return pieCell
     }
