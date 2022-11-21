@@ -304,6 +304,17 @@ extension CoAccountingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "支出明細"
     }
+
+    // 長按tableView cell叫出刪除功能
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
+            let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                self.deleteSpecificData(document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
+                self.fetchBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
+            }
+            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
+        }
+    }
 }
 
 extension CoAccountingViewController: UITableViewDataSource {

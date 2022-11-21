@@ -309,6 +309,23 @@ extension PieChartViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+
+    // 長按tableView cell叫出刪除功能
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
+            let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                switch self.segmentTag {
+                case 1:
+                    self.deleteSpecificData(id: self.getId, subCollection: "revenue", indexPathRow: indexPath.row)
+                    self.fetchUser(id: self.getId, subCollection: "revenue")
+                default:
+                    self.deleteSpecificData(id: self.getId,  subCollection: "expenditure", indexPathRow: indexPath.row)
+                    self.fetchUser(id: self.getId, subCollection: "expenditure")
+                }
+            }
+            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
+        }
+    }
 }
 
 extension PieChartViewController: UITableViewDataSource {
