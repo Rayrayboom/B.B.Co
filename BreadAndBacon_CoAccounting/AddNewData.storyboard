@@ -57,6 +57,39 @@
             </objects>
             <point key="canvasLocation" x="877" y="828"/>
         </scene>
+        <!--Calendar View Controller-->
+        <scene sceneID="BHI-2z-XFr">
+            <objects>
+                <viewController storyboardIdentifier="calendarVC" modalPresentationStyle="overCurrentContext" id="NWa-Wd-Roq" customClass="CalendarViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="bQZ-5i-mNQ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="J11-vy-xn3">
+                                <rect key="frame" x="0.0" y="325" width="414" height="571"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <datePicker contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" style="inline" translatesAutoresizingMaskIntoConstraints="NO" id="9Gj-3k-vlc">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="392"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    </datePicker>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fjp-Ip-vR6"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="1Qx-TR-FGW"/>
+                    <connections>
+                        <outlet property="calendarDatePicker" destination="9Gj-3k-vlc" id="Ngc-8M-jmE"/>
+                        <outlet property="calendarView" destination="J11-vy-xn3" id="IRS-qa-5WG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1KX-JY-uD1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-951" y="1573"/>
+        </scene>
         <!--Add New Data View Controller-->
         <scene sceneID="UnT-XT-dMn">
             <objects>

@@ -10,7 +10,7 @@ import SwiftUI
 import AVFoundation
 import FirebaseFirestore
 import SwiftKeychainWrapper
-import Lottie
+import SPAlert
 
 // MARK: - expenditure
 struct NewDataModel {
@@ -90,6 +90,17 @@ class AddNewDataViewController: UIViewController {
         present(presentQRScanVC, animated: true)
     }
 
+// MARK: - TODO: 月曆優化（待處理）
+//    @IBAction func presentCalendar(_ sender: UIButton) {
+//        let addNewDataStoryboard: UIStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
+//        guard let presentCalendarVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calendarVC") as? CalendarViewController else {
+//            fatalError("can not present calendarVC")
+//        }
+//
+//        presentCalendarVC.modalPresentationStyle = .currentContext
+//        present(presentCalendarVC, animated: true)
+//    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // 使用者登入後就可以抓到存在keyChain裡的user id
@@ -129,6 +140,16 @@ class AddNewDataViewController: UIViewController {
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
         view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+
+// MARK: - TODO: 月曆優化（待處理）
+//        let blackView = UIView(frame: UIScreen.main.bounds)
+//        blackView.backgroundColor = .black
+//        blackView.alpha = 0
+//        presentingViewController?.view.addSubview(blackView)
+//
+//        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
+//            blackView.alpha = 0.5
+//        }
     }
 
     // segmentControl 偵測改值狀態
@@ -139,7 +160,7 @@ class AddNewDataViewController: UIViewController {
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色
@@ -183,32 +204,14 @@ class AddNewDataViewController: UIViewController {
             createUserData(id: getId, subCollection: "account")
         }
 
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
+        // success alert animation
+        SPAlert.successAlert()
 
-        // TODO: - lottie動畫（待修bug）
-//        let animation = LottieAnimationView(name: "96081-successful-animation")
-//
-//        animation.frame = CGRect(x: 0, y: 0, width: 150, height: 150)
-//        animation.center = self.view.center
-//        animation.contentMode = .scaleAspectFill
-//        view.addSubview(animation)
-//        animation.animationSpeed = 5
-//        animation.play()
-//
-//        UIView.animate(withDuration: 2) {
-//            self.view.layoutIfNeeded()
-//        } completion: { _ in
-//            self.presentingViewController?.dismiss(animated: true, completion: nil)
-//        }
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 
     // MARK: - 上傳資料到Firebase
     func createUserData(id: String, subCollection: String) {
-        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
-        guard let cell = addNewDadaTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? AddDateTableViewCell
-        else {
-            fatalError("can not find AddDateTableViewCell")
-        }
         let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("user")
             .document(id)
@@ -224,8 +227,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                // date直接取得datePicker的資料，就不需像textField一樣得進去編輯完後才吃得到值
-                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
+                date: data.dateTime,
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -245,7 +247,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
+                date: data.dateTime,
                 month: data.monthTime,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -265,7 +267,7 @@ class AddNewDataViewController: UIViewController {
                 amount: data.amountTextField,
                 category: data.categoryTextField,
                 account: data.accountTextField,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.addDatePicker.date),
+                date: data.dateTime,
                 month: data.monthTime,
                 destinationAccountId: "destinationAccountId",
                 sourceAccountId: "sourceAccountId",
@@ -436,15 +438,19 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                dateCell.delegate = self
+                if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date {
+                    let current = BBCDateFormatter.shareFormatter.string(from: dateFromVC)
+                    data.dateTime = current
+                    // 讓addNewData的date cell datePicker顯示當前所選取細項的date
+                    dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
+                }
 
-                data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
-
-                dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
-
-                // 取dateTime前面到月份的string(pir chart會使用到)
+                // 執行點選cell的datePicker時給值，回傳給homeVC的data.dateTime & data.monthTime
+                dateCell.config()
+                // 取dateTime前面到月份formatter的string(pir chart會使用到) - 從homeVC點選月曆時吃的資料
                 let monthData = data.dateTime.prefix(11)
                 data.monthTime = String(monthData)
-
                 return dateCell
             } else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
@@ -525,7 +531,7 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 }
 
-// date cell
+// date cell - 從addDateCell點選月曆時吃的資料
 extension AddNewDataViewController: AddDateTableViewCellDelegate {
     // 用delegate把cell和點選的sender傳過來，進行給新值的動作
     func getDate(_ cell: AddDateTableViewCell, sender: UIDatePicker) {

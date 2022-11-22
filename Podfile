@@ -15,4 +15,5 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'SideMenu'
 	pod 'IQKeyboardManagerSwift'
 	pod 'lottie-ios'
+	pod 'SPAlert'
 end

@@ -63,6 +63,8 @@ class ViewController: UIViewController {
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
+        // 讓UserDefaults一起畫面就先拿到當天的日期資訊，addNewData時才會一開始就顯示當天(而非偵測到點選後才拿到變動的值)
+        UserDefaults.standard.set(self.datePicker.date, forKey: "currentDate")
         // 加上refreshControl下拉更新(重fetch data)
         refreshDetail()
         setupUI()
@@ -119,6 +121,8 @@ class ViewController: UIViewController {
         let today = Date(timeIntervalSinceNow: 0)
         // 按下date button之後要把當天date的值(let today)給外部變數的date，因為在fetch指定日期data時是抓date的日期
         date = today
+        // 讓UserDefaults在按下上方button時拿到當天日期資訊，addNewData時才會一開始就顯示當天時間(而非偵測到點選後才拿到變動的值)
+        UserDefaults.standard.set(self.date, forKey: "currentDate")
         // 按下date button之後要把date picker顯示的顏色區塊改為當天
         datePicker.setDate(today, animated: true)
         // date button顯示date picker拿到的日期(也就是today的日期)
@@ -321,6 +325,30 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+
+    // 長按tableView cell叫出刪除、編輯功能
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
+            let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                self.deleteSpecificData(id: self.getId, subCollection: "expenditure", indexPathRow: indexPath.row)
+                self.fetchAllData()
+            }
+            let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                guard let presentEditVC = self.storyboard?.instantiateViewController(withIdentifier: "editVC") as? EditViewController
+                else {
+                    fatalError("can not find editVC")
+                }
+                // 點擊哪個row就把data array對應row的資料傳給editVC
+                presentEditVC.data = self.data[indexPath.row]
+                presentEditVC.category = self.category
+
+                let navigation = UINavigationController(rootViewController: presentEditVC)
+                navigation.modalPresentationStyle = .fullScreen
+                self.present(navigation, animated: true, completion: nil)
+            }
+            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction])
+        }
+    }
 }
 
 extension ViewController: UITableViewDataSource {
@@ -335,7 +363,7 @@ extension ViewController: UITableViewDataSource {
 
         homeDetailCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
         homeDetailCell.nameLabel.text = data[indexPath.row].category
-        homeDetailCell.amountLabel.text = data[indexPath.row].amount
+        homeDetailCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
         homeDetailCell.detailLabel.text = data[indexPath.row].detail
 
         return homeDetailCell

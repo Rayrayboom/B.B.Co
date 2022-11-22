@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseFirestore
 import SwiftKeychainWrapper
+import SPAlert
 
 class CoBookViewController: UIViewController {
     var data: [Book] = [] {
@@ -35,6 +36,8 @@ class CoBookViewController: UIViewController {
     var identifier: String = ""
     // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
+    // 用來存當前點選的cell indexPath
+    var indexPathFromBook: IndexPath?
 
     @IBOutlet weak var bookTableView: UITableView!
 
@@ -91,7 +94,7 @@ class CoBookViewController: UIViewController {
 
     // 新增帳本的alert，讓使用者輸入帳本名稱
     func addCoAccountingBookAlert() {
-        controller = UIAlertController(title: "新增帳本", message: "", preferredStyle: .alert)
+        controller = UIAlertController(title: "新增帳本", message: nil, preferredStyle: .alert)
         controller.addTextField { textField in
             textField.placeholder = "帳本名稱"
             textField.keyboardType = UIKeyboardType.default
@@ -104,6 +107,8 @@ class CoBookViewController: UIViewController {
             self.fetchCoBook()
             // 按下新增帳本時，在該帳本的付款人會先預設加上本人
             self.updateUserToBook(bookIdentifier: self.identifier)
+            // success alert animation
+            SPAlert.successAlert()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -134,11 +139,8 @@ class CoBookViewController: UIViewController {
         let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
             self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
-//            if self.inputBookID == data{
-//                self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
-//            } else {
-//                return
-//            }
+            // success alert animation
+            SPAlert.successAlert()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -246,6 +248,48 @@ class CoBookViewController: UIViewController {
             }
     }
 
+    // 編輯cell的alert
+    func editAlert() {
+        controller = UIAlertController(title: "編輯帳本名稱", message: nil, preferredStyle: .alert)
+        controller.addTextField { textField in
+            textField.placeholder = "請輸入想編輯的名稱"
+            textField.keyboardType = UIKeyboardType.default
+            textField.keyboardAppearance = .dark
+        }
+        guard let cell = bookTableView.cellForRow(at: indexPathFromBook ?? IndexPath()) as? CoBookTableViewCell
+        else {
+            fatalError("can not find CoBookTableViewCell")
+        }
+
+        let okAction = UIAlertAction(title: "修改", style: .default) { [unowned controller] _ in
+            // 把輸入textField的資料給bookName
+            self.bookName = controller.textFields?[0].text ?? ""
+            // 更新firebase對應document的book name
+            self.editSpecificData(indexPathRow: self.indexPathFromBook?.row ?? 0, textField: self.bookName)
+            // success alert animation
+            SPAlert.successAlert()
+            // 修改完後再去fetch一次book data（顯示最新資料在tableView）
+            self.fetchCoBook()
+        }
+        controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        controller.addAction(cancelAction)
+        // 記得要present後alert才會出現
+        present(controller, animated: true)
+    }
+
+    // 針對對應的book cell編輯
+    func editSpecificData(indexPathRow: Int, textField: String) {
+        let dataBase = Firestore.firestore()
+        dataBase.collection("co-account").document(data[indexPathRow].id).updateData(["name": textField ]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document update successfully")
+            }
+        }
+    }
+
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(indexPathRow: Int) {
         let dataBase = Firestore.firestore()
@@ -269,6 +313,21 @@ extension CoBookViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "我的帳本"
+    }
+
+    // 長按tableView cell叫出刪除、編輯功能
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
+            let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                self.deleteSpecificData(indexPathRow: indexPath.row)
+                self.fetchCoBook()
+            }
+            let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                self.indexPathFromBook = indexPath
+                self.editAlert()
+            }
+            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction])
+        }
     }
 }
 

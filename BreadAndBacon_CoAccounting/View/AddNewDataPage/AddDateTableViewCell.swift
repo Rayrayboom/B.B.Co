@@ -24,4 +24,14 @@ class AddDateTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
+
+    // 點選cell的datePicker時給值，回傳給homeVC的data.dateTime & data.monthTime
+    func config() {
+        addDatePicker.addTarget(self, action: #selector(didSelectData(_:)), for: .valueChanged)
+    }
+
+    @objc func didSelectData(_ sender: UIDatePicker) {
+        delegate?.getDate(self, sender: sender)
+        delegate?.getMonth(self, sender: sender)
+    }
 }

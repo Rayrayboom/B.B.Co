@@ -174,7 +174,7 @@ class EditViewController: UIViewController {
 
     // 儲存已編輯完成的data
     func saveEditData() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Pencil"), style: .plain, target: self, action: #selector(saveEdit))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Pencil_original"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
 // MARK: -如下edit func先全部執行，目前可以照預期的呈現，後續再來想判斷式
@@ -232,7 +232,7 @@ class EditViewController: UIViewController {
             if let error = error {
                 print("Error updating document: \(error)")
             } else {
-                print("Document update successfully ")
+                print("Document update successfully")
             }
             // 每一支API打完之後leave group
             self.group.leave()

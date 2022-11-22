@@ -14,24 +14,6 @@ class TabViewController: UITabBarController {
         super.viewDidLoad()
         self.delegate = self
     }
-
-    // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
-    func checkUserSignInAccount() {
-        let dataBase = Firestore.firestore()
-        dataBase.collection("user").document()
-
-//            .whereField("id", isEqualTo: KeychainWrapper.standard.string(forKey: "id"))
-//            .getDocuments { snapshot, error in
-//                guard let snapshot = snapshot else {
-//                    return
-//                }
-//                let user = snapshot.documents.compactMap { snapshot in
-//                    try? snapshot.data(as: User.self)
-//                }
-//                self.data.append(contentsOf: user)
-//                print("data here \(self.data)")
-//            }
-    }
 }
 
 // 當點選第1個tab bar時會present AddNewDataVC
