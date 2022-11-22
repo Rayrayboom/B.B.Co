@@ -14,16 +14,15 @@ protocol AddNewDataTableViewCellDelegate: AnyObject {
     func getInputTextField(indexPath: IndexPath, textField: String)
     func getTitle(indexPath: IndexPath, title: String)
     func setContent(content: [String])
+    func getImageName(indexPath: IndexPath, imageName: String)
 }
 
 class AddNewDataTableViewCell: UITableViewCell {
     weak var delegate: AddNewDataTableViewCellDelegate?
     // 用來存取對應content array（由VC判斷當前是哪一個indexPath.row來決定content array要放costContent或accountContent）
     var content: [String] = []
-    var imageArr = [UIImage(named: "Home 2"),
-                    UIImage(named: "Add_coData"),
-                    UIImage(named: "Add-clicked"),
-                    UIImage(named: "Add-unclicked")]
+    // 用來存image的array
+    var imageArr: [UIImage?] = []
     // 宣告一個pickerView
     let contentPicker = UIPickerView()
     // 宣告一個alertVC
@@ -188,7 +187,6 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
                 label.numberOfLines = 1
                 label.text = content[row]
                 label.sizeToFit()
-                print("=== roww", row)
                 return label
             }
             return UIImageView(image: imageArr[row])
@@ -205,12 +203,16 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
                 contentTextField.text = content[row]
             } else {
                 chooseImage.image = imageArr[row]
+                let imageToString = imageArr[row]?.toPngString() ?? ""
+                self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageToString)
             }
         case 2:
             if component == 1 {
                 contentTextField.text = content[row]
             } else {
                 chooseImage.image = imageArr[row]
+                let imageToString = imageArr[row]?.toPngString() ?? ""
+                self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageToString)
             }
         default:
             return

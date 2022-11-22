@@ -23,12 +23,14 @@ struct NewDataModel {
     var monthTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
+    var categoryImageName: String = ""
+    var accountImageName: String = ""
 }
 
 struct Model {
     let text: String
     let imageName: String
-    
+
     init(text: String, imageName: String) {
         self.text = text
         self.imageName = imageName
@@ -59,8 +61,20 @@ class AddNewDataViewController: UIViewController {
             addNewDadaTableView.reloadData()
         }
     }
+    // 存cost image的資料
+    var costImageArr = [UIImage(named: "Home 2"),
+                    UIImage(named: "Add_coData"),
+                    UIImage(named: "Cancel"),
+                    UIImage(named: "Accounting_book")]
+    // 存income image的資料
+    var incomeImageArr = [UIImage(named: "Add-clicked"),
+                    UIImage(named: "Add-unclicked")]
+    // 存account image的資料
+    var accountImageArr = [UIImage(named: "Pie_clicked"),
+                    UIImage(named: "Pie_unclicked")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
+    var imageIndexPath: IndexPath?
     var data = NewDataModel()
     var models = [Model]()
     var dateFromHomeVC: String? = ""
@@ -257,7 +271,9 @@ class AddNewDataViewController: UIViewController {
                 accountId: "accountId",
                 expenditureId: "expenditureId",
                 revenueId: nil,
-                detail: data.detailTextView)
+                detail: data.detailTextView,
+                categoryImage: data.categoryImageName,
+                accountImage: data.accountImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -277,7 +293,9 @@ class AddNewDataViewController: UIViewController {
                 accountId: "accountId",
                 expenditureId: nil,
                 revenueId: "revenueId",
-                detail: data.detailTextView)
+                detail: data.detailTextView,
+                categoryImage: data.categoryImageName,
+                accountImage: data.accountImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -297,7 +315,9 @@ class AddNewDataViewController: UIViewController {
                 accountId: nil,
                 expenditureId: nil,
                 revenueId: nil,
-                detail: data.detailTextView)
+                detail: data.detailTextView,
+                categoryImage: data.categoryImageName,
+                accountImage: data.accountImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -431,13 +451,17 @@ extension AddNewDataViewController: UITableViewDataSource {
                     switch segmentTag {
                     case 0:
                         addDataCell.content = costContent
+                        addDataCell.imageArr = costImageArr
                     case 1:
                         addDataCell.content = incomeContent
+                        addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
+                        addDataCell.imageArr = accountImageArr
                     }
                 default:
                     addDataCell.content = accountContent
+                    addDataCell.imageArr = accountImageArr
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
@@ -525,16 +549,20 @@ extension AddNewDataViewController: UITableViewDataSource {
                     case 0:
                         addDataCell.content = costContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.imageArr = costImageArr
                     case 1:
                         addDataCell.content = incomeContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.imageArr = accountImageArr
                     }
                 default:
                     addDataCell.content = accountContent
                     addDataCell.contentTextField.text = ""
+                    addDataCell.imageArr = accountImageArr
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
@@ -644,6 +672,20 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         // 頁面-轉帳
         default:
             accountContent = content
+        }
+    }
+
+    func getImageName(indexPath: IndexPath, imageName: String) {
+        self.imageIndexPath = indexPath
+        switch imageIndexPath?.row {
+        case 1:
+            data.categoryImageName = imageName
+            print("======= \(data.categoryImageName)")
+        case 2:
+            data.accountImageName = imageName
+            print("======= \(data.accountImageName)")
+        default:
+            return
         }
     }
 }

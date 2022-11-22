@@ -155,7 +155,7 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk2-mk-ZXx">
-                                <rect key="frame" x="170" y="771" width="75" height="91"/>
+                                <rect key="frame" x="170" y="809.5" width="75" height="52.5"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Add_coData" imagePadding="0.0"/>
                                 <connections>
@@ -200,13 +200,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="新 支出" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KFv-vr-iq4">
-                                <rect key="frame" x="179" y="64" width="56.5" height="44"/>
+                                <rect key="frame" x="179" y="64" width="56.5" height="49"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zye-uA-1aV">
-                                <rect key="frame" x="20" y="49" width="60" height="65"/>
+                                <rect key="frame" x="20" y="49" width="60" height="72"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Cancel_co"/>
@@ -228,7 +228,7 @@
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rnj-cg-wdi">
-                                <rect key="frame" x="0.0" y="108" width="414" height="674"/>
+                                <rect key="frame" x="0.0" y="113" width="414" height="669"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coTimeCell" rowHeight="71" id="igE-Uf-rPr" customClass="CoTimeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -334,10 +334,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Add_coData" width="65" height="77"/>
-        <image name="COACC-unclick" width="32" height="38"/>
-        <image name="Cancel_co" width="43" height="51"/>
-        <image name="CoAcc-clicked" width="32" height="38"/>
+        <image name="Add_coData" width="32.5" height="38.5"/>
+        <image name="COACC-unclick" width="32.5" height="38.5"/>
+        <image name="Cancel_co" width="49" height="58"/>
+        <image name="CoAcc-clicked" width="32.5" height="38.5"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
