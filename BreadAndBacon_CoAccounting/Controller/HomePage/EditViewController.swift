@@ -232,7 +232,7 @@ class EditViewController: UIViewController {
             if let error = error {
                 print("Error updating document: \(error)")
             } else {
-                print("Document update successfully ")
+                print("Document update successfully")
             }
             // 每一支API打完之後leave group
             self.group.leave()

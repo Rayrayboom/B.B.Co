@@ -10,7 +10,6 @@ import SwiftUI
 import AVFoundation
 import FirebaseFirestore
 import SwiftKeychainWrapper
-import Lottie
 import SPAlert
 
 // MARK: - expenditure
@@ -91,6 +90,17 @@ class AddNewDataViewController: UIViewController {
         present(presentQRScanVC, animated: true)
     }
 
+// MARK: - TODO: 月曆優化（待處理）
+//    @IBAction func presentCalendar(_ sender: UIButton) {
+//        let addNewDataStoryboard: UIStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
+//        guard let presentCalendarVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calendarVC") as? CalendarViewController else {
+//            fatalError("can not present calendarVC")
+//        }
+//
+//        presentCalendarVC.modalPresentationStyle = .currentContext
+//        present(presentCalendarVC, animated: true)
+//    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // 使用者登入後就可以抓到存在keyChain裡的user id
@@ -130,6 +140,16 @@ class AddNewDataViewController: UIViewController {
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
         view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+
+// MARK: - TODO: 月曆優化（待處理）
+//        let blackView = UIView(frame: UIScreen.main.bounds)
+//        blackView.backgroundColor = .black
+//        blackView.alpha = 0
+//        presentingViewController?.view.addSubview(blackView)
+//
+//        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
+//            blackView.alpha = 0.5
+//        }
     }
 
     // segmentControl 偵測改值狀態
