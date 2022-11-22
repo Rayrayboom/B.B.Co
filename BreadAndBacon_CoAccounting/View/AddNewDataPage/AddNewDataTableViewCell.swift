@@ -20,6 +20,10 @@ class AddNewDataTableViewCell: UITableViewCell {
     weak var delegate: AddNewDataTableViewCellDelegate?
     // 用來存取對應content array（由VC判斷當前是哪一個indexPath.row來決定content array要放costContent或accountContent）
     var content: [String] = []
+    var imageArr = [UIImage(named: "Home 2"),
+                    UIImage(named: "Add_coData"),
+                    UIImage(named: "Add-clicked"),
+                    UIImage(named: "Add-unclicked")]
     // 宣告一個pickerView
     let contentPicker = UIPickerView()
     // 宣告一個alertVC
@@ -47,6 +51,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
     var getId: String = ""
 
+    @IBOutlet weak var chooseImage: UIImageView!
     @IBOutlet weak var contentTextField: UITextField! {
         didSet {
             contentTextField.delegate = self
@@ -142,30 +147,53 @@ class AddNewDataTableViewCell: UITableViewCell {
 extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
     // 有幾列可以選擇
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
+        return 2
     }
 
     // 每列有多少行資料
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch indexPath?.item {
         case 1:
-            return content.count
+            if component == 1 {
+                return content.count
+            }
+            return imageArr.count
         case 2:
-            return content.count
+            if component == 1 {
+                return content.count
+            }
+            return imageArr.count
         default:
             return 0
         }
     }
 
-    // 每個選項顯示的資料, Inherited from UIPickerViewDelegate
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    // pickerView顯示圖片+文字 兩個種類 - 每個選項顯示的資料, Inherited from UIPickerViewDelegate
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         switch indexPath?.item {
         case 1:
-            return content[row]
+            if component == 1 {
+                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+                label.lineBreakMode = .byWordWrapping
+                label.numberOfLines = 1
+                label.text = content[row]
+                label.sizeToFit()
+                return label
+            }
+            return UIImageView(image: imageArr[row])
         case 2:
-            return content[row]
+            if component == 1 {
+                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+                label.lineBreakMode = .byWordWrapping
+                label.numberOfLines = 1
+                label.text = content[row]
+                label.sizeToFit()
+                print("=== roww", row)
+                return label
+            }
+            return UIImageView(image: imageArr[row])
         default:
-            return nil
+            return UIView()
         }
     }
 
@@ -173,9 +201,17 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch indexPath?.item {
         case 1:
-            contentTextField.text = content[row]
+            if component == 1 {
+                contentTextField.text = content[row]
+            } else {
+                chooseImage.image = imageArr[row]
+            }
         case 2:
-            contentTextField.text = content[row]
+            if component == 1 {
+                contentTextField.text = content[row]
+            } else {
+                chooseImage.image = imageArr[row]
+            }
         default:
             return
         }

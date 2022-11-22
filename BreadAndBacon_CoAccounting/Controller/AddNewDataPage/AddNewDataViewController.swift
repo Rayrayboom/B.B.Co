@@ -383,12 +383,12 @@ extension AddNewDataViewController: UITableViewDataSource {
         case 1:
             return "選擇圖案"
         case 2:
-            return "輸入細項"
+            return "選擇細項"
         case 3:
             if segmentTag == 2 {
                 return ""
             } else {
-                return "使用QRCode"
+                return "使用QRCode掃描發票"
             }
         default:
             return "備註"
