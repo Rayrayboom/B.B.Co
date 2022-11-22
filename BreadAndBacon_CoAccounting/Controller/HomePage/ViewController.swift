@@ -326,14 +326,27 @@ extension ViewController: UITableViewDelegate {
         return UITableView.automaticDimension
     }
 
-    // 長按tableView cell叫出刪除功能
+    // 長按tableView cell叫出刪除、編輯功能
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.deleteSpecificData(id: self.getId, subCollection: "expenditure", indexPathRow: indexPath.row)
                 self.fetchAllData()
             }
-            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
+            let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                guard let presentEditVC = self.storyboard?.instantiateViewController(withIdentifier: "editVC") as? EditViewController
+                else {
+                    fatalError("can not find editVC")
+                }
+                // 點擊哪個row就把data array對應row的資料傳給editVC
+                presentEditVC.data = self.data[indexPath.row]
+                presentEditVC.category = self.category
+
+                let navigation = UINavigationController(rootViewController: presentEditVC)
+                navigation.modalPresentationStyle = .fullScreen
+                self.present(navigation, animated: true, completion: nil)
+            }
+            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction])
         }
     }
 }
