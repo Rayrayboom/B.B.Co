@@ -331,6 +331,8 @@ extension ViewController: UITableViewDelegate {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.deleteSpecificData(id: self.getId, subCollection: "expenditure", indexPathRow: indexPath.row)
+                self.deleteSpecificData(id: self.getId, subCollection: "revenue", indexPathRow: indexPath.row)
+                self.deleteSpecificData(id: self.getId, subCollection: "account", indexPathRow: indexPath.row)
                 self.fetchAllData()
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
@@ -361,7 +363,8 @@ extension ViewController: UITableViewDataSource {
             fatalError("can not create cell")
         }
 
-        homeDetailCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
+        let image = data[indexPath.row].categoryImage?.toImage()
+        homeDetailCell.categoryImage.image = image
         homeDetailCell.nameLabel.text = data[indexPath.row].category
         homeDetailCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
         homeDetailCell.detailLabel.text = data[indexPath.row].detail

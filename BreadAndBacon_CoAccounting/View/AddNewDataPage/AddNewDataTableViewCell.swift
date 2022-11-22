@@ -146,7 +146,12 @@ class AddNewDataTableViewCell: UITableViewCell {
 extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
     // 有幾列可以選擇
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 2
+        switch indexPath?.item {
+        case 1:
+            return 2
+        default:
+            return 1
+        }
     }
 
     // 每列有多少行資料
@@ -158,10 +163,11 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
             }
             return imageArr.count
         case 2:
-            if component == 1 {
-                return content.count
-            }
-            return imageArr.count
+//            if component == 1 {
+//                return content.count
+//            }
+//            return imageArr.count
+            return content.count
         default:
             return 0
         }
@@ -172,7 +178,7 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
         switch indexPath?.item {
         case 1:
             if component == 1 {
-                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 400, height: 100))
                 label.lineBreakMode = .byWordWrapping
                 label.numberOfLines = 1
                 label.text = content[row]
@@ -181,15 +187,21 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
             }
             return UIImageView(image: imageArr[row])
         case 2:
-            if component == 1 {
-                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 400, height: 100))
                 label.lineBreakMode = .byWordWrapping
                 label.numberOfLines = 1
                 label.text = content[row]
                 label.sizeToFit()
                 return label
-            }
-            return UIImageView(image: imageArr[row])
+//            if component == 1 {
+//                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 100, height: 50))
+//                label.lineBreakMode = .byWordWrapping
+//                label.numberOfLines = 1
+//                label.text = content[row]
+//                label.sizeToFit()
+//                return label
+//            }
+//            return UIImageView(image: imageArr[row])
         default:
             return UIView()
         }
@@ -207,13 +219,14 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
                 self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageToString)
             }
         case 2:
-            if component == 1 {
-                contentTextField.text = content[row]
-            } else {
-                chooseImage.image = imageArr[row]
-                let imageToString = imageArr[row]?.toPngString() ?? ""
-                self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageToString)
-            }
+//            if component == 1 {
+//                contentTextField.text = content[row]
+//            } else {
+//                chooseImage.image = imageArr[row]
+//                let imageToString = imageArr[row]?.toPngString() ?? ""
+//                self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageToString)
+//            }
+            contentTextField.text = content[row]
         default:
             return
         }

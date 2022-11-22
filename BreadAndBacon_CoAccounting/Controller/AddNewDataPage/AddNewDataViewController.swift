@@ -69,9 +69,6 @@ class AddNewDataViewController: UIViewController {
     // 存income image的資料
     var incomeImageArr = [UIImage(named: "Add-clicked"),
                     UIImage(named: "Add-unclicked")]
-    // 存account image的資料
-    var accountImageArr = [UIImage(named: "Pie_clicked"),
-                    UIImage(named: "Pie_unclicked")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
@@ -272,8 +269,7 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: "expenditureId",
                 revenueId: nil,
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                accountImage: data.accountImageName)
+                categoryImage: data.categoryImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -294,8 +290,7 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: nil,
                 revenueId: "revenueId",
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                accountImage: data.accountImageName)
+                categoryImage: data.categoryImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -316,8 +311,7 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: nil,
                 revenueId: nil,
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                accountImage: data.accountImageName)
+                categoryImage: data.categoryImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -457,11 +451,9 @@ extension AddNewDataViewController: UITableViewDataSource {
                         addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
-                        addDataCell.imageArr = accountImageArr
                     }
                 default:
                     addDataCell.content = accountContent
-                    addDataCell.imageArr = accountImageArr
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
@@ -557,12 +549,10 @@ extension AddNewDataViewController: UITableViewDataSource {
                     default:
                         addDataCell.content = accountContent
                         addDataCell.contentTextField.text = ""
-                        addDataCell.imageArr = accountImageArr
                     }
                 default:
                     addDataCell.content = accountContent
                     addDataCell.contentTextField.text = ""
-                    addDataCell.imageArr = accountImageArr
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
@@ -681,9 +671,6 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         case 1:
             data.categoryImageName = imageName
             print("======= \(data.categoryImageName)")
-        case 2:
-            data.accountImageName = imageName
-            print("======= \(data.accountImageName)")
         default:
             return
         }
