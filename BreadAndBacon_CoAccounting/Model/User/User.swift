@@ -63,6 +63,7 @@ struct Account: Codable {
     var revenueId: String?
     var detail: String?
     var user: String?
+    // 記個人記帳圖案資料
     var categoryImage: String?
 
     enum CodingKeys: String, CodingKey {
@@ -80,6 +81,7 @@ struct Account: Codable {
         case detail
         // 給co_accounting用的型別，因為要記錄是哪個使用者的支出
         case user
+        // 記個人記帳圖案資料
         case categoryImage = "category_image"
     }
 }

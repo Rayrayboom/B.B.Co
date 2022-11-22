@@ -24,7 +24,6 @@ struct NewDataModel {
     var titleLabel: String = ""
     var detailTextView: String = ""
     var categoryImageName: String = ""
-    var accountImageName: String = ""
 }
 
 struct Model {
@@ -625,20 +624,16 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         switch tapIndexpath?.row {
         case 0:
             data.amountTextField = textField
-            print("======= \(data.amountTextField)")
         case 1:
             data.categoryTextField = textField
-            print("======= \(data.categoryTextField)")
         default:
             data.accountTextField = textField
-            print("======= \(data.accountTextField)")
         }
     }
 
     func getTitle(indexPath: IndexPath, title: String) {
         self.tapIndexpath = indexPath
         data.titleLabel = title
-        print("======= \(data.titleLabel)")
     }
 
     // 新增的選項用delegate傳回來並改變array data
@@ -670,7 +665,6 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         switch imageIndexPath?.row {
         case 1:
             data.categoryImageName = imageName
-            print("======= \(data.categoryImageName)")
         default:
             return
         }
