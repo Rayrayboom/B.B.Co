@@ -342,7 +342,7 @@ extension PieChartViewController: UITableViewDataSource {
             fatalError("can not create cell")
         }
 
-        pieCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
+        pieCell.categoryImage.image = data[indexPath.row].categoryImage?.toImage()
 //        pieCell.nameLabel.text = totalData[indexPath.row].category
 //        pieCell.amountLabel.text = totalData[indexPath.row].amount
         pieCell.nameLabel.text = data[indexPath.row].category

@@ -332,7 +332,7 @@ extension CoAccountingViewController: UITableViewDataSource {
         listCell.dateLabel.text = data[indexPath.row].date
         listCell.userLabel.text = data[indexPath.row].user
         listCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
-        listCell.categoryImage.image = UIImage(systemName: "hand.thumbsup.fill")
+        listCell.categoryImage.image = UIImage(named: "CoAcc-clicked")
 
         return listCell
     }
