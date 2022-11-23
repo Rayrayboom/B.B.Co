@@ -10,7 +10,8 @@ import UIKit
 class CoBookTableViewCell: UITableViewCell {
     @IBOutlet weak var bookNameLabel: UILabel!
     @IBOutlet weak var roomIDLabel: UILabel!
-    
+    @IBOutlet weak var coImageView: UIImageView!
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

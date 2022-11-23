@@ -109,7 +109,8 @@ class AddCoDetailViewController: UIViewController {
             expenditureId: "expenditureId",
             revenueId: nil,
             detail: nil,
-            user: data.userTextField)
+            user: data.userTextField,
+            categoryImage: nil)
         do {
             try documentID.setData(from: account)
             print("success create document. ID: \(documentID.documentID)")

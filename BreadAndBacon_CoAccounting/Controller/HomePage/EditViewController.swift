@@ -22,6 +22,7 @@ struct DataModel {
     var dateTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
+    var categoryImageName: String = ""
 }
 
 class EditViewController: UIViewController {
@@ -51,8 +52,17 @@ class EditViewController: UIViewController {
             editTableView.reloadData()
         }
     }
+    // 存cost image的資料
+    var costImageArr = [UIImage(named: "Home 2"),
+                    UIImage(named: "Add_coData"),
+                    UIImage(named: "Cancel"),
+                    UIImage(named: "Accounting_book")]
+    // 存income image的資料
+    var incomeImageArr = [UIImage(named: "Add-clicked"),
+                    UIImage(named: "Add-unclicked")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
+    var imageIndexPath: IndexPath?
     var editData = DataModel()
     weak var homeVC: ViewController?
     // 用來判斷是否有使用QR scanner去掃描內容
@@ -227,7 +237,8 @@ class EditViewController: UIViewController {
             "amount": editData.amountTextField,
             "category": editData.categoryTextField,
             "account": editData.accountTextField,
-            "detail": editData.detailTextView
+            "detail": editData.detailTextView,
+            "category_image": editData.categoryImageName
         ]) { error in
             if let error = error {
                 print("Error updating document: \(error)")
@@ -338,10 +349,14 @@ extension EditViewController: UITableViewDataSource {
                     editData.categoryTextField = self.data?.category ?? ""
                     // 接著把已經從firebase抓下來的單筆對應資料的值塞給editVC中的textField.text顯示
                     editDataCell.contentTextField.text = self.data?.category
+                    editDataCell.imageArr = costImageArr
+                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 case 1:
                     editDataCell.content = incomeContent
                     editData.categoryTextField = self.data?.category ?? ""
                     editDataCell.contentTextField.text = self.data?.category
+                    editDataCell.imageArr = incomeImageArr
+                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 default:
                     editDataCell.content = accountContent
                     editData.accountTextField = self.data?.account ?? ""
@@ -450,6 +465,16 @@ extension EditViewController: EditDataTableViewCellDelegate {
         // 頁面-轉帳
         default:
             accountContent = content
+        }
+    }
+
+    func getImageName(indexPath: IndexPath, imageName: String) {
+        self.imageIndexPath = indexPath
+        switch imageIndexPath?.row {
+        case 1:
+            editData.categoryImageName = imageName
+        default:
+            return
         }
     }
 }

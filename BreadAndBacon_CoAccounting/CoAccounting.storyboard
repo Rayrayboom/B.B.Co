@@ -20,37 +20,48 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coBookCell" rowHeight="73" id="WJP-4H-iul" customClass="CoBookTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="73"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coBookCell" rowHeight="64" id="WJP-4H-iul" customClass="CoBookTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="64"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="WJP-4H-iul" id="kW7-8X-gdR">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="73"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="64"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="bookNameLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylW-EM-kPi">
-                                                    <rect key="frame" x="20" y="5" width="143.5" height="24"/>
+                                                    <rect key="frame" x="80" y="5" width="143.5" height="24"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="roomIDLabel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x2v-0C-WS1">
-                                                    <rect key="frame" x="20" y="29" width="94" height="39"/>
+                                                    <rect key="frame" x="80" y="29" width="234" height="30"/>
                                                     <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dxo-M7-24e">
+                                                    <rect key="frame" x="20" y="0.0" width="50" height="64"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="50" id="4bo-uo-NzY"/>
+                                                        <constraint firstAttribute="width" constant="50" id="xPs-QY-B9d"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="x2v-0C-WS1" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="I0O-9k-980"/>
+                                                <constraint firstAttribute="bottom" secondItem="dxo-M7-24e" secondAttribute="bottom" id="AX2-z6-W7u"/>
+                                                <constraint firstItem="x2v-0C-WS1" firstAttribute="leading" secondItem="dxo-M7-24e" secondAttribute="trailing" constant="10" id="I0O-9k-980"/>
                                                 <constraint firstItem="ylW-EM-kPi" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" constant="5" id="JYd-dq-UBC"/>
                                                 <constraint firstItem="x2v-0C-WS1" firstAttribute="top" secondItem="ylW-EM-kPi" secondAttribute="bottom" id="NxK-aF-43V"/>
-                                                <constraint firstItem="ylW-EM-kPi" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="P6A-bS-lAZ"/>
+                                                <constraint firstItem="ylW-EM-kPi" firstAttribute="leading" secondItem="dxo-M7-24e" secondAttribute="trailing" constant="10" id="P6A-bS-lAZ"/>
                                                 <constraint firstAttribute="bottom" secondItem="x2v-0C-WS1" secondAttribute="bottom" constant="5" id="Qsc-ZR-1Fc"/>
-                                                <constraint firstAttribute="trailing" secondItem="x2v-0C-WS1" secondAttribute="trailing" constant="300" id="urs-Gc-oDn"/>
+                                                <constraint firstItem="dxo-M7-24e" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" id="ZTa-Dx-56Y"/>
+                                                <constraint firstItem="dxo-M7-24e" firstAttribute="leading" secondItem="kW7-8X-gdR" secondAttribute="leading" constant="20" id="mCM-pT-Jqc"/>
+                                                <constraint firstAttribute="trailing" secondItem="x2v-0C-WS1" secondAttribute="trailing" constant="100" id="urs-Gc-oDn"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="bookNameLabel" destination="ylW-EM-kPi" id="ZFG-xE-QIF"/>
+                                            <outlet property="coImageView" destination="dxo-M7-24e" id="p1s-a5-j7n"/>
                                             <outlet property="roomIDLabel" destination="x2v-0C-WS1" id="jo3-mP-sNX"/>
                                         </connections>
                                     </tableViewCell>
@@ -155,7 +166,7 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bk2-mk-ZXx">
-                                <rect key="frame" x="170" y="771" width="75" height="91"/>
+                                <rect key="frame" x="170" y="809.5" width="75" height="52.5"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Add_coData" imagePadding="0.0"/>
                                 <connections>
@@ -200,13 +211,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="新 支出" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KFv-vr-iq4">
-                                <rect key="frame" x="179" y="64" width="56.5" height="44"/>
+                                <rect key="frame" x="179" y="64" width="56.5" height="49"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zye-uA-1aV">
-                                <rect key="frame" x="20" y="49" width="60" height="65"/>
+                                <rect key="frame" x="20" y="49" width="60" height="72"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Cancel_co"/>
@@ -228,7 +239,7 @@
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rnj-cg-wdi">
-                                <rect key="frame" x="0.0" y="108" width="414" height="674"/>
+                                <rect key="frame" x="0.0" y="113" width="414" height="669"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coTimeCell" rowHeight="71" id="igE-Uf-rPr" customClass="CoTimeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -334,10 +345,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Add_coData" width="65" height="77"/>
-        <image name="COACC-unclick" width="32" height="38"/>
-        <image name="Cancel_co" width="43" height="51"/>
-        <image name="CoAcc-clicked" width="32" height="38"/>
+        <image name="Add_coData" width="32.5" height="38.5"/>
+        <image name="COACC-unclick" width="32.5" height="38.5"/>
+        <image name="Cancel_co" width="49" height="58"/>
+        <image name="CoAcc-clicked" width="32.5" height="38.5"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

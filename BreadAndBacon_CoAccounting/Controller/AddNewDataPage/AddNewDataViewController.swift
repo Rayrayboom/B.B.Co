@@ -23,6 +23,17 @@ struct NewDataModel {
     var monthTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
+    var categoryImageName: String = ""
+}
+
+struct Model {
+    let text: String
+    let imageName: String
+
+    init(text: String, imageName: String) {
+        self.text = text
+        self.imageName = imageName
+    }
 }
 
 class AddNewDataViewController: UIViewController {
@@ -49,9 +60,19 @@ class AddNewDataViewController: UIViewController {
             addNewDadaTableView.reloadData()
         }
     }
+    // 存cost image的資料
+    var costImageArr = [UIImage(named: "Home 2"),
+                    UIImage(named: "Add_coData"),
+                    UIImage(named: "Cancel"),
+                    UIImage(named: "Accounting_book")]
+    // 存income image的資料
+    var incomeImageArr = [UIImage(named: "Add-clicked"),
+                    UIImage(named: "Add-unclicked")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
+    var imageIndexPath: IndexPath?
     var data = NewDataModel()
+    var models = [Model]()
     var dateFromHomeVC: String? = ""
     // 存QRCode掃描內容
     var messageFromQRVC: String = "" {
@@ -105,7 +126,19 @@ class AddNewDataViewController: UIViewController {
         super.viewDidLoad()
         // 使用者登入後就可以抓到存在keyChain裡的user id
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
-        print("get id", getId)
+
+        // 存images
+        models.append(Model(text: "飲食", imageName: "Home 2"))
+        models.append(Model(text: "交通", imageName: "Pencil_original"))
+        models.append(Model(text: "日常", imageName: "Pie_unclicked"))
+        models.append(Model(text: "醫療", imageName: "Add_coData"))
+        models.append(Model(text: "飲食", imageName: "Home 2"))
+        models.append(Model(text: "交通", imageName: "Pencil_original"))
+        models.append(Model(text: "日常", imageName: "Pie_unclicked"))
+        models.append(Model(text: "醫療", imageName: "Add_coData"))
+
+        // 註冊image tableView cell
+        addNewDadaTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
         addNewDadaTableView.delegate = self
         addNewDadaTableView.dataSource = self
         addNewDadaTableView.estimatedRowHeight = UITableView.automaticDimension
@@ -234,7 +267,8 @@ class AddNewDataViewController: UIViewController {
                 accountId: "accountId",
                 expenditureId: "expenditureId",
                 revenueId: nil,
-                detail: data.detailTextView)
+                detail: data.detailTextView,
+                categoryImage: data.categoryImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -254,7 +288,8 @@ class AddNewDataViewController: UIViewController {
                 accountId: "accountId",
                 expenditureId: nil,
                 revenueId: "revenueId",
-                detail: data.detailTextView)
+                detail: data.detailTextView,
+                categoryImage: data.categoryImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -274,7 +309,8 @@ class AddNewDataViewController: UIViewController {
                 accountId: nil,
                 expenditureId: nil,
                 revenueId: nil,
-                detail: data.detailTextView)
+                detail: data.detailTextView,
+                categoryImage: data.categoryImageName)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -326,14 +362,16 @@ extension AddNewDataViewController: UITableViewDelegate {
 
 extension AddNewDataViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 3 {
+        if indexPath.section == 4 {
             return 250
+        } else if indexPath.section == 1 {
+            return 80
         } else {
             return UITableView.automaticDimension
         }
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        return 5
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -341,8 +379,10 @@ extension AddNewDataViewController: UITableViewDataSource {
         case 0:
             return 1
         case 1:
-            return costCategory.count
+            return 1
         case 2:
+            return costCategory.count
+        case 3:
             return 1
         default:
             return 1
@@ -354,18 +394,21 @@ extension AddNewDataViewController: UITableViewDataSource {
         case 0:
             return "選擇日期"
         case 1:
-            return "輸入細項"
+            return "選擇圖案"
         case 2:
+            return "選擇細項"
+        case 3:
             if segmentTag == 2 {
                 return ""
             } else {
-                return "使用QRCode"
+                return "使用QRCode掃描發票"
             }
         default:
             return "備註"
         }
     }
 
+    // swiftlint:disable cyclomatic_complexity
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if segmentTag == 2 {
             if indexPath.section == 0 {
@@ -380,6 +423,15 @@ extension AddNewDataViewController: UITableViewDataSource {
 
                 return dateCell
             } else if indexPath.section == 1 {
+                guard let imageCell = tableView.dequeueReusableCell(
+                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
+                else {
+                    fatalError("can not create imageCell")
+                }
+                imageCell.configure(with: models)
+
+                return imageCell
+            } else if indexPath.section == 2 {
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -392,8 +444,10 @@ extension AddNewDataViewController: UITableViewDataSource {
                     switch segmentTag {
                     case 0:
                         addDataCell.content = costContent
+                        addDataCell.imageArr = costImageArr
                     case 1:
                         addDataCell.content = incomeContent
+                        addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
                     }
@@ -411,7 +465,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
-            } else if indexPath.section == 2 {
+            } else if indexPath.section == 3 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
@@ -453,6 +507,15 @@ extension AddNewDataViewController: UITableViewDataSource {
                 data.monthTime = String(monthData)
                 return dateCell
             } else if indexPath.section == 1 {
+                guard let imageCell = tableView.dequeueReusableCell(
+                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
+                else {
+                    fatalError("can not create imageCell")
+                }
+                imageCell.configure(with: models)
+
+                return imageCell
+            } else if indexPath.section == 2 {
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -477,9 +540,11 @@ extension AddNewDataViewController: UITableViewDataSource {
                     case 0:
                         addDataCell.content = costContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.imageArr = costImageArr
                     case 1:
                         addDataCell.content = incomeContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
                         addDataCell.contentTextField.text = ""
@@ -498,7 +563,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
-            } else if indexPath.section == 2 {
+            } else if indexPath.section == 3 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
@@ -559,20 +624,16 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         switch tapIndexpath?.row {
         case 0:
             data.amountTextField = textField
-            print("======= \(data.amountTextField)")
         case 1:
             data.categoryTextField = textField
-            print("======= \(data.categoryTextField)")
         default:
             data.accountTextField = textField
-            print("======= \(data.accountTextField)")
         }
     }
 
     func getTitle(indexPath: IndexPath, title: String) {
         self.tapIndexpath = indexPath
         data.titleLabel = title
-        print("======= \(data.titleLabel)")
     }
 
     // 新增的選項用delegate傳回來並改變array data
@@ -596,6 +657,16 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         // 頁面-轉帳
         default:
             accountContent = content
+        }
+    }
+
+    func getImageName(indexPath: IndexPath, imageName: String) {
+        self.imageIndexPath = indexPath
+        switch imageIndexPath?.row {
+        case 1:
+            data.categoryImageName = imageName
+        default:
+            return
         }
     }
 }

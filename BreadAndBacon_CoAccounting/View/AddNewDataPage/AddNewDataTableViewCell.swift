@@ -14,12 +14,15 @@ protocol AddNewDataTableViewCellDelegate: AnyObject {
     func getInputTextField(indexPath: IndexPath, textField: String)
     func getTitle(indexPath: IndexPath, title: String)
     func setContent(content: [String])
+    func getImageName(indexPath: IndexPath, imageName: String)
 }
 
 class AddNewDataTableViewCell: UITableViewCell {
     weak var delegate: AddNewDataTableViewCellDelegate?
     // 用來存取對應content array（由VC判斷當前是哪一個indexPath.row來決定content array要放costContent或accountContent）
     var content: [String] = []
+    // 用來存image的array
+    var imageArr: [UIImage?] = []
     // 宣告一個pickerView
     let contentPicker = UIPickerView()
     // 宣告一個alertVC
@@ -47,6 +50,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
     var getId: String = ""
 
+    @IBOutlet weak var chooseImage: UIImageView!
     @IBOutlet weak var contentTextField: UITextField! {
         didSet {
             contentTextField.delegate = self
@@ -142,14 +146,22 @@ class AddNewDataTableViewCell: UITableViewCell {
 extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
     // 有幾列可以選擇
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
+        switch indexPath?.item {
+        case 1:
+            return 2
+        default:
+            return 1
+        }
     }
 
     // 每列有多少行資料
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch indexPath?.item {
         case 1:
-            return content.count
+            if component == 1 {
+                return content.count
+            }
+            return imageArr.count
         case 2:
             return content.count
         default:
@@ -157,15 +169,28 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
         }
     }
 
-    // 每個選項顯示的資料, Inherited from UIPickerViewDelegate
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    // pickerView顯示圖片+文字 兩個種類 - 每個選項顯示的資料, Inherited from UIPickerViewDelegate
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         switch indexPath?.item {
         case 1:
-            return content[row]
+            if component == 1 {
+                let label = UILabel(frame: CGRect(x: 0, y: 0, width: 400, height: 100))
+                label.lineBreakMode = .byWordWrapping
+                label.numberOfLines = 1
+                label.text = content[row]
+                label.sizeToFit()
+                return label
+            }
+            return UIImageView(image: imageArr[row])
         case 2:
-            return content[row]
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 400, height: 100))
+            label.lineBreakMode = .byWordWrapping
+            label.numberOfLines = 1
+            label.text = content[row]
+            label.sizeToFit()
+            return label
         default:
-            return nil
+            return UIView()
         }
     }
 
@@ -173,7 +198,14 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch indexPath?.item {
         case 1:
-            contentTextField.text = content[row]
+            if component == 1 {
+                contentTextField.text = content[row]
+            } else {
+                chooseImage.image = imageArr[row]
+                let imageToString = imageArr[row]?.toPngString() ?? ""
+                // 把種類對應圖案傳給homeVC
+                self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageToString)
+            }
         case 2:
             contentTextField.text = content[row]
         default:

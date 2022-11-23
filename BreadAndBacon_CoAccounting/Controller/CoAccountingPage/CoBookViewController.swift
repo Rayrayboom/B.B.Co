@@ -306,7 +306,6 @@ extension CoBookViewController: UITableViewDelegate {
             fatalError("can not push coAccountingVC")
         }
         pushCoAccountingVC.didSelecetedBook = data[indexPath.row].id
-        print("datadatddtd", data)
 
         navigationController?.pushViewController(pushCoAccountingVC, animated: true)
     }
@@ -325,6 +324,7 @@ extension CoBookViewController: UITableViewDelegate {
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.indexPathFromBook = indexPath
                 self.editAlert()
+                self.fetchCoBook()
             }
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction])
         }
@@ -345,6 +345,7 @@ extension CoBookViewController: UITableViewDataSource {
         // 顯示新增account book name & roomId
         coBookCell.bookNameLabel.text = data[indexPath.row].name
         coBookCell.roomIDLabel.text = "ID: \(data[indexPath.row].roomId)"
+        coBookCell.coImageView.image = UIImage(named: "CoAcc-clicked")
 
         return coBookCell
     }
