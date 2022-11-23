@@ -248,6 +248,25 @@ class CoBookViewController: UIViewController {
             }
     }
 
+    // 從Firebase上fetch對應book的detail資料
+    func fetchBookDetail(document: String, subCollection: String) {
+        bookDetail = []
+        let dataBase = Firestore.firestore()
+        self.group.enter()
+        dataBase.collection("co-account/\(document)/\(subCollection)")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                self.bookDetail.append(contentsOf: account)
+                print("book datail here \(self.data)")
+                self.group.leave()
+            }
+    }
+
     // 編輯cell的alert
     func editAlert() {
         controller = UIAlertController(title: "編輯帳本名稱", message: nil, preferredStyle: .alert)
@@ -296,6 +315,12 @@ class CoBookViewController: UIViewController {
         let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id)
         documentRef.delete()
     }
+
+    func deleteSpecificSubcollection(indexPathRow: Int, documentNum: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id).collection("co_expenditure").document(bookDetail[documentNum].id)
+        documentRef.delete()
+    }
 }
 
 // 點下帳本會導到對應帳目資訊
@@ -318,8 +343,17 @@ extension CoBookViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                self.deleteSpecificData(indexPathRow: indexPath.row)
-                self.fetchCoBook()
+                self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: "co_expenditure")
+                self.group.notify(queue: .main) {
+                    // 先把subcollection裡面的document一筆一筆刪除
+                    for num in 0..<self.bookDetail.count {
+                        self.deleteSpecificSubcollection(indexPathRow: indexPath.row, documentNum: num)
+                    }
+                    // 接著刪除book
+                    self.deleteSpecificData(indexPathRow: indexPath.row)
+                    // 重新抓最新資料(會reloadData)
+                    self.fetchCoBook()
+                }
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.indexPathFromBook = indexPath
@@ -353,12 +387,20 @@ extension CoBookViewController: UITableViewDataSource {
     // tableView左滑刪除
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            tableView.beginUpdates()
-            // 順序問題，需要先偵測對應indexPath資料再進行刪除
-            deleteSpecificData(indexPathRow: indexPath.row)
-            data.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            tableView.endUpdates()
+            self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: "co_expenditure")
+            self.group.notify(queue: .main) {
+                tableView.beginUpdates()
+                // 先把subcollection裡面的document一筆一筆刪除
+                for num in 0..<self.bookDetail.count {
+                    self.deleteSpecificSubcollection(indexPathRow: indexPath.row, documentNum: num)
+                }
+                // 接著刪除book
+                // 順序問題，需要先偵測對應indexPath資料再進行刪除
+                self.deleteSpecificData(indexPathRow: indexPath.row)
+                self.data.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                tableView.endUpdates()
+            }
         }
     }
 }
