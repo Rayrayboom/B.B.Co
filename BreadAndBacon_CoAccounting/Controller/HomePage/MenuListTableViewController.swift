@@ -7,13 +7,23 @@
 
 import UIKit
 import SwiftKeychainWrapper
+import SwiftJWT
+
+struct MyClaim: Claims {
+    let iss: String
+    let sub: String
+    let exp: Date
+    let aud: String
+}
 
 // 建立side menu tableView
 class MenuListTableViewController: UITableViewController {
-    var items = ["支出種類", "收入種類", "帳戶種類", "登出"]
+    var items = ["支出種類", "收入種類", "帳戶種類", "登出 及 刪除帳號"]
     let darkColor = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
     var getName: String = ""
     var alertController = UIAlertController()
+    // 存JWT
+    var signedJWT: String = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -87,7 +97,6 @@ class MenuListTableViewController: UITableViewController {
         alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let name = "登出"
         let action = UIAlertAction(title: name, style: .default) { action in
-            print(action.title ?? "")
             KeychainWrapper.standard.remove(forKey: "id")
             KeychainWrapper.standard.remove(forKey: "name")
 
@@ -100,8 +109,79 @@ class MenuListTableViewController: UITableViewController {
         }
         alertController.addAction(action)
 
+        // 刪除帳號alert
+        let deleteAction = UIAlertAction(title: "刪除帳號", style: UIAlertAction.Style.destructive) { action in
+            // 當選擇刪除帳號後讓使用者做最後確認alert
+            let doubleCheckController = UIAlertController(title: "確定要刪除帳號嗎？", message: "刪除帳號後，個人及共同帳本之備份資料將會全部清除", preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "確定", style: .destructive) { action in
+                // 打revoke token API
+                self.removeAccount()
+                KeychainWrapper.standard.remove(forKey: "id")
+                KeychainWrapper.standard.remove(forKey: "name")
+                KeychainWrapper.standard.remove(forKey: "refreshToken")
+
+                print("this is user id", KeychainWrapper.standard.string(forKey: "id") ?? "")
+                print("this is user name", KeychainWrapper.standard.string(forKey: "name") ?? "")
+                print("this is refreshToken", KeychainWrapper.standard.string(forKey: "refreshToken") ?? "")
+
+                let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let viewController = mainStoryboard.instantiateViewController(withIdentifier: "signInVC") as! SignInViewController
+                UIApplication.shared.windows.first?.rootViewController = viewController
+                UIApplication.shared.windows.first?.makeKeyAndVisible()
+            }
+            doubleCheckController.addAction(okAction)
+
+            let cancelAction = UIAlertAction(title: "再想想", style: .cancel)
+            doubleCheckController.addAction(cancelAction)
+            self.present(doubleCheckController, animated: true, completion: nil)
+        }
+        alertController.addAction(deleteAction)
+
         let cancelAction = UIAlertAction(title: "取消", style: .cancel)
         alertController.addAction(cancelAction)
         present(alertController, animated: true, completion: nil)
+    }
+
+    // gen JWT token
+    func makeSwiftJWT() {
+        let myHeader = Header(kid: APIKey.authKey)
+        let myClaims = MyClaims(iss: APIKey.teamID, sub: APIKey.bundleID, exp: Date(timeIntervalSinceNow: 120), aud: "https://appleid.apple.com")
+        var myJWT = JWT(header: myHeader, claims: myClaims)
+        let privateKey = APIKey.privateKey
+        do {
+            let jwtSigner = JWTSigner.es256(privateKey: Data(privateKey.utf8))
+            signedJWT = try myJWT.sign(using: jwtSigner)
+            print("=== get JWT", signedJWT)
+        } catch {
+            print("can not get JWT")
+        }
+    }
+
+    // 打revoke token API
+    func removeAccount() {
+        // 先產生一組新的JWT
+        makeSwiftJWT()
+        // 取回keyChain裡的refreshTocken
+        let token = KeychainWrapper.standard.string(forKey: "refreshToken")
+
+        if let token = token {
+            let url = URL(string: "https://appleid.apple.com/auth/revoke?client_id=\(APIKey.bundleID)&client_secret=\(signedJWT)&token=\(token)&token_type_hint=refresh_token".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "https://apple.com")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            let task = URLSession.shared.dataTask(with: request) {(data, response, error) in
+                if let error = error {
+                    print(fatalError("can not delete account"))
+                }
+
+                guard let response = response as? HTTPURLResponse,
+                        response.statusCode == 200 else {
+                    print("response error")
+                    return
+                }
+
+                guard data != nil else { return }
+            }
+            task.resume()
+        }
     }
 }

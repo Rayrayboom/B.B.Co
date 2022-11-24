@@ -20,6 +20,7 @@ struct MyClaims: Claims {
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
     var userData = ""
+    // 存JWT
     var signedJWT: String = ""
 
     @IBOutlet weak var BBCoImageView: UIImageView!
@@ -89,7 +90,6 @@ class SignInViewController: UIViewController {
         }
     }
 
-    // swiftlint: disable line_length
     // gen JWT token
     func makeSwiftJWT() {
         let myHeader = Header(kid: APIKey.authKey)
@@ -176,7 +176,7 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
                         self.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
                     }
                 }
-                print("first", KeychainWrapper.standard.string(forKey: "name") ?? "")
+//                print("first", KeychainWrapper.standard.string(forKey: "name") ?? "")
             }
 
             // second login
