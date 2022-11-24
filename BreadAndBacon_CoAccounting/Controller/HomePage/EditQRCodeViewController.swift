@@ -107,13 +107,13 @@ class EditQRCodeViewController: UIViewController {
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
 
-        print("invNum", invNum)
-        print("encrypt", encrypt)
-        print("invYear", invYear)
-        print("invMonth", invMonth)
-        print("invDay", invDay)
-        print("randomNumber", randomNumber)
-        print("sellerID", sellerID)
+//        print("invNum", invNum)
+//        print("encrypt", encrypt)
+//        print("invYear", invYear)
+//        print("invMonth", invMonth)
+//        print("invDay", invDay)
+//        print("randomNumber", randomNumber)
+//        print("sellerID", sellerID)
     }
 
     // POST API and parse data

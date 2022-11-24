@@ -20,6 +20,7 @@ struct MyClaims: Claims {
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
     var userData = ""
+    var signedJWT: String = ""
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -42,22 +43,6 @@ class SignInViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         setupSignInUI()
-    }
-
-    // swiftlint: disable line_length
-    // gen JWT token
-    func makeSwiftJWT() {
-        let myHeader = Header(kid: APIKey.authKey)
-        let myClaims = MyClaims(iss: APIKey.teamID, sub: APIKey.bundleID, exp: Date(timeIntervalSinceNow: 12000), aud: "https://appleid.apple.com")
-        var myJWT = JWT(header: myHeader, claims: myClaims)
-        let privateKey = APIKey.privateKey
-        do {
-            let jwtSigner = JWTSigner.es256(privateKey: Data(privateKey.utf8))
-            let signedJWT = try myJWT.sign(using: jwtSigner)
-            print("=== get JWT", signedJWT)
-        } catch {
-            print("can not get JWT")
-        }
     }
 
     // 設定titleLabel constrains
@@ -103,11 +88,61 @@ class SignInViewController: UIViewController {
             print(error)
         }
     }
+
+    // swiftlint: disable line_length
+    // gen JWT token
+    func makeSwiftJWT() {
+        let myHeader = Header(kid: APIKey.authKey)
+        let myClaims = MyClaims(iss: APIKey.teamID, sub: APIKey.bundleID, exp: Date(timeIntervalSinceNow: 120), aud: "https://appleid.apple.com")
+        var myJWT = JWT(header: myHeader, claims: myClaims)
+        let privateKey = APIKey.privateKey
+        do {
+            let jwtSigner = JWTSigner.es256(privateKey: Data(privateKey.utf8))
+            signedJWT = try myJWT.sign(using: jwtSigner)
+            print("=== get JWT", signedJWT)
+        } catch {
+            print("can not get JWT")
+        }
+    }
 }
 
 extension SignInViewController: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         print("sign in failed")
+    }
+
+    // 取得refresh token，並存在keyChain裡
+    func getRefreshToken(codeString: String) {
+        let url = URL(string: "https://appleid.apple.com/auth/token?client_id=\(APIKey.bundleID)&client_secret=\(signedJWT)&grant_type=authorization_code&code=\(codeString)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "https://apple.com")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let task = URLSession.shared.dataTask(with: request) {(data, response, error) in
+            if let error = error {
+                print(fatalError("can not get refreshToken"))
+            }
+
+            guard let response = response as? HTTPURLResponse,
+                    response.statusCode == 200 else {
+                print("response error")
+                return
+            }
+
+            if let data = data {
+                let refreshToken = self.parseData(jsonData: data)
+                KeychainWrapper.standard.set(refreshToken?.refreshToken ?? "", forKey: "refreshToken")
+            }
+        }
+        task.resume()
+    }
+
+    func parseData(jsonData: Data) -> RefreshToken? {
+        do {
+            let result = try JSONDecoder().decode(RefreshToken.self, from: jsonData)
+            return result
+        } catch {
+            print("=== result error")
+            return nil
+        }
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
@@ -117,10 +152,10 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let firstName = credentials.fullName?.givenName
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
+            // authorizationCode每次登入都不一樣, ex. cb4ea06aa72c7454985548506dda2883a.0.rrsyu.J0e-UzcZTROUwW75Z_1Haw
             if let authorizationCode = credentials.authorizationCode,
                let codeString = String(data: authorizationCode, encoding: .utf8) {
-                // 每次登入都不一樣, ex. cb4ea06aa72c7454985548506dda2883a.0.rrsyu.J0e-UzcZTROUwW75Z_1Haw
-                print("===coddd", codeString)
+                getRefreshToken(codeString: codeString)
             }
 
             // first login
