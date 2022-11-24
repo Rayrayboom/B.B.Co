@@ -320,13 +320,14 @@ class CoBookViewController: UIViewController {
         }
     }
 
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    // 從firebase上刪除指定document，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(indexPathRow: Int) {
         let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id)
         documentRef.delete()
     }
 
+    // 從firebase上刪除document底下的subCollection，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificSubcollection(indexPathRow: Int, documentNum: Int) {
         let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id).collection("co_expenditure").document(bookDetail[documentNum].id)

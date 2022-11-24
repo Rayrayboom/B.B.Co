@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import FirebaseFirestore
 import SwiftKeychainWrapper
 import SwiftJWT
+import SwiftUI
 
 struct MyClaim: Claims {
     let iss: String
@@ -20,13 +22,22 @@ struct MyClaim: Claims {
 class MenuListTableViewController: UITableViewController {
     var items = ["支出種類", "收入種類", "帳戶種類", "登出 及 刪除帳號"]
     let darkColor = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
+    // 存keychain user id
+    var getId: String = ""
+    // 存keychain user name
     var getName: String = ""
     var alertController = UIAlertController()
     // 存JWT
     var signedJWT: String = ""
+    var group = DispatchGroup()
+    // 用來存現有的user
+    var bookContent: [Book] = []
+    // 用來存user name
+    var userName: [String] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
         getName = KeychainWrapper.standard.string(forKey: "name") ?? ""
         tableView.backgroundColor = darkColor
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "personalCell")
@@ -114,6 +125,12 @@ class MenuListTableViewController: UITableViewController {
             // 當選擇刪除帳號後讓使用者做最後確認alert
             let doubleCheckController = UIAlertController(title: "確定要刪除帳號嗎？", message: "刪除帳號後，個人及共同帳本之備份資料將會全部清除", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "確定", style: .destructive) { action in
+                // 刪除user底下所有的subCollection document
+                self.deleteAllSubCollectionDoc()
+                // 刪除co-account所有有關這個使用者的資料(但不刪除尚有其他user_id的帳本)
+                self.deleteCoAccoount()
+                // 刪除user document
+                self.deleteUser()
                 // 打revoke token API
                 self.removeAccount()
                 KeychainWrapper.standard.remove(forKey: "id")
@@ -182,6 +199,78 @@ class MenuListTableViewController: UITableViewController {
                 guard data != nil else { return }
             }
             task.resume()
+        }
+    }
+
+    // TODO: - 刪除個人（個人資訊+個人記帳細項）
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteUser() {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document(getId)
+        documentRef.delete()
+    }
+
+    // 刪除個人記帳單一subCollection底下所有的資料
+    func deleteSubCollectionDoc(subCollection: String) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document(getId).collection(subCollection)
+        documentRef.getDocuments { querySnapshot, error in
+            if let error = error {
+                print("Error getting documents: \(error)")
+            } else {
+                guard let querySnapshot = querySnapshot else {
+                    return
+                }
+                for document in querySnapshot.documents {
+                    print("=== this is documentID \(document.documentID)")
+                    document.reference.delete()
+                }
+            }
+        }
+    }
+
+    // 刪除個人記帳subcollection所有的資料
+    func deleteAllSubCollectionDoc() {
+        deleteSubCollectionDoc(subCollection: "expenditure")
+        deleteSubCollectionDoc(subCollection: "expenditure_category")
+        deleteSubCollectionDoc(subCollection: "revenue")
+        deleteSubCollectionDoc(subCollection: "revenue_category")
+        deleteSubCollectionDoc(subCollection: "account")
+        deleteSubCollectionDoc(subCollection: "account_category")
+    }
+
+    // TODO: - 刪除共同帳本（共同帳本付款者）
+    func deleteCoAccoount() {
+        bookContent = []
+        let dataBase = Firestore.firestore()
+        self.group.enter()
+        // 先搜尋co-account裡有哪些book包含getName(付款人-userName)
+        dataBase.collection("co-account").whereField("user_id", arrayContains: getName)
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let book = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Book.self)
+                }
+                self.bookContent.append(contentsOf: book)
+                print("=== is bookContent", self.bookContent)
+                self.group.leave()
+            }
+        group.notify(queue: .main) {
+            // 把有包含我的book用forEach一個一個找，如果user_id == 1表示我刪除帳號後這本帳本也就失效，因此連同帳本一併刪除; 若user_id超過一人，表示還有其他使用者在這本帳本裡，因此只執行把我自己從付款者裡移除
+            self.bookContent.forEach { item in
+                if item.userId.count == 1 {
+                    print("=== item.userId isEmpty")
+                    let documentRef = dataBase.collection("co-account").document(item.id)
+                    documentRef.delete()
+                } else {
+                    dataBase.collection("co-account")
+                        .document(item.id)
+                        .updateData(["user_id": FieldValue.arrayRemove([self.getName])])
+                    print("=== is item.userId", item.userId)
+                }
+            }
         }
     }
 }

@@ -93,7 +93,7 @@ class SignInViewController: UIViewController {
     // gen JWT token
     func makeSwiftJWT() {
         let myHeader = Header(kid: APIKey.authKey)
-        let myClaims = MyClaims(iss: APIKey.teamID, sub: APIKey.bundleID, exp: Date(timeIntervalSinceNow: 120), aud: "https://appleid.apple.com")
+        let myClaims = MyClaims(iss: APIKey.teamID, sub: APIKey.bundleID, exp: Date(timeIntervalSinceNow: 12000), aud: "https://appleid.apple.com")
         var myJWT = JWT(header: myHeader, claims: myClaims)
         let privateKey = APIKey.privateKey
         do {
