@@ -8,10 +8,20 @@ import AuthenticationServices
 import UIKit
 import FirebaseFirestore
 import SwiftKeychainWrapper
+import SwiftJWT
+
+struct MyClaims: Claims {
+    let iss: String
+    let sub: String
+    let exp: Date
+    let admin: Bool
+}
 
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
     var userData = ""
+//    let publicKeyPath = URL(fileURLWithPath: getAbsolutePath(relativePath: "/path/to/publicKey.key"))
+//    let publicKey: Data = try Data(contentsOf: publicKeyPath, options: .alwaysMapped)
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -35,6 +45,19 @@ class SignInViewController: UIViewController {
         super.viewDidLayoutSubviews()
         setupSignInUI()
     }
+    
+//    func makeSwiftJWT() {
+//        var myClaims = MyClaims(iss: "Kitura", sub: "John", exp: Date(timeIntervalSinceNow: 12000), admin: true)
+//        let myJWT = JWT<T: Claims>(jwtString: """
+//            -----BEGIN PRIVATE KEY-----
+//            MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgHyu4ltKkDoyt7rv8tQRMKkBU5ms7L/o0YP0gDGwz/WKgCgYIKoZIzj0DAQehRANCAAT+CpJ6M3nPqBsj9N5pMzJTtF7hjLYu03wzvUixVILV/lcb3p67pzDffF0E+sYTPxzvD94MqV2jQE7jnWC9E0o8
+//            -----END PRIVATE KEY-----
+//            """)
+//        let privateKeyPath = URL(fileURLWithPath: "Desktop/test/AuthKey_2V6A2M9LWQ.p8")
+//        let privateKey: Data = try Data(contentsOf: privateKeyPath, options: .alwaysMapped)
+//        let jwtSigner = JWTSigner.rs256(privateKey: privateKey)
+//        let signedJWT = try myJWT.sign(using: jwtSigner)
+//    }
 
     // 設定pieTableView constrains
     func setupSignInUI() {
@@ -78,19 +101,30 @@ class SignInViewController: UIViewController {
         }
     }
 
-    // 確認user是否為第一次登入
-//    func checkUserAccount(id: String) {
-//        let dataBase = Firestore.firestore()
-//        let docRef = dataBase.collection("user").document(id)
+//    function makeJWT() {
 //
-//        docRef.getDocument { (document, error) in
-//            if let document = document, document.exists {
-//                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-//                print("Document data: \(dataDescription)")
-//            } else {
-//                print("Document does not exist")
-//            }
-//        }
+//        const jwt = require('jsonwebtoken')
+//        const fs = require('fs')
+//
+//        // Path to download key file from developer.apple.com/account/resources/authkeys/list
+//        let privateKey = fs.readFileSync('AuthKey_2V6A2M9LWQ.p8');
+//
+//        //Sign with your team ID and key ID information.
+//        let token = jwt.sign({
+//        iss: 'LSR93VH6VG',
+//        iat: Math.floor(Date.now() / 1000),
+//        exp: Math.floor(Date.now() / 1000) + 120,
+//        aud: 'https://appleid.apple.com',
+//        sub: 'com.ray.BreadAndBacon-CoAccounting'
+//
+//        }, privateKey, {
+//        algorithm: 'ES256',
+//        header: {
+//        alg: 'ES256',
+//        kid: '2V6A2M9LWQ',
+//        } });
+//
+//        return token;
 //    }
 }
 
@@ -106,6 +140,11 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let firstName = credentials.fullName?.givenName
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
+            if let authorizationCode = credentials.authorizationCode,
+               let codeString = String(data: authorizationCode, encoding: .utf8) {
+                // 每次登入都不一樣, ex. cb4ea06aa72c7454985548506dda2883a.0.rrsyu.J0e-UzcZTROUwW75Z_1Haw
+                print("===coddd", codeString)
+            }
 
             // first login
             if let firstName = firstName, let lastName = lastName {

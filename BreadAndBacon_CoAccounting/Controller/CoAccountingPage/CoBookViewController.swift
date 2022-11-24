@@ -139,8 +139,6 @@ class CoBookViewController: UIViewController {
         let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
             self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
-            // success alert animation
-            SPAlert.successAlert()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -197,20 +195,33 @@ class CoBookViewController: UIViewController {
         let dataBase = Firestore.firestore()
         dataBase.collection(collection)
             .whereField(field, isEqualTo: inputID)
-            .getDocuments { snapshot, error in
-                if let error = error {
-                    print("輸入錯誤")
-                }
-
+            .getDocuments { [weak self] snapshot, error in
+                guard let self = self else { return }
                 guard let snapshot = snapshot else {
                     return
                 }
-                let book = snapshot.documents.compactMap { snapshot in
+                var book = snapshot.documents.compactMap { snapshot in
                     try? snapshot.data(as: Book.self)
                 }
-                self.specificBook.append(contentsOf: book)
-                self.updateUserToBook(bookIdentifier: self.specificBook[0].id)
-                print("I find the document \(self.specificBook)")
+
+                // error handle，輸入book ID錯誤時，跳出提醒視窗
+                if book.isEmpty {
+                    self.controller = UIAlertController(title: "book ID 錯誤", message: "沒有這本帳本哦，請再輸入一次", preferredStyle: .alert)
+                    // 建立[確認]按鈕
+                    let okAction = UIAlertAction(
+                        title: "我知道了",
+                        style: .default, handler: nil)
+                    self.controller.addAction(okAction)
+                    // 顯示提示框
+                    self.present(self.controller, animated: true, completion: nil)
+                } else {
+                    // book ID輸入正確的話就執行updateUserToBook func
+                    self.specificBook.append(contentsOf: book)
+                    self.updateUserToBook(bookIdentifier: self.specificBook[0].id)
+                    // success alert animation
+                    SPAlert.successAlert()
+                    print("I find the document \(self.specificBook)")
+                }
             }
     }
 

@@ -16,4 +16,5 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'IQKeyboardManagerSwift'
 	pod 'lottie-ios'
 	pod 'SPAlert'
+	pod 'SwiftJWT'
 end
