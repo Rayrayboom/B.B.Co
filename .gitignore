@@ -168,4 +168,4 @@ Dependencies/
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,xcode,objective-c,macos
 GoogleService-Info.plist
-
+APIKey.swift

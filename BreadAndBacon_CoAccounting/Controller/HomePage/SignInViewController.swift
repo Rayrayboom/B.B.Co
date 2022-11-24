@@ -14,14 +14,12 @@ struct MyClaims: Claims {
     let iss: String
     let sub: String
     let exp: Date
-    let admin: Bool
+    let aud: String
 }
 
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
     var userData = ""
-//    let publicKeyPath = URL(fileURLWithPath: getAbsolutePath(relativePath: "/path/to/publicKey.key"))
-//    let publicKey: Data = try Data(contentsOf: publicKeyPath, options: .alwaysMapped)
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -45,35 +43,40 @@ class SignInViewController: UIViewController {
         super.viewDidLayoutSubviews()
         setupSignInUI()
     }
-    
-//    func makeSwiftJWT() {
-//        var myClaims = MyClaims(iss: "Kitura", sub: "John", exp: Date(timeIntervalSinceNow: 12000), admin: true)
-//        let myJWT = JWT<T: Claims>(jwtString: """
-//            -----BEGIN PRIVATE KEY-----
-//            MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgHyu4ltKkDoyt7rv8tQRMKkBU5ms7L/o0YP0gDGwz/WKgCgYIKoZIzj0DAQehRANCAAT+CpJ6M3nPqBsj9N5pMzJTtF7hjLYu03wzvUixVILV/lcb3p67pzDffF0E+sYTPxzvD94MqV2jQE7jnWC9E0o8
-//            -----END PRIVATE KEY-----
-//            """)
-//        let privateKeyPath = URL(fileURLWithPath: "Desktop/test/AuthKey_2V6A2M9LWQ.p8")
-//        let privateKey: Data = try Data(contentsOf: privateKeyPath, options: .alwaysMapped)
-//        let jwtSigner = JWTSigner.rs256(privateKey: privateKey)
-//        let signedJWT = try myJWT.sign(using: jwtSigner)
-//    }
 
-    // 設定pieTableView constrains
+    // swiftlint: disable line_length
+    // gen JWT token
+    func makeSwiftJWT() {
+        let myHeader = Header(kid: APIKey.authKey)
+        let myClaims = MyClaims(iss: APIKey.teamID, sub: APIKey.bundleID, exp: Date(timeIntervalSinceNow: 12000), aud: "https://appleid.apple.com")
+        var myJWT = JWT(header: myHeader, claims: myClaims)
+        let privateKey = APIKey.privateKey
+        do {
+            let jwtSigner = JWTSigner.es256(privateKey: Data(privateKey.utf8))
+            let signedJWT = try myJWT.sign(using: jwtSigner)
+            print("=== get JWT", signedJWT)
+        } catch {
+            print("can not get JWT")
+        }
+    }
+
+    // 設定titleLabel constrains
     func setupSignInUI() {
         titleLabel.text = "登入，為個人、共同帳本啟用同步和備份 功能"
         titleLabel.textColor = .lightGray
         signInButton.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
-            signInButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 50),
+            signInButton.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 550),
             signInButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50),
             signInButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50),
-            signInButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -300)
+            signInButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -250)
         ])
     }
 
-
     @objc func didTapSignIn() {
+        // 按下登入時取得JWT token
+        makeSwiftJWT()
         let provider = ASAuthorizationAppleIDProvider()
         let request = provider.createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -100,32 +103,6 @@ class SignInViewController: UIViewController {
             print(error)
         }
     }
-
-//    function makeJWT() {
-//
-//        const jwt = require('jsonwebtoken')
-//        const fs = require('fs')
-//
-//        // Path to download key file from developer.apple.com/account/resources/authkeys/list
-//        let privateKey = fs.readFileSync('AuthKey_2V6A2M9LWQ.p8');
-//
-//        //Sign with your team ID and key ID information.
-//        let token = jwt.sign({
-//        iss: 'LSR93VH6VG',
-//        iat: Math.floor(Date.now() / 1000),
-//        exp: Math.floor(Date.now() / 1000) + 120,
-//        aud: 'https://appleid.apple.com',
-//        sub: 'com.ray.BreadAndBacon-CoAccounting'
-//
-//        }, privateKey, {
-//        algorithm: 'ES256',
-//        header: {
-//        alg: 'ES256',
-//        kid: '2V6A2M9LWQ',
-//        } });
-//
-//        return token;
-//    }
 }
 
 extension SignInViewController: ASAuthorizationControllerDelegate {
