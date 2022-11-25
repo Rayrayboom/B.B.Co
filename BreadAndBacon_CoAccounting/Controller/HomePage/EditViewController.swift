@@ -126,6 +126,7 @@ class EditViewController: UIViewController {
         fetchUser(id: getId, subCollection: "expenditure")
         fetchUser(id: getId, subCollection: "revenue")
         fetchUser(id: getId, subCollection: "account")
+        // 在homeVC點選指定data時，一進來edit頁面要先把對應的image值塞到categoryImage，才能讓使用者即使不做任何編輯做存檔後也可以拿到該筆image
         editData.categoryImageName = data?.categoryImage ?? ""
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
@@ -234,6 +235,7 @@ class EditViewController: UIViewController {
         // 進入group
         self.group.enter()
         dataBase.collection("user/\(id)/\(subCollection)").document("\(documentID)").updateData([
+            // 按下編輯按鈕時塞值
             "date": BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
             "amount": editData.amountTextField,
             "category": editData.categoryTextField,
@@ -330,6 +332,7 @@ extension EditViewController: UITableViewDataSource {
             // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
             switch indexPath.row {
             case 0:
+                // 把金額cell先清空image
                 editDataCell.chooseImage.image = nil
                 // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                 if messageFromQRVC != "" {
@@ -363,13 +366,13 @@ extension EditViewController: UITableViewDataSource {
                     editDataCell.contentTextField.text = self.data?.account
                 }
             default:
+                // 把金額cell先清空image
+                editDataCell.chooseImage.image = nil
                 editDataCell.content = accountContent
                 editData.accountTextField = self.data?.account ?? ""
                 editDataCell.contentTextField.text = self.data?.account
             }
 
-            // 測試從homeVC抓到傳過來的資料
-//            print("datadatadatadatadata\(self.data)")
             // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
             editDataCell.contentTextField.inputView = nil
             editDataCell.indexPath = indexPath

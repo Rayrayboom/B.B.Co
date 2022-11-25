@@ -446,18 +446,18 @@ extension AddNewDataViewController: UITableViewDataSource {
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
+                case 0:
+                    addDataCell.contentTextField.text = ""
                 case 1:
+                    addDataCell.contentTextField.text = ""
                     switch segmentTag {
                     case 0:
-                        addDataCell.contentTextField.text = ""
                         addDataCell.content = costContent
                         addDataCell.imageArr = costImageArr
                     case 1:
-                        addDataCell.contentTextField.text = ""
                         addDataCell.content = incomeContent
                         addDataCell.imageArr = incomeImageArr
                     default:
-                        addDataCell.contentTextField.text = ""
                         addDataCell.content = accountContent
                     }
                 default:
@@ -548,7 +548,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                         }
                         addDataCell.contentTextField.text = String(amo)
                     }
-                    
                 case 1:
                     addDataCell.contentTextField.text = ""
                     addDataCell.contentTextField.text = data.categoryTextField
@@ -566,6 +565,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                         addDataCell.content = accountContent
                     }
                 default:
+                    addDataCell.contentTextField.text = ""
                     addDataCell.content = accountContent
                 }
 
