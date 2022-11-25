@@ -53,13 +53,13 @@ class EditViewController: UIViewController {
         }
     }
     // 存cost image的資料
-    var costImageArr = [UIImage(named: "Home 2"),
-                    UIImage(named: "Add_coData"),
-                    UIImage(named: "Cancel"),
-                    UIImage(named: "Accounting_book")]
+    var costImageArr = [UIImage(named: "Breakfast"),
+                        UIImage(named: "Lunch"),
+                        UIImage(named: "Lunch 2"),
+                        UIImage(named: "Dinner")]
     // 存income image的資料
-    var incomeImageArr = [UIImage(named: "Add-clicked"),
-                    UIImage(named: "Add-unclicked")]
+    var incomeImageArr = [UIImage(named: "Entertainment"),
+                          UIImage(named: "Transportation")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?

@@ -61,13 +61,13 @@ class AddNewDataViewController: UIViewController {
         }
     }
     // 存cost image的資料
-    var costImageArr = [UIImage(named: "Home 2"),
-                    UIImage(named: "Add_coData"),
-                    UIImage(named: "Cancel"),
-                    UIImage(named: "Accounting_book")]
+    var costImageArr = [UIImage(named: "Breakfast"),
+                        UIImage(named: "Lunch"),
+                        UIImage(named: "Lunch 2"),
+                        UIImage(named: "Dinner")]
     // 存income image的資料
-    var incomeImageArr = [UIImage(named: "Add-clicked"),
-                    UIImage(named: "Add-unclicked")]
+    var incomeImageArr = [UIImage(named: "Entertainment"),
+                          UIImage(named: "Transportation")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
@@ -127,15 +127,19 @@ class AddNewDataViewController: UIViewController {
         // 使用者登入後就可以抓到存在keyChain裡的user id
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
 
-        // 存images
-        models.append(Model(text: "飲食", imageName: "Home 2"))
-        models.append(Model(text: "交通", imageName: "Pencil_original"))
-        models.append(Model(text: "日常", imageName: "Pie_unclicked"))
-        models.append(Model(text: "醫療", imageName: "Add_coData"))
-        models.append(Model(text: "飲食", imageName: "Home 2"))
-        models.append(Model(text: "交通", imageName: "Pencil_original"))
-        models.append(Model(text: "日常", imageName: "Pie_unclicked"))
-        models.append(Model(text: "醫療", imageName: "Add_coData"))
+        // 存images(暫時)
+        models.append(Model(text: "早餐", imageName: "Breakfast"))
+        models.append(Model(text: "午餐", imageName: "Lunch"))
+        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+        models.append(Model(text: "晚餐", imageName: "Dinner"))
+        models.append(Model(text: "交通", imageName: "Transportation"))
+        models.append(Model(text: "娛樂", imageName: "Entertainment"))
+        models.append(Model(text: "早餐", imageName: "Breakfast"))
+        models.append(Model(text: "午餐", imageName: "Lunch"))
+        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+        models.append(Model(text: "晚餐", imageName: "Dinner"))
+        models.append(Model(text: "交通", imageName: "Transportation"))
+        models.append(Model(text: "娛樂", imageName: "Entertainment"))
 
         // 註冊image tableView cell
         addNewDadaTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
