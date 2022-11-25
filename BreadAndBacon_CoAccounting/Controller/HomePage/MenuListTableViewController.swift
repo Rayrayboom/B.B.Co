@@ -10,6 +10,7 @@ import FirebaseFirestore
 import SwiftKeychainWrapper
 import SwiftJWT
 import SwiftUI
+import SafariServices
 
 struct MyClaim: Claims {
     let iss: String
@@ -20,7 +21,7 @@ struct MyClaim: Claims {
 
 // 建立side menu tableView
 class MenuListTableViewController: UITableViewController {
-    var items = ["支出種類", "收入種類", "帳戶種類", "登出 及 刪除帳號"]
+    var items = ["支出種類", "收入種類", "帳戶種類", "隱私權條款", "登出 及 刪除帳號"]
     let darkColor = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
     // 存keychain user id
     var getId: String = ""
@@ -85,7 +86,11 @@ class MenuListTableViewController: UITableViewController {
             print("side menu")
         default:
             switch indexPath.row {
-            case 3: // sign out
+            case 3:
+                let url = URL(string: "https://www.privacypolicies.com/live/afdd5967-51cf-4eb1-bd6f-673fbcf68ccb")
+                let controller = SFSafariViewController(url: url!)
+                present(controller, animated: true)
+            case 4: // sign out and delete account
                 signOutAlert()
             default: // category list
                 // 先指定storyboard(避免self.storyboard為nil的狀況)

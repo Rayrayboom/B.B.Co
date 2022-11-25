@@ -176,6 +176,7 @@ class AddNewDataViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
+        addNewDadaTableView.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
         view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
 
 // MARK: - TODO: 月曆優化（待處理）
@@ -423,6 +424,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                dateCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
 
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
@@ -434,6 +436,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create imageCell")
                 }
+//                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 imageCell.configure(with: models)
 
                 return imageCell
@@ -443,6 +446,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                addDataCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
@@ -483,6 +487,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                qrCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
@@ -492,6 +497,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                detailCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 // 轉帳頁面不需掃描發票，故給空值
                 detailCell.detailTextView.text = ""
                 detailCell.delegate = self
@@ -504,6 +510,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                dateCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 dateCell.delegate = self
                 if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date {
                     let current = BBCDateFormatter.shareFormatter.string(from: dateFromVC)
@@ -524,6 +531,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create imageCell")
                 }
+//                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 imageCell.configure(with: models)
 
                 return imageCell
@@ -533,6 +541,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                addDataCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
 
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
@@ -584,6 +593,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                qrCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 // 支出、收入要顯示QRCode scanner
                 qrCell.qrButton.isHidden = false
                 return qrCell
@@ -593,6 +603,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+//                detailCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
                 // 切換不同頁面時，detail要先清空
                 detailCell.detailTextView.text = ""
                 // 存放invoice的string在fetch data之前要先清空
