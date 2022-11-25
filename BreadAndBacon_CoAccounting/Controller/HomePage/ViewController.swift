@@ -269,7 +269,12 @@ extension ViewController: UITableViewDataSource {
         homeDetailCell.categoryImage.image = image
         homeDetailCell.nameLabel.text = data[indexPath.row].category
         homeDetailCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
-        homeDetailCell.detailLabel.text = data[indexPath.row].detail
+        switch data[indexPath.row].sourceAccountId {
+        case nil:
+            homeDetailCell.detailLabel.text = data[indexPath.row].detail
+        default:
+            homeDetailCell.detailLabel.text = data[indexPath.row].account
+        }
 
         return homeDetailCell
     }

@@ -127,7 +127,7 @@ class AddNewDataViewController: UIViewController {
         // 使用者登入後就可以抓到存在keyChain裡的user id
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
 
-        // 存images(暫時)
+        // 測試存images(暫時) for tableView with collectionView
         models.append(Model(text: "早餐", imageName: "Breakfast"))
         models.append(Model(text: "午餐", imageName: "Lunch"))
         models.append(Model(text: "午餐", imageName: "Lunch 2"))
@@ -347,12 +347,6 @@ class AddNewDataViewController: UIViewController {
                 }
             }
     }
-
-    func getDataFromHomeVC() {
-        guard let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "homeVC") as? ViewController else {
-            fatalError("can not find homeVC")
-        }
-    }
 }
 
 extension AddNewDataViewController: UITableViewDelegate {
@@ -387,7 +381,11 @@ extension AddNewDataViewController: UITableViewDataSource {
         case 2:
             return costCategory.count
         case 3:
-            return 1
+            if segmentTag == 2 {
+                return 0
+            } else {
+                return 1
+            }
         default:
             return 1
         }
@@ -403,7 +401,7 @@ extension AddNewDataViewController: UITableViewDataSource {
             return "選擇細項"
         case 3:
             if segmentTag == 2 {
-                return ""
+                return nil
             } else {
                 return "使用QRCode掃描發票"
             }
@@ -447,20 +445,26 @@ extension AddNewDataViewController: UITableViewDataSource {
                 case 1:
                     switch segmentTag {
                     case 0:
+                        addDataCell.contentTextField.text = ""
                         addDataCell.content = costContent
                         addDataCell.imageArr = costImageArr
                     case 1:
+                        addDataCell.contentTextField.text = ""
                         addDataCell.content = incomeContent
                         addDataCell.imageArr = incomeImageArr
                     default:
+                        addDataCell.contentTextField.text = ""
                         addDataCell.content = accountContent
                     }
                 default:
+                    addDataCell.contentTextField.text = ""
                     addDataCell.content = accountContent
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
+                // 切換segment時，清除已選圖案
+                addDataCell.chooseImage.image = nil
                 addDataCell.indexPath = indexPath
                 addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
@@ -530,6 +534,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
+                    addDataCell.contentTextField.text = ""
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                     if messageFromQRVC != "" {
                         var amo = 0
@@ -537,29 +542,30 @@ extension AddNewDataViewController: UITableViewDataSource {
                             amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
                         }
                         addDataCell.contentTextField.text = String(amo)
-                        print("aaaaaa", amo)
                     }
                 case 1:
                     switch segmentTag {
                     case 0:
-                        addDataCell.content = costContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.content = costContent
                         addDataCell.imageArr = costImageArr
                     case 1:
-                        addDataCell.content = incomeContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.content = incomeContent
                         addDataCell.imageArr = incomeImageArr
                     default:
-                        addDataCell.content = accountContent
                         addDataCell.contentTextField.text = ""
+                        addDataCell.content = accountContent
                     }
                 default:
-                    addDataCell.content = accountContent
                     addDataCell.contentTextField.text = ""
+                    addDataCell.content = accountContent
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
+                // 切換segment時，清除已選圖案
+                addDataCell.chooseImage.image = nil
                 addDataCell.indexPath = indexPath
                 addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
@@ -582,6 +588,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                // 切換不同頁面時，detail要先清空
+                detailCell.detailTextView.text = ""
                 // 存放invoice的string在fetch data之前要先清空
                 items = ""
                 // 把message的值塞給detailTextView

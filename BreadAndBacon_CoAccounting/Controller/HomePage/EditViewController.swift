@@ -329,6 +329,7 @@ extension EditViewController: UITableViewDataSource {
             // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
             switch indexPath.row {
             case 0:
+                editDataCell.chooseImage.image = nil
                 // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                 if messageFromQRVC != "" {
                     var amo = 0
