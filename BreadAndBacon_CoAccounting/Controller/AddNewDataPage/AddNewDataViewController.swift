@@ -589,7 +589,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 // 切換不同頁面時，detail要先清空
-                detailCell.detailTextView.text = ""
+//                detailCell.detailTextView.text = ""
                 // 存放invoice的string在fetch data之前要先清空
                 items = ""
                 // 把message的值塞給detailTextView
@@ -599,6 +599,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     }
                     items.append("\(invoice.details[item].detailDescription)\n")
                     detailCell.detailTextView.text = items
+                    print("=== detailCell.detailTextView.text", detailCell.detailTextView.text)
                 }
 
                 detailCell.delegate = self

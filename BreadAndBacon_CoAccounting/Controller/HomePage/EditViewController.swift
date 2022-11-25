@@ -337,7 +337,6 @@ extension EditViewController: UITableViewDataSource {
                         amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
                     }
                     editDataCell.contentTextField.text = String(amo)
-                    print("aaaaaa", amo)
                 } else {
                     editData.amountTextField = self.data?.amount ?? ""
                     editDataCell.contentTextField.text = self.data?.amount
@@ -491,7 +490,7 @@ extension EditViewController: EditDetailTableViewCellDelegate {
 // QRCode text from QRCodeVC
 extension EditViewController: EditQRCodeViewControllerDelegate {
     func getMessage(message: String) {
-        print("wwwww??")
+        print("wwwww??", message)
         messageFromQRVC = message
     }
 

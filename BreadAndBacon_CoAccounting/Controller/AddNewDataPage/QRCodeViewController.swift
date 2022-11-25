@@ -110,13 +110,13 @@ class QRCodeViewController: UIViewController {
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
 
-//        print("invNum", invNum)
-//        print("encrypt", encrypt)
-//        print("invYear", invYear)
-//        print("invMonth", invMonth)
-//        print("invDay", invDay)
-//        print("randomNumber", randomNumber)
-//        print("sellerID", sellerID)
+        print("invNum", invNum)
+        print("encrypt", encrypt)
+        print("invYear", invYear)
+        print("invMonth", invMonth)
+        print("invDay", invDay)
+        print("randomNumber", randomNumber)
+        print("sellerID", sellerID)
     }
 
     // POST API and parse data
@@ -127,7 +127,7 @@ class QRCodeViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if let error = error {
                 self.delegate?.getInvDetail(didFailwith: error)
-                print(error)
+                print("=== error嗎", error)
                 return
             }
 
@@ -140,6 +140,7 @@ class QRCodeViewController: UIViewController {
             if let data = data {
                 if let detail = self.parseData(jsonData: data) {
                     self.delegate?.getInvDetail(didGet: detail)
+                    print("=== data嗎", data)
                 }
             }
         })
@@ -150,7 +151,7 @@ class QRCodeViewController: UIViewController {
         do {
             let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
             // 測試看是否有抓到資料
-            print("=== result is \(jsonData)")
+            print("=== QR result is \(jsonData)")
             return result
         } catch {
             delegate?.getInvDetail(didFailwith: error)
