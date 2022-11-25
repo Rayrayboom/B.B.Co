@@ -61,13 +61,13 @@ class AddNewDataViewController: UIViewController {
         }
     }
     // 存cost image的資料
-    var costImageArr = [UIImage(named: "Home 2"),
-                    UIImage(named: "Add_coData"),
-                    UIImage(named: "Cancel"),
-                    UIImage(named: "Accounting_book")]
+    var costImageArr = [UIImage(named: "Breakfast"),
+                        UIImage(named: "Lunch"),
+                        UIImage(named: "Lunch 2"),
+                        UIImage(named: "Dinner")]
     // 存income image的資料
-    var incomeImageArr = [UIImage(named: "Add-clicked"),
-                    UIImage(named: "Add-unclicked")]
+    var incomeImageArr = [UIImage(named: "Entertainment"),
+                          UIImage(named: "Transportation")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
@@ -127,15 +127,19 @@ class AddNewDataViewController: UIViewController {
         // 使用者登入後就可以抓到存在keyChain裡的user id
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
 
-        // 存images
-        models.append(Model(text: "飲食", imageName: "Home 2"))
-        models.append(Model(text: "交通", imageName: "Pencil_original"))
-        models.append(Model(text: "日常", imageName: "Pie_unclicked"))
-        models.append(Model(text: "醫療", imageName: "Add_coData"))
-        models.append(Model(text: "飲食", imageName: "Home 2"))
-        models.append(Model(text: "交通", imageName: "Pencil_original"))
-        models.append(Model(text: "日常", imageName: "Pie_unclicked"))
-        models.append(Model(text: "醫療", imageName: "Add_coData"))
+        // 測試存images(暫時) for tableView with collectionView
+        models.append(Model(text: "早餐", imageName: "Breakfast"))
+        models.append(Model(text: "午餐", imageName: "Lunch"))
+        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+        models.append(Model(text: "晚餐", imageName: "Dinner"))
+        models.append(Model(text: "交通", imageName: "Transportation"))
+        models.append(Model(text: "娛樂", imageName: "Entertainment"))
+        models.append(Model(text: "早餐", imageName: "Breakfast"))
+        models.append(Model(text: "午餐", imageName: "Lunch"))
+        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+        models.append(Model(text: "晚餐", imageName: "Dinner"))
+        models.append(Model(text: "交通", imageName: "Transportation"))
+        models.append(Model(text: "娛樂", imageName: "Entertainment"))
 
         // 註冊image tableView cell
         addNewDadaTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
@@ -206,6 +210,10 @@ class AddNewDataViewController: UIViewController {
         default:
             sourceSegmentControl.selectedSegmentTintColor = .systemYellow
         }
+        data.amountTextField = ""
+        data.categoryTextField = ""
+        data.accountTextField = ""
+        data.categoryImageName = ""
         addNewDadaTableView.reloadData()
     }
 
@@ -343,12 +351,6 @@ class AddNewDataViewController: UIViewController {
                 }
             }
     }
-
-    func getDataFromHomeVC() {
-        guard let homeVC = self.storyboard?.instantiateViewController(withIdentifier: "homeVC") as? ViewController else {
-            fatalError("can not find homeVC")
-        }
-    }
 }
 
 extension AddNewDataViewController: UITableViewDelegate {
@@ -383,7 +385,11 @@ extension AddNewDataViewController: UITableViewDataSource {
         case 2:
             return costCategory.count
         case 3:
-            return 1
+            if segmentTag == 2 {
+                return 0
+            } else {
+                return 1
+            }
         default:
             return 1
         }
@@ -399,7 +405,7 @@ extension AddNewDataViewController: UITableViewDataSource {
             return "選擇細項"
         case 3:
             if segmentTag == 2 {
-                return ""
+                return nil
             } else {
                 return "使用QRCode掃描發票"
             }
@@ -440,7 +446,10 @@ extension AddNewDataViewController: UITableViewDataSource {
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
+                case 0:
+                    addDataCell.contentTextField.text = ""
                 case 1:
+                    addDataCell.contentTextField.text = ""
                     switch segmentTag {
                     case 0:
                         addDataCell.content = costContent
@@ -452,11 +461,14 @@ extension AddNewDataViewController: UITableViewDataSource {
                         addDataCell.content = accountContent
                     }
                 default:
+                    addDataCell.contentTextField.text = ""
                     addDataCell.content = accountContent
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
+                // 切換segment時，清除已選圖案
+                addDataCell.chooseImage.image = nil
                 addDataCell.indexPath = indexPath
                 addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
@@ -526,6 +538,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
+                    addDataCell.contentTextField.text = ""
+                    addDataCell.contentTextField.text = data.amountTextField
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                     if messageFromQRVC != "" {
                         var amo = 0
@@ -533,25 +547,26 @@ extension AddNewDataViewController: UITableViewDataSource {
                             amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
                         }
                         addDataCell.contentTextField.text = String(amo)
-                        print("aaaaaa", amo)
                     }
                 case 1:
+                    addDataCell.contentTextField.text = ""
+                    addDataCell.contentTextField.text = data.categoryTextField
+                    // 切換segment時，清除已選圖案
+                    addDataCell.chooseImage.image = nil
+                    addDataCell.chooseImage.image = data.categoryImageName.toImage()
                     switch segmentTag {
                     case 0:
                         addDataCell.content = costContent
-                        addDataCell.contentTextField.text = ""
                         addDataCell.imageArr = costImageArr
                     case 1:
                         addDataCell.content = incomeContent
-                        addDataCell.contentTextField.text = ""
                         addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
-                        addDataCell.contentTextField.text = ""
                     }
                 default:
-                    addDataCell.content = accountContent
                     addDataCell.contentTextField.text = ""
+                    addDataCell.content = accountContent
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
@@ -578,6 +593,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                // 切換不同頁面時，detail要先清空
+                detailCell.detailTextView.text = ""
                 // 存放invoice的string在fetch data之前要先清空
                 items = ""
                 // 把message的值塞給detailTextView
@@ -587,6 +604,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     }
                     items.append("\(invoice.details[item].detailDescription)\n")
                     detailCell.detailTextView.text = items
+                    print("=== detailCell.detailTextView.text", detailCell.detailTextView.text)
                 }
 
                 detailCell.delegate = self

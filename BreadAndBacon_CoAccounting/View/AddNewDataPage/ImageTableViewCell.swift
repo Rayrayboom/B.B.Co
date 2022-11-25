@@ -18,7 +18,7 @@ class ImageTableViewCell: UITableViewCell {
         self.models = models
         imageCollectionView.reloadData()
     }
-    
+
     @IBOutlet weak var imageCollectionView: UICollectionView!
 
     override func awakeFromNib() {
@@ -31,7 +31,6 @@ class ImageTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
     }
 }
 
@@ -45,7 +44,7 @@ extension ImageTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return models.count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let imageCollectionCell = collectionView.dequeueReusableCell(
             withReuseIdentifier: ImageCollectionViewCell.identifier, for: indexPath) as? ImageCollectionViewCell
@@ -53,7 +52,7 @@ extension ImageTableViewCell: UICollectionViewDataSource {
             fatalError("can not create imageCollectionCell")
         }
         imageCollectionCell.configure(with: models[indexPath.row])
-        
+
         return imageCollectionCell
     }
 }

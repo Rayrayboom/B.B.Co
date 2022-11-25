@@ -139,8 +139,6 @@ class CoBookViewController: UIViewController {
         let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
             self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
-            // success alert animation
-            SPAlert.successAlert()
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -197,20 +195,33 @@ class CoBookViewController: UIViewController {
         let dataBase = Firestore.firestore()
         dataBase.collection(collection)
             .whereField(field, isEqualTo: inputID)
-            .getDocuments { snapshot, error in
-                if let error = error {
-                    print("輸入錯誤")
-                }
-
+            .getDocuments { [weak self] snapshot, error in
+                guard let self = self else { return }
                 guard let snapshot = snapshot else {
                     return
                 }
-                let book = snapshot.documents.compactMap { snapshot in
+                var book = snapshot.documents.compactMap { snapshot in
                     try? snapshot.data(as: Book.self)
                 }
-                self.specificBook.append(contentsOf: book)
-                self.updateUserToBook(bookIdentifier: self.specificBook[0].id)
-                print("I find the document \(self.specificBook)")
+
+                // error handle，輸入book ID錯誤時，跳出提醒視窗
+                if book.isEmpty {
+                    self.controller = UIAlertController(title: "book ID 錯誤", message: "沒有這本帳本哦，請再輸入一次", preferredStyle: .alert)
+                    // 建立[確認]按鈕
+                    let okAction = UIAlertAction(
+                        title: "我知道了",
+                        style: .default, handler: nil)
+                    self.controller.addAction(okAction)
+                    // 顯示提示框
+                    self.present(self.controller, animated: true, completion: nil)
+                } else {
+                    // book ID輸入正確的話就執行updateUserToBook func
+                    self.specificBook.append(contentsOf: book)
+                    self.updateUserToBook(bookIdentifier: self.specificBook[0].id)
+                    // success alert animation
+                    SPAlert.successAlert()
+                    print("I find the document \(self.specificBook)")
+                }
             }
     }
 
@@ -245,6 +256,25 @@ class CoBookViewController: UIViewController {
                 }
                 self.data.append(contentsOf: book)
                 print("book here \(self.data)")
+            }
+    }
+
+    // 從Firebase上fetch對應book的detail資料
+    func fetchBookDetail(document: String, subCollection: String) {
+        bookDetail = []
+        let dataBase = Firestore.firestore()
+        self.group.enter()
+        dataBase.collection("co-account/\(document)/\(subCollection)")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                self.bookDetail.append(contentsOf: account)
+                print("book datail here \(self.data)")
+                self.group.leave()
             }
     }
 
@@ -290,10 +320,17 @@ class CoBookViewController: UIViewController {
         }
     }
 
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    // 從firebase上刪除指定document，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(indexPathRow: Int) {
         let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id)
+        documentRef.delete()
+    }
+
+    // 從firebase上刪除document底下的subCollection，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificSubcollection(indexPathRow: Int, documentNum: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id).collection("co_expenditure").document(bookDetail[documentNum].id)
         documentRef.delete()
     }
 }
@@ -318,8 +355,17 @@ extension CoBookViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                self.deleteSpecificData(indexPathRow: indexPath.row)
-                self.fetchCoBook()
+                self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: "co_expenditure")
+                self.group.notify(queue: .main) {
+                    // 先把subcollection裡面的document一筆一筆刪除
+                    for num in 0..<self.bookDetail.count {
+                        self.deleteSpecificSubcollection(indexPathRow: indexPath.row, documentNum: num)
+                    }
+                    // 接著刪除book
+                    self.deleteSpecificData(indexPathRow: indexPath.row)
+                    // 重新抓最新資料(會reloadData)
+                    self.fetchCoBook()
+                }
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.indexPathFromBook = indexPath
@@ -353,12 +399,20 @@ extension CoBookViewController: UITableViewDataSource {
     // tableView左滑刪除
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            tableView.beginUpdates()
-            // 順序問題，需要先偵測對應indexPath資料再進行刪除
-            deleteSpecificData(indexPathRow: indexPath.row)
-            data.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-            tableView.endUpdates()
+            self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: "co_expenditure")
+            self.group.notify(queue: .main) {
+                tableView.beginUpdates()
+                // 先把subcollection裡面的document一筆一筆刪除
+                for num in 0..<self.bookDetail.count {
+                    self.deleteSpecificSubcollection(indexPathRow: indexPath.row, documentNum: num)
+                }
+                // 接著刪除book
+                // 順序問題，需要先偵測對應indexPath資料再進行刪除
+                self.deleteSpecificData(indexPathRow: indexPath.row)
+                self.data.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .fade)
+                tableView.endUpdates()
+            }
         }
     }
 }

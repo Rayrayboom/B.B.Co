@@ -53,13 +53,13 @@ class EditViewController: UIViewController {
         }
     }
     // 存cost image的資料
-    var costImageArr = [UIImage(named: "Home 2"),
-                    UIImage(named: "Add_coData"),
-                    UIImage(named: "Cancel"),
-                    UIImage(named: "Accounting_book")]
+    var costImageArr = [UIImage(named: "Breakfast"),
+                        UIImage(named: "Lunch"),
+                        UIImage(named: "Lunch 2"),
+                        UIImage(named: "Dinner")]
     // 存income image的資料
-    var incomeImageArr = [UIImage(named: "Add-clicked"),
-                    UIImage(named: "Add-unclicked")]
+    var incomeImageArr = [UIImage(named: "Entertainment"),
+                          UIImage(named: "Transportation")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
@@ -126,6 +126,8 @@ class EditViewController: UIViewController {
         fetchUser(id: getId, subCollection: "expenditure")
         fetchUser(id: getId, subCollection: "revenue")
         fetchUser(id: getId, subCollection: "account")
+        // 在homeVC點選指定data時，一進來edit頁面要先把對應的image值塞到categoryImage，才能讓使用者即使不做任何編輯做存檔後也可以拿到該筆image
+        editData.categoryImageName = data?.categoryImage ?? ""
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -233,6 +235,7 @@ class EditViewController: UIViewController {
         // 進入group
         self.group.enter()
         dataBase.collection("user/\(id)/\(subCollection)").document("\(documentID)").updateData([
+            // 按下編輯按鈕時塞值
             "date": BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
             "amount": editData.amountTextField,
             "category": editData.categoryTextField,
@@ -329,6 +332,8 @@ extension EditViewController: UITableViewDataSource {
             // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
             switch indexPath.row {
             case 0:
+                // 把金額cell先清空image
+                editDataCell.chooseImage.image = nil
                 // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                 if messageFromQRVC != "" {
                     var amo = 0
@@ -336,12 +341,12 @@ extension EditViewController: UITableViewDataSource {
                         amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
                     }
                     editDataCell.contentTextField.text = String(amo)
-                    print("aaaaaa", amo)
                 } else {
                     editData.amountTextField = self.data?.amount ?? ""
                     editDataCell.contentTextField.text = self.data?.amount
                 }
             case 1:
+                editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 switch segmentTag {
                 case 0:
                     editDataCell.content = costContent
@@ -350,26 +355,24 @@ extension EditViewController: UITableViewDataSource {
                     // 接著把已經從firebase抓下來的單筆對應資料的值塞給editVC中的textField.text顯示
                     editDataCell.contentTextField.text = self.data?.category
                     editDataCell.imageArr = costImageArr
-                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 case 1:
                     editDataCell.content = incomeContent
                     editData.categoryTextField = self.data?.category ?? ""
                     editDataCell.contentTextField.text = self.data?.category
                     editDataCell.imageArr = incomeImageArr
-                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 default:
                     editDataCell.content = accountContent
                     editData.accountTextField = self.data?.account ?? ""
                     editDataCell.contentTextField.text = self.data?.account
                 }
             default:
+                // 把金額cell先清空image
+                editDataCell.chooseImage.image = nil
                 editDataCell.content = accountContent
                 editData.accountTextField = self.data?.account ?? ""
                 editDataCell.contentTextField.text = self.data?.account
             }
 
-            // 測試從homeVC抓到傳過來的資料
-//            print("datadatadatadatadata\(self.data)")
             // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
             editDataCell.contentTextField.inputView = nil
             editDataCell.indexPath = indexPath
@@ -490,7 +493,7 @@ extension EditViewController: EditDetailTableViewCellDelegate {
 // QRCode text from QRCodeVC
 extension EditViewController: EditQRCodeViewControllerDelegate {
     func getMessage(message: String) {
-        print("wwwww??")
+        print("wwwww??", message)
         messageFromQRVC = message
     }
 

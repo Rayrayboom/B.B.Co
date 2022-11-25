@@ -74,7 +74,7 @@ class AddNewDataTableViewCell: UITableViewCell {
         titleLabel.text = name
     }
 
-// MARK: - picker
+// MARK: - alert: add category
     func contentConfig(segment: Int) {
         controller = UIAlertController(title: "新增選項", message: "", preferredStyle: .alert)
         controller.addTextField { textField in

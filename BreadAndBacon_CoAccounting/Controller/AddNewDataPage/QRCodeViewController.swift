@@ -97,6 +97,7 @@ class QRCodeViewController: UIViewController {
     // 解析invoice data
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
+        let message = message
         let encrypt = message.prefix(24)
         var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
         var translateYear = (Int(invYear) ?? 0) + 1911
@@ -111,6 +112,7 @@ class QRCodeViewController: UIViewController {
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
 
         print("invNum", invNum)
+        print("message", message)
         print("encrypt", encrypt)
         print("invYear", invYear)
         print("invMonth", invMonth)
@@ -121,13 +123,13 @@ class QRCodeViewController: UIViewController {
 
     // POST API and parse data
     func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
-        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=10000&randomNumber=\(randomNumber)&appID=EINV0202210362275")
+        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=\(APIKey.invoiceUUID)&randomNumber=\(randomNumber)&appID=\(APIKey.QRAppID)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if let error = error {
                 self.delegate?.getInvDetail(didFailwith: error)
-                print(error)
+                print("=== is error", error)
                 return
             }
 
@@ -140,6 +142,7 @@ class QRCodeViewController: UIViewController {
             if let data = data {
                 if let detail = self.parseData(jsonData: data) {
                     self.delegate?.getInvDetail(didGet: detail)
+                    print("=== is data", data)
                 }
             }
         })
@@ -150,9 +153,9 @@ class QRCodeViewController: UIViewController {
         do {
             let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
             // 測試看是否有抓到資料
-            print("=== result is \(jsonData)")
+            print("=== QR result is \(jsonData)")
             return result
-        }catch {
+        } catch {
             delegate?.getInvDetail(didFailwith: error)
             print("result error")
             return nil

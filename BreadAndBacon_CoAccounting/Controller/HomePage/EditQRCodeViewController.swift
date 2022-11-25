@@ -107,18 +107,18 @@ class EditQRCodeViewController: UIViewController {
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
 
-        print("invNum", invNum)
-        print("encrypt", encrypt)
-        print("invYear", invYear)
-        print("invMonth", invMonth)
-        print("invDay", invDay)
-        print("randomNumber", randomNumber)
-        print("sellerID", sellerID)
+//        print("invNum", invNum)
+//        print("encrypt", encrypt)
+//        print("invYear", invYear)
+//        print("invMonth", invMonth)
+//        print("invDay", invDay)
+//        print("randomNumber", randomNumber)
+//        print("sellerID", sellerID)
     }
 
     // POST API and parse data
     func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
-        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=10000&randomNumber=\(randomNumber)&appID=EINV0202210362275")
+        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=\(APIKey.invoiceUUID)&randomNumber=\(randomNumber)&appID=\(APIKey.QRAppID)")
         var request = URLRequest(url: url!)
         request.httpMethod = "POST"
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in

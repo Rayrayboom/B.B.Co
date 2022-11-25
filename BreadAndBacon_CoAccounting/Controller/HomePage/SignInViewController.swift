@@ -8,10 +8,20 @@ import AuthenticationServices
 import UIKit
 import FirebaseFirestore
 import SwiftKeychainWrapper
+import SwiftJWT
+
+struct MyClaims: Claims {
+    let iss: String
+    let sub: String
+    let exp: Date
+    let aud: String
+}
 
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
     var userData = ""
+    // 存JWT
+    var signedJWT: String = ""
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -36,21 +46,23 @@ class SignInViewController: UIViewController {
         setupSignInUI()
     }
 
-    // 設定pieTableView constrains
+    // 設定titleLabel constrains
     func setupSignInUI() {
         titleLabel.text = "登入，為個人、共同帳本啟用同步和備份 功能"
         titleLabel.textColor = .lightGray
         signInButton.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
-            signInButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 50),
+            signInButton.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 550),
             signInButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50),
             signInButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50),
-            signInButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -300)
+            signInButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -250)
         ])
     }
 
-
     @objc func didTapSignIn() {
+        // 按下登入時取得JWT token
+        makeSwiftJWT()
         let provider = ASAuthorizationAppleIDProvider()
         let request = provider.createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -78,25 +90,59 @@ class SignInViewController: UIViewController {
         }
     }
 
-    // 確認user是否為第一次登入
-//    func checkUserAccount(id: String) {
-//        let dataBase = Firestore.firestore()
-//        let docRef = dataBase.collection("user").document(id)
-//
-//        docRef.getDocument { (document, error) in
-//            if let document = document, document.exists {
-//                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-//                print("Document data: \(dataDescription)")
-//            } else {
-//                print("Document does not exist")
-//            }
-//        }
-//    }
+    // gen JWT token
+    func makeSwiftJWT() {
+        let myHeader = Header(kid: APIKey.authKey)
+        let myClaims = MyClaims(iss: APIKey.teamID, sub: APIKey.bundleID, exp: Date(timeIntervalSinceNow: 12000), aud: "https://appleid.apple.com")
+        var myJWT = JWT(header: myHeader, claims: myClaims)
+        let privateKey = APIKey.privateKey
+        do {
+            let jwtSigner = JWTSigner.es256(privateKey: Data(privateKey.utf8))
+            signedJWT = try myJWT.sign(using: jwtSigner)
+            print("=== get JWT", signedJWT)
+        } catch {
+            print("can not get JWT")
+        }
+    }
 }
 
 extension SignInViewController: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         print("sign in failed")
+    }
+
+    // 取得refresh token，並存在keyChain裡
+    func getRefreshToken(codeString: String) {
+        let url = URL(string: "https://appleid.apple.com/auth/token?client_id=\(APIKey.bundleID)&client_secret=\(signedJWT)&grant_type=authorization_code&code=\(codeString)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "https://apple.com")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let task = URLSession.shared.dataTask(with: request) {(data, response, error) in
+            if let error = error {
+                print(fatalError("can not get refreshToken"))
+            }
+
+            guard let response = response as? HTTPURLResponse,
+                    response.statusCode == 200 else {
+                print("response error")
+                return
+            }
+
+            if let data = data {
+                let refreshToken = self.parseData(jsonData: data)
+                KeychainWrapper.standard.set(refreshToken?.refreshToken ?? "", forKey: "refreshToken")
+            }
+        }
+        task.resume()
+    }
+
+    func parseData(jsonData: Data) -> RefreshToken? {
+        do {
+            let result = try JSONDecoder().decode(RefreshToken.self, from: jsonData)
+            return result
+        } catch {
+            print("=== result error")
+            return nil
+        }
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
@@ -106,6 +152,11 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let firstName = credentials.fullName?.givenName
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
+            // authorizationCode每次登入都不一樣, ex. cb4ea06aa72c7454985548506dda2883a.0.rrsyu.J0e-UzcZTROUwW75Z_1Haw
+            if let authorizationCode = credentials.authorizationCode,
+               let codeString = String(data: authorizationCode, encoding: .utf8) {
+                getRefreshToken(codeString: codeString)
+            }
 
             // first login
             if let firstName = firstName, let lastName = lastName {
@@ -125,7 +176,7 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
                         self.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
                     }
                 }
-                print("first", KeychainWrapper.standard.string(forKey: "name") ?? "")
+//                print("first", KeychainWrapper.standard.string(forKey: "name") ?? "")
             }
 
             // second login
