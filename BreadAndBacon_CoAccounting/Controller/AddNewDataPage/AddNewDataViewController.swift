@@ -210,6 +210,10 @@ class AddNewDataViewController: UIViewController {
         default:
             sourceSegmentControl.selectedSegmentTintColor = .systemYellow
         }
+        data.amountTextField = ""
+        data.categoryTextField = ""
+        data.accountTextField = ""
+        data.categoryImageName = ""
         addNewDadaTableView.reloadData()
     }
 
@@ -535,6 +539,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 switch indexPath.row {
                 case 0:
                     addDataCell.contentTextField.text = ""
+                    addDataCell.contentTextField.text = data.amountTextField
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                     if messageFromQRVC != "" {
                         var amo = 0
@@ -543,29 +548,29 @@ extension AddNewDataViewController: UITableViewDataSource {
                         }
                         addDataCell.contentTextField.text = String(amo)
                     }
+                    
                 case 1:
+                    addDataCell.contentTextField.text = ""
+                    addDataCell.contentTextField.text = data.categoryTextField
+                    // 切換segment時，清除已選圖案
+                    addDataCell.chooseImage.image = nil
+                    addDataCell.chooseImage.image = data.categoryImageName.toImage()
                     switch segmentTag {
                     case 0:
-                        addDataCell.contentTextField.text = ""
                         addDataCell.content = costContent
                         addDataCell.imageArr = costImageArr
                     case 1:
-                        addDataCell.contentTextField.text = ""
                         addDataCell.content = incomeContent
                         addDataCell.imageArr = incomeImageArr
                     default:
-                        addDataCell.contentTextField.text = ""
                         addDataCell.content = accountContent
                     }
                 default:
-                    addDataCell.contentTextField.text = ""
                     addDataCell.content = accountContent
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
-                // 切換segment時，清除已選圖案
-                addDataCell.chooseImage.image = nil
                 addDataCell.indexPath = indexPath
                 addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
@@ -589,7 +594,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 // 切換不同頁面時，detail要先清空
-//                detailCell.detailTextView.text = ""
+                detailCell.detailTextView.text = ""
                 // 存放invoice的string在fetch data之前要先清空
                 items = ""
                 // 把message的值塞給detailTextView

@@ -126,6 +126,7 @@ class EditViewController: UIViewController {
         fetchUser(id: getId, subCollection: "expenditure")
         fetchUser(id: getId, subCollection: "revenue")
         fetchUser(id: getId, subCollection: "account")
+        editData.categoryImageName = data?.categoryImage ?? ""
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -342,6 +343,7 @@ extension EditViewController: UITableViewDataSource {
                     editDataCell.contentTextField.text = self.data?.amount
                 }
             case 1:
+                editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 switch segmentTag {
                 case 0:
                     editDataCell.content = costContent
@@ -350,13 +352,11 @@ extension EditViewController: UITableViewDataSource {
                     // 接著把已經從firebase抓下來的單筆對應資料的值塞給editVC中的textField.text顯示
                     editDataCell.contentTextField.text = self.data?.category
                     editDataCell.imageArr = costImageArr
-                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 case 1:
                     editDataCell.content = incomeContent
                     editData.categoryTextField = self.data?.category ?? ""
                     editDataCell.contentTextField.text = self.data?.category
                     editDataCell.imageArr = incomeImageArr
-                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                 default:
                     editDataCell.content = accountContent
                     editData.accountTextField = self.data?.account ?? ""

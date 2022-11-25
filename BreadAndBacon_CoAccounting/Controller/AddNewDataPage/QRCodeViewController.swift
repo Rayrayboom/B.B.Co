@@ -97,6 +97,7 @@ class QRCodeViewController: UIViewController {
     // 解析invoice data
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
+        let message = message
         let encrypt = message.prefix(24)
         var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
         var translateYear = (Int(invYear) ?? 0) + 1911
@@ -111,6 +112,7 @@ class QRCodeViewController: UIViewController {
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
 
         print("invNum", invNum)
+        print("message", message)
         print("encrypt", encrypt)
         print("invYear", invYear)
         print("invMonth", invMonth)
@@ -127,7 +129,7 @@ class QRCodeViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if let error = error {
                 self.delegate?.getInvDetail(didFailwith: error)
-                print("=== error嗎", error)
+                print("=== is error", error)
                 return
             }
 
@@ -140,7 +142,7 @@ class QRCodeViewController: UIViewController {
             if let data = data {
                 if let detail = self.parseData(jsonData: data) {
                     self.delegate?.getInvDetail(didGet: detail)
-                    print("=== data嗎", data)
+                    print("=== is data", data)
                 }
             }
         })

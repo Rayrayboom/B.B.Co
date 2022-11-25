@@ -218,6 +218,8 @@ extension ViewController: UITableViewDelegate {
         // 點擊哪個row就把data array對應row的資料傳給editVC
         presentEditVC.data = data[indexPath.row]
         presentEditVC.category = category
+        // 指定跳轉到第幾個segment control
+        presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
 
         let navigation = UINavigationController(rootViewController: presentEditVC)
         navigation.modalPresentationStyle = .fullScreen
