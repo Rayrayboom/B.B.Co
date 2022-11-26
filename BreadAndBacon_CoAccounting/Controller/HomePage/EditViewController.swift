@@ -20,6 +20,7 @@ struct DataModel {
 
     // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
     var dateTime: String = ""
+    var monthTime: String = ""
     var titleLabel: String = ""
     var detailTextView: String = ""
     var categoryImageName: String = ""
@@ -208,6 +209,30 @@ class EditViewController: UIViewController {
         isChange = false
     }
 
+    // 判斷指定資料原先是哪個大類別
+    func dataSegmentCategory() -> String {
+        switch data?.segmentTag {
+        case 0:
+            return "expenditure"
+        case 1:
+            return "revenue"
+        default:
+            return "account"
+        }
+    }
+
+    // 判斷有修改的動作後最終切換到哪個大類別
+    func segmentCategory() -> String {
+        switch segmentTag {
+        case 0:
+            return "expenditure"
+        case 1:
+            return "revenue"
+        default:
+            return "account"
+        }
+    }
+
     // 從Firebase上fetch全部種類/帳戶資料
     func fetchUser(id: String, subCollection: String) {
         let dataBase = Firestore.firestore()
@@ -231,6 +256,89 @@ class EditViewController: UIViewController {
                     }
                 }
             }
+    }
+
+    func createUserData(id: String, subCollection: String) {
+        guard let cell = editTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? EditTimeTableViewCell
+        else {
+            fatalError("can not find AddDateTableViewCell")
+        }
+        let dataBase = Firestore.firestore()
+        let fetchDocumentID = dataBase.collection("user")
+            .document(id)
+            .collection(subCollection)
+            .document()
+        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
+        let identifier = fetchDocumentID.documentID
+        // 需存id，後續delete要抓取ID刪除對應資料
+        switch subCollection {
+        case "expenditure":
+            let account = Account(
+                id: identifier,
+                amount: editData.amountTextField,
+                category: editData.categoryTextField,
+                account: editData.accountTextField,
+                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),//editData.dateTime,
+                month: editData.monthTime,
+                destinationAccountId: nil,
+                sourceAccountId: nil,
+                accountId: "accountId",
+                expenditureId: "expenditureId",
+                revenueId: nil,
+                detail: editData.detailTextView,
+                categoryImage: editData.categoryImageName,
+                segmentTag: segmentTag)
+            do {
+                try fetchDocumentID.setData(from: account)
+                print("success create document. ID: \(fetchDocumentID.documentID)")
+            } catch {
+                print(error)
+            }
+        case "revenue":
+            let account = Account(
+                id: identifier,
+                amount: editData.amountTextField,
+                category: editData.categoryTextField,
+                account: editData.accountTextField,
+                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),//editData.dateTime,
+                month: editData.monthTime,
+                destinationAccountId: nil,
+                sourceAccountId: nil,
+                accountId: "accountId",
+                expenditureId: nil,
+                revenueId: "revenueId",
+                detail: editData.detailTextView,
+                categoryImage: editData.categoryImageName,
+                segmentTag: segmentTag)
+            do {
+                try fetchDocumentID.setData(from: account)
+                print("success create document. ID: \(fetchDocumentID.documentID)")
+            } catch {
+                print(error)
+            }
+        default:
+            let account = Account(
+                id: identifier,
+                amount: editData.amountTextField,
+                category: editData.categoryTextField,
+                account: editData.accountTextField,
+                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),//editData.dateTime,
+                month: editData.monthTime,
+                destinationAccountId: "destinationAccountId",
+                sourceAccountId: "sourceAccountId",
+                accountId: nil,
+                expenditureId: nil,
+                revenueId: nil,
+                detail: editData.detailTextView,
+                categoryImage: editData.categoryImageName,
+                segmentTag: segmentTag)
+            do {
+                try fetchDocumentID.setData(from: account)
+                print("success create document. ID: \(fetchDocumentID.documentID)")
+            } catch {
+                print(error)
+            }
+        }
     }
 
     // 點選對應細項編輯資料
@@ -263,15 +371,25 @@ class EditViewController: UIViewController {
         }
     }
 
+    // 針對更改的單筆資料，若原先為revenue修改為expenditure，則將subCollection revenue的document刪除，並新增一筆document到subCollection expenditure
     func editAllUser() {
-        editUser(id: getId, subCollection: "expenditure", documentID: data?.id ?? "")
-        editUser(id: getId, subCollection: "revenue", documentID: data?.id ?? "")
-        editUser(id: getId, subCollection: "account", documentID: data?.id ?? "")
+        if data?.segmentTag != segmentTag {
+            deleteSpecificData(id: getId, subCollection: dataSegmentCategory())
+            createUserData(id: getId, subCollection: segmentCategory())
+        }
+        editUser(id: getId, subCollection: dataSegmentCategory(), documentID: data?.id ?? "")
 
         // notify放這邊是因為要等所有edit API執行完後再執行dismiss VC
         group.notify(queue: .main) {
             self.presentingViewController?.dismiss(animated: true, completion: nil)
         }
+    }
+
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(id: String, subCollection: String) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(data?.id ?? "")
+        documentRef.delete()
     }
 }
 
@@ -344,6 +462,7 @@ extension EditViewController: UITableViewDataSource {
                 }
                 // 由homeVC傳被點選的cell對應資料data過來，editVC用data接，裡面的date資料就是該筆資料的日期
                 editData.dateTime = data?.date ?? ""
+                editData.monthTime = data?.month ?? ""
 
                 editTimeCell.editDatePicker.date = BBCDateFormatter.shareFormatter.date(from: editData.dateTime) ?? Date()
 
@@ -367,6 +486,10 @@ extension EditViewController: UITableViewDataSource {
                     editData.categoryTextField = self.data?.category ?? ""
                     editDataCell.contentTextField.text = editData.categoryTextField
                     editDataCell.imageArr = accountImageArr
+                    if isChange == true {
+                        editDataCell.contentTextField.text = ""
+                        editDataCell.chooseImage.image = nil
+                    }
                 default:
                     editDataCell.content = accountContent
                     editData.accountTextField = self.data?.account ?? ""
@@ -423,6 +546,7 @@ extension EditViewController: UITableViewDataSource {
                 }
                 // 由homeVC傳被點選的cell對應資料data過來，editVC用data接，裡面的date資料就是該筆資料的日期
                 editData.dateTime = data?.date ?? ""
+                editData.monthTime = data?.month ?? ""
 
                 editTimeCell.editDatePicker.date = BBCDateFormatter.shareFormatter.date(from: editData.dateTime) ?? Date()
 

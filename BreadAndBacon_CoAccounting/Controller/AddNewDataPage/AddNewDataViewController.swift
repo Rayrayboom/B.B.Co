@@ -281,7 +281,8 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: "expenditureId",
                 revenueId: nil,
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName)
+                categoryImage: data.categoryImageName,
+                segmentTag: segmentTag)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -302,7 +303,8 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: nil,
                 revenueId: "revenueId",
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName)
+                categoryImage: data.categoryImageName,
+                segmentTag: segmentTag)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -323,7 +325,8 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: nil,
                 revenueId: nil,
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName)
+                categoryImage: data.categoryImageName,
+                segmentTag: segmentTag)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")

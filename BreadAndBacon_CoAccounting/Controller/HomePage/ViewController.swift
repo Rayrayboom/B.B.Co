@@ -219,15 +219,15 @@ extension ViewController: UITableViewDelegate {
         presentEditVC.data = data[indexPath.row]
         presentEditVC.category = category
         // 依據資料種類跳轉到對應segment control + UI color
-        if data[indexPath.row].expenditureId == "expenditureId" {
+        if data[indexPath.row].segmentTag == 0 {
             presentEditVC.segmentTag = 0
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 0
             presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemYellow
-        } else if data[indexPath.row].revenueId == "revenueId" {
+        } else if data[indexPath.row].segmentTag == 1 {
             presentEditVC.segmentTag = 1
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
             presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemCyan
-        } else if data[indexPath.row].sourceAccountId == "sourceAccountId" {
+        } else if data[indexPath.row].segmentTag == 2 {
             presentEditVC.segmentTag = 2
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 2
             presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemBrown
