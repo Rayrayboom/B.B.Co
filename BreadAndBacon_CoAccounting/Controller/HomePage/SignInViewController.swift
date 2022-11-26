@@ -25,6 +25,16 @@ class SignInViewController: UIViewController {
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBAction func showPrivacy(_ sender: UIButton) {
+        let homeStoryboard = UIStoryboard(name: "Home", bundle: nil)
+        guard let presentPrivacyVC = homeStoryboard
+            .instantiateViewController(withIdentifier: "privacyVC") as? PrivacyViewController
+        else {
+            fatalError("can not present privacyVC")
+        }
+        presentPrivacyVC.modalPresentationStyle = .fullScreen
+        present(presentPrivacyVC, animated: true)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

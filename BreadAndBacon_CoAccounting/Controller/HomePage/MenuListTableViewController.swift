@@ -86,10 +86,15 @@ class MenuListTableViewController: UITableViewController {
             print("side menu")
         default:
             switch indexPath.row {
-            case 3:
-                let url = URL(string: "https://www.privacypolicies.com/live/afdd5967-51cf-4eb1-bd6f-673fbcf68ccb")
-                let controller = SFSafariViewController(url: url!)
-                present(controller, animated: true)
+            case 3: // show privacy
+                let homeStoryboard = UIStoryboard(name: "Home", bundle: nil)
+                guard let presentPrivacyVC = homeStoryboard
+                    .instantiateViewController(withIdentifier: "privacyVC") as? PrivacyViewController
+                else {
+                    fatalError("can not present privacyVC")
+                }
+                presentPrivacyVC.modalPresentationStyle = .automatic
+                present(presentPrivacyVC, animated: true)
             case 4: // sign out and delete account
                 signOutAlert()
             default: // category list

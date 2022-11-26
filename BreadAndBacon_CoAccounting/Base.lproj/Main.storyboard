@@ -90,6 +90,33 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JMA-Qz-PNn">
+                                <rect key="frame" x="216" y="783" width="88" height="29"/>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Button">
+                                    <attributedString key="attributedTitle">
+                                        <fragment content="隱私權條款">
+                                            <attributes>
+                                                <color key="NSColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <font key="NSFont" size="12" name="PingFangTC-Regular"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                <integer key="NSUnderline" value="1"/>
+                                                <color key="NSUnderlineColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            </attributes>
+                                        </fragment>
+                                    </attributedString>
+                                </state>
+                                <connections>
+                                    <action selector="showPrivacy:" destination="DsW-Md-aaP" eventType="touchUpInside" id="wun-9h-UKZ"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="登入後表示您同意" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UMH-Ad-xfH">
+                                <rect key="frame" x="120" y="790" width="96" height="17"/>
+                                <fontDescription key="fontDescription" name="PingFangTC-Regular" family="PingFang TC" pointSize="12"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="GaT-hw-ZGY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -97,8 +124,13 @@
                             <constraint firstItem="GaT-hw-ZGY" firstAttribute="trailing" secondItem="Jx1-rt-4QJ" secondAttribute="trailing" constant="107" id="3rg-30-jCu"/>
                             <constraint firstItem="1qJ-Y0-4fK" firstAttribute="top" secondItem="Jx1-rt-4QJ" secondAttribute="bottom" constant="100" id="BK6-hj-bbx"/>
                             <constraint firstItem="Jx1-rt-4QJ" firstAttribute="leading" secondItem="GaT-hw-ZGY" secondAttribute="leading" constant="107" id="CeN-pd-nAg"/>
+                            <constraint firstItem="JMA-Qz-PNn" firstAttribute="leading" secondItem="UMH-Ad-xfH" secondAttribute="trailing" id="NRB-1J-hEH"/>
+                            <constraint firstItem="UMH-Ad-xfH" firstAttribute="leading" secondItem="GaT-hw-ZGY" secondAttribute="leading" constant="120" id="PaE-zv-3w0"/>
+                            <constraint firstItem="GaT-hw-ZGY" firstAttribute="bottom" secondItem="UMH-Ad-xfH" secondAttribute="bottom" constant="55" id="Xrw-DT-dQy"/>
+                            <constraint firstItem="GaT-hw-ZGY" firstAttribute="bottom" secondItem="JMA-Qz-PNn" secondAttribute="bottom" constant="50" id="cP7-fn-JjA"/>
                             <constraint firstItem="1qJ-Y0-4fK" firstAttribute="leading" secondItem="GaT-hw-ZGY" secondAttribute="leading" constant="10" id="cjU-sd-0Hd"/>
                             <constraint firstItem="Jx1-rt-4QJ" firstAttribute="top" secondItem="GaT-hw-ZGY" secondAttribute="top" constant="100" id="e3c-jN-n57"/>
+                            <constraint firstItem="GaT-hw-ZGY" firstAttribute="trailing" secondItem="JMA-Qz-PNn" secondAttribute="trailing" constant="110" id="npi-yw-cso"/>
                             <constraint firstItem="GaT-hw-ZGY" firstAttribute="trailing" secondItem="1qJ-Y0-4fK" secondAttribute="trailing" constant="10" id="xWO-cr-9SV"/>
                         </constraints>
                     </view>
@@ -119,7 +151,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vlX-04-Qph" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1620" y="100"/>
+            <point key="canvasLocation" x="-1620.289855072464" y="99.776785714285708"/>
         </scene>
     </scenes>
     <resources>

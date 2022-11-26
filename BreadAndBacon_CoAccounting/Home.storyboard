@@ -8,6 +8,75 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Privacy View Controller-->
+        <scene sceneID="aSC-SN-TQP">
+            <objects>
+                <viewController storyboardIdentifier="privacyVC" id="AFI-B7-6Os" customClass="PrivacyViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="RHv-Ad-mLI">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="zWp-d0-ZSx">
+                                <rect key="frame" x="0.0" y="154" width="414" height="628"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jvh-Hv-k1A">
+                                <rect key="frame" x="0.0" y="44" width="414" height="60"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="B.B.Co" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3mb-8l-9gz">
+                                <rect key="frame" x="0.0" y="104" width="414" height="50"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c1T-tm-B6n">
+                                <rect key="frame" x="30" y="812" width="354" height="50"/>
+                                <color key="backgroundColor" systemColor="systemBrownColor"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="關閉">
+                                    <fontDescription key="titleFontDescription" type="system" pointSize="17"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="closePrivacy:" destination="AFI-B7-6Os" eventType="touchUpInside" id="kHE-MW-py0"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="7Xq-e0-epq"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7Xq-e0-epq" firstAttribute="trailing" secondItem="zWp-d0-ZSx" secondAttribute="trailing" id="6KA-8E-7vZ"/>
+                            <constraint firstItem="7Xq-e0-epq" firstAttribute="bottom" secondItem="c1T-tm-B6n" secondAttribute="bottom" id="COf-YZ-o4h"/>
+                            <constraint firstItem="7Xq-e0-epq" firstAttribute="trailing" secondItem="c1T-tm-B6n" secondAttribute="trailing" constant="30" id="HhW-xe-qou"/>
+                            <constraint firstItem="c1T-tm-B6n" firstAttribute="top" secondItem="zWp-d0-ZSx" secondAttribute="bottom" constant="30" id="KcP-Z7-Rrb"/>
+                            <constraint firstItem="zWp-d0-ZSx" firstAttribute="leading" secondItem="7Xq-e0-epq" secondAttribute="leading" id="M7M-9N-aDB"/>
+                            <constraint firstItem="3mb-8l-9gz" firstAttribute="top" secondItem="Jvh-Hv-k1A" secondAttribute="bottom" id="NBk-XR-ohP"/>
+                            <constraint firstItem="Jvh-Hv-k1A" firstAttribute="leading" secondItem="7Xq-e0-epq" secondAttribute="leading" id="O2T-jJ-d09"/>
+                            <constraint firstItem="Jvh-Hv-k1A" firstAttribute="top" secondItem="7Xq-e0-epq" secondAttribute="top" id="Rtf-pF-eWk"/>
+                            <constraint firstItem="7Xq-e0-epq" firstAttribute="trailing" secondItem="3mb-8l-9gz" secondAttribute="trailing" id="YeS-Ho-hBa"/>
+                            <constraint firstItem="3mb-8l-9gz" firstAttribute="leading" secondItem="7Xq-e0-epq" secondAttribute="leading" id="bNM-QV-U2v"/>
+                            <constraint firstItem="zWp-d0-ZSx" firstAttribute="top" secondItem="Jvh-Hv-k1A" secondAttribute="bottom" constant="50" id="dkh-kk-NlU"/>
+                            <constraint firstItem="c1T-tm-B6n" firstAttribute="leading" secondItem="7Xq-e0-epq" secondAttribute="leading" constant="30" id="lcI-El-znJ"/>
+                            <constraint firstItem="7Xq-e0-epq" firstAttribute="bottom" secondItem="zWp-d0-ZSx" secondAttribute="bottom" constant="80" id="n6O-eO-Ekn"/>
+                            <constraint firstItem="zWp-d0-ZSx" firstAttribute="top" secondItem="3mb-8l-9gz" secondAttribute="bottom" id="shi-gt-YqA"/>
+                            <constraint firstItem="7Xq-e0-epq" firstAttribute="trailing" secondItem="Jvh-Hv-k1A" secondAttribute="trailing" id="yQh-hL-elU"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="dismissProvactBO" destination="c1T-tm-B6n" id="wdy-xf-hIO"/>
+                        <outlet property="privacyTextView" destination="zWp-d0-ZSx" id="fZC-Y0-fR1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nTW-78-hf6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2874" y="1598"/>
+        </scene>
         <!--Category View Controller-->
         <scene sceneID="adf-gj-A9w">
             <objects>
@@ -161,8 +230,9 @@
                         <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="aQr-iC-ZiH">
                             <rect key="frame" x="107.5" y="4.5" width="199" height="35"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title=""/>
+                            <buttonConfiguration key="configuration" style="plain" title=""/>
                         </button>
                     </navigationItem>
                     <connections>
@@ -453,6 +523,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBrownColor">
+            <color red="0.63529411764705879" green="0.51764705882352946" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

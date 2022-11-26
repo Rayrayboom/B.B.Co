@@ -57,6 +57,7 @@
 		769D8E57292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E56292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift */; };
 		769D8E59292DBDC5001944EF /* MenuListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */; };
 		769D8E5D292F3614001944EF /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5C292F3614001944EF /* APIKey.swift */; };
+		769D8E5F29321AD5001944EF /* PrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5E29321AD5001944EF /* PrivacyViewController.swift */; };
 		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
 		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
@@ -115,6 +116,7 @@
 		769D8E56292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIiImageAndStringTracfermation + Extension.swift"; sourceTree = "<group>"; };
 		769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListTableViewController.swift; sourceTree = "<group>"; };
 		769D8E5C292F3614001944EF /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
+		769D8E5E29321AD5001944EF /* PrivacyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyViewController.swift; sourceTree = "<group>"; };
 		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
 		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -316,6 +318,7 @@
 			isa = PBXGroup;
 			children = (
 				769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */,
+				769D8E5E29321AD5001944EF /* PrivacyViewController.swift */,
 				7673ADC429236D1200A15015 /* SignInViewController.swift */,
 				7660865C290BDA29008EF772 /* ViewController.swift */,
 				7673ADD2292772B800A15015 /* CategoryViewController.swift */,
@@ -541,6 +544,7 @@
 				76265F4629150AD400F5E341 /* EditQRCodeTableViewCell.swift in Sources */,
 				76265F272911855600F5E341 /* User.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
+				769D8E5F29321AD5001944EF /* PrivacyViewController.swift in Sources */,
 				7673ADD3292772B800A15015 /* CategoryViewController.swift in Sources */,
 				767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */,
 				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
