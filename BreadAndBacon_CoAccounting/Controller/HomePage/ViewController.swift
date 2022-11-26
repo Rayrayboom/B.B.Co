@@ -218,8 +218,20 @@ extension ViewController: UITableViewDelegate {
         // 點擊哪個row就把data array對應row的資料傳給editVC
         presentEditVC.data = data[indexPath.row]
         presentEditVC.category = category
-        // 指定跳轉到第幾個segment control
-        presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
+        // 依據資料種類跳轉到對應segment control + UI color
+        if data[indexPath.row].expenditureId == "expenditureId" {
+            presentEditVC.segmentTag = 0
+            presentEditVC.sourceSegmentControl.selectedSegmentIndex = 0
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+        } else if data[indexPath.row].revenueId == "revenueId" {
+            presentEditVC.segmentTag = 1
+            presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+        } else if data[indexPath.row].sourceAccountId == "sourceAccountId" {
+            presentEditVC.segmentTag = 2
+            presentEditVC.sourceSegmentControl.selectedSegmentIndex = 2
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemBrown
+        }
 
         let navigation = UINavigationController(rootViewController: presentEditVC)
         navigation.modalPresentationStyle = .fullScreen

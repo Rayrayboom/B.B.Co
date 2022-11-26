@@ -193,8 +193,6 @@ extension EditDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
             return UIView()
         }
     }
-    
-    
 
     // pickerView改變選擇後執行的動作, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

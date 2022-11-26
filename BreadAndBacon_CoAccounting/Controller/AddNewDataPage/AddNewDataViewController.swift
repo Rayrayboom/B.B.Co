@@ -68,6 +68,9 @@ class AddNewDataViewController: UIViewController {
     // 存income image的資料
     var incomeImageArr = [UIImage(named: "Entertainment"),
                           UIImage(named: "Transportation")]
+    // 存account image的資料
+    var accountImageArr = [UIImage(named: "Add-clicked"),
+                           UIImage(named: "Add-unclicked")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
@@ -211,6 +214,7 @@ class AddNewDataViewController: UIViewController {
         default:
             sourceSegmentControl.selectedSegmentTintColor = .systemYellow
         }
+        // 切換segment control時，要先把textField和image的資料先清空，否則tableView會去抓前一筆資料的值
         data.amountTextField = ""
         data.categoryTextField = ""
         data.accountTextField = ""
@@ -463,10 +467,12 @@ extension AddNewDataViewController: UITableViewDataSource {
                         addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
+                        addDataCell.imageArr = accountImageArr
                     }
                 default:
                     addDataCell.contentTextField.text = ""
                     addDataCell.content = accountContent
+                    addDataCell.imageArr = accountImageArr
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
