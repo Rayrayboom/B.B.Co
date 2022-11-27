@@ -58,6 +58,7 @@
 		769D8E59292DBDC5001944EF /* MenuListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */; };
 		769D8E5D292F3614001944EF /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5C292F3614001944EF /* APIKey.swift */; };
 		769D8E5F29321AD5001944EF /* PrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5E29321AD5001944EF /* PrivacyViewController.swift */; };
+		769D8E61293321E8001944EF /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E60293321E8001944EF /* PreviewViewController.swift */; };
 		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
 		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
@@ -117,6 +118,7 @@
 		769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListTableViewController.swift; sourceTree = "<group>"; };
 		769D8E5C292F3614001944EF /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		769D8E5E29321AD5001944EF /* PrivacyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyViewController.swift; sourceTree = "<group>"; };
+		769D8E60293321E8001944EF /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
 		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
 		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 		76608699290F79B3008EF772 /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				769D8E60293321E8001944EF /* PreviewViewController.swift */,
 				769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */,
 				769D8E5E29321AD5001944EF /* PrivacyViewController.swift */,
 				7673ADC429236D1200A15015 /* SignInViewController.swift */,
@@ -525,6 +528,7 @@
 				76265F4829150AE400F5E341 /* EditDetailTableViewCell.swift in Sources */,
 				769D8E54292C9E35001944EF /* ImageCollectionViewCell.swift in Sources */,
 				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
+				769D8E61293321E8001944EF /* PreviewViewController.swift in Sources */,
 				769D8E59292DBDC5001944EF /* MenuListTableViewController.swift in Sources */,
 				769D8E50292C9585001944EF /* ImageTableViewCell.swift in Sources */,
 				76265F512917AA4C00F5E341 /* PieChartTableViewCell.swift in Sources */,
