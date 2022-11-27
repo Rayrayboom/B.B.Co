@@ -236,7 +236,7 @@ class AddNewDataViewController: UIViewController {
     // 新增資料按鈕trigger
     func saveNewData() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(savePage))
+            image: UIImage(named: "Add"), style: .plain, target: self, action: #selector(savePage))
     }
 
     // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面

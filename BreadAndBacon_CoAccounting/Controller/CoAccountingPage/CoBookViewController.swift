@@ -84,7 +84,7 @@ class CoBookViewController: UIViewController {
 
     // 按下右上button讓使用者輸入book name並新增帳本
     func addNewCoAccountBook() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(saveEdit))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Add"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
     // 觸發新增帳本func

@@ -152,6 +152,7 @@ class EditViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
+        editTableView.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
         view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
     }
 

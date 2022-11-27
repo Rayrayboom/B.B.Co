@@ -78,12 +78,14 @@ class AddCoDetailViewController: UIViewController {
 
     // UI
     func setupUI() {
+        saveCoDetailBO.layer.cornerRadius = 10
         self.titleLabel.text = isEdit ? "編輯 支出" : "新 支出"
         if isEdit == false {
             self.saveCoDetailBO.setTitle("Save", for: .normal)
         } else {
             self.saveCoDetailBO.setTitle("Edit", for: .normal)
         }
+        coDetailTableView.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
     }
 
     // MARK: - 上傳資料到Firebase

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Cancel.png",
+      "filename" : "Accounting_book.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Cancel@2x.png",
+      "filename" : "Accounting_book@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Cancel@3x.png",
+      "filename" : "Accounting_book@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

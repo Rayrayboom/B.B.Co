@@ -190,20 +190,22 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="QRCell" id="2Ut-UO-eFt" customClass="QRCodeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="204.5" width="374" height="50.5"/>
+                                        <rect key="frame" x="20" y="204.5" width="374" height="60.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2Ut-UO-eFt" id="P8H-gH-xUJ">
-                                            <rect key="frame" x="0.0" y="0.0" width="374" height="50.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="374" height="60.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iRh-D2-x4X">
-                                                    <rect key="frame" x="172" y="10" width="30" height="30.5"/>
+                                                    <rect key="frame" x="167" y="10.5" width="40" height="39"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="30" id="Fiu-ox-1gU"/>
+                                                        <constraint firstAttribute="width" constant="40" id="Fiu-ox-1gU"/>
                                                         <constraint firstAttribute="width" secondItem="iRh-D2-x4X" secondAttribute="height" multiplier="1:1" id="t9m-M7-1Iw"/>
                                                     </constraints>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                    <state key="normal" image="qrcode.viewfinder" catalog="system"/>
+                                                    <state key="normal">
+                                                        <imageReference key="backgroundImage" image="qrcode.viewfinder" catalog="system" renderingMode="original"/>
+                                                    </state>
                                                     <connections>
                                                         <action selector="insertQRCode:" destination="FXA-dv-yEb" eventType="touchUpInside" id="Xwy-Z7-Qkc"/>
                                                     </connections>
@@ -220,7 +222,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="detailCell" rowHeight="213" id="5BP-Wq-8Iq" customClass="DetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="255" width="374" height="213"/>
+                                        <rect key="frame" x="20" y="265" width="374" height="213"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5BP-Wq-8Iq" id="plV-aR-FyR">
                                             <rect key="frame" x="0.0" y="0.0" width="374" height="213"/>
