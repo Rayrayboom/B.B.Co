@@ -59,6 +59,9 @@
 		769D8E5D292F3614001944EF /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5C292F3614001944EF /* APIKey.swift */; };
 		769D8E5F29321AD5001944EF /* PrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5E29321AD5001944EF /* PrivacyViewController.swift */; };
 		769D8E61293321E8001944EF /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E60293321E8001944EF /* PreviewViewController.swift */; };
+		769D8E632933392E001944EF /* 42750-accounting-illustration.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E622933392E001944EF /* 42750-accounting-illustration.json */; };
+		769D8E6529333D39001944EF /* 105437-friends.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E6429333D39001944EF /* 105437-friends.json */; };
+		769D8E6729334CE7001944EF /* lf30_editor_wilzakp4.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */; };
 		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
 		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
@@ -119,6 +122,9 @@
 		769D8E5C292F3614001944EF /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
 		769D8E5E29321AD5001944EF /* PrivacyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyViewController.swift; sourceTree = "<group>"; };
 		769D8E60293321E8001944EF /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
+		769D8E622933392E001944EF /* 42750-accounting-illustration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "42750-accounting-illustration.json"; sourceTree = "<group>"; };
+		769D8E6429333D39001944EF /* 105437-friends.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "105437-friends.json"; sourceTree = "<group>"; };
+		769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lf30_editor_wilzakp4.json; sourceTree = "<group>"; };
 		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
 		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -363,6 +369,9 @@
 			isa = PBXGroup;
 			children = (
 				7673ADDB292A0C9700A15015 /* 96081-successful-animation.json */,
+				769D8E622933392E001944EF /* 42750-accounting-illustration.json */,
+				769D8E6429333D39001944EF /* 105437-friends.json */,
+				769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */,
 			);
 			path = "Lottie Demo";
 			sourceTree = "<group>";
@@ -442,7 +451,10 @@
 				76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */,
 				7673ADDC292A0C9700A15015 /* 96081-successful-animation.json in Resources */,
 				76608662290BDA2A008EF772 /* Assets.xcassets in Resources */,
+				769D8E6529333D39001944EF /* 105437-friends.json in Resources */,
+				769D8E6729334CE7001944EF /* lf30_editor_wilzakp4.json in Resources */,
 				767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */,
+				769D8E632933392E001944EF /* 42750-accounting-illustration.json in Resources */,
 				769D8E51292C9585001944EF /* ImageTableViewCell.xib in Resources */,
 				766086A0290F7B0B008EF772 /* Home.storyboard in Resources */,
 				76265F4A29178F5B00F5E341 /* PieChart.storyboard in Resources */,
