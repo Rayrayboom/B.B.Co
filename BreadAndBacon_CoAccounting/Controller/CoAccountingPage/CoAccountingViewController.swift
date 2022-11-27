@@ -86,13 +86,13 @@ class CoAccountingViewController: UIViewController {
     func setupUI() {
         self.navigationItem.title = "支出總覽"
         // segmented control邊框
-        coSegmentedControl.layer.borderWidth = 2.0
-        coSegmentedControl.layer.borderColor = UIColor.black.cgColor
-        // 預設一進去segmented所選文字為白色+黃底
+        coSegmentedControl.layer.borderWidth = 1.5
+        coSegmentedControl.layer.borderColor = CGColor(red: 233/255, green: 229/255, blue: 218/255, alpha: 1)
+        // 預設一進去segmented所選文字為黑色+黃底
         if coSegmentedControl.selectedSegmentIndex == 0 {
-            coSegmentedControl.selectedSegmentTintColor = UIColor.systemYellow
+            coSegmentedControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-            coSegmentedControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+            coSegmentedControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         bookDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
@@ -237,7 +237,16 @@ class CoAccountingViewController: UIViewController {
     func pieChartViewConfig() {
         let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
         // 設定圓餅圖的顏色
-        chartDataSet.colors = ChartColorTemplates.vordiplom()
+        chartDataSet.colors = [UIColor().hexStringToUIColor(hex: "de9493"),
+                               UIColor().hexStringToUIColor(hex: "f0b77b"),
+                               UIColor().hexStringToUIColor(hex: "b0bdd0"),
+                               UIColor().hexStringToUIColor(hex: "59b9bb"),
+                               UIColor().hexStringToUIColor(hex: "2580cb"),
+                               UIColor().hexStringToUIColor(hex: "c93640"),
+                               UIColor().hexStringToUIColor(hex: "f6cb61"),
+                               UIColor().hexStringToUIColor(hex: "b2c251"),
+                               UIColor().hexStringToUIColor(hex: "57549e"),
+                               UIColor().hexStringToUIColor(hex: "284155")]
         // 設定資料數值的字體大小
         chartDataSet.valueTextColor = .black
         chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)

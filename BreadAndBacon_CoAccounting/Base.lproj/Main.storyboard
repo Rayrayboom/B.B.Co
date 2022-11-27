@@ -283,7 +283,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BB_C0" translatesAutoresizingMaskIntoConstraints="NO" id="Jx1-rt-4QJ">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="BBCo" translatesAutoresizingMaskIntoConstraints="NO" id="Jx1-rt-4QJ">
                                 <rect key="frame" x="107" y="144" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="Jx1-rt-4QJ" secondAttribute="height" multiplier="1:1" id="r7v-Bh-GBQ"/>
@@ -364,7 +364,7 @@
         <designable name="j9I-T0-xhR"/>
     </designables>
     <resources>
-        <image name="BB_C0" width="823" height="800"/>
+        <image name="BBCo" width="274" height="309"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -25,7 +25,6 @@ class PieChartViewController: UIViewController {
     }
 
 //    var total: [String : Int] = [:]
-
 //    var totalData: [Account] = []
 
     var getId: String = ""
@@ -228,12 +227,22 @@ class PieChartViewController: UIViewController {
     func pieChartViewConfig() {
         let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
         // 設定圓餅圖的顏色
-        chartDataSet.colors = ChartColorTemplates.vordiplom()
+        chartDataSet.colors = [UIColor().hexStringToUIColor(hex: "de9493"),
+                               UIColor().hexStringToUIColor(hex: "f0b77b"),
+                               UIColor().hexStringToUIColor(hex: "b0bdd0"),
+                               UIColor().hexStringToUIColor(hex: "59b9bb"),
+                               UIColor().hexStringToUIColor(hex: "2580cb"),
+                               UIColor().hexStringToUIColor(hex: "c93640"),
+                               UIColor().hexStringToUIColor(hex: "f6cb61"),
+                               UIColor().hexStringToUIColor(hex: "b2c251"),
+                               UIColor().hexStringToUIColor(hex: "57549e"),
+                               UIColor().hexStringToUIColor(hex: "284155")]
         // 設定資料數值的字體大小
         chartDataSet.valueTextColor = .black
         chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)
 
         let chartData = PieChartData(dataSets: [chartDataSet])
+        pieChartView.legend.enabled = false
         // 將 chartData 指派給 pieChartView
         pieChartView.data = chartData
         // 設定下方圖例樣式，default為圓形

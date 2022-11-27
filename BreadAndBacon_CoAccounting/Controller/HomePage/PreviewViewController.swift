@@ -10,7 +10,6 @@ import Lottie
 
 
 class PreviewViewController: UIViewController {
-
     @IBOutlet weak var previewScrollView: UIScrollView!
     @IBOutlet weak var previewPageControl: UIPageControl!
     @IBOutlet weak var animationViewFirst: LottieAnimationView!

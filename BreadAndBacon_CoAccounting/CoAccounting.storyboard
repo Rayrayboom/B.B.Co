@@ -183,7 +183,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="dpb-Bz-aGx">
-                        <nil key="title"/>
                         <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="hQz-5n-dxn">
                             <rect key="frame" x="118.5" y="5.5" width="177" height="33"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -352,9 +351,9 @@
     </scenes>
     <resources>
         <image name="Add" width="60" height="71"/>
-        <image name="COACC-unclick_ 2" width="60" height="71"/>
+        <image name="COACC-unclick_ 2" width="35" height="41.5"/>
         <image name="Cancel_co" width="49" height="58"/>
-        <image name="CoAcc-clicked 2" width="60" height="71"/>
+        <image name="CoAcc-clicked 2" width="35" height="41.5"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

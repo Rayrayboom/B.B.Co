@@ -601,6 +601,8 @@ extension AddNewDataViewController: UITableViewDataSource {
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
+                // 切換segment時，清除已選圖案
+                addDataCell.chooseImage.image = nil
                 addDataCell.indexPath = indexPath
                 addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
