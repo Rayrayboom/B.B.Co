@@ -23,6 +23,7 @@ class CategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
+        categoryTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         tapDismiss()
         // 判斷點選side menu對應cell時fetch不同category資料
         switch indexPathRow {

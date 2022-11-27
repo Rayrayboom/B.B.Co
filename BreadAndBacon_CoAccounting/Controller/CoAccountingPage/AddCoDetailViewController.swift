@@ -85,7 +85,7 @@ class AddCoDetailViewController: UIViewController {
         } else {
             self.saveCoDetailBO.setTitle("Edit", for: .normal)
         }
-        coDetailTableView.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        coDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
     }
 
     // MARK: - 上傳資料到Firebase
@@ -207,6 +207,7 @@ extension AddCoDetailViewController: UITableViewDataSource {
         else {
             fatalError("can not create coDetailCell")
         }
+        coDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         coDetailCell.indexPath = indexPath
         coDetailCell.delegate = self
         coDetailCell.contentTextField.textAlignment = .center
@@ -217,6 +218,7 @@ extension AddCoDetailViewController: UITableViewDataSource {
             else {
                 fatalError("can not create coTimeCell")
             }
+            coTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
             coTimeCell.delegate = self
             // 執行點選cell的datePicker時給值，回傳給coAccountVC的data.dateTime

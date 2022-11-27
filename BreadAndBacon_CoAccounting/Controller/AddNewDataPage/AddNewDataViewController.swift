@@ -171,16 +171,16 @@ class AddNewDataViewController: UIViewController {
 
     func setupUI() {
         // segmented control邊框
-        sourceSegmentControl.layer.borderWidth = 2.0
-        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
-        // 預設一進去segmented所選文字為白色+黃底
+        sourceSegmentControl.layer.borderWidth = 1.5
+        sourceSegmentControl.layer.borderColor = CGColor(red: 233/255, green: 229/255, blue: 218/255, alpha: 1)
+        // 預設一進去segmented所選文字為黑色+黃底
         if sourceSegmentControl.selectedSegmentIndex == 0 {
-            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
-        addNewDadaTableView.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        addNewDadaTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
 
 // MARK: - TODO: 月曆優化（待處理）
 //        let blackView = UIView(frame: UIScreen.main.bounds)
@@ -201,18 +201,18 @@ class AddNewDataViewController: UIViewController {
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         switch segmentTag {
         case 1:
-            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "92c7bd")
         case 2:
             sourceSegmentControl.selectedSegmentTintColor = .systemBrown
         default:
-            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
         }
         // 切換segment control時，要先把textField和image的資料先清空，否則tableView會去抓前一筆資料的值
         data.amountTextField = ""
@@ -433,7 +433,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                dateCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                dateCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
 
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
@@ -457,7 +457,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                addDataCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
@@ -500,7 +500,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                qrCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                qrCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
@@ -510,7 +510,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                detailCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                detailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 轉帳頁面不需掃描發票，故給空值
                 detailCell.detailTextView.text = ""
                 detailCell.delegate = self
@@ -523,7 +523,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                dateCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                dateCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 dateCell.delegate = self
                 if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date {
                     let current = BBCDateFormatter.shareFormatter.string(from: dateFromVC)
@@ -556,7 +556,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                addDataCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
@@ -608,7 +608,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                qrCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                qrCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 支出、收入要顯示QRCode scanner
                 qrCell.qrButton.isHidden = false
                 return qrCell
@@ -618,7 +618,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-//                detailCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+                detailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 切換不同頁面時，detail要先清空
                 detailCell.detailTextView.text = ""
                 // 存放invoice的string在fetch data之前要先清空

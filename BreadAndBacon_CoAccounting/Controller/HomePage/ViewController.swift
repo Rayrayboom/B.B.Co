@@ -77,7 +77,8 @@ class ViewController: UIViewController {
     }
 
     func setupUI() {
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        showDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -278,6 +279,7 @@ extension ViewController: UITableViewDataSource {
         guard let homeDetailCell = tableView.dequeueReusableCell(withIdentifier: "homeDetailCell") as? HomeDetailTableViewCell else {
             fatalError("can not create cell")
         }
+        homeDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
         let image = data[indexPath.row].categoryImage?.toImage()
         homeDetailCell.categoryImage.image = image

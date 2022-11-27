@@ -62,6 +62,7 @@
 		769D8E632933392E001944EF /* 42750-accounting-illustration.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E622933392E001944EF /* 42750-accounting-illustration.json */; };
 		769D8E6529333D39001944EF /* 105437-friends.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E6429333D39001944EF /* 105437-friends.json */; };
 		769D8E6729334CE7001944EF /* lf30_editor_wilzakp4.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */; };
+		769D8E6A29339E02001944EF /* UIColor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E6929339E02001944EF /* UIColor + Extension.swift */; };
 		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
 		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
@@ -125,6 +126,7 @@
 		769D8E622933392E001944EF /* 42750-accounting-illustration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "42750-accounting-illustration.json"; sourceTree = "<group>"; };
 		769D8E6429333D39001944EF /* 105437-friends.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "105437-friends.json"; sourceTree = "<group>"; };
 		769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lf30_editor_wilzakp4.json; sourceTree = "<group>"; };
+		769D8E6929339E02001944EF /* UIColor + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + Extension.swift"; sourceTree = "<group>"; };
 		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
 		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -343,6 +345,7 @@
 				76608695290F7129008EF772 /* UIStoryboard+Extension.swift */,
 				769D8E4A292B7BF8001944EF /* SPAlert + Extension.swift */,
 				769D8E56292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift */,
+				769D8E6929339E02001944EF /* UIColor + Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -573,6 +576,7 @@
 				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
 				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
 				769D8E57292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift in Sources */,
+				769D8E6A29339E02001944EF /* UIColor + Extension.swift in Sources */,
 				7673ADAB291C994300A15015 /* CoDetailTableViewCell.swift in Sources */,
 				76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */,
 				7673ADA9291C8E9F00A15015 /* AddCoDetailViewController.swift in Sources */,

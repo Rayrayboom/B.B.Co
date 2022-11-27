@@ -94,7 +94,8 @@ class CoAccountingViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             coSegmentedControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        bookDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -327,6 +328,7 @@ extension CoAccountingViewController: UITableViewDataSource {
         else {
             fatalError("can not create listCell")
         }
+        listCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
         listCell.titleLabel.text = data[indexPath.row].category
         listCell.dateLabel.text = data[indexPath.row].date

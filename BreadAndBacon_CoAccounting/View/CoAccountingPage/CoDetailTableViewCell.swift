@@ -45,6 +45,11 @@ class CoDetailTableViewCell: UITableViewCell {
     @IBOutlet weak var contentTextField: UITextField! {
         didSet {
             contentTextField.delegate = self
+            // 設定textField外觀
+            contentTextField.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+            contentTextField.layer.borderWidth = 1
+            contentTextField.layer.borderColor = CGColor.init(red: 189/255, green: 189/255, blue: 190/255, alpha: 1)
+            contentTextField.layer.cornerRadius = 5
         }
     }
 

@@ -144,16 +144,16 @@ class EditViewController: UIViewController {
 
     func setupUI() {
         // segmented control邊框
-        sourceSegmentControl.layer.borderWidth = 2.0
-        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
-        // 預設一進去segmented所選文字為白色+黃底
+        sourceSegmentControl.layer.borderWidth = 1.5
+        sourceSegmentControl.layer.borderColor = CGColor(red: 233/255, green: 229/255, blue: 218/255, alpha: 1)
+        // 預設一進去segmented所選文字為黑色+黃底
         if sourceSegmentControl.selectedSegmentIndex == 0 {
-            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
-        editTableView.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        editTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
     // segmentControl 偵測改值狀態
@@ -171,11 +171,11 @@ class EditViewController: UIViewController {
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         switch segmentTag {
         case 1:
-            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+            sourceSegmentControl.selectedSegmentTintColor =  UIColor().hexStringToUIColor(hex: "92c7bd")
         case 2:
             sourceSegmentControl.selectedSegmentTintColor = .systemBrown
         default:
-            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
         }
         isChange = true
         editData.categoryTextField = ""
@@ -461,6 +461,8 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                
+                editTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 由homeVC傳被點選的cell對應資料data過來，editVC用data接，裡面的date資料就是該筆資料的日期
                 editData.dateTime = data?.date ?? ""
                 editData.monthTime = data?.month ?? ""
@@ -472,6 +474,8 @@ extension EditViewController: UITableViewDataSource {
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
+                
+                editDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
@@ -512,6 +516,7 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                editQRCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 return editQRCell
             } else {
                 guard let editDetailCell = tableView.dequeueReusableCell(
@@ -519,6 +524,7 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                editDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 editData.detailTextView = self.data?.detail ?? ""
                 // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一班手動編輯(isTappedQR == 0)則顯示原textView資訊
                 if isTappedQR == 1 {
@@ -545,6 +551,7 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                editTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 由homeVC傳被點選的cell對應資料data過來，editVC用data接，裡面的date資料就是該筆資料的日期
                 editData.dateTime = data?.date ?? ""
                 editData.monthTime = data?.month ?? ""
@@ -556,6 +563,7 @@ extension EditViewController: UITableViewDataSource {
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
+                editDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
@@ -620,6 +628,7 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                editQRCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 return editQRCell
             } else {
                 guard let editDetailCell = tableView.dequeueReusableCell(
@@ -627,6 +636,7 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                editDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 editData.detailTextView = self.data?.detail ?? ""
                 // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一班手動編輯(isTappedQR == 0)則顯示原textView資訊
                 if isTappedQR == 1 {

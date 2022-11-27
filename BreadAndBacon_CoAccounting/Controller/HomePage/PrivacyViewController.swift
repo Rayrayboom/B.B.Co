@@ -16,6 +16,8 @@ class PrivacyViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        privacyTextView.backgroundColor =  UIColor().hexStringToUIColor(hex: "f2f6f7")
         dismissProvactBO.setTitle("關閉", for: .normal)
         dismissProvactBO.layer.cornerRadius = 10
         privacyTextView.text = """

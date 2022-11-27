@@ -63,6 +63,11 @@ class EditDataTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
+        // 設定textField外觀
+        contentTextField.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        contentTextField.layer.borderWidth = 1
+        contentTextField.layer.borderColor = CGColor.init(red: 189/255, green: 189/255, blue: 190/255, alpha: 1)
+        contentTextField.layer.cornerRadius = 5
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

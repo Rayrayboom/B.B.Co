@@ -136,7 +136,7 @@ class PieChartViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
         }
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
     }
 
     // segmentControl

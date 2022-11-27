@@ -65,7 +65,8 @@ class CoBookViewController: UIViewController {
     }
 
     func setupUI() {
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        bookTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -387,6 +388,7 @@ extension CoBookViewController: UITableViewDataSource {
         else {
             fatalError("can not create coBookCell")
         }
+        coBookCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
         // 顯示新增account book name & roomId
         coBookCell.bookNameLabel.text = data[indexPath.row].name
