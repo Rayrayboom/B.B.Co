@@ -131,18 +131,18 @@ class AddNewDataViewController: UIViewController {
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
 
         // 測試存images(暫時) for tableView with collectionView
-        models.append(Model(text: "早餐", imageName: "Breakfast"))
-        models.append(Model(text: "午餐", imageName: "Lunch"))
-        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-        models.append(Model(text: "晚餐", imageName: "Dinner"))
-        models.append(Model(text: "交通", imageName: "Transportation"))
-        models.append(Model(text: "娛樂", imageName: "Entertainment"))
-        models.append(Model(text: "早餐", imageName: "Breakfast"))
-        models.append(Model(text: "午餐", imageName: "Lunch"))
-        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-        models.append(Model(text: "晚餐", imageName: "Dinner"))
-        models.append(Model(text: "交通", imageName: "Transportation"))
-        models.append(Model(text: "娛樂", imageName: "Entertainment"))
+//        models.append(Model(text: "早餐", imageName: "Breakfast"))
+//        models.append(Model(text: "午餐", imageName: "Lunch"))
+//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+//        models.append(Model(text: "晚餐", imageName: "Dinner"))
+//        models.append(Model(text: "交通", imageName: "Transportation"))
+//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
+//        models.append(Model(text: "早餐", imageName: "Breakfast"))
+//        models.append(Model(text: "午餐", imageName: "Lunch"))
+//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+//        models.append(Model(text: "晚餐", imageName: "Dinner"))
+//        models.append(Model(text: "交通", imageName: "Transportation"))
+//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
 
         // 註冊image tableView cell
         addNewDadaTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
@@ -372,27 +372,29 @@ extension AddNewDataViewController: UITableViewDelegate {
 
 extension AddNewDataViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 4 {
+        if indexPath.section == 3 {
             return 250
-        } else if indexPath.section == 1 {
-            return 80
-        } else {
+        }
+//        else if indexPath.section == 1 {
+//            return 80
+//        }
+        else {
             return UITableView.automaticDimension
         }
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return 4 //5
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
             return 1
+//        case 1:
+//            return 1
         case 1:
-            return 1
-        case 2:
             return costCategory.count
-        case 3:
+        case 2:
             if segmentTag == 2 {
                 return 0
             } else {
@@ -407,11 +409,11 @@ extension AddNewDataViewController: UITableViewDataSource {
         switch section {
         case 0:
             return "選擇日期"
+//        case 1:
+//            return "選擇圖案"
         case 1:
-            return "選擇圖案"
-        case 2:
             return "選擇細項"
-        case 3:
+        case 2:
             if segmentTag == 2 {
                 return nil
             } else {
@@ -437,17 +439,19 @@ extension AddNewDataViewController: UITableViewDataSource {
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
 
                 return dateCell
-            } else if indexPath.section == 1 {
-                guard let imageCell = tableView.dequeueReusableCell(
-                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-                else {
-                    fatalError("can not create imageCell")
-                }
-//                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-                imageCell.configure(with: models)
-
-                return imageCell
-            } else if indexPath.section == 2 {
+            }
+//            else if indexPath.section == 1 {
+//                guard let imageCell = tableView.dequeueReusableCell(
+//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
+//                else {
+//                    fatalError("can not create imageCell")
+//                }
+////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+//                imageCell.configure(with: models)
+//
+//                return imageCell
+//            }
+            else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -490,7 +494,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
-            } else if indexPath.section == 3 {
+            } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
@@ -534,17 +538,19 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let monthData = data.dateTime.prefix(11)
                 data.monthTime = String(monthData)
                 return dateCell
-            } else if indexPath.section == 1 {
-                guard let imageCell = tableView.dequeueReusableCell(
-                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-                else {
-                    fatalError("can not create imageCell")
-                }
-//                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-                imageCell.configure(with: models)
-
-                return imageCell
-            } else if indexPath.section == 2 {
+            }
+//            else if indexPath.section == 1 {
+//                guard let imageCell = tableView.dequeueReusableCell(
+//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
+//                else {
+//                    fatalError("can not create imageCell")
+//                }
+////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+//                imageCell.configure(with: models)
+//
+//                return imageCell
+//            }
+            else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -596,7 +602,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
-            } else if indexPath.section == 3 {
+            } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {

@@ -17,6 +17,7 @@ class PrivacyViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         dismissProvactBO.setTitle("關閉", for: .normal)
+        dismissProvactBO.layer.cornerRadius = 10
         privacyTextView.text = """
         感謝您使用 B.B.Co！在您開始使用本軟體後，即表示您已閱讀並同意下述所有使用條款；若您不同意，請自行關閉並移除本軟體，謝謝。
         免責聲明：本軟體所載資料的準確性、可用性、完整性或效用，概不作明確或暗示的保證及聲明，對於使用本軟體而可能直接或間接導致的任何損失、損壞或傷害，本軟體之開發者不負任何法律承擔和責任。

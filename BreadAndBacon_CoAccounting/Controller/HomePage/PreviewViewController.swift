@@ -10,7 +10,7 @@ import Lottie
 
 
 class PreviewViewController: UIViewController {
-    
+
     @IBOutlet weak var previewScrollView: UIScrollView!
     @IBOutlet weak var previewPageControl: UIPageControl!
     @IBOutlet weak var animationViewFirst: LottieAnimationView!
@@ -33,13 +33,7 @@ class PreviewViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-//        setupAnimation()
-//        previewPageControl.tintColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-        animationViewFirst.loopMode = .loop
-        animationViewFirst.contentMode = .scaleAspectFit
-        animationViewFirst.clipsToBounds = true
-        animationViewFirst.play()
-
+        setupOpenAnimation()
         previewScrollView.delegate = self
         // 判斷如果使用者已經登入過，就直接導到首頁
         if (KeychainWrapper.standard.string(forKey: "id") != nil) {
@@ -50,14 +44,11 @@ class PreviewViewController: UIViewController {
         }
     }
 
-    func setupAnimation() {
-        let animationView: [LottieAnimationView?] = [animationViewFirst, animationViewSecond, animationViewThird]
-        for animate in animationView {
-            animate?.loopMode = .loop
-            animate?.contentMode = .scaleAspectFit
-            animate?.clipsToBounds = true
-            animate?.play()
-        }
+    func setupOpenAnimation() {
+        animationViewFirst.loopMode = .loop
+        animationViewFirst.contentMode = .scaleAspectFit
+        animationViewFirst.clipsToBounds = true
+        animationViewFirst.play()
     }
 }
 

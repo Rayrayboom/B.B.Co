@@ -202,7 +202,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M2h-4K-BQ9">
-                                                        <rect key="frame" x="178.5" y="812.5" width="57" height="33.5"/>
+                                                        <rect key="frame" x="327" y="812.5" width="57" height="33.5"/>
                                                         <color key="tintColor" systemColor="systemBrownColor"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="登入">
@@ -216,9 +216,9 @@
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="trailing" secondItem="Cqz-zH-Tcx" secondAttribute="trailing" constant="50" id="1XS-Vc-MDb"/>
+                                                    <constraint firstAttribute="trailing" secondItem="M2h-4K-BQ9" secondAttribute="trailing" constant="30" id="2iQ-bO-Fs3"/>
                                                     <constraint firstAttribute="bottom" secondItem="M2h-4K-BQ9" secondAttribute="bottom" constant="50" id="LGs-O2-jfh"/>
                                                     <constraint firstItem="Cqz-zH-Tcx" firstAttribute="leading" secondItem="5a3-XE-h6d" secondAttribute="leading" constant="50" id="LUn-Y4-ytn"/>
-                                                    <constraint firstItem="M2h-4K-BQ9" firstAttribute="centerX" secondItem="5a3-XE-h6d" secondAttribute="centerX" id="P7q-cu-a0s"/>
                                                     <constraint firstAttribute="trailing" secondItem="ElT-Nc-p57" secondAttribute="trailing" constant="90" id="QIC-GE-efo"/>
                                                     <constraint firstItem="ElT-Nc-p57" firstAttribute="top" secondItem="Cqz-zH-Tcx" secondAttribute="bottom" constant="30" id="RzY-az-cVB"/>
                                                     <constraint firstItem="j9I-T0-xhR" firstAttribute="top" secondItem="5a3-XE-h6d" secondAttribute="top" constant="100" id="SWj-C9-6lF"/>
@@ -296,11 +296,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JMA-Qz-PNn">
-                                <rect key="frame" x="216" y="783" width="88" height="29"/>
+                                <rect key="frame" x="127" y="783" width="160" height="29"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" title="Button">
                                     <attributedString key="attributedTitle">
+                                        <fragment content="登入後表示您同意 ">
+                                            <attributes>
+                                                <color key="NSColor" red="0.53797743055555558" green="0.53797743055555558" blue="0.53797743055555558" alpha="0.84705882352941175" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <font key="NSFont" size="12" name="PingFangTC-Regular"/>
+                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                <color key="NSUnderlineColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            </attributes>
+                                        </fragment>
                                         <fragment content="隱私權條款">
                                             <attributes>
                                                 <color key="NSColor" name="labelColor" catalog="System" colorSpace="catalog"/>
@@ -316,12 +324,6 @@
                                     <action selector="showPrivacy:" destination="DsW-Md-aaP" eventType="touchUpInside" id="wun-9h-UKZ"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="登入後表示您同意" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UMH-Ad-xfH">
-                                <rect key="frame" x="120" y="790" width="96" height="17"/>
-                                <fontDescription key="fontDescription" name="PingFangTC-Regular" family="PingFang TC" pointSize="12"/>
-                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="GaT-hw-ZGY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -329,13 +331,10 @@
                             <constraint firstItem="GaT-hw-ZGY" firstAttribute="trailing" secondItem="Jx1-rt-4QJ" secondAttribute="trailing" constant="107" id="3rg-30-jCu"/>
                             <constraint firstItem="1qJ-Y0-4fK" firstAttribute="top" secondItem="Jx1-rt-4QJ" secondAttribute="bottom" constant="100" id="BK6-hj-bbx"/>
                             <constraint firstItem="Jx1-rt-4QJ" firstAttribute="leading" secondItem="GaT-hw-ZGY" secondAttribute="leading" constant="107" id="CeN-pd-nAg"/>
-                            <constraint firstItem="JMA-Qz-PNn" firstAttribute="leading" secondItem="UMH-Ad-xfH" secondAttribute="trailing" id="NRB-1J-hEH"/>
-                            <constraint firstItem="UMH-Ad-xfH" firstAttribute="leading" secondItem="GaT-hw-ZGY" secondAttribute="leading" constant="120" id="PaE-zv-3w0"/>
-                            <constraint firstItem="GaT-hw-ZGY" firstAttribute="bottom" secondItem="UMH-Ad-xfH" secondAttribute="bottom" constant="55" id="Xrw-DT-dQy"/>
+                            <constraint firstItem="JMA-Qz-PNn" firstAttribute="centerX" secondItem="O0M-kv-HrE" secondAttribute="centerX" id="b6e-jx-4iw"/>
                             <constraint firstItem="GaT-hw-ZGY" firstAttribute="bottom" secondItem="JMA-Qz-PNn" secondAttribute="bottom" constant="50" id="cP7-fn-JjA"/>
                             <constraint firstItem="1qJ-Y0-4fK" firstAttribute="leading" secondItem="GaT-hw-ZGY" secondAttribute="leading" constant="10" id="cjU-sd-0Hd"/>
                             <constraint firstItem="Jx1-rt-4QJ" firstAttribute="top" secondItem="GaT-hw-ZGY" secondAttribute="top" constant="100" id="e3c-jN-n57"/>
-                            <constraint firstItem="GaT-hw-ZGY" firstAttribute="trailing" secondItem="JMA-Qz-PNn" secondAttribute="trailing" constant="110" id="npi-yw-cso"/>
                             <constraint firstItem="GaT-hw-ZGY" firstAttribute="trailing" secondItem="1qJ-Y0-4fK" secondAttribute="trailing" constant="10" id="xWO-cr-9SV"/>
                         </constraints>
                     </view>
@@ -360,6 +359,7 @@
         </scene>
     </scenes>
     <designables>
+        <designable name="94f-x8-lbu"/>
         <designable name="JkE-Cu-eoz"/>
         <designable name="j9I-T0-xhR"/>
     </designables>
