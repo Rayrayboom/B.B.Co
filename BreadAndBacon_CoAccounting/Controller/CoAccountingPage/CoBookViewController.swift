@@ -85,7 +85,7 @@ class CoBookViewController: UIViewController {
 
     // 按下右上button讓使用者輸入book name並新增帳本
     func addNewCoAccountBook() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Add"), style: .plain, target: self, action: #selector(saveEdit))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ADD_coData_1"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
     // 觸發新增帳本func
@@ -120,7 +120,7 @@ class CoBookViewController: UIViewController {
 
     // 按下左上button讓使用者輸入帳本id來加入帳本
     func joinCoAccountBook() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Accounting_book"), style: .plain, target: self, action: #selector(checkRoomId))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Accounting_book_2"), style: .plain, target: self, action: #selector(checkRoomId))
     }
 
     // 觸發加入帳本func

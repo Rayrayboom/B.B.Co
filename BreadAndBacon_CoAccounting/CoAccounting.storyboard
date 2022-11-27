@@ -210,14 +210,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="新 支出" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KFv-vr-iq4">
-                                <rect key="frame" x="179" y="64" width="56.5" height="49"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KFv-vr-iq4">
+                                <rect key="frame" x="178" y="64" width="58.5" height="49"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="新 支出">
+                                        <attributes>
+                                            <color key="NSColor" systemColor="systemGroupedBackgroundColor"/>
+                                            <font key="NSFont" size="18" name=".PingFangTC-Regular"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zye-uA-1aV">
-                                <rect key="frame" x="20" y="49" width="60" height="72"/>
+                                <rect key="frame" x="20" y="49" width="59" height="72"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Cancel_co"/>
@@ -225,21 +231,8 @@
                                     <action selector="dismissDetail:" destination="LUQ-nm-wQd" eventType="touchUpInside" id="f49-ex-6gN"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3am-uT-LXd">
-                                <rect key="frame" x="20" y="782" width="374" height="50"/>
-                                <color key="backgroundColor" systemColor="systemBrownColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="Mar-2r-cb7"/>
-                                </constraints>
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="save"/>
-                                <connections>
-                                    <action selector="saveCoDetail:" destination="LUQ-nm-wQd" eventType="touchUpInside" id="2Aq-FM-1Uu"/>
-                                </connections>
-                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="insetGrouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" estimatedSectionHeaderHeight="-1" sectionFooterHeight="18" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="rnj-cg-wdi">
-                                <rect key="frame" x="0.0" y="113" width="414" height="669"/>
+                                <rect key="frame" x="0.0" y="113" width="414" height="694"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="coTimeCell" rowHeight="71" id="igE-Uf-rPr" customClass="CoTimeTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
@@ -290,6 +283,19 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3am-uT-LXd">
+                                <rect key="frame" x="20" y="782" width="374" height="50"/>
+                                <color key="backgroundColor" systemColor="systemBrownColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Mar-2r-cb7"/>
+                                </constraints>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="save"/>
+                                <connections>
+                                    <action selector="saveCoDetail:" destination="LUQ-nm-wQd" eventType="touchUpInside" id="2Aq-FM-1Uu"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="XPf-fw-Rrr"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -297,7 +303,7 @@
                             <constraint firstItem="3am-uT-LXd" firstAttribute="leading" secondItem="XPf-fw-Rrr" secondAttribute="leading" constant="20" id="17i-qx-Xvk"/>
                             <constraint firstItem="XPf-fw-Rrr" firstAttribute="trailing" secondItem="3am-uT-LXd" secondAttribute="trailing" constant="20" id="2Rj-b7-hN4"/>
                             <constraint firstItem="rnj-cg-wdi" firstAttribute="leading" secondItem="XPf-fw-Rrr" secondAttribute="leading" id="B5K-Ic-7rN"/>
-                            <constraint firstItem="3am-uT-LXd" firstAttribute="top" secondItem="rnj-cg-wdi" secondAttribute="bottom" id="CLz-ig-o27"/>
+                            <constraint firstItem="3am-uT-LXd" firstAttribute="top" secondItem="rnj-cg-wdi" secondAttribute="bottom" constant="-25" id="CLz-ig-o27"/>
                             <constraint firstItem="KFv-vr-iq4" firstAttribute="leading" secondItem="zye-uA-1aV" secondAttribute="trailing" constant="99" id="H1N-33-GJJ"/>
                             <constraint firstItem="KFv-vr-iq4" firstAttribute="height" secondItem="zye-uA-1aV" secondAttribute="height" multiplier="0.677419" id="JQF-Ta-5t6"/>
                             <constraint firstItem="zye-uA-1aV" firstAttribute="leading" secondItem="XPf-fw-Rrr" secondAttribute="leading" constant="20" id="PI8-dl-ule"/>
@@ -319,13 +325,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zvc-yT-AMb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1513" y="1383"/>
+            <point key="canvasLocation" x="1511.5942028985507" y="1382.8125"/>
         </scene>
         <!--Co_Accounting-->
         <scene sceneID="mz2-5l-oTb">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="uPc-Fa-FTd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Co_Accounting" image="COACC-unclick" selectedImage="CoAcc-clicked" id="6jj-b6-8hJ">
+                    <tabBarItem key="tabBarItem" title="Co_Accounting" image="COACC-unclick_ 2" selectedImage="CoAcc-clicked 2" id="6jj-b6-8hJ">
                         <inset key="imageInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="4"/>
                     </tabBarItem>
                     <toolbarItems/>
@@ -346,14 +352,17 @@
     </scenes>
     <resources>
         <image name="Add" width="60" height="71"/>
-        <image name="COACC-unclick" width="32.5" height="38.5"/>
+        <image name="COACC-unclick_ 2" width="60" height="71"/>
         <image name="Cancel_co" width="49" height="58"/>
-        <image name="CoAcc-clicked" width="32.5" height="38.5"/>
+        <image name="CoAcc-clicked 2" width="60" height="71"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemBrownColor">
             <color red="0.63529411764705879" green="0.51764705882352946" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGroupedBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

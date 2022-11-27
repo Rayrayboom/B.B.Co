@@ -128,14 +128,15 @@ class PieChartViewController: UIViewController {
 
     func setupUI() {
         // segmented control邊框
-        sourceSegmentControl.layer.borderWidth = 2.0
-        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
-        // 預設一進去segmented所選文字為白色+黃底
+        sourceSegmentControl.layer.borderWidth = 1.5
+        sourceSegmentControl.layer.borderColor = CGColor(red: 233/255, green: 229/255, blue: 218/255, alpha: 1)
+        // 預設一進去segmented所選文字為黑色+黃底
         if sourceSegmentControl.selectedSegmentIndex == 0 {
-            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
+        pieTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
     }
 
@@ -155,9 +156,9 @@ class PieChartViewController: UIViewController {
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         switch segmentTag {
         case 1:
-            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "92c7bd")
         default:
-            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
         }
         pieTableView.reloadData()
@@ -341,6 +342,7 @@ extension PieChartViewController: UITableViewDataSource {
         guard let pieCell = tableView.dequeueReusableCell(withIdentifier: "pieCell") as? PieChartTableViewCell else {
             fatalError("can not create cell")
         }
+        pieCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
         pieCell.categoryImage.image = data[indexPath.row].categoryImage?.toImage()
 //        pieCell.nameLabel.text = totalData[indexPath.row].category

@@ -63,11 +63,17 @@ class AddNewDataViewController: UIViewController {
     // 存cost image的資料
     var costImageArr = [UIImage(named: "Breakfast"),
                         UIImage(named: "Lunch"),
-                        UIImage(named: "Lunch 2"),
-                        UIImage(named: "Dinner")]
+                        UIImage(named: "Dinner"),
+                        UIImage(named: "Drink"),
+                        UIImage(named: "Medicine"),
+                        UIImage(named: "Shopping"),
+                        UIImage(named: "Snack"),
+                        UIImage(named: "Entertainment"),
+                        UIImage(named: "Transportation")]
     // 存income image的資料
-    var incomeImageArr = [UIImage(named: "Entertainment"),
-                          UIImage(named: "Transportation")]
+    var incomeImageArr = [UIImage(named: "Bonus"),
+                          UIImage(named: "Investments"),
+                          UIImage(named: "Salary")]
     // 存account image的資料
     var accountImageArr = [UIImage(named: "Add-clicked"),
                            UIImage(named: "Add-unclicked")]
@@ -236,7 +242,7 @@ class AddNewDataViewController: UIViewController {
     // 新增資料按鈕trigger
     func saveNewData() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "Add"), style: .plain, target: self, action: #selector(savePage))
+            image: UIImage(named: "ADD_coData_1"), style: .plain, target: self, action: #selector(savePage))
     }
 
     // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面

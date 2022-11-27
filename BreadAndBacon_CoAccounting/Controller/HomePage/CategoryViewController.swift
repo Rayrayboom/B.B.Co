@@ -23,7 +23,7 @@ class CategoryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
-        categoryTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        setupUI()
         tapDismiss()
         // 判斷點選side menu對應cell時fetch不同category資料
         switch indexPathRow {
@@ -39,6 +39,11 @@ class CategoryViewController: UIViewController {
 
         categoryTableView.delegate = self
         categoryTableView.dataSource = self
+    }
+
+    func setupUI() {
+        categoryTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
     func tapDismiss() {
@@ -102,6 +107,7 @@ extension CategoryViewController: UITableViewDataSource {
         else {
             fatalError("can not create category Cell")
         }
+        categoryCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         categoryCell.categoryLabel.text = category[indexPath.row].title
         return categoryCell
     }

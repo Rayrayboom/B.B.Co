@@ -59,7 +59,7 @@ class ViewController: UIViewController {
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
         tappedDatePicker()
-        dateBO.tintColor = .black
+        dateBO.setTitleColor(UIColor().hexStringToUIColor(hex: "f2f6f7"), for: .normal)
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)

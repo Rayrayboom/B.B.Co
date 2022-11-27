@@ -53,14 +53,19 @@ class EditViewController: UIViewController {
             editTableView.reloadData()
         }
     }
-    // 存cost image的資料
     var costImageArr = [UIImage(named: "Breakfast"),
                         UIImage(named: "Lunch"),
-                        UIImage(named: "Lunch 2"),
-                        UIImage(named: "Dinner")]
+                        UIImage(named: "Dinner"),
+                        UIImage(named: "Drink"),
+                        UIImage(named: "Medicine"),
+                        UIImage(named: "Shopping"),
+                        UIImage(named: "Snack"),
+                        UIImage(named: "Entertainment"),
+                        UIImage(named: "Transportation")]
     // 存income image的資料
-    var incomeImageArr = [UIImage(named: "Entertainment"),
-                          UIImage(named: "Transportation")]
+    var incomeImageArr = [UIImage(named: "Bonus"),
+                          UIImage(named: "Investments"),
+                          UIImage(named: "Salary")]
     // 存account image的資料
     var accountImageArr = [UIImage(named: "Add-clicked"),
                            UIImage(named: "Add-unclicked")]

@@ -85,7 +85,12 @@ class AddCoDetailViewController: UIViewController {
         } else {
             self.saveCoDetailBO.setTitle("Edit", for: .normal)
         }
+
         coDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        saveCoDetailBO.backgroundColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
+        saveCoDetailBO.layer.borderWidth = 4
+        saveCoDetailBO.layer.borderColor = CGColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1)
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
     // MARK: - 上傳資料到Firebase
