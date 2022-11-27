@@ -16,6 +16,10 @@
                 <rect key="frame" x="0.0" y="0.0" width="50" height="67"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="euk-Yk-eMa">
+                        <rect key="frame" x="0.0" y="0.0" width="50" height="67"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8HH-zY-CBv">
                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                         <constraints>
@@ -34,8 +38,12 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
+                <constraint firstItem="euk-Yk-eMa" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="91Y-nW-S2d"/>
+                <constraint firstItem="euk-Yk-eMa" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="AOu-E7-xai"/>
                 <constraint firstAttribute="bottom" secondItem="PlS-QW-r7K" secondAttribute="bottom" id="GRt-iO-qsU"/>
                 <constraint firstItem="PlS-QW-r7K" firstAttribute="top" secondItem="8HH-zY-CBv" secondAttribute="bottom" id="Iin-HK-JpO"/>
+                <constraint firstAttribute="trailing" secondItem="euk-Yk-eMa" secondAttribute="trailing" id="NSY-pO-XzE"/>
+                <constraint firstAttribute="bottom" secondItem="euk-Yk-eMa" secondAttribute="bottom" id="Nbn-x0-qI8"/>
                 <constraint firstAttribute="trailing" secondItem="8HH-zY-CBv" secondAttribute="trailing" id="SbJ-sc-L9F"/>
                 <constraint firstItem="8HH-zY-CBv" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="nSK-Tj-aHE"/>
                 <constraint firstAttribute="trailing" secondItem="PlS-QW-r7K" secondAttribute="trailing" id="oAW-AO-taU"/>
@@ -44,6 +52,7 @@
             </constraints>
             <size key="customSize" width="50" height="67"/>
             <connections>
+                <outlet property="didSelectView" destination="euk-Yk-eMa" id="yW2-A5-BpY"/>
                 <outlet property="imageView" destination="8HH-zY-CBv" id="6FX-3o-oPt"/>
                 <outlet property="label" destination="PlS-QW-r7K" id="Bxd-R0-2Oi"/>
             </connections>

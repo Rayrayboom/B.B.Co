@@ -78,12 +78,19 @@ class AddCoDetailViewController: UIViewController {
 
     // UI
     func setupUI() {
+        saveCoDetailBO.layer.cornerRadius = 10
         self.titleLabel.text = isEdit ? "編輯 支出" : "新 支出"
         if isEdit == false {
             self.saveCoDetailBO.setTitle("Save", for: .normal)
         } else {
             self.saveCoDetailBO.setTitle("Edit", for: .normal)
         }
+
+        coDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        saveCoDetailBO.backgroundColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
+        saveCoDetailBO.layer.borderWidth = 4
+        saveCoDetailBO.layer.borderColor = CGColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1)
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
     // MARK: - 上傳資料到Firebase
@@ -110,7 +117,8 @@ class AddCoDetailViewController: UIViewController {
             revenueId: nil,
             detail: nil,
             user: data.userTextField,
-            categoryImage: nil)
+            categoryImage: nil,
+            segmentTag: nil)
         do {
             try documentID.setData(from: account)
             print("success create document. ID: \(documentID.documentID)")
@@ -204,6 +212,7 @@ extension AddCoDetailViewController: UITableViewDataSource {
         else {
             fatalError("can not create coDetailCell")
         }
+        coDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         coDetailCell.indexPath = indexPath
         coDetailCell.delegate = self
         coDetailCell.contentTextField.textAlignment = .center
@@ -214,6 +223,7 @@ extension AddCoDetailViewController: UITableViewDataSource {
             else {
                 fatalError("can not create coTimeCell")
             }
+            coTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
             coTimeCell.delegate = self
             // 執行點選cell的datePicker時給值，回傳給coAccountVC的data.dateTime

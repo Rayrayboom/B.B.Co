@@ -15,6 +15,7 @@ class ImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var didSelectView: UIView!
 
     override func awakeFromNib() {
         super.awakeFromNib()

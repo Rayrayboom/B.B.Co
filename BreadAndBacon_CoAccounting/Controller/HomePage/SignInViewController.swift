@@ -25,6 +25,16 @@ class SignInViewController: UIViewController {
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
+    @IBAction func showPrivacy(_ sender: UIButton) {
+        let homeStoryboard = UIStoryboard(name: "Home", bundle: nil)
+        guard let presentPrivacyVC = homeStoryboard
+            .instantiateViewController(withIdentifier: "privacyVC") as? PrivacyViewController
+        else {
+            fatalError("can not present privacyVC")
+        }
+        presentPrivacyVC.modalPresentationStyle = .fullScreen
+        present(presentPrivacyVC, animated: true)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,10 +63,10 @@ class SignInViewController: UIViewController {
         signInButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            signInButton.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 550),
-            signInButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 50),
-            signInButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50),
-            signInButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -250)
+            signInButton.widthAnchor.constraint(equalToConstant: 280),
+            signInButton.heightAnchor.constraint(equalToConstant: 50),
+            signInButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            signInButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -150)
         ])
     }
 

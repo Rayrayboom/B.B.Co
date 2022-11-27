@@ -65,6 +65,8 @@ struct Account: Codable {
     var user: String?
     // 記個人記帳圖案資料
     var categoryImage: String?
+    // 儲存單筆資料種類來源(expenditure(0), revenue(1), account(2))
+    var segmentTag: Int?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -83,6 +85,7 @@ struct Account: Codable {
         case user
         // 記個人記帳圖案資料
         case categoryImage = "category_image"
+        case segmentTag = "segment_tag"
     }
 }
 

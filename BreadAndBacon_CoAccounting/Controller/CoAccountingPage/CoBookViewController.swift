@@ -65,7 +65,8 @@ class CoBookViewController: UIViewController {
     }
 
     func setupUI() {
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        bookTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -84,7 +85,7 @@ class CoBookViewController: UIViewController {
 
     // 按下右上button讓使用者輸入book name並新增帳本
     func addNewCoAccountBook() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(saveEdit))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "ADD_coData_1"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
     // 觸發新增帳本func
@@ -119,7 +120,7 @@ class CoBookViewController: UIViewController {
 
     // 按下左上button讓使用者輸入帳本id來加入帳本
     func joinCoAccountBook() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Accounting_book"), style: .plain, target: self, action: #selector(checkRoomId))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "Accounting_book_2"), style: .plain, target: self, action: #selector(checkRoomId))
     }
 
     // 觸發加入帳本func
@@ -387,6 +388,7 @@ extension CoBookViewController: UITableViewDataSource {
         else {
             fatalError("can not create coBookCell")
         }
+        coBookCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
         // 顯示新增account book name & roomId
         coBookCell.bookNameLabel.text = data[indexPath.row].name

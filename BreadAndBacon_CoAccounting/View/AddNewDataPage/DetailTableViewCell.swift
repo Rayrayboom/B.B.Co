@@ -25,7 +25,11 @@ class DetailTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // 設定textField外觀
+        detailTextView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        detailTextView.layer.borderWidth = 1
+        detailTextView.layer.borderColor = CGColor.init(red: 189/255, green: 189/255, blue: 190/255, alpha: 1)
+        detailTextView.layer.cornerRadius = 5
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

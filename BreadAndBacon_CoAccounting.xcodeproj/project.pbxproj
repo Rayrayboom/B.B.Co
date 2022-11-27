@@ -57,6 +57,12 @@
 		769D8E57292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E56292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift */; };
 		769D8E59292DBDC5001944EF /* MenuListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */; };
 		769D8E5D292F3614001944EF /* APIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5C292F3614001944EF /* APIKey.swift */; };
+		769D8E5F29321AD5001944EF /* PrivacyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E5E29321AD5001944EF /* PrivacyViewController.swift */; };
+		769D8E61293321E8001944EF /* PreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E60293321E8001944EF /* PreviewViewController.swift */; };
+		769D8E632933392E001944EF /* 42750-accounting-illustration.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E622933392E001944EF /* 42750-accounting-illustration.json */; };
+		769D8E6529333D39001944EF /* 105437-friends.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E6429333D39001944EF /* 105437-friends.json */; };
+		769D8E6729334CE7001944EF /* lf30_editor_wilzakp4.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */; };
+		769D8E6A29339E02001944EF /* UIColor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E6929339E02001944EF /* UIColor + Extension.swift */; };
 		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
 		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
@@ -115,6 +121,12 @@
 		769D8E56292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIiImageAndStringTracfermation + Extension.swift"; sourceTree = "<group>"; };
 		769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuListTableViewController.swift; sourceTree = "<group>"; };
 		769D8E5C292F3614001944EF /* APIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKey.swift; sourceTree = "<group>"; };
+		769D8E5E29321AD5001944EF /* PrivacyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyViewController.swift; sourceTree = "<group>"; };
+		769D8E60293321E8001944EF /* PreviewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewViewController.swift; sourceTree = "<group>"; };
+		769D8E622933392E001944EF /* 42750-accounting-illustration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "42750-accounting-illustration.json"; sourceTree = "<group>"; };
+		769D8E6429333D39001944EF /* 105437-friends.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "105437-friends.json"; sourceTree = "<group>"; };
+		769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lf30_editor_wilzakp4.json; sourceTree = "<group>"; };
+		769D8E6929339E02001944EF /* UIColor + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + Extension.swift"; sourceTree = "<group>"; };
 		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
 		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -315,7 +327,9 @@
 		76608699290F79B3008EF772 /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				769D8E60293321E8001944EF /* PreviewViewController.swift */,
 				769D8E58292DBDC5001944EF /* MenuListTableViewController.swift */,
+				769D8E5E29321AD5001944EF /* PrivacyViewController.swift */,
 				7673ADC429236D1200A15015 /* SignInViewController.swift */,
 				7660865C290BDA29008EF772 /* ViewController.swift */,
 				7673ADD2292772B800A15015 /* CategoryViewController.swift */,
@@ -331,6 +345,7 @@
 				76608695290F7129008EF772 /* UIStoryboard+Extension.swift */,
 				769D8E4A292B7BF8001944EF /* SPAlert + Extension.swift */,
 				769D8E56292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift */,
+				769D8E6929339E02001944EF /* UIColor + Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -357,6 +372,9 @@
 			isa = PBXGroup;
 			children = (
 				7673ADDB292A0C9700A15015 /* 96081-successful-animation.json */,
+				769D8E622933392E001944EF /* 42750-accounting-illustration.json */,
+				769D8E6429333D39001944EF /* 105437-friends.json */,
+				769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */,
 			);
 			path = "Lottie Demo";
 			sourceTree = "<group>";
@@ -385,6 +403,7 @@
 				76608653290BDA29008EF772 /* Resources */,
 				0D62039CA7A3AF43DD9A0F14 /* [CP] Embed Pods Frameworks */,
 				76265F23290FB48400F5E341 /* ShellScript */,
+				769D8E68293351D2001944EF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -436,7 +455,10 @@
 				76608665290BDA2A008EF772 /* LaunchScreen.storyboard in Resources */,
 				7673ADDC292A0C9700A15015 /* 96081-successful-animation.json in Resources */,
 				76608662290BDA2A008EF772 /* Assets.xcassets in Resources */,
+				769D8E6529333D39001944EF /* 105437-friends.json in Resources */,
+				769D8E6729334CE7001944EF /* lf30_editor_wilzakp4.json in Resources */,
 				767EAFCA291BDCB30005880E /* CoAccounting.storyboard in Resources */,
+				769D8E632933392E001944EF /* 42750-accounting-illustration.json in Resources */,
 				769D8E51292C9585001944EF /* ImageTableViewCell.xib in Resources */,
 				766086A0290F7B0B008EF772 /* Home.storyboard in Resources */,
 				76265F4A29178F5B00F5E341 /* PieChart.storyboard in Resources */,
@@ -470,7 +492,7 @@
 		};
 		76265F23290FB48400F5E341 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -484,6 +506,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\nif test -d \"/opt/homebrew/bin/\"; then\n  PATH=\"/opt/homebrew/bin/:${PATH}\"\nfi\n\nexport PATH\n\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+		769D8E68293351D2001944EF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
 		B982F4596B5071DF7A721126 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -522,6 +563,7 @@
 				76265F4829150AE400F5E341 /* EditDetailTableViewCell.swift in Sources */,
 				769D8E54292C9E35001944EF /* ImageCollectionViewCell.swift in Sources */,
 				76265F252910051F00F5E341 /* QRCodeViewController.swift in Sources */,
+				769D8E61293321E8001944EF /* PreviewViewController.swift in Sources */,
 				769D8E59292DBDC5001944EF /* MenuListTableViewController.swift in Sources */,
 				769D8E50292C9585001944EF /* ImageTableViewCell.swift in Sources */,
 				76265F512917AA4C00F5E341 /* PieChartTableViewCell.swift in Sources */,
@@ -534,6 +576,7 @@
 				76608696290F7129008EF772 /* UIStoryboard+Extension.swift in Sources */,
 				76608672290E2A4F008EF772 /* AddNewDataViewController.swift in Sources */,
 				769D8E57292CF801001944EF /* UIiImageAndStringTracfermation + Extension.swift in Sources */,
+				769D8E6A29339E02001944EF /* UIColor + Extension.swift in Sources */,
 				7673ADAB291C994300A15015 /* CoDetailTableViewCell.swift in Sources */,
 				76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */,
 				7673ADA9291C8E9F00A15015 /* AddCoDetailViewController.swift in Sources */,
@@ -541,6 +584,7 @@
 				76265F4629150AD400F5E341 /* EditQRCodeTableViewCell.swift in Sources */,
 				76265F272911855600F5E341 /* User.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
+				769D8E5F29321AD5001944EF /* PrivacyViewController.swift in Sources */,
 				7673ADD3292772B800A15015 /* CategoryViewController.swift in Sources */,
 				767EAFCC291BF6730005880E /* ListTableViewCell.swift in Sources */,
 				766086A2290F8168008EF772 /* TabViewController.swift in Sources */,
@@ -701,6 +745,7 @@
 				CODE_SIGN_ENTITLEMENTS = BreadAndBacon_CoAccounting/BreadAndBacon_CoAccounting.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = LSR93VH6VG;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BreadAndBacon_CoAccounting/Info.plist;
@@ -708,8 +753,9 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -740,8 +786,9 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

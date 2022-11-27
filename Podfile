@@ -17,4 +17,5 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'lottie-ios'
 	pod 'SPAlert'
 	pod 'SwiftJWT'
+	pod 'FirebaseCrashlytics'
 end

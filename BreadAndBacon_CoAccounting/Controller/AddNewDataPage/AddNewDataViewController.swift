@@ -63,11 +63,20 @@ class AddNewDataViewController: UIViewController {
     // 存cost image的資料
     var costImageArr = [UIImage(named: "Breakfast"),
                         UIImage(named: "Lunch"),
-                        UIImage(named: "Lunch 2"),
-                        UIImage(named: "Dinner")]
+                        UIImage(named: "Dinner"),
+                        UIImage(named: "Drink"),
+                        UIImage(named: "Medicine"),
+                        UIImage(named: "Shopping"),
+                        UIImage(named: "Snack"),
+                        UIImage(named: "Entertainment"),
+                        UIImage(named: "Transportation")]
     // 存income image的資料
-    var incomeImageArr = [UIImage(named: "Entertainment"),
-                          UIImage(named: "Transportation")]
+    var incomeImageArr = [UIImage(named: "Bonus"),
+                          UIImage(named: "Investments"),
+                          UIImage(named: "Salary")]
+    // 存account image的資料
+    var accountImageArr = [UIImage(named: "Add-clicked"),
+                           UIImage(named: "Add-unclicked")]
     var segmentTag = 0
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
@@ -128,18 +137,18 @@ class AddNewDataViewController: UIViewController {
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
 
         // 測試存images(暫時) for tableView with collectionView
-        models.append(Model(text: "早餐", imageName: "Breakfast"))
-        models.append(Model(text: "午餐", imageName: "Lunch"))
-        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-        models.append(Model(text: "晚餐", imageName: "Dinner"))
-        models.append(Model(text: "交通", imageName: "Transportation"))
-        models.append(Model(text: "娛樂", imageName: "Entertainment"))
-        models.append(Model(text: "早餐", imageName: "Breakfast"))
-        models.append(Model(text: "午餐", imageName: "Lunch"))
-        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-        models.append(Model(text: "晚餐", imageName: "Dinner"))
-        models.append(Model(text: "交通", imageName: "Transportation"))
-        models.append(Model(text: "娛樂", imageName: "Entertainment"))
+//        models.append(Model(text: "早餐", imageName: "Breakfast"))
+//        models.append(Model(text: "午餐", imageName: "Lunch"))
+//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+//        models.append(Model(text: "晚餐", imageName: "Dinner"))
+//        models.append(Model(text: "交通", imageName: "Transportation"))
+//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
+//        models.append(Model(text: "早餐", imageName: "Breakfast"))
+//        models.append(Model(text: "午餐", imageName: "Lunch"))
+//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
+//        models.append(Model(text: "晚餐", imageName: "Dinner"))
+//        models.append(Model(text: "交通", imageName: "Transportation"))
+//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
 
         // 註冊image tableView cell
         addNewDadaTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
@@ -168,15 +177,16 @@ class AddNewDataViewController: UIViewController {
 
     func setupUI() {
         // segmented control邊框
-        sourceSegmentControl.layer.borderWidth = 2.0
-        sourceSegmentControl.layer.borderColor = UIColor.black.cgColor
-        // 預設一進去segmented所選文字為白色+黃底
+        sourceSegmentControl.layer.borderWidth = 1.5
+        sourceSegmentControl.layer.borderColor = CGColor(red: 233/255, green: 229/255, blue: 218/255, alpha: 1)
+        // 預設一進去segmented所選文字為黑色+黃底
         if sourceSegmentControl.selectedSegmentIndex == 0 {
-            sourceSegmentControl.selectedSegmentTintColor = UIColor.systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .selected)
+            sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        addNewDadaTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
 
 // MARK: - TODO: 月曆優化（待處理）
 //        let blackView = UIView(frame: UIScreen.main.bounds)
@@ -197,19 +207,20 @@ class AddNewDataViewController: UIViewController {
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         switch segmentTag {
         case 1:
-            sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "92c7bd")
         case 2:
             sourceSegmentControl.selectedSegmentTintColor = .systemBrown
         default:
-            sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
         }
+        // 切換segment control時，要先把textField和image的資料先清空，否則tableView會去抓前一筆資料的值
         data.amountTextField = ""
         data.categoryTextField = ""
         data.accountTextField = ""
@@ -231,7 +242,7 @@ class AddNewDataViewController: UIViewController {
     // 新增資料按鈕trigger
     func saveNewData() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(named: "Add_coData"), style: .plain, target: self, action: #selector(savePage))
+            image: UIImage(named: "ADD_coData_1"), style: .plain, target: self, action: #selector(savePage))
     }
 
     // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面
@@ -276,7 +287,8 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: "expenditureId",
                 revenueId: nil,
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName)
+                categoryImage: data.categoryImageName,
+                segmentTag: segmentTag)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -297,7 +309,8 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: nil,
                 revenueId: "revenueId",
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName)
+                categoryImage: data.categoryImageName,
+                segmentTag: segmentTag)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -318,7 +331,8 @@ class AddNewDataViewController: UIViewController {
                 expenditureId: nil,
                 revenueId: nil,
                 detail: data.detailTextView,
-                categoryImage: data.categoryImageName)
+                categoryImage: data.categoryImageName,
+                segmentTag: segmentTag)
             do {
                 try fetchDocumentID.setData(from: account)
                 print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -364,27 +378,29 @@ extension AddNewDataViewController: UITableViewDelegate {
 
 extension AddNewDataViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 4 {
+        if indexPath.section == 3 {
             return 250
-        } else if indexPath.section == 1 {
-            return 80
-        } else {
+        }
+//        else if indexPath.section == 1 {
+//            return 80
+//        }
+        else {
             return UITableView.automaticDimension
         }
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 5
+        return 4 //5
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
             return 1
+//        case 1:
+//            return 1
         case 1:
-            return 1
-        case 2:
             return costCategory.count
-        case 3:
+        case 2:
             if segmentTag == 2 {
                 return 0
             } else {
@@ -399,11 +415,11 @@ extension AddNewDataViewController: UITableViewDataSource {
         switch section {
         case 0:
             return "選擇日期"
+//        case 1:
+//            return "選擇圖案"
         case 1:
-            return "選擇圖案"
-        case 2:
             return "選擇細項"
-        case 3:
+        case 2:
             if segmentTag == 2 {
                 return nil
             } else {
@@ -423,26 +439,31 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                dateCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
 
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
 
                 return dateCell
-            } else if indexPath.section == 1 {
-                guard let imageCell = tableView.dequeueReusableCell(
-                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-                else {
-                    fatalError("can not create imageCell")
-                }
-                imageCell.configure(with: models)
-
-                return imageCell
-            } else if indexPath.section == 2 {
+            }
+//            else if indexPath.section == 1 {
+//                guard let imageCell = tableView.dequeueReusableCell(
+//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
+//                else {
+//                    fatalError("can not create imageCell")
+//                }
+////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+//                imageCell.configure(with: models)
+//
+//                return imageCell
+//            }
+            else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
+                addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
@@ -459,10 +480,12 @@ extension AddNewDataViewController: UITableViewDataSource {
                         addDataCell.imageArr = incomeImageArr
                     default:
                         addDataCell.content = accountContent
+                        addDataCell.imageArr = accountImageArr
                     }
                 default:
                     addDataCell.contentTextField.text = ""
                     addDataCell.content = accountContent
+                    addDataCell.imageArr = accountImageArr
                 }
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
@@ -477,12 +500,13 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
-            } else if indexPath.section == 3 {
+            } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
+                qrCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
@@ -492,6 +516,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                detailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 轉帳頁面不需掃描發票，故給空值
                 detailCell.detailTextView.text = ""
                 detailCell.delegate = self
@@ -504,6 +529,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                dateCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 dateCell.delegate = self
                 if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date {
                     let current = BBCDateFormatter.shareFormatter.string(from: dateFromVC)
@@ -518,21 +544,25 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let monthData = data.dateTime.prefix(11)
                 data.monthTime = String(monthData)
                 return dateCell
-            } else if indexPath.section == 1 {
-                guard let imageCell = tableView.dequeueReusableCell(
-                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-                else {
-                    fatalError("can not create imageCell")
-                }
-                imageCell.configure(with: models)
-
-                return imageCell
-            } else if indexPath.section == 2 {
+            }
+//            else if indexPath.section == 1 {
+//                guard let imageCell = tableView.dequeueReusableCell(
+//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
+//                else {
+//                    fatalError("can not create imageCell")
+//                }
+////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+//                imageCell.configure(with: models)
+//
+//                return imageCell
+//            }
+            else if indexPath.section == 1 {
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
+                addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
 // MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
@@ -571,6 +601,8 @@ extension AddNewDataViewController: UITableViewDataSource {
 
                 // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
                 addDataCell.contentTextField.inputView = nil
+                // 切換segment時，清除已選圖案
+                addDataCell.chooseImage.image = nil
                 addDataCell.indexPath = indexPath
                 addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
@@ -578,12 +610,13 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
-            } else if indexPath.section == 3 {
+            } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
+                qrCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 支出、收入要顯示QRCode scanner
                 qrCell.qrButton.isHidden = false
                 return qrCell
@@ -593,6 +626,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                detailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 切換不同頁面時，detail要先清空
                 detailCell.detailTextView.text = ""
                 // 存放invoice的string在fetch data之前要先清空

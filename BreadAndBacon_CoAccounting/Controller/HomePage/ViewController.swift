@@ -59,7 +59,7 @@ class ViewController: UIViewController {
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
         tappedDatePicker()
-        dateBO.tintColor = .black
+        dateBO.setTitleColor(UIColor().hexStringToUIColor(hex: "f2f6f7"), for: .normal)
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
@@ -77,7 +77,8 @@ class ViewController: UIViewController {
     }
 
     func setupUI() {
-        view.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
+        showDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -218,8 +219,20 @@ extension ViewController: UITableViewDelegate {
         // 點擊哪個row就把data array對應row的資料傳給editVC
         presentEditVC.data = data[indexPath.row]
         presentEditVC.category = category
-        // 指定跳轉到第幾個segment control
-        presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
+        // 依據資料種類跳轉到對應segment control + UI color
+        if data[indexPath.row].segmentTag == 0 {
+            presentEditVC.segmentTag = 0
+            presentEditVC.sourceSegmentControl.selectedSegmentIndex = 0
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+        } else if data[indexPath.row].segmentTag == 1 {
+            presentEditVC.segmentTag = 1
+            presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+        } else if data[indexPath.row].segmentTag == 2 {
+            presentEditVC.segmentTag = 2
+            presentEditVC.sourceSegmentControl.selectedSegmentIndex = 2
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemBrown
+        }
 
         let navigation = UINavigationController(rootViewController: presentEditVC)
         navigation.modalPresentationStyle = .fullScreen
@@ -266,6 +279,7 @@ extension ViewController: UITableViewDataSource {
         guard let homeDetailCell = tableView.dequeueReusableCell(withIdentifier: "homeDetailCell") as? HomeDetailTableViewCell else {
             fatalError("can not create cell")
         }
+        homeDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
         let image = data[indexPath.row].categoryImage?.toImage()
         homeDetailCell.categoryImage.image = image

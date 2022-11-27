@@ -23,6 +23,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // cocoa pods安裝完Firebase後補上如下
         FirebaseApp.configure()
 
+        let navigationBarAppearance = UINavigationBarAppearance()
+        navigationBarAppearance.configureWithOpaqueBackground()
+        navigationBarAppearance.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
+//        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        UINavigationBar.appearance().standardAppearance = navigationBarAppearance
+        UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor =  UIColor().hexStringToUIColor(hex: "1b4464")
+        UITabBar.appearance().tintColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+
         return true
     }
 
