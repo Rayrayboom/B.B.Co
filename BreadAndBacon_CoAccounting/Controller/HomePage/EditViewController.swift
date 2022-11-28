@@ -158,6 +158,8 @@ class EditViewController: UIViewController {
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
         editTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        // tableView top內縮10 points
+        editTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
@@ -169,7 +171,7 @@ class EditViewController: UIViewController {
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色

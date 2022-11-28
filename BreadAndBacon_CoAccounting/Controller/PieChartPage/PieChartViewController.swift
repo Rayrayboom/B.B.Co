@@ -148,7 +148,7 @@ class PieChartViewController: UIViewController {
     // segmentControl - @objc
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色

@@ -270,7 +270,6 @@
                                 <segment title="收入"/>
                                 <segment title="轉帳"/>
                             </segments>
-                            <color key="selectedSegmentTintColor" systemColor="systemYellowColor"/>
                         </segmentedControl>
                         <barButtonItem key="rightBarButtonItem" style="plain" systemItem="save" id="3Ol-rC-GFn"/>
                     </navigationItem>
@@ -353,9 +352,6 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemYellowColor">
-            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
