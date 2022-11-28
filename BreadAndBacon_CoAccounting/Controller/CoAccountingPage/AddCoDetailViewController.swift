@@ -97,6 +97,10 @@ class AddCoDetailViewController: UIViewController {
 
     // MARK: - 上傳資料到Firebase
     func createCoAccountData(document: String, subCollection: String) {
+        guard let cell = coDetailTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell
+        else {
+            fatalError("can not find CoTimeTableViewCell")
+        }
         let dataBase = Firestore.firestore()
         let documentID = dataBase.collection("co-account")
             .document(document)
@@ -110,7 +114,7 @@ class AddCoDetailViewController: UIViewController {
             amount: data.amountTextField,
             category: data.itemTextField,
             account: nil,
-            date: data.dateTime,
+            date: BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date), //data.dateTime,
             month: data.monthTime,
             destinationAccountId: nil,
             sourceAccountId: nil,
