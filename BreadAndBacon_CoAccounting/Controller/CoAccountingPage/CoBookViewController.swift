@@ -247,6 +247,7 @@ class CoBookViewController: UIViewController {
     func fetchCoBook() {
         data = []
         let dataBase = Firestore.firestore()
+        self.group.enter()
         dataBase.collection("co-account").whereField("user_id", arrayContains: getName)
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -257,6 +258,7 @@ class CoBookViewController: UIViewController {
                 }
                 self.data.append(contentsOf: book)
                 print("book here \(self.data)")
+                self.group.leave()
             }
     }
 
@@ -373,7 +375,16 @@ extension CoBookViewController: UITableViewDelegate {
                 self.editAlert()
                 self.fetchCoBook()
             }
-            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction])
+
+            let copyAction = UIAction(title: "複製book ID", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
+                self.indexPathFromBook = indexPath
+                self.fetchCoBook()
+                self.group.notify(queue: .main) {
+                    UIPasteboard.general.string = self.data[indexPath.row].roomId
+                }
+            }
+            
+            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction, copyAction])
         }
     }
 }

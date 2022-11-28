@@ -210,19 +210,19 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KFv-vr-iq4">
-                                <rect key="frame" x="178" y="64" width="58.5" height="49"/>
+                                <rect key="frame" x="177" y="64" width="60" height="49"/>
                                 <attributedString key="attributedText">
                                     <fragment content="新 支出">
                                         <attributes>
                                             <color key="NSColor" systemColor="systemGroupedBackgroundColor"/>
-                                            <font key="NSFont" size="18" name=".PingFangTC-Regular"/>
+                                            <font key="NSFont" metaFont="system" size="18"/>
                                         </attributes>
                                     </fragment>
                                 </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zye-uA-1aV">
-                                <rect key="frame" x="20" y="49" width="59" height="72"/>
+                                <rect key="frame" x="20" y="49" width="58" height="72"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="Cancel_co"/>
