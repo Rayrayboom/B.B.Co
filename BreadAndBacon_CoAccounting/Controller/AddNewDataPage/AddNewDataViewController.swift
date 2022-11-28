@@ -107,6 +107,8 @@ class AddNewDataViewController: UIViewController {
     }
     // 儲存user id到keyChain
     var getId: String = ""
+    // alertController
+    var controller = UIAlertController()
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
@@ -116,8 +118,18 @@ class AddNewDataViewController: UIViewController {
         guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
             fatalError("can not find QRScanner VC")
         }
-        presentQRScanVC.delegate = self
-        present(presentQRScanVC, animated: true)
+        // 掃描時跳出alert提醒使用者掃描左邊QRCode
+        controller = UIAlertController(title: "請掃描電子發票左方QRCode", message: nil, preferredStyle: .alert)
+        // 建立[我知道了]按鈕
+        let okAction = UIAlertAction(
+            title: "我知道了",
+            style: .default) { action in
+                presentQRScanVC.delegate = self
+                self.present(presentQRScanVC, animated: true)
+            }
+        controller.addAction(okAction)
+        // 顯示提示框
+        self.present(controller, animated: true, completion: nil)
     }
 
 // MARK: - TODO: 月曆優化（待處理）

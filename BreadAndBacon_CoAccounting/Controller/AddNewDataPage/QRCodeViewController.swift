@@ -24,24 +24,11 @@ class QRCodeViewController: UIViewController {
     var captureSession = AVCaptureSession()
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var qrCodeFrameView: UIView?
-    var controller = UIAlertController()
 
     @IBOutlet weak var messageLabel: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         scanQRCode()
-    }
-    
-    // 掃描時跳出alert提醒使用者掃描左邊QRCode
-    func scanAlert() {
-        controller = UIAlertController(title: "請掃描電子發票左方QRCode", message: nil, preferredStyle: .alert)
-        // 建立[確認]按鈕
-        let okAction = UIAlertAction(
-            title: "我知道了",
-            style: .default, handler: nil)
-        controller.addAction(okAction)
-        // 顯示提示框
-        self.present(controller, animated: true, completion: nil)
     }
 
     func scanQRCode() {
@@ -52,7 +39,6 @@ class QRCodeViewController: UIViewController {
         }
 
         do {
-//            scanAlert()
             // 使用前一個裝置物件來取得 AVCaptureDeviceInput 類別的實例
             let input = try AVCaptureDeviceInput(device: captureDevice)
             // 在擷取 session 設定輸入裝置
@@ -113,17 +99,17 @@ class QRCodeViewController: UIViewController {
         let message = message
         let encrypt = message.prefix(24)
         var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
-        var translateYear = (Int(invYear) ?? 0) + 1911
+        let translateYear = (Int(invYear) ?? 0) + 1911
         invYear = String(translateYear)
-
+        
         let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
         let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
         let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
         let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
-
+        
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
-
+        
         print("invNum", invNum)
         print("message", message)
         print("encrypt", encrypt)

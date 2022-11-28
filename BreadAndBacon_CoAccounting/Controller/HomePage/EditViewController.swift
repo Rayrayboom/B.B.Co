@@ -103,6 +103,8 @@ class EditViewController: UIViewController {
 
     let group = DispatchGroup()
     let queueGroup = DispatchQueue.global()
+    // alertController
+    var controller = UIAlertController()
 
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
@@ -113,8 +115,18 @@ class EditViewController: UIViewController {
         }
         // 當內容是透過QR scanner拿取，isTappedQR == 1
         isTappedQR = 1
-        presentEditQRScanVC.delegate = self
-        present(presentEditQRScanVC, animated: true)
+        // 掃描時跳出alert提醒使用者掃描左邊QRCode
+        controller = UIAlertController(title: "請掃描電子發票左方QRCode", message: nil, preferredStyle: .alert)
+        // 建立[我知道了]按鈕
+        let okAction = UIAlertAction(
+            title: "我知道了",
+            style: .default) { action in
+                presentEditQRScanVC.delegate = self
+                self.present(presentEditQRScanVC, animated: true)
+            }
+        controller.addAction(okAction)
+        // 顯示提示框
+        self.present(controller, animated: true, completion: nil)
     }
 
 // MARK: - TODO
