@@ -87,6 +87,8 @@ class AddCoDetailViewController: UIViewController {
         }
 
         coDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        // tableView top內縮10 points
+        coDetailTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         saveCoDetailBO.backgroundColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
         saveCoDetailBO.layer.borderWidth = 4
         saveCoDetailBO.layer.borderColor = CGColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1)
@@ -95,6 +97,10 @@ class AddCoDetailViewController: UIViewController {
 
     // MARK: - 上傳資料到Firebase
     func createCoAccountData(document: String, subCollection: String) {
+        guard let cell = coDetailTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell
+        else {
+            fatalError("can not find CoTimeTableViewCell")
+        }
         let dataBase = Firestore.firestore()
         let documentID = dataBase.collection("co-account")
             .document(document)
@@ -108,7 +114,7 @@ class AddCoDetailViewController: UIViewController {
             amount: data.amountTextField,
             category: data.itemTextField,
             account: nil,
-            date: data.dateTime,
+            date: BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date), //data.dateTime,
             month: data.monthTime,
             destinationAccountId: nil,
             sourceAccountId: nil,

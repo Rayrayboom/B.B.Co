@@ -120,16 +120,16 @@ class CoAccountingViewController: UIViewController {
     // segmentControl - @objc
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         coSegmentedControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色
         segmentTag = coSegmentedControl.selectedSegmentIndex
         switch segmentTag {
         case 1:
-            coSegmentedControl.selectedSegmentTintColor = .systemCyan
+            coSegmentedControl.selectedSegmentTintColor =  UIColor().hexStringToUIColor(hex: "92c7bd")
         default:
-            coSegmentedControl.selectedSegmentTintColor = .systemYellow
+            coSegmentedControl.selectedSegmentTintColor =  UIColor().hexStringToUIColor(hex: "E5BB4B")
         }
         bookDetailTableView.reloadData()
     }

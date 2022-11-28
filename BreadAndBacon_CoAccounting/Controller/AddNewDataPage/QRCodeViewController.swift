@@ -24,7 +24,6 @@ class QRCodeViewController: UIViewController {
     var captureSession = AVCaptureSession()
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var qrCodeFrameView: UIView?
-    let controller = UIAlertController()
 
     @IBOutlet weak var messageLabel: UILabel!
     override func viewDidLoad() {
@@ -100,17 +99,17 @@ class QRCodeViewController: UIViewController {
         let message = message
         let encrypt = message.prefix(24)
         var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
-        var translateYear = (Int(invYear) ?? 0) + 1911
+        let translateYear = (Int(invYear) ?? 0) + 1911
         invYear = String(translateYear)
-
+        
         let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
         let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
         let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
         let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
-
+        
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
-
+        
         print("invNum", invNum)
         print("message", message)
         print("encrypt", encrypt)

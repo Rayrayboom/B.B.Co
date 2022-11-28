@@ -26,9 +26,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navigationBarAppearance = UINavigationBarAppearance()
         navigationBarAppearance.configureWithOpaqueBackground()
         navigationBarAppearance.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
-//        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        // navigation bar title顏色
+        navigationBarAppearance.titleTextAttributes = [.foregroundColor: UIColor().hexStringToUIColor(hex: "f2f6f7")]
         UINavigationBar.appearance().standardAppearance = navigationBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+        // navigation bar push的返回箭頭顏色
+        UINavigationBar.appearance().tintColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        
 
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()

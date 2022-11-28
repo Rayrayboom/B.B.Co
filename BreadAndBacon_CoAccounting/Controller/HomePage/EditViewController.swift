@@ -103,6 +103,8 @@ class EditViewController: UIViewController {
 
     let group = DispatchGroup()
     let queueGroup = DispatchQueue.global()
+    // alertController
+    var controller = UIAlertController()
 
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
@@ -113,8 +115,18 @@ class EditViewController: UIViewController {
         }
         // 當內容是透過QR scanner拿取，isTappedQR == 1
         isTappedQR = 1
-        presentEditQRScanVC.delegate = self
-        present(presentEditQRScanVC, animated: true)
+        // 掃描時跳出alert提醒使用者掃描左邊QRCode
+        controller = UIAlertController(title: "請掃描電子發票左方QRCode", message: nil, preferredStyle: .alert)
+        // 建立[我知道了]按鈕
+        let okAction = UIAlertAction(
+            title: "我知道了",
+            style: .default) { action in
+                presentEditQRScanVC.delegate = self
+                self.present(presentEditQRScanVC, animated: true)
+            }
+        controller.addAction(okAction)
+        // 顯示提示框
+        self.present(controller, animated: true, completion: nil)
     }
 
 // MARK: - TODO
@@ -158,6 +170,8 @@ class EditViewController: UIViewController {
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
         editTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        // tableView top內縮10 points
+        editTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
@@ -169,7 +183,7 @@ class EditViewController: UIViewController {
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色
