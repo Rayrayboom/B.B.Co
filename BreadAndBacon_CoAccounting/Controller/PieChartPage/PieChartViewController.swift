@@ -86,6 +86,7 @@ class PieChartViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        BBCoLoading.loading(view: self.view)
         // 偵測monthDatePicker改值時觸發func didMonthChanged
         monthDatePicker.addTarget(self, action: #selector(didMonthChanged), for: .valueChanged)
         // 一進頁面後預設顯示支出總覽(default)，每fetch一次資料data就會改動，在data didSet就會重新去畫pie chart
@@ -105,6 +106,7 @@ class PieChartViewController: UIViewController {
         } else {
             fetchUser(id: getId, subCollection: "expenditure")
         }
+        BBCoLoading.loading(view: self.view)
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -135,6 +137,7 @@ class PieChartViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
+        monthDatePicker.tintColor = .systemBrown
         pieTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
     }
@@ -147,6 +150,7 @@ class PieChartViewController: UIViewController {
 
     // segmentControl - @objc
     @objc func handelSegmentControl() {
+        BBCoLoading.loading(view: self.view)
         // 設置segmented control被選取時文字、button顏色
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)

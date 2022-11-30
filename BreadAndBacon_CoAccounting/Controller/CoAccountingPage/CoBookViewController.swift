@@ -58,6 +58,7 @@ class CoBookViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        BBCoLoading.loading(view: self.view)
         fetchCoBook()
         bookTableView.reloadData()
         // 回到帳本目錄時時恢復下方tabbar

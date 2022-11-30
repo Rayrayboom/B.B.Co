@@ -75,6 +75,7 @@ class CoAccountingViewController: UIViewController {
     // 當addCoDetailVC dismiss後回到coAccountingVC會呼叫viewWillAppear，重新fetch一次data並reload bookTableView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        BBCoLoading.loading(view: self.view)
         // 進入帳本內部時隱藏下方tabbar
         self.tabBarController?.tabBar.isHidden = true
         // 畫面一有變動就會去重新fetch一次data並把資料&畫面(pie + tableView)更新到最新狀態
@@ -119,6 +120,7 @@ class CoAccountingViewController: UIViewController {
 
     // segmentControl - @objc
     @objc func handelSegmentControl() {
+        BBCoLoading.loading(view: self.view)
         // 設置segmented control被選取時文字、button顏色
         var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         coSegmentedControl.setTitleTextAttributes(titleTextAttributes, for: .selected)

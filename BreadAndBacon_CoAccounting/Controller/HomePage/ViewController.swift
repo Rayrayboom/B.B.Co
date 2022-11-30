@@ -72,6 +72,7 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        BBCoLoading.loading(view: self.view)
             // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
             self.fetchAllData()
     }
