@@ -67,19 +67,29 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="目前還沒有共同帳本～" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cFO-6R-Jer">
+                                <rect key="frame" x="50" y="489" width="314" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" systemColor="systemBrownColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="3Kh-Ep-xS6"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="cFO-6R-Jer" firstAttribute="leading" secondItem="3Kh-Ep-xS6" secondAttribute="leading" constant="50" id="70r-Rc-U4o"/>
                             <constraint firstItem="VJe-Gc-dfO" firstAttribute="leading" secondItem="3Kh-Ep-xS6" secondAttribute="leading" id="9WK-FC-TB2"/>
                             <constraint firstItem="VJe-Gc-dfO" firstAttribute="top" secondItem="3Kh-Ep-xS6" secondAttribute="top" id="ViG-I8-He9"/>
                             <constraint firstItem="3Kh-Ep-xS6" firstAttribute="trailing" secondItem="VJe-Gc-dfO" secondAttribute="trailing" id="Wsh-eR-1mU"/>
+                            <constraint firstItem="3Kh-Ep-xS6" firstAttribute="bottom" secondItem="cFO-6R-Jer" secondAttribute="bottom" constant="300" id="aki-JA-zh1"/>
                             <constraint firstItem="3Kh-Ep-xS6" firstAttribute="bottom" secondItem="VJe-Gc-dfO" secondAttribute="bottom" id="iBa-F9-61e"/>
+                            <constraint firstItem="3Kh-Ep-xS6" firstAttribute="trailing" secondItem="cFO-6R-Jer" secondAttribute="trailing" constant="50" id="ivH-8P-ko0"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="帳本列表" id="erq-jJ-H1y"/>
                     <connections>
                         <outlet property="bookTableView" destination="VJe-Gc-dfO" id="xN6-3K-KCU"/>
+                        <outlet property="remindLabel" destination="cFO-6R-Jer" id="EAG-F2-ApZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ivL-0H-mEr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -173,12 +183,21 @@
                                     <action selector="addDetail:" destination="yen-n8-Qer" eventType="touchUpInside" id="2gc-36-Vty"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="目前還沒有記帳哦～" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BMv-xE-MxW">
+                                <rect key="frame" x="50" y="603" width="314" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" systemColor="systemBrownColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="b5w-Mf-Abh"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="bk2-mk-ZXx" firstAttribute="leading" secondItem="b5w-Mf-Abh" secondAttribute="leading" constant="170" id="1Wc-tM-hRC"/>
+                            <constraint firstItem="b5w-Mf-Abh" firstAttribute="trailing" secondItem="BMv-xE-MxW" secondAttribute="trailing" constant="50" id="G8i-oh-NOQ"/>
+                            <constraint firstItem="bk2-mk-ZXx" firstAttribute="top" secondItem="BMv-xE-MxW" secondAttribute="bottom" constant="150" id="XCJ-6g-SET"/>
                             <constraint firstItem="b5w-Mf-Abh" firstAttribute="trailing" secondItem="bk2-mk-ZXx" secondAttribute="trailing" constant="169" id="gTg-kd-Wqe"/>
+                            <constraint firstItem="BMv-xE-MxW" firstAttribute="leading" secondItem="b5w-Mf-Abh" secondAttribute="leading" constant="50" id="k6M-Mi-obW"/>
                             <constraint firstItem="b5w-Mf-Abh" firstAttribute="bottom" secondItem="bk2-mk-ZXx" secondAttribute="bottom" id="qHQ-R3-EKf"/>
                         </constraints>
                     </view>
@@ -195,6 +214,7 @@
                     <connections>
                         <outlet property="bookDetailTableView" destination="41o-AV-SrE" id="eCO-RS-hSK"/>
                         <outlet property="coSegmentedControl" destination="hQz-5n-dxn" id="NwS-o1-3qI"/>
+                        <outlet property="remindLabel" destination="BMv-xE-MxW" id="Ces-LV-1Te"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OyN-CM-Mew" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

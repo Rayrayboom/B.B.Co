@@ -40,7 +40,8 @@ class CoBookViewController: UIViewController {
     var indexPathFromBook: IndexPath?
 
     @IBOutlet weak var bookTableView: UITableView!
-
+    @IBOutlet weak var remindLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
@@ -68,6 +69,15 @@ class CoBookViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         bookTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+    }
+    
+    // 當日尚無資料者顯示“目前還沒共同帳本”
+    func checkDataCount() {
+        if self.data.count == 0 {
+            self.remindLabel.isHidden = false
+        } else {
+            self.remindLabel.isHidden = true
+        }
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -367,6 +377,7 @@ extension CoBookViewController: UITableViewDelegate {
                     }
                     // 接著刪除book
                     self.deleteSpecificData(indexPathRow: indexPath.row)
+                    self.checkDataCount()
                     // 重新抓最新資料(會reloadData)
                     self.fetchCoBook()
                 }
@@ -425,6 +436,7 @@ extension CoBookViewController: UITableViewDataSource {
                 self.deleteSpecificData(indexPathRow: indexPath.row)
                 self.data.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
+                self.checkDataCount()
                 tableView.endUpdates()
             }
         }

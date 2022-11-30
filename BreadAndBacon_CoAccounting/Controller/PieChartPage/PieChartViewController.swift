@@ -41,6 +41,7 @@ class PieChartViewController: UIViewController {
     }
     // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
+    let group = DispatchGroup()
 
 // MARK: - 待處理month pie chart
     @IBAction func goToLastMonth(_ sender: UIButton) {
@@ -68,6 +69,7 @@ class PieChartViewController: UIViewController {
     @IBOutlet weak var pieTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
     @IBOutlet weak var monthDatePicker: UIDatePicker!
+    @IBOutlet weak var remindLabel: UILabel!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -140,6 +142,15 @@ class PieChartViewController: UIViewController {
         monthDatePicker.tintColor = .systemBrown
         pieTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+    }
+    
+    // 當日尚無資料者顯示“目前還沒有記帳喔”
+    func checkDataCount() {
+        if self.data.count == 0 {
+            self.remindLabel.isHidden = false
+        } else {
+            self.remindLabel.isHidden = true
+        }
     }
 
     // segmentControl
@@ -298,6 +309,7 @@ class PieChartViewController: UIViewController {
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
         let dataBase = Firestore.firestore()
+        self.group.enter()
         print("this is month \(BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))")
         // 抓取哪個月份由monthDatePicker.date決定
         dataBase.collection("user/\(id)/\(subCollection)")
@@ -311,7 +323,12 @@ class PieChartViewController: UIViewController {
                 }
                 self.data.append(contentsOf: account)
                 print("data here \(self.data)")
+                self.group.leave()
             }
+        // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
+        group.notify(queue: .main) {
+            self.checkDataCount()
+        }
     }
 }
 
@@ -380,6 +397,7 @@ extension PieChartViewController: UITableViewDataSource {
             }
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            self.checkDataCount()
             tableView.endUpdates()
         }
     }

@@ -105,6 +105,11 @@ extension CoDetailTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
 
 // textField delegate
 extension CoDetailTableViewCell: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if indexPath?.section == 3 {
+            contentTextField.text = content[0]
+        }
+    }
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")
         print("====== co delegate \(contentTextField.text)")

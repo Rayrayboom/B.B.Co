@@ -93,16 +93,25 @@
                                     <action selector="goToNextMonth:" destination="2Em-Az-MnO" eventType="touchUpInside" id="aWE-V1-ewI"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="目前還沒有記帳哦～" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z5Y-rl-j8S">
+                                <rect key="frame" x="50" y="639" width="314" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" systemColor="systemBrownColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="XVp-PD-hMh"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="4Ih-cG-ARc" firstAttribute="top" secondItem="XVp-PD-hMh" secondAttribute="top" id="C5J-nL-p81"/>
+                            <constraint firstItem="XVp-PD-hMh" firstAttribute="trailing" secondItem="z5Y-rl-j8S" secondAttribute="trailing" constant="50" id="Hlj-ai-ivL"/>
                             <constraint firstItem="XVp-PD-hMh" firstAttribute="trailing" secondItem="WDd-jn-XvW" secondAttribute="trailing" constant="20" id="Wws-5e-m3W"/>
                             <constraint firstItem="WDd-jn-XvW" firstAttribute="leading" secondItem="4Ih-cG-ARc" secondAttribute="trailing" constant="87" id="aZ4-74-M5r"/>
                             <constraint firstItem="WDd-jn-XvW" firstAttribute="top" secondItem="XVp-PD-hMh" secondAttribute="top" id="dVW-4d-RYx"/>
+                            <constraint firstItem="XVp-PD-hMh" firstAttribute="bottom" secondItem="z5Y-rl-j8S" secondAttribute="bottom" constant="150" id="ivN-x0-Abt"/>
                             <constraint firstItem="P8w-Tv-t93" firstAttribute="top" secondItem="XVp-PD-hMh" secondAttribute="top" id="lFK-MB-Dnd"/>
                             <constraint firstItem="P8w-Tv-t93" firstAttribute="leading" secondItem="XVp-PD-hMh" secondAttribute="leading" constant="20" id="mLV-cM-Mh2"/>
+                            <constraint firstItem="z5Y-rl-j8S" firstAttribute="leading" secondItem="XVp-PD-hMh" secondAttribute="leading" constant="50" id="sSj-T5-odJ"/>
                             <constraint firstItem="4Ih-cG-ARc" firstAttribute="leading" secondItem="P8w-Tv-t93" secondAttribute="trailing" priority="749" constant="88" id="uaP-XJ-5St"/>
                         </constraints>
                     </view>
@@ -121,6 +130,7 @@
                     <connections>
                         <outlet property="monthDatePicker" destination="4Ih-cG-ARc" id="9WQ-uT-So6"/>
                         <outlet property="pieTableView" destination="bd7-6O-0bh" id="3mB-hg-ODW"/>
+                        <outlet property="remindLabel" destination="z5Y-rl-j8S" id="fuS-6J-tf9"/>
                         <outlet property="sourceSegmentControl" destination="Ml6-SC-2ZO" id="lTi-Eq-gGW"/>
                     </connections>
                 </viewController>
@@ -154,6 +164,9 @@
         <image name="Pie_unclicked" width="49" height="58"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBrownColor">
+            <color red="0.63529411764705879" green="0.51764705882352946" blue="0.36862745098039218" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemYellowColor">
             <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

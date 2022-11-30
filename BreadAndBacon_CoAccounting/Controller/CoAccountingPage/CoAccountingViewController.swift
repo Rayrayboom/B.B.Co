@@ -42,6 +42,7 @@ class CoAccountingViewController: UIViewController {
     var userName: [String] = []
     // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
+    let group = DispatchGroup()
 
 
     @IBOutlet weak var bookDetailTableView: UITableView!
@@ -57,7 +58,8 @@ class CoAccountingViewController: UIViewController {
     }
 
     @IBOutlet weak var coSegmentedControl: UISegmentedControl!
-
+    @IBOutlet weak var remindLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -97,6 +99,15 @@ class CoAccountingViewController: UIViewController {
         }
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         bookDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+    }
+
+    // 當日尚無資料者顯示“目前還沒有記帳喔”
+    func checkDataCount() {
+        if self.data.count == 0 {
+            self.remindLabel.isHidden = false
+        } else {
+            self.remindLabel.isHidden = true
+        }
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -140,6 +151,8 @@ class CoAccountingViewController: UIViewController {
     func fetchBookDetail(document: String, subCollection: String) {
         data = []
         let dataBase = Firestore.firestore()
+        // 進入group
+        self.group.enter()
         dataBase.collection("co-account/\(document)/\(subCollection)")
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -150,7 +163,11 @@ class CoAccountingViewController: UIViewController {
                 }
                 self.data.append(contentsOf: account)
                 print("book datail here \(self.data)")
+                self.group.leave()
             }
+        group.notify(queue: .main) {
+            self.checkDataCount()
+        }
     }
 
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
@@ -358,6 +375,8 @@ extension CoAccountingViewController: UITableViewDataSource {
             deleteSpecificData(document: didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            // 當日尚無資料者顯示“目前還沒有記帳喔”
+            self.checkDataCount()
             tableView.endUpdates()
         }
     }
