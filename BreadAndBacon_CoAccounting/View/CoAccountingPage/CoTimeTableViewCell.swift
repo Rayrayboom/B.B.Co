@@ -18,7 +18,7 @@ class CoTimeTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        datePicker.tintColor = .systemBrown
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

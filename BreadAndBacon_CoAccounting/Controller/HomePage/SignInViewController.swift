@@ -22,6 +22,11 @@ class SignInViewController: UIViewController {
     var userData = ""
     // 存JWT
     var signedJWT: String = ""
+    // alertController
+    var controller = UIAlertController()
+    var costContent: [String] = ["早餐", "午餐", "晚餐", "宵夜" ]
+    var incomeContent: [String] = ["現金", "獎金"]
+    var accountContent: [String] = ["現金"]
 
     @IBOutlet weak var BBCoImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -186,7 +191,8 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
                         self.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
                     }
                 }
-//                print("first", KeychainWrapper.standard.string(forKey: "name") ?? "")
+                // 判斷若是第一次登入的話就先create三大種類的category，讓使用者一開始有預設選項可以用
+                createAllCategory()
             }
 
             // second login
@@ -225,6 +231,36 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             break
         default:
             break
+        }
+    }
+
+    // 新增對應category細項
+    func createCategory(id: String, subCollection: String, content: String) {
+        let db = Firestore.firestore()
+        let documentRef = db.collection("user").document(id).collection(subCollection).document()
+        let collection = Category(id: documentRef.documentID, title: content)
+
+        do {
+            try documentRef.setData(from: collection)
+        } catch {
+            print(error)
+        }
+    }
+    
+    // 一次新增全部category
+    func createAllCategory() {
+        let allCategory = [costContent, incomeContent, accountContent]
+        allCategory.forEach { content in
+            for item in content {
+                switch content {
+                case costContent:
+                    createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "expenditure_category", content: item)
+                case incomeContent:
+                    createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "revenue_category", content: item)
+                default:
+                    createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "account_category", content: item)
+                }
+            }
         }
     }
 }

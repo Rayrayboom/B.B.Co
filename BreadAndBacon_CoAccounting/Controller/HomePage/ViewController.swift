@@ -155,7 +155,6 @@ class ViewController: UIViewController {
                     try? snapshot.data(as: Account.self)
                 }
                 self.data.append(contentsOf: account)
-                print("data here \(self.data)")
                 // 每一支API打完之後leave group
                 self.group.leave()
             }
@@ -176,7 +175,6 @@ class ViewController: UIViewController {
                     try? snapshot.data(as: Category.self)
                 }
                 self.category.append(contentsOf: category)
-                print("category here \(self.category)")
                 // 每一支API打完回來之後leave group
                 self.group.leave()
             }
@@ -223,11 +221,12 @@ extension ViewController: UITableViewDelegate {
         if data[indexPath.row].segmentTag == 0 {
             presentEditVC.segmentTag = 0
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 0
-            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor =
+                UIColor().hexStringToUIColor(hex: "E5BB4B")
         } else if data[indexPath.row].segmentTag == 1 {
             presentEditVC.segmentTag = 1
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
-            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "92c7bd")
         } else if data[indexPath.row].segmentTag == 2 {
             presentEditVC.segmentTag = 2
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 2

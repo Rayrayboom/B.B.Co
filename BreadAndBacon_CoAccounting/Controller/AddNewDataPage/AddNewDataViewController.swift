@@ -42,21 +42,18 @@ class AddNewDataViewController: UIViewController {
     // 存支出textField picker資料
     var costContent: [String] = [] {
         didSet {
-            print("=== this is all costContent \(self.costContent)")
             addNewDadaTableView.reloadData()
         }
     }
     // 存收入textField picker資料
     var incomeContent: [String] = [] {
         didSet {
-            print("=== this is all incomeContent \(self.incomeContent)")
             addNewDadaTableView.reloadData()
         }
     }
     // 存轉帳textField picker資料
     var accountContent: [String] = [] {
         didSet {
-            print("=== this is all accountContent \(self.accountContent)")
             addNewDadaTableView.reloadData()
         }
     }
@@ -261,6 +258,10 @@ class AddNewDataViewController: UIViewController {
 
     // 新增並上傳firebase，用segmentTag來辨識要存到哪個document裡面
     @objc func savePage() {
+        if data.amountTextField == "" {
+            noAmountAlert()
+            return
+        }
         switch segmentTag {
         case 0:
             createUserData(id: getId, subCollection: "expenditure")
@@ -274,6 +275,19 @@ class AddNewDataViewController: UIViewController {
         SPAlert.successAlert()
 
         self.presentingViewController?.dismiss(animated: true, completion: nil)
+    }
+
+    // 當金額為空值時，跳出警告訊息
+    func noAmountAlert() {
+        // 掃描時跳出alert提醒使用者掃描左邊QRCode
+        controller = UIAlertController(title: "金額不得為空", message: "請輸入金額", preferredStyle: .alert)
+        // 建立[我知道了]按鈕
+        let okAction = UIAlertAction(
+            title: "我知道了",
+            style: .default, handler: nil)
+        controller.addAction(okAction)
+        // 顯示提示框
+        self.present(controller, animated: true, completion: nil)
     }
 
     // MARK: - 上傳資料到Firebase

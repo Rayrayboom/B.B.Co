@@ -19,6 +19,7 @@ class AddDateTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        addDatePicker.tintColor = .systemBrown
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
