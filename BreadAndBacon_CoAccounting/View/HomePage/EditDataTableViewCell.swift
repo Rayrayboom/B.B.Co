@@ -221,6 +221,19 @@ extension EditDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
 
 // textField delegate
 extension EditDataTableViewCell: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // 當textField是空值時，才會導入預設值，非為空值表示原先已有資料，不能強制改為預設
+        if contentTextField.text == "" {
+            if indexPath?.item == 1 {
+                contentTextField.text = content[0]
+                chooseImage.image = imageArr[0]
+                self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageArr[0]?.toPngString() ?? "")
+            } else if indexPath?.item == 2 {
+                contentTextField.text = content[0]
+            }
+        }
+    }
+
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")
 

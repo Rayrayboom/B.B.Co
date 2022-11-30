@@ -666,7 +666,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                     }
                     items.append("\(invoice.details[item].detailDescription)\n")
                     detailCell.detailTextView.text = items
-                    print("=== detailCell.detailTextView.text", detailCell.detailTextView.text)
                 }
 
                 detailCell.delegate = self
@@ -755,7 +754,6 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
 extension AddNewDataViewController: DetailTableViewCellDelegate {
     func getDetail(detail: String) {
         data.detailTextView = detail
-        print("======= this is detail \(data.detailTextView)")
     }
 }
 
@@ -774,6 +772,9 @@ extension AddNewDataViewController: QRCodeViewControllerDelegate {
 
     func getInvDetail(didGet items: Invoice) {
         invoice = items
+        // 讓掃描完的amount & detail data自動吃到textField裡，不需觸發到textFieldDidEndEditing
+        data.amountTextField = items.details[0].amount
+        data.detailTextView = items.details[0].detailDescription
     }
 
     func getInvDetail(didFailwith error: Error) {

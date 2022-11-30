@@ -88,7 +88,6 @@ class QRCodeViewController: UIViewController {
         captureSession.stopRunning()
         // 執行delegate + 塞掃描內容
         self.delegate?.getMessage(message: messageLabel.text ?? "")
-//        print(messageLabel.text)
 
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
