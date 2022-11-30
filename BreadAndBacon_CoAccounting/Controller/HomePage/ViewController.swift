@@ -31,13 +31,13 @@ class ViewController: UIViewController {
     // 因為UIDatePicker一定要在main thread做，但group是在global執行，因此先在全域宣告一個Date型別的變數，當fetch data抓date picker的日期資料時，改用全域變數的date拿到date的資料(self.date)
     var date = Date()
     let group = DispatchGroup()
-//    let queueGroup = DispatchQueue.global()
 // MARK: - 注意！
     var month: String = ""
     var getId: String = ""
     // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
-
+    @IBOutlet weak var remindLabel: UILabel!
+    
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var showDetailTableView: UITableView!
@@ -72,13 +72,23 @@ class ViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-            // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
-            self.fetchAllData()
+        BBCoLoading.loading(view: self.view)
+        // 一開啟app先去抓取firebase資料，把現有local端資訊更新為最新
+        self.fetchAllData()
     }
 
     func setupUI() {
         showDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+    }
+    
+    // 當日尚無資料者顯示“目前還沒有記帳喔”
+    func checkDataCount() {
+        if self.data.count == 0 {
+            self.remindLabel.isHidden = false
+        } else {
+            self.remindLabel.isHidden = true
+        }
     }
 
     // 加上refreshControl下拉更新(重fetch data)
@@ -155,7 +165,6 @@ class ViewController: UIViewController {
                     try? snapshot.data(as: Account.self)
                 }
                 self.data.append(contentsOf: account)
-                print("data here \(self.data)")
                 // 每一支API打完之後leave group
                 self.group.leave()
             }
@@ -176,7 +185,6 @@ class ViewController: UIViewController {
                     try? snapshot.data(as: Category.self)
                 }
                 self.category.append(contentsOf: category)
-                print("category here \(self.category)")
                 // 每一支API打完回來之後leave group
                 self.group.leave()
             }
@@ -195,6 +203,7 @@ class ViewController: UIViewController {
 
         // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
         group.notify(queue: .main) {
+            self.checkDataCount()
             self.dateBO.addTarget(self, action: #selector(self.tappedDateButton), for: .touchUpInside)
             self.showDetailTableView.reloadData()
         }
@@ -223,11 +232,12 @@ extension ViewController: UITableViewDelegate {
         if data[indexPath.row].segmentTag == 0 {
             presentEditVC.segmentTag = 0
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 0
-            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemYellow
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor =
+                UIColor().hexStringToUIColor(hex: "E5BB4B")
         } else if data[indexPath.row].segmentTag == 1 {
             presentEditVC.segmentTag = 1
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 1
-            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = .systemCyan
+            presentEditVC.sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "92c7bd")
         } else if data[indexPath.row].segmentTag == 2 {
             presentEditVC.segmentTag = 2
             presentEditVC.sourceSegmentControl.selectedSegmentIndex = 2

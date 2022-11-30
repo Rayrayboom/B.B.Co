@@ -780,6 +780,7 @@ PODS:
   - gRPC-Core/Interface (1.44.0)
   - GTMSessionFetcher/Core (2.1.0)
   - IQKeyboardManagerSwift (6.5.10)
+  - JGProgressHUD (2.2)
   - KituraContracts (1.2.1):
     - LoggerAPI (~> 1.7)
   - leveldb-library (1.22.1)
@@ -818,6 +819,7 @@ DEPENDENCIES:
   - FirebaseCrashlytics
   - FirebaseFirestoreSwift
   - IQKeyboardManagerSwift
+  - JGProgressHUD
   - lottie-ios
   - SideMenu
   - SPAlert
@@ -850,6 +852,7 @@ SPEC REPOS:
     - gRPC-Core
     - GTMSessionFetcher
     - IQKeyboardManagerSwift
+    - JGProgressHUD
     - KituraContracts
     - leveldb-library
     - Libuv-gRPC
@@ -889,6 +892,7 @@ SPEC CHECKSUMS:
   gRPC-Core: 943e491cb0d45598b0b0eb9e910c88080369290b
   GTMSessionFetcher: ffbb25ec00ebcb5201adab0a56d808f6f1902d9f
   IQKeyboardManagerSwift: 52962c76ab33532f15ad9f3ff4e5715eda5335bb
+  JGProgressHUD: d83d7a981b85d11205e19ff8ad5bb9c40571c847
   KituraContracts: e845e60dc8627ad0a76fa55ef20a45451d8f830b
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
@@ -903,6 +907,6 @@ SPEC CHECKSUMS:
   SwiftJWT: 88c412708f58c169d431d344c87bc79a87c830ae
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
-PODFILE CHECKSUM: 91941108f0eddc3d06528f6e205420470b0eb38f
+PODFILE CHECKSUM: 1c4b111c0d1d86d5e1c7d44274d0f8f3d96afb9a
 
 COCOAPODS: 1.11.3

@@ -38,6 +38,8 @@ class AddCoDetailViewController: UIViewController {
             coDetailTableView.reloadData()
         }
     }
+    // alertController
+    var controller = UIAlertController()
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var coDetailTableView: UITableView!
@@ -48,6 +50,10 @@ class AddCoDetailViewController: UIViewController {
     @IBOutlet weak var saveCoDetailBO: UIButton!
     // 存detail到firebase並dismiss addCoDetailVC
     @IBAction func saveCoDetail(_ sender: Any) {
+        if data.amountTextField == "" {
+            noAmountAlert()
+            return
+        }
         if isEdit == false {
             createCoAccountData(document: didSelecetedBook, subCollection: "co_expenditure")
         } else {
@@ -93,6 +99,19 @@ class AddCoDetailViewController: UIViewController {
         saveCoDetailBO.layer.borderWidth = 4
         saveCoDetailBO.layer.borderColor = CGColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
+    }
+
+    // 當金額為空值時，跳出警告訊息
+    func noAmountAlert() {
+        // 掃描時跳出alert提醒使用者掃描左邊QRCode
+        controller = UIAlertController(title: "金額不得為空", message: "請輸入金額", preferredStyle: .alert)
+        // 建立[我知道了]按鈕
+        let okAction = UIAlertAction(
+            title: "我知道了",
+            style: .default, handler: nil)
+        controller.addAction(okAction)
+        // 顯示提示框
+        self.present(controller, animated: true, completion: nil)
     }
 
     // MARK: - 上傳資料到Firebase

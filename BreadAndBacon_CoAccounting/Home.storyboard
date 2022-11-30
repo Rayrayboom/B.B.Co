@@ -151,14 +151,14 @@
                                 <rect key="frame" x="0.0" y="452" width="414" height="361"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="homeDetailCell" id="AvO-iC-MAk" customClass="HomeDetailTableViewCell" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="414" height="57"/>
+                                        <rect key="frame" x="0.0" y="44.5" width="414" height="56.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="AvO-iC-MAk" id="nl2-jG-fiK">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="57"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="56.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="smh-bl-YiE">
-                                                    <rect key="frame" x="55" y="5" width="47" height="24"/>
+                                                    <rect key="frame" x="55" y="5" width="47" height="23.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -172,13 +172,13 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="detail" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lgs-Ma-jhU">
-                                                    <rect key="frame" x="55" y="31" width="279" height="16"/>
+                                                    <rect key="frame" x="55" y="30.5" width="279" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UvC-xT-LLi">
-                                                    <rect key="frame" x="342" y="20" width="42" height="21.5"/>
+                                                    <rect key="frame" x="342" y="20" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -207,15 +207,24 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="目前還沒有記帳哦～" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HNq-q3-pX3">
+                                <rect key="frame" x="50" y="639" width="314" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" systemColor="systemBrownColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="YXs-et-Vpv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="1uU-GS-DED"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="HNq-q3-pX3" secondAttribute="trailing" constant="50" id="Ehc-T9-moP"/>
+                            <constraint firstItem="HNq-q3-pX3" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="NXE-h4-Tem"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="YXs-et-Vpv" secondAttribute="bottom" id="Nv6-gj-ufd"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="YXs-et-Vpv" secondAttribute="trailing" id="Zzp-aS-5Qn"/>
                             <constraint firstItem="jDB-7P-lFf" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="d1s-Xl-qtU"/>
                             <constraint firstItem="jDB-7P-lFf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="dF2-kj-qSo"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="HNq-q3-pX3" secondAttribute="bottom" constant="150" id="jDI-nx-kQh"/>
                             <constraint firstItem="jDB-7P-lFf" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="l7N-Ct-KaJ"/>
                             <constraint firstItem="YXs-et-Vpv" firstAttribute="top" secondItem="jDB-7P-lFf" secondAttribute="bottom" id="mzI-Tv-2f7"/>
                         </constraints>
@@ -239,6 +248,7 @@
                     <connections>
                         <outlet property="dateBO" destination="aQr-iC-ZiH" id="gE7-9n-FRa"/>
                         <outlet property="datePicker" destination="jDB-7P-lFf" id="tXJ-9c-uQF"/>
+                        <outlet property="remindLabel" destination="HNq-q3-pX3" id="4bu-b5-HPb"/>
                         <outlet property="showDetailTableView" destination="YXs-et-Vpv" id="1eK-Nh-bhL"/>
                     </connections>
                 </viewController>

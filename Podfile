@@ -18,4 +18,5 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'SPAlert'
 	pod 'SwiftJWT'
 	pod 'FirebaseCrashlytics'
+	pod 'JGProgressHUD'
 end

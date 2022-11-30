@@ -42,6 +42,7 @@ class CoAccountingViewController: UIViewController {
     var userName: [String] = []
     // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
+    let group = DispatchGroup()
 
 
     @IBOutlet weak var bookDetailTableView: UITableView!
@@ -57,7 +58,8 @@ class CoAccountingViewController: UIViewController {
     }
 
     @IBOutlet weak var coSegmentedControl: UISegmentedControl!
-
+    @IBOutlet weak var remindLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -75,6 +77,7 @@ class CoAccountingViewController: UIViewController {
     // 當addCoDetailVC dismiss後回到coAccountingVC會呼叫viewWillAppear，重新fetch一次data並reload bookTableView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        BBCoLoading.loading(view: self.view)
         // 進入帳本內部時隱藏下方tabbar
         self.tabBarController?.tabBar.isHidden = true
         // 畫面一有變動就會去重新fetch一次data並把資料&畫面(pie + tableView)更新到最新狀態
@@ -98,6 +101,15 @@ class CoAccountingViewController: UIViewController {
         bookDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
+    // 當日尚無資料者顯示“目前還沒有記帳喔”
+    func checkDataCount() {
+        if self.data.count == 0 {
+            self.remindLabel.isHidden = false
+        } else {
+            self.remindLabel.isHidden = true
+        }
+    }
+
     // 加上refreshControl下拉更新(重fetch data)
     func refreshBookDetail() {
         refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
@@ -119,6 +131,7 @@ class CoAccountingViewController: UIViewController {
 
     // segmentControl - @objc
     @objc func handelSegmentControl() {
+        BBCoLoading.loading(view: self.view)
         // 設置segmented control被選取時文字、button顏色
         var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         coSegmentedControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
@@ -138,6 +151,8 @@ class CoAccountingViewController: UIViewController {
     func fetchBookDetail(document: String, subCollection: String) {
         data = []
         let dataBase = Firestore.firestore()
+        // 進入group
+        self.group.enter()
         dataBase.collection("co-account/\(document)/\(subCollection)")
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -148,7 +163,11 @@ class CoAccountingViewController: UIViewController {
                 }
                 self.data.append(contentsOf: account)
                 print("book datail here \(self.data)")
+                self.group.leave()
             }
+        group.notify(queue: .main) {
+            self.checkDataCount()
+        }
     }
 
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
@@ -356,6 +375,8 @@ extension CoAccountingViewController: UITableViewDataSource {
             deleteSpecificData(document: didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            // 當日尚無資料者顯示“目前還沒有記帳喔”
+            self.checkDataCount()
             tableView.endUpdates()
         }
     }

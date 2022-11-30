@@ -11,7 +11,7 @@ class EditTimeTableViewCell: UITableViewCell {
     @IBOutlet weak var editDatePicker: UIDatePicker!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        editDatePicker.tintColor = .systemBrown
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

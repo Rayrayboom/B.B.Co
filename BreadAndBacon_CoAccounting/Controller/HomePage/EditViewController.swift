@@ -183,7 +183,7 @@ class EditViewController: UIViewController {
     // func for segmentControl 更改時切換頁面
     @objc func handelSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
-        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
         // 設置對應segmentTag顏色
@@ -222,6 +222,10 @@ class EditViewController: UIViewController {
 // MARK: -如下edit func先全部執行，目前可以照預期的呈現，後續再來想判斷式
     // 儲存並dismiss VC
     @objc func saveEdit() {
+        if editData.amountTextField == "" {
+            noAmountAlert()
+            return
+        }
         // 按下儲存編輯時isTappedQR要重置，才不會影響下一筆編輯的資料判斷
         isTappedQR = 0
         // 編輯(updateDocument)firebase上的data
@@ -251,6 +255,19 @@ class EditViewController: UIViewController {
         default:
             return "account"
         }
+    }
+
+    // 當金額為空值時，跳出警告訊息
+    func noAmountAlert() {
+        // 掃描時跳出alert提醒使用者掃描左邊QRCode
+        controller = UIAlertController(title: "金額不得為空", message: "請輸入金額", preferredStyle: .alert)
+        // 建立[我知道了]按鈕
+        let okAction = UIAlertAction(
+            title: "我知道了",
+            style: .default, handler: nil)
+        controller.addAction(okAction)
+        // 顯示提示框
+        self.present(controller, animated: true, completion: nil)
     }
 
     // 從Firebase上fetch全部種類/帳戶資料
