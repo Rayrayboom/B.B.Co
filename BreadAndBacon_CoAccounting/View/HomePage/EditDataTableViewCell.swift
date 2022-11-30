@@ -231,6 +231,8 @@ extension EditDataTableViewCell: UITextFieldDelegate {
             } else if indexPath?.item == 2 {
                 contentTextField.text = content[0]
             }
+        } else {
+            return
         }
     }
 

@@ -70,7 +70,7 @@ class CoBookViewController: UIViewController {
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         bookTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
-    
+    // MARK: -待確認要放在哪裡才會顯示對的功能
     // 當日尚無資料者顯示“目前還沒共同帳本”
     func checkDataCount() {
         if self.data.count == 0 {
@@ -377,7 +377,6 @@ extension CoBookViewController: UITableViewDelegate {
                     }
                     // 接著刪除book
                     self.deleteSpecificData(indexPathRow: indexPath.row)
-                    self.checkDataCount()
                     // 重新抓最新資料(會reloadData)
                     self.fetchCoBook()
                 }
@@ -436,7 +435,6 @@ extension CoBookViewController: UITableViewDataSource {
                 self.deleteSpecificData(indexPathRow: indexPath.row)
                 self.data.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
-                self.checkDataCount()
                 tableView.endUpdates()
             }
         }
