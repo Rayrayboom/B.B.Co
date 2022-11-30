@@ -101,12 +101,12 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WeH-YS-vLF">
-                                                        <rect key="frame" x="90" y="646" width="234" height="19"/>
+                                                        <rect key="frame" x="90" y="646" width="234" height="20.5"/>
                                                         <attributedString key="attributedText">
                                                             <fragment content="無論再小的品項都可以記">
                                                                 <attributes>
                                                                     <color key="NSColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                    <font key="NSFont" size="17" name=".PingFangTC-Regular"/>
+                                                                    <font key="NSFont" metaFont="system" size="17"/>
                                                                     <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
                                                                 </attributes>
                                                             </fragment>
