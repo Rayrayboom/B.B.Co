@@ -73,7 +73,7 @@ class CoBookViewController: UIViewController {
     // MARK: -待確認要放在哪裡才會顯示對的功能
     // 當日尚無資料者顯示“目前還沒共同帳本”
     func checkDataCount() {
-        if self.data.count == 0 {
+        if self.data.isEmpty {
             self.remindLabel.isHidden = false
         } else {
             self.remindLabel.isHidden = true

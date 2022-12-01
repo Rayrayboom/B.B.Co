@@ -103,7 +103,7 @@ class CoAccountingViewController: UIViewController {
 
     // 當日尚無資料者顯示“目前還沒有記帳喔”
     func checkDataCount() {
-        if self.data.count == 0 {
+        if self.data.isEmpty {
             self.remindLabel.isHidden = false
         } else {
             self.remindLabel.isHidden = true
