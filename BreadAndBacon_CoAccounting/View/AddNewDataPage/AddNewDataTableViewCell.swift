@@ -13,7 +13,7 @@ protocol AddNewDataTableViewCellDelegate: AnyObject {
     func addNewContent(_ cell: AddNewDataTableViewCell)
     func getInputTextField(indexPath: IndexPath, textField: String)
     func getTitle(indexPath: IndexPath, title: String)
-    func setContent(content: [String])
+    func setContent(indexPathItem: Int, content: [String])
     func getImageName(indexPath: IndexPath, imageName: String)
 }
 
@@ -92,7 +92,7 @@ class AddNewDataTableViewCell: UITableViewCell {
             // 按下ok之後同步reload picker的component
             self.contentPicker.reloadAllComponents()
             // 用delegate把已經append的content傳回VC並改值
-            self.delegate?.setContent(content: self.content)
+            self.delegate?.setContent(indexPathItem: self.indexPath?.item ?? 0, content: self.content)
 
 // MARK: - 以下待測試 .arrayUnion 方法
             // 按下ok之後判斷現在在哪一頁，然後判斷是哪一個indexPath，把對應的選項上傳到對應的title document裡

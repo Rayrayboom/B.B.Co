@@ -715,20 +715,20 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         data.titleLabel = title
     }
 
-    // 新增的選項用delegate傳回來並改變array data
-    func setContent(content: [String]) {
+    // 新增的選項用delegate傳回來並改變array data，用cell對應回來的indexPath.item才不會在進array時導錯
+    func setContent(indexPathItem: Int, content: [String]) {
         // 當轉帳頁面時，都會抓帳戶資訊
         switch segmentTag {
         // 頁面-支出
         case 0:
-            if tapIndexpath?.item == 1 {
+            if indexPathItem == 1 {
                 costContent = content
             } else {
                 accountContent = content
             }
         // 頁面-收入
         case 1:
-            if tapIndexpath?.item == 1 {
+            if indexPathItem == 1 {
                 incomeContent = content
             } else {
                 accountContent = content
