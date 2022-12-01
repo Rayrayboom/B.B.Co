@@ -44,6 +44,369 @@
             </objects>
             <point key="canvasLocation" x="876.81159420289862" y="1572.9910714285713"/>
         </scene>
+        <!--Calculate View Controller-->
+        <scene sceneID="ABh-L5-Wfh">
+            <objects>
+                <viewController storyboardIdentifier="calculateVC" id="i4F-M3-ehJ" customClass="CalculateViewController" customModule="BreadAndBacon_CoAccounting" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1Md-Vq-bxg">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="g2z-Qd-2Kb">
+                                <rect key="frame" x="30" y="316" width="354" height="526"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iiB-kY-Ze0">
+                                        <rect key="frame" x="0.0" y="0.0" width="354" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="60" id="9OK-bu-Ku7"/>
+                                        </constraints>
+                                        <attributedString key="attributedText">
+                                            <fragment content="0">
+                                                <attributes>
+                                                    <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                    <font key="NSFont" size="60" name="HannotateTC-W5"/>
+                                                    <font key="NSOriginalFont" size="55" name="HannotateTC-W5"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="right" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                        </attributedString>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="mBB-9F-E65">
+                                        <rect key="frame" x="0.0" y="80" width="354" height="73.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yee-33-1vv">
+                                                <rect key="frame" x="0.0" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="yee-33-1vv" secondAttribute="height" multiplier="1:1" id="ag9-Cw-aef"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="AC"/>
+                                                <connections>
+                                                    <action selector="clearButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="lxF-nP-ZJj"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wW8-4i-7mn">
+                                                <rect key="frame" x="93.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="wW8-4i-7mn" secondAttribute="height" multiplier="1:1" id="sl9-zq-I4m"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="40"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="delete.left" catalog="system">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="deleteClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="U9W-Og-ocR"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FA4-FY-rJB">
+                                                <rect key="frame" x="187" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="FA4-FY-rJB" secondAttribute="height" multiplier="1:1" id="06L-r0-0Dj"/>
+                                                </constraints>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="+ / −">
+                                                    <fontDescription key="titleFontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="23"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="plusMinusClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="doT-4O-6Vx"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uoP-5Q-aJu">
+                                                <rect key="frame" x="280.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" systemColor="systemYellowColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="uoP-5Q-aJu" secondAttribute="height" multiplier="1:1" id="DYc-6a-ixy"/>
+                                                </constraints>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="÷">
+                                                    <fontDescription key="titleFontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="operatorButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="mkM-A9-bhk"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="uoP-5Q-aJu" firstAttribute="width" secondItem="uoP-5Q-aJu" secondAttribute="height" multiplier="1:1" id="2Ai-hY-7MA"/>
+                                            <constraint firstItem="wW8-4i-7mn" firstAttribute="width" secondItem="wW8-4i-7mn" secondAttribute="height" multiplier="1:1" id="6n5-GI-wty"/>
+                                            <constraint firstItem="FA4-FY-rJB" firstAttribute="width" secondItem="FA4-FY-rJB" secondAttribute="height" multiplier="1:1" id="Dag-uo-cnq"/>
+                                        </constraints>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="2OB-9e-gl1">
+                                        <rect key="frame" x="0.0" y="173.5" width="354" height="73.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BH1-vO-UPU">
+                                                <rect key="frame" x="0.0" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="BH1-vO-UPU" secondAttribute="height" multiplier="1:1" id="ZNb-vY-jaZ"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="7"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="gJr-9V-IdF"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SAi-Ds-48S">
+                                                <rect key="frame" x="93.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="SAi-Ds-48S" secondAttribute="height" multiplier="1:1" id="Ubp-5i-BBw"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="8"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="1Iv-P9-2ey"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UmL-Bw-HcT">
+                                                <rect key="frame" x="187" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="UmL-Bw-HcT" secondAttribute="height" multiplier="1:1" id="Hpl-nJ-JCA"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="9"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="Bxf-Ao-pqt"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wM5-RH-NyK">
+                                                <rect key="frame" x="280.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" systemColor="systemYellowColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="wM5-RH-NyK" secondAttribute="height" multiplier="1:1" id="vh5-hm-fbx"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="×"/>
+                                                <connections>
+                                                    <action selector="operatorButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="Qe4-ed-Rc3"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="wM5-RH-NyK" firstAttribute="width" secondItem="wM5-RH-NyK" secondAttribute="height" multiplier="1:1" id="HqA-x8-Pf6"/>
+                                            <constraint firstItem="UmL-Bw-HcT" firstAttribute="width" secondItem="UmL-Bw-HcT" secondAttribute="height" multiplier="1:1" id="gzd-F8-ZuU"/>
+                                            <constraint firstItem="SAi-Ds-48S" firstAttribute="width" secondItem="SAi-Ds-48S" secondAttribute="height" multiplier="1:1" id="l0F-IT-ef1"/>
+                                        </constraints>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="V5z-bz-FHh">
+                                        <rect key="frame" x="0.0" y="267" width="354" height="73.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oiZ-Vv-xox">
+                                                <rect key="frame" x="0.0" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="oiZ-Vv-xox" secondAttribute="height" multiplier="1:1" id="jBv-Us-lId"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="4"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="2SH-Bm-6sP"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yt6-Bz-3R5">
+                                                <rect key="frame" x="93.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="yt6-Bz-3R5" secondAttribute="height" multiplier="1:1" id="Xbg-EU-pXY"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="5"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="9Iz-gZ-KYn"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bqu-QY-Gnq">
+                                                <rect key="frame" x="187" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="bqu-QY-Gnq" secondAttribute="height" multiplier="1:1" id="brS-Gv-CcH"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="6"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="IPC-Wl-pi4"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dcf-qE-1Dd">
+                                                <rect key="frame" x="280.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" systemColor="systemYellowColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="dcf-qE-1Dd" secondAttribute="height" multiplier="1:1" id="jNw-gX-3kh"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="−"/>
+                                                <connections>
+                                                    <action selector="operatorButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="uBf-FC-rbl"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="yt6-Bz-3R5" firstAttribute="width" secondItem="yt6-Bz-3R5" secondAttribute="height" multiplier="1:1" id="hME-Um-5fb"/>
+                                            <constraint firstItem="bqu-QY-Gnq" firstAttribute="width" secondItem="bqu-QY-Gnq" secondAttribute="height" multiplier="1:1" id="ifr-i1-N1h"/>
+                                            <constraint firstItem="dcf-qE-1Dd" firstAttribute="width" secondItem="dcf-qE-1Dd" secondAttribute="height" multiplier="1:1" id="kXW-Zy-OIe"/>
+                                        </constraints>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="I4g-An-wEe">
+                                        <rect key="frame" x="0.0" y="360.5" width="354" height="73.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iFK-FR-ub9">
+                                                <rect key="frame" x="0.0" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="iFK-FR-ub9" secondAttribute="height" multiplier="1:1" id="wo2-iR-sLu"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="1"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="1PV-JV-hmc"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cuH-pt-u3f">
+                                                <rect key="frame" x="93.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="cuH-pt-u3f" secondAttribute="height" multiplier="1:1" id="goo-q7-Ydw"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="2"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="Ug9-hW-KMY"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V3l-Oq-bwg">
+                                                <rect key="frame" x="187" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="V3l-Oq-bwg" secondAttribute="height" multiplier="1:1" id="8PW-cX-cE0"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="3"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="Cfa-3s-rv5"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NdX-yp-8mi">
+                                                <rect key="frame" x="280.5" y="0.0" width="73.5" height="73.5"/>
+                                                <color key="backgroundColor" systemColor="systemYellowColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="NdX-yp-8mi" secondAttribute="height" multiplier="1:1" id="ERg-n5-93D"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="+"/>
+                                                <connections>
+                                                    <action selector="operatorButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="s7T-hB-2Eq"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="cuH-pt-u3f" firstAttribute="width" secondItem="cuH-pt-u3f" secondAttribute="height" multiplier="1:1" id="Aqo-N0-UCj"/>
+                                            <constraint firstItem="NdX-yp-8mi" firstAttribute="width" secondItem="NdX-yp-8mi" secondAttribute="height" multiplier="1:1" id="C74-xQ-GFY"/>
+                                            <constraint firstItem="V3l-Oq-bwg" firstAttribute="width" secondItem="V3l-Oq-bwg" secondAttribute="height" multiplier="1:1" id="WBA-6f-dFs"/>
+                                        </constraints>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="gUv-9F-xFF">
+                                        <rect key="frame" x="0.0" y="454" width="354" height="72"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sTc-OD-Dry">
+                                                <rect key="frame" x="0.0" y="0.0" width="170" height="72"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="72" id="E9B-in-zqn"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="0"/>
+                                                <connections>
+                                                    <action selector="numberButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="4PK-1h-AYQ"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hLF-Ug-9ZB">
+                                                <rect key="frame" x="190" y="0.0" width="72" height="72"/>
+                                                <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="hLF-Ug-9ZB" secondAttribute="height" multiplier="1:1" id="fCx-fy-Wa4"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="."/>
+                                                <connections>
+                                                    <action selector="decimalClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="CbT-ww-qBC"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bTi-Dd-yrS">
+                                                <rect key="frame" x="282" y="0.0" width="72" height="72"/>
+                                                <color key="backgroundColor" systemColor="systemYellowColor"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="bTi-Dd-yrS" secondAttribute="height" multiplier="1:1" id="T8h-8g-z11"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="HannotateTC-W5" family="Hannotate TC" pointSize="35"/>
+                                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="＝"/>
+                                                <connections>
+                                                    <action selector="equalButtonClicked:" destination="i4F-M3-ehJ" eventType="touchUpInside" id="J5q-sQ-894"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="Lw6-C2-QYc"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Lw6-C2-QYc" firstAttribute="trailing" secondItem="g2z-Qd-2Kb" secondAttribute="trailing" constant="30" id="9hM-FL-VF3"/>
+                            <constraint firstItem="Lw6-C2-QYc" firstAttribute="bottom" secondItem="g2z-Qd-2Kb" secondAttribute="bottom" constant="20" id="YZ6-Zh-w6s"/>
+                            <constraint firstItem="g2z-Qd-2Kb" firstAttribute="leading" secondItem="Lw6-C2-QYc" secondAttribute="leading" constant="30" id="uwg-rU-qOp"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="allClearBO" destination="yee-33-1vv" id="IkY-Tn-lTq"/>
+                        <outlet property="label" destination="iiB-kY-Ze0" id="cmt-K6-IDJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UE6-eI-ybo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1821.7391304347827" y="1572.9910714285713"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="CGC-Vf-WCX">
             <objects>
@@ -345,6 +708,7 @@
     </scenes>
     <resources>
         <image name="Add-clicked" width="32.5" height="38.5"/>
+        <image name="delete.left" catalog="system" width="128" height="104"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="qrcode.viewfinder" catalog="system" width="128" height="115"/>
         <systemColor name="labelColor">
@@ -352,6 +716,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemYellowColor">
+            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
