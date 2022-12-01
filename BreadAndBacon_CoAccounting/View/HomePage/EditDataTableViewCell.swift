@@ -199,6 +199,16 @@ extension EditDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
         }
     }
 
+    // pickerView component 寬度
+    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        return 80
+    }
+
+    // pickerView component 高度
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 50
+    }
+
     // pickerView改變選擇後執行的動作, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch indexPath?.item {
@@ -232,6 +242,8 @@ extension EditDataTableViewCell: UITextFieldDelegate {
                 contentTextField.text = content[0]
             }
         } else {
+//            contentPicker.selectRow(indexPath?.row ?? 0, inComponent: 0, animated: true)
+//            contentPicker.selectRow(indexPath?.row ?? 0, inComponent: 0, animated: true)
             return
         }
     }
