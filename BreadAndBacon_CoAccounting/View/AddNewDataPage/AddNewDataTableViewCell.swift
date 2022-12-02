@@ -11,7 +11,7 @@ import SwiftKeychainWrapper
 import IQKeyboardManagerSwift
 
 protocol AddNewDataTableViewCellDelegate: AnyObject {
-    func addNewContent(_ cell: AddNewDataTableViewCell)
+    func addNewContent(_ cell: AddNewDataTableViewCell, indexPathItem: Int)
     func getInputTextField(indexPath: IndexPath, textField: String)
     func getTitle(indexPath: IndexPath, title: String)
     func setContent(indexPathItem: Int, content: [String])
@@ -131,7 +131,7 @@ class AddNewDataTableViewCell: UITableViewCell {
 
     @objc func didSelectAddButton() {
         // 按下add button後把最新選項用delegate傳給VC
-        self.delegate?.addNewContent(self)
+        self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
     }
 
     // 新增對應category細項
@@ -249,11 +249,23 @@ extension AddNewDataTableViewCell: UITextFieldDelegate {
             } else {
                 return
             }
-        default:
+        default: // 讓amount textField一點進去就直接顯示計算機
             let addNewDataStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
             presentCalculateVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calculateVC") as! CalculateViewController
             presentCalculateVC?.modalPresentationStyle = .overCurrentContext
-            self.delegate?.addNewContent(self)
+            self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
+            // 用clousure把calculateVC的label.text值傳給回來
+            presentCalculateVC?.closure = {[weak self] text in
+                if self?.contentTextField.text == "" {
+                    // 顯示在textField上
+                    self?.contentTextField.text = text
+                    // 輸入完就直接吃進去textField裡面，不用等textFieldDidEndEditing
+                    self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
+                } else {
+                    self?.contentTextField.text = text
+                    self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
+                }
+            }
         }
     }
     func textFieldDidEndEditing(_ textField: UITextField) {

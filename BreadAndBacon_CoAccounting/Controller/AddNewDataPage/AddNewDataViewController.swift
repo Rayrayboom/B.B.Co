@@ -37,6 +37,8 @@ struct Model {
 }
 
 class AddNewDataViewController: UIViewController {
+    // calculator manager
+    var logic = BBCoLogicManager()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
     // 存支出textField picker資料
@@ -693,10 +695,13 @@ extension AddNewDataViewController: AddDateTableViewCellDelegate {
 
 // new data cell
 extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
-    // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
-    func addNewContent(_ cell: AddNewDataTableViewCell) {
-//        present(cell.controller, animated: true)
-        present(cell.presentCalculateVC ?? UIViewController(), animated: true)
+    // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作，amount textField時顯示計算機，其餘顯示alert
+    func addNewContent(_ cell: AddNewDataTableViewCell, indexPathItem: Int) {
+        if indexPathItem == 0 {
+            present(cell.presentCalculateVC ?? UIViewController(), animated: true)
+        } else {
+            present(cell.controller, animated: true)
+        }
     }
 
     func getInputTextField(indexPath: IndexPath, textField: String) {

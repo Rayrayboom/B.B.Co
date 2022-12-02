@@ -14,13 +14,27 @@ class CalculateViewController: UIViewController {
     var willClearDisplay = false
     // 確認前一個觸發點是否涉及運算
     var previousIsOperation = false
+    var closure: ((String) -> (Void))?
 
+    @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var allClearBO: UIButton!
-
+    @IBOutlet weak var equalBO: UIButton!
+    @IBOutlet weak var backgroundViewTopConatrain: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        UIView.performWithoutAnimation {
+            backgroundView.layer.cornerRadius = 10
+// MARK: - 推出計算機constrain
+//            backgroundView.translatesAutoresizingMaskIntoConstraints = false
+//            NSLayoutConstraint.activate([
+//                backgroundView.
+//            ])
+            backgroundViewTopConatrain.constant = CGFloat(UIScreen.main.bounds.height * 5/10)
+            self.equalBO.setTitle("OK", for: .normal)
+            self.equalBO.layoutIfNeeded()
+        }
     }
     
     // 每按下button時label閃爍
@@ -45,6 +59,8 @@ class CalculateViewController: UIViewController {
         UIView.performWithoutAnimation {
             self.allClearBO.setTitle("AC", for: .normal)
             self.allClearBO.layoutIfNeeded()
+            self.equalBO.setTitle("OK", for: .normal)
+            self.equalBO.layoutIfNeeded()
         }
         
         labelFlashing()
@@ -56,6 +72,8 @@ class CalculateViewController: UIViewController {
         UIView.performWithoutAnimation {
             self.allClearBO.setTitle("C", for: .normal)
             self.allClearBO.layoutIfNeeded()
+//            self.equalBO.setTitle("=", for: .normal)
+//            self.equalBO.layoutIfNeeded()
         }
         
         // 判斷是否有error狀況
@@ -88,8 +106,10 @@ class CalculateViewController: UIViewController {
 //            }
 //        }
         
-        if label.text == "0" { label.text = sender.currentTitle }
-        else { label.text! += sender.currentTitle! }
+        if label.text == "0" || label.text == "00" { label.text = sender.currentTitle }
+        else {
+            label.text! += sender.currentTitle!
+        }
 
         // 顯示的數字放到currentNumber
         logic.currentNumber = Double(label.text!)!
@@ -102,6 +122,10 @@ class CalculateViewController: UIViewController {
     // MARK: - 點選四則運算符 + - × ÷
     @IBAction func operatorButtonClicked(_ sender: UIButton) {
         labelFlashing()
+        UIView.performWithoutAnimation {
+            self.equalBO.setTitle("=", for: .normal)
+            self.equalBO.layoutIfNeeded()
+        }
         
         if label.text == "Error" {
             reset()
@@ -130,21 +154,40 @@ class CalculateViewController: UIViewController {
         // 前一個觸發點有做運算，故為true
         previousIsOperation = true
         print("=== ", logic.array, "現在數字：",logic.currentNumber)
+        print("willClearDisplay", willClearDisplay)
+        print("previousIsOperation", previousIsOperation)
     }
     
     // MARK: - 點選 =
     @IBAction func equalButtonClicked(_ sender: UIButton) {
         labelFlashing()
-        
         if label.text == "Error" {
             reset()
             return
         }
-        
-        if let result = logic.calculateArray(operation: "equal") {
-            label.text = logic.formatToString(from: result)
+        print("willClearDisplay", willClearDisplay)
+        print("previousIsOperation", previousIsOperation)
+        if previousIsOperation == false {
+            if sender.titleLabel?.text == "=" {
+                UIView.performWithoutAnimation {
+                    self.equalBO.setTitle("OK", for: .normal)
+                    self.equalBO.layoutIfNeeded()
+                }
+                if let result = logic.calculateArray(operation: "equal") {
+                    label.text = logic.formatToString(from: result)
+                }
+            } else if sender.titleLabel?.text == "OK" {
+                // 用clousure傳值給addNewDataCell的contentTextField
+                self.closure?(self.label.text ?? "")
+                self.dismiss(animated: true, completion: nil)
+            }
+        } else if sender.titleLabel?.text == "OK" {
+            // 用clousure傳值給addNewDataCell的acontentTextField
+            self.closure?(self.label.text ?? "")
+            self.dismiss(animated: true, completion: nil)
         }
         
+
         // 前一個觸發點有做運算，故為true
         previousIsOperation = true
         print("=== ", logic.array, "現在數字：",logic.currentNumber)
