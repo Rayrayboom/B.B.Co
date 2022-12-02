@@ -14,6 +14,20 @@ enum Operation: Int {
     case divide = 3
 }
 
+enum Number: Int {
+    case doubleZero = -1
+    case zero = 0
+    case one = 1
+    case two = 2
+    case three = 3
+    case four = 4
+    case five = 5
+    case six = 6
+    case seven = 7
+    case eight = 8
+    case nine = 9
+}
+
 class BBCoLogicManager {
     var array = [Double]()
     var currentNumber = 0.0
@@ -96,5 +110,36 @@ class BBCoLogicManager {
             }
         }
         return total
+    }
+    
+    func showNumber(tag: Int) -> String {
+        var digital = ""
+        if let number = Number(rawValue: tag) {
+            switch number {
+            case .doubleZero:
+                digital = "00"
+            case .zero:
+                digital = "0"
+            case .one:
+                digital = "1"
+            case .two:
+                digital = "2"
+            case .three:
+                digital = "3"
+            case .four:
+                digital = "4"
+            case .five:
+                digital = "5"
+            case .six:
+                digital = "6"
+            case .seven:
+                digital = "7"
+            case .eight:
+                digital = "8"
+            case .nine:
+                digital = "9"
+            }
+        }
+        return digital
     }
 }

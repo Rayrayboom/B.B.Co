@@ -72,8 +72,6 @@ class CalculateViewController: UIViewController {
         UIView.performWithoutAnimation {
             self.allClearBO.setTitle("C", for: .normal)
             self.allClearBO.layoutIfNeeded()
-//            self.equalBO.setTitle("=", for: .normal)
-//            self.equalBO.layoutIfNeeded()
         }
         
         // 判斷是否有error狀況
@@ -106,9 +104,9 @@ class CalculateViewController: UIViewController {
 //            }
 //        }
         
-        if label.text == "0" || label.text == "00" { label.text = sender.currentTitle }
+        if label.text == "0" || label.text == "00" { label.text = logic.showNumber(tag: sender.tag) }
         else {
-            label.text! += sender.currentTitle!
+            label.text! += logic.showNumber(tag: sender.tag)
         }
 
         // 顯示的數字放到currentNumber
