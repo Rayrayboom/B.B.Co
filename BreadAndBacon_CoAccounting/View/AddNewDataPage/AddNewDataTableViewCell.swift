@@ -255,6 +255,7 @@ extension AddNewDataTableViewCell: UITextFieldDelegate {
             presentCalculateVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calculateVC") as! CalculateViewController
             presentCalculateVC?.modalPresentationStyle = .overCurrentContext
             self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
+
             // 用clousure把calculateVC的label.text值傳給回來
             presentCalculateVC?.closure = {[weak self] text in
                 if self?.contentTextField.text == "" {

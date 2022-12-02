@@ -15,6 +15,7 @@ class CalculateViewController: UIViewController {
     // 確認前一個觸發點是否涉及運算
     var previousIsOperation = false
     var closure: ((String) -> (Void))?
+    let blackView = UIView(frame: UIScreen.main.bounds)
 
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var label: UILabel!
@@ -25,18 +26,48 @@ class CalculateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         UIView.performWithoutAnimation {
-            backgroundView.layer.cornerRadius = 10
-// MARK: - 推出計算機constrain
-//            backgroundView.translatesAutoresizingMaskIntoConstraints = false
-//            NSLayoutConstraint.activate([
-//                backgroundView.
-//            ])
-            backgroundViewTopConatrain.constant = CGFloat(UIScreen.main.bounds.height * 5/10)
-            self.equalBO.setTitle("OK", for: .normal)
-            self.equalBO.layoutIfNeeded()
+            setupUI()
         }
     }
+
+    // UI
+    func setupUI() {
+        backgroundView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        backgroundView.layer.cornerRadius = 10
+        backgroundViewTopConatrain.constant = CGFloat(UIScreen.main.bounds.height * 5/10)
+        // 設定計算機後面的黑屏
+        blackView.backgroundColor = .black
+        blackView.alpha = 0
+        presentingViewController?.view.addSubview(blackView)
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
+            self.blackView.alpha = 0.3
+        }
+        dismissBlackView()
+        self.equalBO.setTitle("OK", for: .normal)
+        self.equalBO.layoutIfNeeded()
+        
+    }
     
+    // 點空白處讓blackView消失
+    func dismissBlackView() {
+        let singleFinger = UITapGestureRecognizer(
+          target:self,
+          action:#selector(CalculateViewController.singleTap(recognizer:)))
+        singleFinger.numberOfTapsRequired = 1
+        self.view.addGestureRecognizer(singleFinger)
+    }
+    
+    @objc func singleTap(recognizer: UITapGestureRecognizer){
+        print("單指點一下時觸發")
+        let point = recognizer.location(ofTouch: 0, in: recognizer.view)
+        print(point.y)
+
+        if point.y < self.view.center.y {
+            dismiss(animated: true, completion: nil)
+            self.blackView.removeFromSuperview()
+        }
+    }
+
     // 每按下button時label閃爍
     func labelFlashing() {
         label.alpha = 0
@@ -44,7 +75,7 @@ class CalculateViewController: UIViewController {
             self.label.alpha = 1
         }, completion: nil)
     }
-    
+
     // MARK: - 運算重置func
     func reset() {
         willClearDisplay = false
@@ -178,11 +209,15 @@ class CalculateViewController: UIViewController {
                 // 用clousure傳值給addNewDataCell的contentTextField
                 self.closure?(self.label.text ?? "")
                 self.dismiss(animated: true, completion: nil)
+                // dismiss計算機後，blackView也一並dismiss
+                self.blackView.removeFromSuperview()
             }
         } else if sender.titleLabel?.text == "OK" {
             // 用clousure傳值給addNewDataCell的acontentTextField
             self.closure?(self.label.text ?? "")
             self.dismiss(animated: true, completion: nil)
+            // dismiss計算機後，blackView也一並dismiss
+            self.blackView.removeFromSuperview()
         }
         
 
