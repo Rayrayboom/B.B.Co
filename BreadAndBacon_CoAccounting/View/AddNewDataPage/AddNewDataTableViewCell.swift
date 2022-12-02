@@ -29,6 +29,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     // 宣告一個alertVC
     var controller = UIAlertController()
     var segmentTag = 0
+    // calculator VC
     var presentCalculateVC: CalculateViewController?
     var indexPath: IndexPath? {
         didSet {

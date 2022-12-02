@@ -10,7 +10,7 @@ import FirebaseFirestore
 import SwiftKeychainWrapper
 
 protocol EditDataTableViewCellDelegate: AnyObject {
-    func addNewContent(_ cell: EditDataTableViewCell)
+    func addNewContent(_ cell: EditDataTableViewCell, indexPathItem: Int)
     func getInputTextField(indexPath: IndexPath, textField: String)
     func getTitle(indexPath: IndexPath, title: String)
     func setContent(indexPathItem: Int, content: [String])
@@ -28,14 +28,16 @@ class EditDataTableViewCell: UITableViewCell {
     // 宣告一個alertVC
     var controller = UIAlertController()
     var segmentTag = 0
+    // calculator VC
+    var presentCalculateVC: CalculateViewController?
     var indexPath: IndexPath? {
         didSet {
             // 第一個金額cell不需要picker，因此讓他顯示數字鍵盤
             if indexPath?.item == 0 {
                 addNewContentBO.isHidden = true
-                // contentTextField有更動時叫出黑色數字鍵盤
-                contentTextField.keyboardType = .numberPad
-                contentTextField.keyboardAppearance = .dark
+                // 隱藏IQKeyBoard自動帶出的鍵盤
+                contentTextField.inputView = UIView.init(frame: CGRect.zero)
+                contentTextField.inputAccessoryView = UIView.init(frame: CGRect.zero)
                 return
             } else {
                 // picker delegate & datasource
@@ -129,7 +131,7 @@ class EditDataTableViewCell: UITableViewCell {
 
     @objc func didSelectAddButton() {
         // 按下add button後把最新選項用delegate傳給VC
-        self.delegate?.addNewContent(self)
+        self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
     }
 
     // 新增對應category細項
@@ -233,20 +235,44 @@ extension EditDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
 extension EditDataTableViewCell: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         // 當textField是空值時，才會導入預設值，非為空值表示原先已有資料，不能強制改為預設
-        if contentTextField.text == "" {
-            if indexPath?.item == 1 {
+        switch indexPath?.item {
+        case 1:
+            if contentTextField.text == "" {
                 contentTextField.text = content[0]
                 chooseImage.image = imageArr[0]
                 self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageArr[0]?.toPngString() ?? "")
-            } else if indexPath?.item == 2 {
-                contentTextField.text = content[0]
+            } else {
+                return
             }
-        } else {
-//            contentPicker.selectRow(indexPath?.row ?? 0, inComponent: 0, animated: true)
-//            contentPicker.selectRow(indexPath?.row ?? 0, inComponent: 0, animated: true)
-            return
+        case 2:
+            if contentTextField.text == "" {
+                contentTextField.text = content[0]
+            } else {
+                return
+            }
+        default:
+            let addNewDataStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
+            presentCalculateVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calculateVC") as! CalculateViewController
+            presentCalculateVC?.modalPresentationStyle = .overCurrentContext
+            self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
+            // 用clousure把calculateVC的label.text值傳給回來
+            presentCalculateVC?.closure = {[weak self] text in
+                if self?.contentTextField.text == "" {
+                    // 顯示在textField上
+                    self?.contentTextField.text = text
+                    // 輸入完就直接吃進去textField裡面，不用等textFieldDidEndEditing
+                    self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
+                } else {
+                    self?.contentTextField.text = text
+                    self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
+                }
+            }
         }
     }
+// MARK: -設定pickerView預設值（待研究）
+//            contentPicker.selectRow(indexPath?.row ?? 0, inComponent: 0, animated: true)
+//            contentPicker.selectRow(indexPath?.row ?? 0, inComponent: 0, animated: true)
+
 
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")

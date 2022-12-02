@@ -701,8 +701,15 @@ extension EditViewController: UITableViewDataSource {
 // new data cell
 extension EditViewController: EditDataTableViewCellDelegate {
     // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
-    func addNewContent(_ cell: EditDataTableViewCell) {
-        present(cell.controller, animated: true)
+    func addNewContent(_ cell: EditDataTableViewCell, indexPathItem: Int) {
+        print("=== in 1")
+        if indexPathItem == 0 {
+            print("=== in 2")
+            present(cell.presentCalculateVC ?? UIViewController(), animated: true)
+        } else {
+            print("=== in 3")
+            present(cell.controller, animated: true)
+        }
     }
 
     func getInputTextField(indexPath: IndexPath, textField: String) {
