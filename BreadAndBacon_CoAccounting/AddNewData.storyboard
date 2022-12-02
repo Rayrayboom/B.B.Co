@@ -52,6 +52,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dGZ-UC-LQp">
+                                <rect key="frame" x="0.0" y="294" width="414" height="602"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </view>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="g2z-Qd-2Kb">
                                 <rect key="frame" x="30" y="316" width="354" height="526"/>
                                 <subviews>
@@ -391,10 +395,14 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Lw6-C2-QYc"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="Lw6-C2-QYc" firstAttribute="trailing" secondItem="dGZ-UC-LQp" secondAttribute="trailing" id="2Cg-6m-CKN"/>
                             <constraint firstItem="Lw6-C2-QYc" firstAttribute="trailing" secondItem="g2z-Qd-2Kb" secondAttribute="trailing" constant="30" id="9hM-FL-VF3"/>
                             <constraint firstItem="Lw6-C2-QYc" firstAttribute="bottom" secondItem="g2z-Qd-2Kb" secondAttribute="bottom" constant="20" id="YZ6-Zh-w6s"/>
+                            <constraint firstItem="dGZ-UC-LQp" firstAttribute="leading" secondItem="Lw6-C2-QYc" secondAttribute="leading" id="cL0-fE-Vjz"/>
+                            <constraint firstAttribute="bottom" secondItem="dGZ-UC-LQp" secondAttribute="bottom" id="hQP-JU-KZW"/>
+                            <constraint firstItem="dGZ-UC-LQp" firstAttribute="top" secondItem="Lw6-C2-QYc" secondAttribute="top" constant="250" id="tLv-Kz-xbc"/>
                             <constraint firstItem="g2z-Qd-2Kb" firstAttribute="leading" secondItem="Lw6-C2-QYc" secondAttribute="leading" constant="30" id="uwg-rU-qOp"/>
                         </constraints>
                     </view>

@@ -695,7 +695,8 @@ extension AddNewDataViewController: AddDateTableViewCellDelegate {
 extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
     // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
     func addNewContent(_ cell: AddNewDataTableViewCell) {
-        present(cell.controller, animated: true)
+//        present(cell.controller, animated: true)
+        present(cell.presentCalculateVC ?? UIViewController(), animated: true)
     }
 
     func getInputTextField(indexPath: IndexPath, textField: String) {

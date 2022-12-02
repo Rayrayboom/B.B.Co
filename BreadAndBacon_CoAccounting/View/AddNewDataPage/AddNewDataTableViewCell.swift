@@ -8,6 +8,7 @@
 import UIKit
 import FirebaseFirestore
 import SwiftKeychainWrapper
+import IQKeyboardManagerSwift
 
 protocol AddNewDataTableViewCellDelegate: AnyObject {
     func addNewContent(_ cell: AddNewDataTableViewCell)
@@ -28,14 +29,15 @@ class AddNewDataTableViewCell: UITableViewCell {
     // 宣告一個alertVC
     var controller = UIAlertController()
     var segmentTag = 0
+    var presentCalculateVC: CalculateViewController?
     var indexPath: IndexPath? {
         didSet {
-            // 第一個金額cell不需要picker，因此讓他顯示數字鍵盤
+            // 第一個金額cell不需要picker，因此讓他顯示自製計算機
             if indexPath?.item == 0 {
                 addNewContentBO.isHidden = true
-                // contentTextField有更動時叫出黑色數字鍵盤
-                contentTextField.keyboardType = .numberPad
-                contentTextField.keyboardAppearance = .dark
+                // 隱藏IQKeyBoard自動帶出的鍵盤
+                contentTextField.inputView = UIView.init(frame: CGRect.zero)
+                contentTextField.inputAccessoryView = UIView.init(frame: CGRect.zero)
                 return
             } else {
                 // picker delegate & datasource
@@ -232,7 +234,8 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
 // textField delegate
 extension AddNewDataTableViewCell: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if indexPath?.item == 1 {
+        switch indexPath?.item {
+        case 1:
             if contentTextField.text == "" {
                 contentTextField.text = content[0]
                 chooseImage.image = imageArr[0]
@@ -240,12 +243,17 @@ extension AddNewDataTableViewCell: UITextFieldDelegate {
             } else {
                 return
             }
-        } else if indexPath?.item == 2 {
+        case 2:
             if contentTextField.text == "" {
                 contentTextField.text = content[0]
             } else {
                 return
             }
+        default:
+            let addNewDataStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
+            presentCalculateVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calculateVC") as! CalculateViewController
+            presentCalculateVC?.modalPresentationStyle = .overCurrentContext
+            self.delegate?.addNewContent(self)
         }
     }
     func textFieldDidEndEditing(_ textField: UITextField) {
