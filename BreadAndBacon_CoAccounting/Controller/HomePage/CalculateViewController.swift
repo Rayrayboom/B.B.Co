@@ -32,7 +32,7 @@ class CalculateViewController: UIViewController {
 
     // UI
     func setupUI() {
-        backgroundView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        backgroundView.backgroundColor = UIColor().hexStringToUIColor(hex: "f3f2ef")
         backgroundView.layer.cornerRadius = 10
         backgroundViewTopConatrain.constant = CGFloat(UIScreen.main.bounds.height * 5/10)
         // 設定計算機後面的黑屏
@@ -42,26 +42,23 @@ class CalculateViewController: UIViewController {
         UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
             self.blackView.alpha = 0.3
         }
-        dismissBlackView()
+        dismissBlackViewWhenTapSpace()
         self.equalBO.setTitle("OK", for: .normal)
         self.equalBO.layoutIfNeeded()
         
     }
     
-    // 點空白處讓blackView消失
-    func dismissBlackView() {
+    // 點擊一下空白處讓blackView消失
+    func dismissBlackViewWhenTapSpace() {
         let singleFinger = UITapGestureRecognizer(
-          target:self,
-          action:#selector(CalculateViewController.singleTap(recognizer:)))
+          target: self,
+          action: #selector(CalculateViewController.singleTap(recognizer:)))
         singleFinger.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(singleFinger)
     }
     
     @objc func singleTap(recognizer: UITapGestureRecognizer){
-        print("單指點一下時觸發")
         let point = recognizer.location(ofTouch: 0, in: recognizer.view)
-        print(point.y)
-
         if point.y < self.view.center.y {
             dismiss(animated: true, completion: nil)
             self.blackView.removeFromSuperview()

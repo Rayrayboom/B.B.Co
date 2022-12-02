@@ -94,7 +94,7 @@ class AddCoDetailViewController: UIViewController {
 
         coDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         // tableView top內縮10 points
-        coDetailTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+        coDetailTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         saveCoDetailBO.backgroundColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
         saveCoDetailBO.layer.borderWidth = 4
         saveCoDetailBO.layer.borderColor = CGColor(red: 145/255, green: 145/255, blue: 145/255, alpha: 1)

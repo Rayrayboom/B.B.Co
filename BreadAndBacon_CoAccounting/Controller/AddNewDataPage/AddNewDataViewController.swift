@@ -198,7 +198,7 @@ class AddNewDataViewController: UIViewController {
         }
         addNewDadaTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         // tableView top內縮10 points
-        addNewDadaTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+        addNewDadaTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
 
 
