@@ -35,7 +35,7 @@ extension TabViewController: UITabBarControllerDelegate {
                 } else {
                     let storyboard = UIStoryboard(name: "AddNewData", bundle: nil)
                     guard let presentAddNewData = storyboard.instantiateViewController(
-                        withIdentifier: "addNewData") as? AddNewDataViewController
+                        withIdentifier: /*"calculateVC"*/ "addNewData") as? AddNewDataViewController //CalculateViewController
                     else {
                         fatalError("ERROR: Can not find addNewData page.")
                     }

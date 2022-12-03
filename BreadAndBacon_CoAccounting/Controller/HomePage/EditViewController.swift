@@ -171,7 +171,7 @@ class EditViewController: UIViewController {
         }
         editTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         // tableView top內縮10 points
-        editTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+        editTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
@@ -701,8 +701,15 @@ extension EditViewController: UITableViewDataSource {
 // new data cell
 extension EditViewController: EditDataTableViewCellDelegate {
     // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
-    func addNewContent(_ cell: EditDataTableViewCell) {
-        present(cell.controller, animated: true)
+    func addNewContent(_ cell: EditDataTableViewCell, indexPathItem: Int) {
+        print("=== in 1")
+        if indexPathItem == 0 {
+            print("=== in 2")
+            present(cell.presentCalculateVC ?? UIViewController(), animated: true)
+        } else {
+            print("=== in 3")
+            present(cell.controller, animated: true)
+        }
     }
 
     func getInputTextField(indexPath: IndexPath, textField: String) {
@@ -727,19 +734,19 @@ extension EditViewController: EditDataTableViewCellDelegate {
     }
 
     // 新增的選項用delegate傳回來並改變array data
-    func setContent(content: [String]) {
+    func setContent(indexPathItem: Int, content: [String]) {
         // 當轉帳頁面時，都會抓帳戶資訊
         switch segmentTag {
         // 頁面-支出
         case 0:
-            if tapIndexpath?.item == 1 {
+            if indexPathItem == 1 {
                 costContent = content
             } else {
                 accountContent = content
             }
         // 頁面-收入
         case 1:
-            if tapIndexpath?.item == 1 {
+            if indexPathItem == 1 {
                 incomeContent = content
             } else {
                 accountContent = content

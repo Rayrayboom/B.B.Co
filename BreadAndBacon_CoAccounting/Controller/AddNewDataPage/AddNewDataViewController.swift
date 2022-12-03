@@ -37,6 +37,8 @@ struct Model {
 }
 
 class AddNewDataViewController: UIViewController {
+    // calculator manager
+    var logic = BBCoLogicManager()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
     // 存支出textField picker資料
@@ -196,8 +198,9 @@ class AddNewDataViewController: UIViewController {
         }
         addNewDadaTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         // tableView top內縮10 points
-        addNewDadaTableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+        addNewDadaTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
+
 
 // MARK: - TODO: 月曆優化（待處理）
 //        let blackView = UIView(frame: UIScreen.main.bounds)
@@ -693,9 +696,13 @@ extension AddNewDataViewController: AddDateTableViewCellDelegate {
 
 // new data cell
 extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
-    // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
-    func addNewContent(_ cell: AddNewDataTableViewCell) {
-        present(cell.controller, animated: true)
+    // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作，amount textField時顯示計算機，其餘顯示alert
+    func addNewContent(_ cell: AddNewDataTableViewCell, indexPathItem: Int) {
+        if indexPathItem == 0 {
+            present(cell.presentCalculateVC ?? UIViewController(), animated: true)
+        } else {
+            present(cell.controller, animated: true)
+        }
     }
 
     func getInputTextField(indexPath: IndexPath, textField: String) {
@@ -715,20 +722,20 @@ extension AddNewDataViewController: AddNewDataTableViewCellDelegate {
         data.titleLabel = title
     }
 
-    // 新增的選項用delegate傳回來並改變array data
-    func setContent(content: [String]) {
+    // 新增的選項用delegate傳回來並改變array data，用cell對應回來的indexPath.item才不會在進array時導錯
+    func setContent(indexPathItem: Int, content: [String]) {
         // 當轉帳頁面時，都會抓帳戶資訊
         switch segmentTag {
         // 頁面-支出
         case 0:
-            if tapIndexpath?.item == 1 {
+            if indexPathItem == 1 {
                 costContent = content
             } else {
                 accountContent = content
             }
         // 頁面-收入
         case 1:
-            if tapIndexpath?.item == 1 {
+            if indexPathItem == 1 {
                 incomeContent = content
             } else {
                 accountContent = content

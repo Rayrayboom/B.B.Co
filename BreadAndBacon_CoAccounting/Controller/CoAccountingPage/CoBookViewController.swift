@@ -69,6 +69,8 @@ class CoBookViewController: UIViewController {
     func setupUI() {
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         bookTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+        // tableView top內縮10 points
+        bookTableView.contentInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
     }
     // MARK: -待確認要放在哪裡才會顯示對的功能
     // 當日尚無資料者顯示“目前還沒共同帳本”

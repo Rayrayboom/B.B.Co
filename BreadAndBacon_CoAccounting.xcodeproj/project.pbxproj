@@ -64,6 +64,8 @@
 		769D8E6729334CE7001944EF /* lf30_editor_wilzakp4.json in Resources */ = {isa = PBXBuildFile; fileRef = 769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */; };
 		769D8E6A29339E02001944EF /* UIColor + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769D8E6929339E02001944EF /* UIColor + Extension.swift */; };
 		76F91B47293743FD001A8253 /* BBCoLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F91B46293743FD001A8253 /* BBCoLoading.swift */; };
+		76F91B4929387811001A8253 /* CalculateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F91B4829387811001A8253 /* CalculateViewController.swift */; };
+		76F91B4B29388B50001A8253 /* BBCoLogicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F91B4A29388B50001A8253 /* BBCoLogicManager.swift */; };
 		76FF3951291BFE6F00FFB2C4 /* CoAccountingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */; };
 		76FF3952291BFE6F00FFB2C4 /* CoAccountingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */; };
 /* End PBXBuildFile section */
@@ -129,6 +131,8 @@
 		769D8E6629334CE7001944EF /* lf30_editor_wilzakp4.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = lf30_editor_wilzakp4.json; sourceTree = "<group>"; };
 		769D8E6929339E02001944EF /* UIColor + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + Extension.swift"; sourceTree = "<group>"; };
 		76F91B46293743FD001A8253 /* BBCoLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBCoLoading.swift; sourceTree = "<group>"; };
+		76F91B4829387811001A8253 /* CalculateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculateViewController.swift; sourceTree = "<group>"; };
+		76F91B4A29388B50001A8253 /* BBCoLogicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BBCoLogicManager.swift; sourceTree = "<group>"; };
 		76FF394F291BFE6F00FFB2C4 /* CoAccountingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoAccountingViewController.swift; sourceTree = "<group>"; };
 		76FF3950291BFE6F00FFB2C4 /* CoAccountingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CoAccountingViewController.xib; sourceTree = "<group>"; };
 		C2CC4B20AEF6D8FF8F12E060 /* Pods-BreadAndBacon_CoAccounting.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; path = "Target Support Files/Pods-BreadAndBacon_CoAccounting/Pods-BreadAndBacon_CoAccounting.debug.xcconfig"; sourceTree = "<group>"; };
@@ -203,6 +207,7 @@
 		76265F3229138FD500F5E341 /* HomePage */ = {
 			isa = PBXGroup;
 			children = (
+				76F91B4A29388B50001A8253 /* BBCoLogicManager.swift */,
 			);
 			path = HomePage;
 			sourceTree = "<group>";
@@ -338,6 +343,7 @@
 				7673ADD2292772B800A15015 /* CategoryViewController.swift */,
 				76265F3D2913E65400F5E341 /* EditViewController.swift */,
 				767EAFC1291B3D9A0005880E /* EditQRCodeViewController.swift */,
+				76F91B4829387811001A8253 /* CalculateViewController.swift */,
 			);
 			path = HomePage;
 			sourceTree = "<group>";
@@ -583,8 +589,10 @@
 				7673ADAB291C994300A15015 /* CoDetailTableViewCell.swift in Sources */,
 				76265F2D291271C000F5E341 /* DetailTableViewCell.swift in Sources */,
 				7673ADA9291C8E9F00A15015 /* AddCoDetailViewController.swift in Sources */,
+				76F91B4929387811001A8253 /* CalculateViewController.swift in Sources */,
 				7673ADD52927744B00A15015 /* CategoryTableViewCell.swift in Sources */,
 				76265F4629150AD400F5E341 /* EditQRCodeTableViewCell.swift in Sources */,
+				76F91B4B29388B50001A8253 /* BBCoLogicManager.swift in Sources */,
 				76F91B47293743FD001A8253 /* BBCoLoading.swift in Sources */,
 				76265F272911855600F5E341 /* User.swift in Sources */,
 				76608659290BDA29008EF772 /* AppDelegate.swift in Sources */,
