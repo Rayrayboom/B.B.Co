@@ -26,6 +26,7 @@ class EditQRCodeViewController: UIViewController {
     var qrCodeFrameView: UIView?
     let controller = UIAlertController()
     var scanAreaView: UIView?
+    var mockAreaView: UIView?
 
     @IBOutlet weak var messageLabel: UILabel!
 
@@ -87,14 +88,24 @@ class EditQRCodeViewController: UIViewController {
             // 移動訊息標籤與頂部列至上層
             view.bringSubviewToFront(messageLabel)
             
-            // 加上紅色偵測方框
+            // 加上黃色偵測方框
             scanAreaView = UIView()
             if let scanAreaView = scanAreaView {
-                scanAreaView.layer.borderColor = UIColor.red.cgColor
+                scanAreaView.layer.borderColor = UIColor().hexStringToUIColor(hex: "E5BB4B").cgColor
                 scanAreaView.layer.borderWidth = 4
                 scanAreaView.frame = CGRect(x: 80, y: 300, width: 100, height: 100)
                 view.addSubview(scanAreaView)
                 view.bringSubviewToFront(scanAreaView)
+            }
+            
+            // 加上黃色偵測方框
+            mockAreaView = UIView()
+            if let mockAreaView = mockAreaView {
+                mockAreaView.layer.borderColor = UIColor.lightGray.cgColor
+                mockAreaView.layer.borderWidth = 4
+                mockAreaView.frame = CGRect(x: 80, y: 300, width: 100, height: 100)
+                view.addSubview(mockAreaView)
+                view.bringSubviewToFront(mockAreaView)
             }
 
             // 初始化 QR Code 框來突顯 QR code

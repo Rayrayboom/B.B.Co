@@ -609,6 +609,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                             amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
                         }
                         addDataCell.contentTextField.text = String(amo)
+                        // 發票amount資料要塞進data.amountTextField才會真的吃到資料
+                        data.amountTextField = String(amo)
                     }
                 case 1:
                     addDataCell.contentTextField.text = ""
@@ -670,6 +672,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                     }
                     items.append("\(invoice.details[item].detailDescription)\n")
                     detailCell.detailTextView.text = items
+                    // 發票detail資料要塞進data.detailTextView才會真的吃到資料
+                    data.detailTextView = items
                 }
 
                 detailCell.delegate = self

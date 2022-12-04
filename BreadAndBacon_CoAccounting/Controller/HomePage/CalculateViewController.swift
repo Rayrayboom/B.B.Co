@@ -37,6 +37,7 @@ class CalculateViewController: UIViewController {
             self.equalBO.setTitle("OK", for: .normal)
             self.equalBO.layoutIfNeeded()
         }
+// MARK: - 待設定點textField後可以直接在計算機的label做計算
 //        if logic.array.count == 0 {
 //            logic.currentNumber = Double(label.text!) ?? 3.0
 //            logic.array.append(logic.currentNumber)
