@@ -25,6 +25,7 @@ class EditQRCodeViewController: UIViewController {
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var qrCodeFrameView: UIView?
     let controller = UIAlertController()
+    var scanAreaView: UIView?
 
     @IBOutlet weak var messageLabel: UILabel!
 
@@ -48,6 +49,29 @@ class EditQRCodeViewController: UIViewController {
 
             // 初始化一個 AVCaptureMetadataOutput 物件並將其設定做為擷取 session 的輸出裝置
             let captureMetadataOutput = AVCaptureMetadataOutput()
+            
+            // 開始影片的擷取
+            captureSession.startRunning()
+            
+            // TODO: 針對特定區域掃描(待研究方框位置)
+            let size = 300
+            let screenWidth = self.view.frame.size.width
+            print("=== this is screen", view.frame.size)
+            let xPos = (CGFloat(screenWidth) / CGFloat(2)) - (CGFloat(size) / CGFloat(2))
+            print("=== this is xPos", xPos)
+            let scanRect = CGRect(x: Int(xPos), y: 150, width: size, height: size)
+            print("=== this is scanRect", scanRect)
+            var x = scanRect.origin.x/480
+            var y = scanRect.origin.y/640
+            var width = scanRect.width/480
+            var height = scanRect.height/640
+//            var scanRectTransformed = CGRect(x: x, y: y, width: width, height: height)
+            var scanRectTransformed = CGRect(x: 0.33, y: 0.5, width: 0.16, height: 0.25)
+            print("=== this is scanRect.origin.x", scanRect.origin)
+            print("=== this is view.center.x", view.center.x)
+            print("=== this is view.center.y", view.center.y)
+            print("=== this is scanRectTransformed", scanRectTransformed)
+            
             captureSession.addOutput(captureMetadataOutput)
             // 設定委派並使用預設的調度佇列來執行回呼（call back）
             captureMetadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
@@ -57,18 +81,24 @@ class EditQRCodeViewController: UIViewController {
             videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
             videoPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
             videoPreviewLayer?.frame = view.layer.bounds
+            captureMetadataOutput.rectOfInterest = scanRectTransformed
             view.layer.addSublayer(videoPreviewLayer!)
-
-            // 開始影片的擷取
-            captureSession.startRunning()
 
             // 移動訊息標籤與頂部列至上層
             view.bringSubviewToFront(messageLabel)
-//            view.bringSubviewToFront(topbar)
+            
+            // 加上紅色偵測方框
+            scanAreaView = UIView()
+            if let scanAreaView = scanAreaView {
+                scanAreaView.layer.borderColor = UIColor.red.cgColor
+                scanAreaView.layer.borderWidth = 4
+                scanAreaView.frame = CGRect(x: 80, y: 300, width: 100, height: 100)
+                view.addSubview(scanAreaView)
+                view.bringSubviewToFront(scanAreaView)
+            }
 
             // 初始化 QR Code 框來突顯 QR code
             qrCodeFrameView = UIView()
-
             if let qrCodeFrameView = qrCodeFrameView {
                 qrCodeFrameView.layer.borderColor = UIColor.green.cgColor
                 qrCodeFrameView.layer.borderWidth = 2
@@ -107,13 +137,13 @@ class EditQRCodeViewController: UIViewController {
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
 
-//        print("invNum", invNum)
-//        print("encrypt", encrypt)
-//        print("invYear", invYear)
-//        print("invMonth", invMonth)
-//        print("invDay", invDay)
-//        print("randomNumber", randomNumber)
-//        print("sellerID", sellerID)
+        print("invNum", invNum)
+        print("encrypt", encrypt)
+        print("invYear", invYear)
+        print("invMonth", invMonth)
+        print("invDay", invDay)
+        print("randomNumber", randomNumber)
+        print("sellerID", sellerID)
     }
 
     // POST API and parse data

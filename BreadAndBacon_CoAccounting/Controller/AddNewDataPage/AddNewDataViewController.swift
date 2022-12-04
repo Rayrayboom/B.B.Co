@@ -500,6 +500,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 switch indexPath.row {
                 case 0:
                     addDataCell.contentTextField.text = ""
+                    data.amountTextField = addDataCell.amountFromCalculator
                 case 1:
                     addDataCell.contentTextField.text = ""
                     switch segmentTag {

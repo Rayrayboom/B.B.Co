@@ -613,6 +613,8 @@ extension EditViewController: UITableViewDataSource {
                             amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
                         }
                         editDataCell.contentTextField.text = String(amo)
+                        editData.amountTextField = String(amo)
+
                     } else {
                         editData.amountTextField = self.data?.amount ?? ""
                         editDataCell.contentTextField.text = self.data?.amount
@@ -673,8 +675,9 @@ extension EditViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 editDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                editData.detailTextView = self.data?.detail ?? ""
-                // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一班手動編輯(isTappedQR == 0)則顯示原textView資訊
+                
+                print("=== this is isTappedQR", isTappedQR)
+                // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一般手動編輯(isTappedQR == 0)則顯示原textView資訊
                 if isTappedQR == 1 {
                     // 存放invoice的string在fetch data之前要先清空
                     items = ""
@@ -684,7 +687,10 @@ extension EditViewController: UITableViewDataSource {
                             fatalError("pass invDetail data error")
                         }
                         items.append("\(invoice.details[item].detailDescription)\n")
+                        // 把掃描到的資料塞進顯示在editDetailCell的textField上
                         editDetailCell.detailTextView.text = items
+                        // 把掃描到的資料塞進editData.detailTextView
+                        editData.detailTextView = items
                     }
                     // 把message的值塞給detailTextView
     //                editDetailCell.detailTextView.text = messageFromQRVC
@@ -772,14 +778,12 @@ extension EditViewController: EditDataTableViewCellDelegate {
 extension EditViewController: EditDetailTableViewCellDelegate {
     func getDetail(detail: String) {
         editData.detailTextView = detail
-        print("======= this is detail \(editData.detailTextView)")
     }
 }
 
 // QRCode text from QRCodeVC
 extension EditViewController: EditQRCodeViewControllerDelegate {
     func getMessage(message: String) {
-        print("wwwww??", message)
         messageFromQRVC = message
     }
 
