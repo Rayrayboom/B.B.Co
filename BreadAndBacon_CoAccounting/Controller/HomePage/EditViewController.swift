@@ -784,7 +784,7 @@ extension EditViewController: EditQRCodeViewControllerDelegate {
 
     func getInvDetail(didFailwith error: Error) {
         print("can not parse invoice data")
-        self.controller = UIAlertController(title: "Oops, server好像有點問題，請再試一次", message: nil, preferredStyle: .alert)
+        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
 
         let okAction = UIAlertAction(
             title: "再試一次",

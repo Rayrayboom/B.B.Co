@@ -13,10 +13,10 @@ target 'BreadAndBacon_CoAccounting' do
 	pod 'Charts'
 	pod 'SwiftKeychainWrapper'
 	pod 'SideMenu'
-	pod 'IQKeyboardManagerSwift'
 	pod 'lottie-ios'
 	pod 'SPAlert'
 	pod 'SwiftJWT'
 	pod 'FirebaseCrashlytics'
 	pod 'JGProgressHUD'
+	pod 'IQKeyboardManagerSwift'
 end
