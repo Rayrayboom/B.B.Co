@@ -93,7 +93,7 @@ class EditQRCodeViewController: UIViewController {
             if let scanAreaView = scanAreaView {
                 scanAreaView.layer.borderColor = UIColor().hexStringToUIColor(hex: "E5BB4B").cgColor
                 scanAreaView.layer.borderWidth = 4
-                scanAreaView.frame = CGRect(x: 80, y: 300, width: 100, height: 100)
+                scanAreaView.frame = CGRect(x: 90, y: 300, width: 100, height: 100)
                 view.addSubview(scanAreaView)
                 view.bringSubviewToFront(scanAreaView)
             }
@@ -103,7 +103,7 @@ class EditQRCodeViewController: UIViewController {
             if let mockAreaView = mockAreaView {
                 mockAreaView.layer.borderColor = UIColor.lightGray.cgColor
                 mockAreaView.layer.borderWidth = 4
-                mockAreaView.frame = CGRect(x: 80, y: 300, width: 100, height: 100)
+                mockAreaView.frame = CGRect(x: 210, y: 300, width: 100, height: 100)
                 view.addSubview(mockAreaView)
                 view.bringSubviewToFront(mockAreaView)
             }

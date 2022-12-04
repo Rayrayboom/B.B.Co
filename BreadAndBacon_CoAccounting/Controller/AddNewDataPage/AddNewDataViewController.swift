@@ -117,18 +117,8 @@ class AddNewDataViewController: UIViewController {
         guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
             fatalError("can not find QRScanner VC")
         }
-        // 掃描時跳出alert提醒使用者掃描左邊QRCode
-        controller = UIAlertController(title: "請掃描電子發票左方QRCode", message: nil, preferredStyle: .alert)
-        // 建立[我知道了]按鈕
-        let okAction = UIAlertAction(
-            title: "我知道了",
-            style: .default) { action in
-                presentQRScanVC.delegate = self
-                self.present(presentQRScanVC, animated: true)
-            }
-        controller.addAction(okAction)
-        // 顯示提示框
-        self.present(controller, animated: true, completion: nil)
+        presentQRScanVC.delegate = self
+        self.present(presentQRScanVC, animated: true)
     }
 
 // MARK: - TODO: 月曆優化（待處理）
@@ -791,5 +781,21 @@ extension AddNewDataViewController: QRCodeViewControllerDelegate {
 
     func getInvDetail(didFailwith error: Error) {
         print("can not parse invoice data")
+        self.controller = UIAlertController(title: "Oops, server好像有點問題，請再試一次", message: nil, preferredStyle: .alert)
+
+        let okAction = UIAlertAction(
+            title: "再試一次",
+            style: .default) { action in
+                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
+                    fatalError("can not find QRScanner VC")
+                }
+                presentQRScanVC.delegate = self
+                self.present(presentQRScanVC, animated: true)
+            }
+        self.controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        self.controller.addAction(cancelAction)
+        // 顯示提示框
+        self.present(self.controller, animated: true, completion: nil)
     }
 }

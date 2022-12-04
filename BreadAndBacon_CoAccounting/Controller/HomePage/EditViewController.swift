@@ -115,18 +115,8 @@ class EditViewController: UIViewController {
         }
         // 當內容是透過QR scanner拿取，isTappedQR == 1
         isTappedQR = 1
-        // 掃描時跳出alert提醒使用者掃描左邊QRCode
-        controller = UIAlertController(title: "請掃描電子發票左方QRCode", message: nil, preferredStyle: .alert)
-        // 建立[我知道了]按鈕
-        let okAction = UIAlertAction(
-            title: "我知道了",
-            style: .default) { action in
-                presentEditQRScanVC.delegate = self
-                self.present(presentEditQRScanVC, animated: true)
-            }
-        controller.addAction(okAction)
-        // 顯示提示框
-        self.present(controller, animated: true, completion: nil)
+        presentEditQRScanVC.delegate = self
+        self.present(presentEditQRScanVC, animated: true)
     }
 
 // MARK: - TODO
@@ -793,5 +783,21 @@ extension EditViewController: EditQRCodeViewControllerDelegate {
 
     func getInvDetail(didFailwith error: Error) {
         print("can not parse invoice data")
+        self.controller = UIAlertController(title: "Oops, server好像有點問題，請再試一次", message: nil, preferredStyle: .alert)
+
+        let okAction = UIAlertAction(
+            title: "再試一次",
+            style: .default) { action in
+                guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "editQRScanVC") as? EditQRCodeViewController else {
+                    fatalError("can not find presentEditQRScan VC")
+                }
+                presentEditQRScanVC.delegate = self
+                self.present(presentEditQRScanVC, animated: true)
+            }
+        self.controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        self.controller.addAction(cancelAction)
+        // 顯示提示框
+        self.present(self.controller, animated: true, completion: nil)
     }
 }
