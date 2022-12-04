@@ -686,6 +686,7 @@ extension EditViewController: UITableViewDataSource {
     //                editDetailCell.detailTextView.text = messageFromQRVC
                 } else {
                     editDetailCell.detailTextView.text = self.data?.detail
+                    editData.detailTextView = self.data?.detail ?? ""
                 }
                 editDetailCell.delegate = self
                 return editDetailCell
