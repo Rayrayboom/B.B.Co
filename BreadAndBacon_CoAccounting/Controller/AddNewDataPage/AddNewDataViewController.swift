@@ -83,11 +83,7 @@ class AddNewDataViewController: UIViewController {
     var models = [Model]()
     var dateFromHomeVC: String? = ""
     // 存QRCode掃描內容
-    var messageFromQRVC: String = "" {
-        didSet {
-            addNewDadaTableView.reloadData()
-        }
-    }
+    var messageFromQRVC: String = ""
     // 存decode後的發票資料
     var invoice: Invoice? {
         didSet {
@@ -108,6 +104,7 @@ class AddNewDataViewController: UIViewController {
     var getId: String = ""
     // alertController
     var controller = UIAlertController()
+    let group = DispatchGroup()
 
     @IBOutlet weak var addNewDadaTableView: UITableView!
 
@@ -386,6 +383,85 @@ class AddNewDataViewController: UIViewController {
                 }
             }
     }
+    
+    // 解析invoice data
+    func decodeInvoice(message: String) {
+        let invNum = message.prefix(10)
+        let message = message
+        let encrypt = message.prefix(24)
+        var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
+        let translateYear = (Int(invYear) ?? 0) + 1911
+        invYear = String(translateYear)
+        
+        let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
+        let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
+        let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
+        let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
+        
+        // POST API
+        sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
+        
+        print("invNum", invNum)
+        print("message", message)
+        print("encrypt", encrypt)
+        print("invYear", invYear)
+        print("invMonth", invMonth)
+        print("invDay", invDay)
+        print("randomNumber", randomNumber)
+        print("sellerID", sellerID)
+    }
+    
+    // POST API and parse data
+    func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
+        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=\(APIKey.invoiceUUID)&randomNumber=\(randomNumber)&appID=\(APIKey.QRAppID)")
+        var request = URLRequest(url: url!)
+        request.httpMethod = "POST"
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
+            if let error = error {
+                print("=== post API is error", error)
+                return
+            }
+            
+            guard let response = response as? HTTPURLResponse,
+                  response.statusCode == 200 else {
+                print("response error")
+                return
+            }
+
+            if let dataInv = data {
+                if let detail = self.parseData(jsonData: dataInv) {
+                    // 讓掃描完的amount & detail data自動吃到textField裡，不需觸發到textFieldDidEndEditing
+                    self.data.detailTextView = ""
+                    var amount = 0
+                    for item in 0..<detail.details.count {
+                        amount += (Int(detail.details[item].amount ?? "") ?? 0)
+                        self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
+                    }
+                    self.data.amountTextField = String(amount)
+                    print("=== this is self.data.amountTextField", self.data.amountTextField)
+                    print("=== this is self.data.detailTextView", self.data.detailTextView)
+                    print("=== this is data", data)
+                    DispatchQueue.main.async {
+                        self.addNewDadaTableView.reloadData()
+                    }
+                }
+            }
+        })
+        task.resume()
+    }
+
+    func parseData(jsonData: Data) -> Invoice? {
+        do {
+            let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
+            // 測試看是否有抓到資料
+            print("=== this is result \(result)")
+            return result
+        } catch {
+//            delegate?.getInvDetail(didFailwith: error)
+            print("result error")
+            return nil
+        }
+    }
 }
 
 extension AddNewDataViewController: UITableViewDelegate {
@@ -452,6 +528,7 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 
     // swiftlint:disable cyclomatic_complexity
+    // MARK: TableView DataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if segmentTag == 2 {
             if indexPath.section == 0 {
@@ -586,21 +663,16 @@ extension AddNewDataViewController: UITableViewDataSource {
                 }
                 addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
-// MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
+// MARK: 更新發票內容cell
                 switch indexPath.row {
                 case 0:
                     addDataCell.contentTextField.text = ""
                     addDataCell.contentTextField.text = data.amountTextField
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                     if messageFromQRVC != "" {
-                        var amo = 0
-                        for num in 0..<(invoice?.details.count ?? 0) {
-                            amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
-                        }
-                        addDataCell.contentTextField.text = String(amo)
                         // 發票amount資料要塞進data.amountTextField才會真的吃到資料
-                        data.amountTextField = String(amo)
+                        addDataCell.contentTextField.text = data.amountTextField
                     }
                 case 1:
                     addDataCell.contentTextField.text = ""
@@ -653,18 +725,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 detailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 切換不同頁面時，detail要先清空
                 detailCell.detailTextView.text = ""
-                // 存放invoice的string在fetch data之前要先清空
-                items = ""
-                // 把message的值塞給detailTextView
-                for item in 0..<(invoice?.details.count ?? 0) {
-                    guard let invoice = invoice else {
-                        fatalError("pass invDetail data error")
-                    }
-                    items.append("\(invoice.details[item].detailDescription)\n")
-                    detailCell.detailTextView.text = items
-                    // 發票detail資料要塞進data.detailTextView才會真的吃到資料
-                    data.detailTextView = items
-                }
+                // 發票detail資料要塞進data.detailTextField才會真的吃到資料
+                detailCell.detailTextView.text = data.detailTextView
 
                 detailCell.delegate = self
                 return detailCell
@@ -770,6 +832,7 @@ extension AddNewDataViewController: ViewControllerDelegate {
 extension AddNewDataViewController: QRCodeViewControllerDelegate {
     func getMessage(message: String) {
         messageFromQRVC = message
+        self.decodeInvoice(message: message)
     }
 
     func getInvDetail(didGet items: Invoice) {

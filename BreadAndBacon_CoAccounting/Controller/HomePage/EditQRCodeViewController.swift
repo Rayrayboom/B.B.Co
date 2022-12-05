@@ -52,9 +52,7 @@ class EditQRCodeViewController: UIViewController {
             let captureMetadataOutput = AVCaptureMetadataOutput()
             
             // 開始影片的擷取
-            DispatchQueue.main.async {
-                self.captureSession.startRunning()
-            }
+            self.captureSession.startRunning()
             
             // TODO: 針對特定區域掃描(待研究方框位置)
             let size = 300
@@ -128,10 +126,10 @@ class EditQRCodeViewController: UIViewController {
     func contentConfig() {
         captureSession.stopRunning()
         // 執行delegate + 塞掃描內容
-        self.delegate?.getMessage(message: messageLabel.text ?? "")
-//        print(messageLabel.text)
-
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
+        DispatchQueue.main.async {
+            self.delegate?.getMessage(message: self.messageLabel.text ?? "")
+            self.presentingViewController?.dismiss(animated: true, completion: nil)
+        }
     }
 
     // 解析invoice data
