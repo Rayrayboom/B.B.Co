@@ -121,10 +121,9 @@ class QRCodeViewController: UIViewController {
         }
     }
 
+    // dismiss QRCode VC
     func dismissQRCodeVC() {
         captureSession.stopRunning()
-        // 執行delegate + 塞掃描內容
-//        self.delegate?.getMessage(message: self.messageLabel.text ?? "")
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
 }
@@ -154,7 +153,6 @@ extension QRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
                 messageLabel.text = metadataObj.stringValue
                 // 把亂碼傳給aadNewDataVC
                 self.delegate?.getMessage(message: metadataObj.stringValue ?? "")
-                // 用delegate把data給addNewDataVC
                 dismissQRCodeVC()
             }
         }

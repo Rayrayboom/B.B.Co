@@ -123,97 +123,11 @@ class EditQRCodeViewController: UIViewController {
         }
     }
 
-    func contentConfig() {
+    // dismiss EditQRCode VC
+    func dismissQRCodeVC() {
         captureSession.stopRunning()
-        // 執行delegate + 塞掃描內容
-        DispatchQueue.main.async {
-            self.delegate?.getMessage(message: self.messageLabel.text ?? "")
-            self.presentingViewController?.dismiss(animated: true, completion: nil)
-        }
+        self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
-
-    // 解析invoice data
-    func decodeInvoice(message: String) {
-        let invNum = message.prefix(10)
-        let encrypt = message.prefix(24)
-        var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
-        var translateYear = (Int(invYear) ?? 0) + 1911
-        invYear = String(translateYear)
-
-        let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
-        let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
-        let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
-        let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
-
-        // POST API
-        sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
-
-        print("invNum", invNum)
-        print("encrypt", encrypt)
-        print("invYear", invYear)
-        print("invMonth", invMonth)
-        print("invDay", invDay)
-        print("randomNumber", randomNumber)
-        print("sellerID", sellerID)
-    }
-
-    // POST API and parse data
-    func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
-        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=\(APIKey.invoiceUUID)&randomNumber=\(randomNumber)&appID=\(APIKey.QRAppID)")
-        var request = URLRequest(url: url!)
-        request.httpMethod = "POST"
-        let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
-            if let error = error {
-                self.delegate?.getInvDetail(didFailwith: error)
-                print(error)
-                return
-            }
-
-            guard let response = response as? HTTPURLResponse,
-                  response.statusCode == 200 else {
-                print("response error")
-                return
-            }
-
-            if let data = data {
-                if let detail = self.parseData(jsonData: data) {
-                    self.delegate?.getInvDetail(didGet: detail)
-                }
-            }
-        })
-        task.resume()
-    }
-
-    func parseData(jsonData: Data) -> Invoice? {
-        do {
-            let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
-            // 測試看是否有抓到資料
-            print("=== result is \(jsonData)")
-            return result
-        }catch {
-            delegate?.getInvDetail(didFailwith: error)
-            print("result error")
-            return nil
-        }
-    }
-
-    // 掃到資料後跳出提醒顯示內容
-//    func alert() {
-//        controller = UIAlertController(title: "發票內容", message: "", preferredStyle: .alert)
-//        controller.addTextField { textField in
-//            textField.placeholder = "內容"
-//            textField.keyboardType = UIKeyboardType.default
-//        }
-//        // 按下OK執行的動作
-//        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-////            self.delegate?.getContent(content: self.messageLabel.text ?? "")
-//            print(self.messageLabel.text ?? "")
-//        }
-//
-//        controller.addAction(okAction)
-//        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-//        controller.addAction(cancelAction)
-//    }
 }
 
 extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
@@ -234,11 +148,11 @@ extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
             qrCodeFrameView?.frame = barCodeObject!.bounds
 
             if metadataObj.stringValue != nil {
+                // 掃描後拿到的invoice亂碼
                 messageLabel.text = metadataObj.stringValue
-                contentConfig()
-                // 解析invoice data
-                decodeInvoice(message: messageLabel.text ?? "")
-//                alert()
+                // 把亂碼傳給aadNewDataVC
+                self.delegate?.getMessage(message: metadataObj.stringValue ?? "")
+                dismissQRCodeVC()
             }
         }
     }

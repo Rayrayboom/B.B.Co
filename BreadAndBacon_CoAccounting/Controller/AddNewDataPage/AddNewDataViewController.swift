@@ -457,7 +457,6 @@ class AddNewDataViewController: UIViewController {
             print("=== this is result \(result)")
             return result
         } catch {
-//            delegate?.getInvDetail(didFailwith: error)
             print("result error")
             return nil
         }
