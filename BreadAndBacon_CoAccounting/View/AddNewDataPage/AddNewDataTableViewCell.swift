@@ -31,6 +31,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     var segmentTag = 0
     // calculator VC
     var presentCalculateVC: CalculateViewController?
+    // 放計算機的值
     var amountFromCalculator = ""
     var indexPath: IndexPath? {
         didSet {
