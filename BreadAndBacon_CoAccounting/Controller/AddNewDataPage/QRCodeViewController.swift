@@ -54,7 +54,9 @@ class QRCodeViewController: UIViewController {
             let captureMetadataOutput = AVCaptureMetadataOutput()
             
             // 開始影片的擷取
-            captureSession.startRunning()
+            DispatchQueue.main.async {
+                self.captureSession.startRunning()
+            }
 
             // TODO: 針對特定區域掃描(待研究方框位置)
             let size = 300
