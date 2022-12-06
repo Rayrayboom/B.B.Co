@@ -44,19 +44,19 @@ class AddNewDataViewController: UIViewController {
     // 存支出textField picker資料
     var costContent: [String] = [] {
         didSet {
-            addNewDadaTableView.reloadData()
+            addNewDataTableView.reloadData()
         }
     }
     // 存收入textField picker資料
     var incomeContent: [String] = [] {
         didSet {
-            addNewDadaTableView.reloadData()
+            addNewDataTableView.reloadData()
         }
     }
     // 存轉帳textField picker資料
     var accountContent: [String] = [] {
         didSet {
-            addNewDadaTableView.reloadData()
+            addNewDataTableView.reloadData()
         }
     }
     // 存cost image的資料
@@ -88,7 +88,7 @@ class AddNewDataViewController: UIViewController {
     var invoice: Invoice? {
         didSet {
             DispatchQueue.main.async {
-                self.addNewDadaTableView.reloadData()
+                self.addNewDataTableView.reloadData()
             }
         }
     }
@@ -97,7 +97,7 @@ class AddNewDataViewController: UIViewController {
     // for QRCode func use
     var content: String = "" {
         didSet {
-            addNewDadaTableView.reloadData()
+            addNewDataTableView.reloadData()
         }
     }
     // 儲存user id到keyChain
@@ -106,7 +106,7 @@ class AddNewDataViewController: UIViewController {
     var controller = UIAlertController()
     let group = DispatchGroup()
 
-    @IBOutlet weak var addNewDadaTableView: UITableView!
+    @IBOutlet weak var addNewDataTableView: UITableView!
 
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
@@ -149,10 +149,10 @@ class AddNewDataViewController: UIViewController {
 //        models.append(Model(text: "娛樂", imageName: "Entertainment"))
 
         // 註冊image tableView cell
-        addNewDadaTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
-        addNewDadaTableView.delegate = self
-        addNewDadaTableView.dataSource = self
-        addNewDadaTableView.estimatedRowHeight = UITableView.automaticDimension
+        addNewDataTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
+        addNewDataTableView.delegate = self
+        addNewDataTableView.dataSource = self
+        addNewDataTableView.estimatedRowHeight = UITableView.automaticDimension
 
         // segmentControl 偵測改值狀態
         didSelectsegmentedControl()
@@ -183,9 +183,9 @@ class AddNewDataViewController: UIViewController {
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
             sourceSegmentControl.setTitleTextAttributes(segementTextAttributes, for: .normal)
         }
-        addNewDadaTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        addNewDataTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
         // tableView top內縮10 points
-        addNewDadaTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        addNewDataTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
 
 
@@ -226,7 +226,7 @@ class AddNewDataViewController: UIViewController {
         data.categoryTextField = ""
         data.accountTextField = ""
         data.categoryImageName = ""
-        addNewDadaTableView.reloadData()
+        addNewDataTableView.reloadData()
     }
 
     // 取消新增資料按鈕trigger
@@ -442,7 +442,7 @@ class AddNewDataViewController: UIViewController {
                     print("=== this is self.data.detailTextView", self.data.detailTextView)
                     print("=== this is data", data)
                     DispatchQueue.main.async {
-                        self.addNewDadaTableView.reloadData()
+                        self.addNewDataTableView.reloadData()
                     }
                 }
             }
