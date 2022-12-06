@@ -40,6 +40,7 @@ class AddCoDetailViewController: UIViewController {
     }
     // alertController
     var controller = UIAlertController()
+    var closure: ((String) -> (Void))?
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var coDetailTableView: UITableView!
@@ -311,5 +312,9 @@ extension AddCoDetailViewController: CoDetailTableViewCellDelegate {
             data.userTextField = textField
             print("======= this is userTextField \(data.userTextField)")
         }
+    }
+
+    func addNewContent(_ cell: CoDetailTableViewCell, indexPathItem: Int) {
+        present(cell.presentCalculateVC ?? UIViewController(), animated: true)
     }
 }

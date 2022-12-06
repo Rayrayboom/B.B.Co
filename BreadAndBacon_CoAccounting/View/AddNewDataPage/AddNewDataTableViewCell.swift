@@ -31,6 +31,8 @@ class AddNewDataTableViewCell: UITableViewCell {
     var segmentTag = 0
     // calculator VC
     var presentCalculateVC: CalculateViewController?
+    // 放計算機的值
+    var amountFromCalculator = ""
     var indexPath: IndexPath? {
         didSet {
             // 第一個金額cell不需要picker，因此讓他顯示自製計算機
@@ -261,6 +263,7 @@ extension AddNewDataTableViewCell: UITextFieldDelegate {
                 if self?.contentTextField.text == "" {
                     // 顯示在textField上
                     self?.contentTextField.text = text
+                    self?.amountFromCalculator = text
                     // 輸入完就直接吃進去textField裡面，不用等textFieldDidEndEditing
                     self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
                 } else {
@@ -268,6 +271,8 @@ extension AddNewDataTableViewCell: UITextFieldDelegate {
                     self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
                 }
             }
+    // MARK: - 待設定，讓使用者重點選amount textField時帶入已輸入的金額
+//            presentCalculateVC?.label.text = contentTextField.text
         }
     }
     func textFieldDidEndEditing(_ textField: UITextField) {

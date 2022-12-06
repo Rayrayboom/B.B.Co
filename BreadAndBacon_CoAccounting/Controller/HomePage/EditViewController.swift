@@ -115,18 +115,8 @@ class EditViewController: UIViewController {
         }
         // 當內容是透過QR scanner拿取，isTappedQR == 1
         isTappedQR = 1
-        // 掃描時跳出alert提醒使用者掃描左邊QRCode
-        controller = UIAlertController(title: "請掃描電子發票左方QRCode", message: nil, preferredStyle: .alert)
-        // 建立[我知道了]按鈕
-        let okAction = UIAlertAction(
-            title: "我知道了",
-            style: .default) { action in
-                presentEditQRScanVC.delegate = self
-                self.present(presentEditQRScanVC, animated: true)
-            }
-        controller.addAction(okAction)
-        // 顯示提示框
-        self.present(controller, animated: true, completion: nil)
+        presentEditQRScanVC.delegate = self
+        self.present(presentEditQRScanVC, animated: true)
     }
 
 // MARK: - TODO
@@ -428,6 +418,82 @@ class EditViewController: UIViewController {
         let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(data?.id ?? "")
         documentRef.delete()
     }
+
+    // 解析invoice data
+    func decodeInvoice(message: String) {
+        let invNum = message.prefix(10)
+        let encrypt = message.prefix(24)
+        var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
+        var translateYear = (Int(invYear) ?? 0) + 1911
+        invYear = String(translateYear)
+
+        let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
+        let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
+        let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
+        let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
+
+        // POST API
+        sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
+
+        print("invNum", invNum)
+        print("encrypt", encrypt)
+        print("invYear", invYear)
+        print("invMonth", invMonth)
+        print("invDay", invDay)
+        print("randomNumber", randomNumber)
+        print("sellerID", sellerID)
+    }
+
+    // POST API and parse data
+    func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
+        let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=\(APIKey.invoiceUUID)&randomNumber=\(randomNumber)&appID=\(APIKey.QRAppID)")
+        var request = URLRequest(url: url!)
+        request.httpMethod = "POST"
+        let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
+            if let error = error {
+                print("=== post API is error", error)
+                return
+            }
+
+            guard let response = response as? HTTPURLResponse,
+                  response.statusCode == 200 else {
+                print("response error")
+                return
+            }
+
+            if let dataInv = data {
+                if let detail = self.parseData(jsonData: dataInv) {
+                    // 讓掃描完的amount & detail data自動吃到textField裡，不需觸發到textFieldDidEndEditing
+                    self.editData.detailTextView = ""
+                    var amount = 0
+                    for item in 0..<detail.details.count {
+                        amount += (Int(detail.details[item].amount ?? "") ?? 0)
+                        self.editData.detailTextView +=  "\(detail.details[item].detailDescription)\n"
+                    }
+                    self.editData.amountTextField = String(amount)
+                    print("=== this is self.editData.amountTextField", self.editData.amountTextField)
+                    print("=== this is self.editData.detailTextView", self.editData.detailTextView)
+                    print("=== this is data", data)
+                    DispatchQueue.main.async {
+                        self.editTableView.reloadData()
+                    }
+                }
+            }
+        })
+        task.resume()
+    }
+
+    func parseData(jsonData: Data) -> Invoice? {
+        do {
+            let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
+            // 測試看是否有抓到資料
+            print("=== result is \(jsonData)")
+            return result
+        }catch {
+            print("result error")
+            return nil
+        }
+    }
 }
 
 extension EditViewController: UITableViewDelegate {
@@ -561,22 +627,10 @@ extension EditViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 editDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
+                // 把轉帳data塞給editData.detailTextView structure
                 editData.detailTextView = self.data?.detail ?? ""
-                // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一班手動編輯(isTappedQR == 0)則顯示原textView資訊
-                if isTappedQR == 1 {
-                    // 存放invoice的string在fetch data之前要先清空
-                    items = ""
-                    // 把message的值塞給detailTextView
-                    for item in 0..<(invoice?.details.count ?? 0) {
-                        guard let invoice = invoice else {
-                            fatalError("pass invDetail data error")
-                        }
-                        items.append("\(invoice.details[item].detailDescription)\n")
-                        editDetailCell.detailTextView.text = items
-                    }
-                } else {
-                    editDetailCell.detailTextView.text = self.data?.detail
-                }
+                // 把轉帳data塞給editDetailCell的detailTextView顯示
+                editDetailCell.detailTextView.text = self.data?.detail
                 editDetailCell.delegate = self
                 return editDetailCell
             }
@@ -608,11 +662,7 @@ extension EditViewController: UITableViewDataSource {
                     editDataCell.chooseImage.image = nil
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                     if messageFromQRVC != "" {
-                        var amo = 0
-                        for num in 0..<(invoice?.details.count ?? 0) {
-                            amo = (amo + (Int(invoice?.details[num].amount ?? "") ?? 0))
-                        }
-                        editDataCell.contentTextField.text = String(amo)
+                        editDataCell.contentTextField.text = editData.amountTextField
                     } else {
                         editData.amountTextField = self.data?.amount ?? ""
                         editDataCell.contentTextField.text = self.data?.amount
@@ -673,23 +723,14 @@ extension EditViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 editDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                editData.detailTextView = self.data?.detail ?? ""
-                // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一班手動編輯(isTappedQR == 0)則顯示原textView資訊
+                
+                print("=== this is isTappedQR", isTappedQR)
+                // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一般手動編輯(isTappedQR == 0)則顯示原textView資訊
                 if isTappedQR == 1 {
-                    // 存放invoice的string在fetch data之前要先清空
-                    items = ""
-                    // 把message的值塞給detailTextView
-                    for item in 0..<(invoice?.details.count ?? 0) {
-                        guard let invoice = invoice else {
-                            fatalError("pass invDetail data error")
-                        }
-                        items.append("\(invoice.details[item].detailDescription)\n")
-                        editDetailCell.detailTextView.text = items
-                    }
-                    // 把message的值塞給detailTextView
-    //                editDetailCell.detailTextView.text = messageFromQRVC
+                    editDetailCell.detailTextView.text = editData.detailTextView
                 } else {
                     editDetailCell.detailTextView.text = self.data?.detail
+                    editData.detailTextView = self.data?.detail ?? ""
                 }
                 editDetailCell.delegate = self
                 return editDetailCell
@@ -772,15 +813,14 @@ extension EditViewController: EditDataTableViewCellDelegate {
 extension EditViewController: EditDetailTableViewCellDelegate {
     func getDetail(detail: String) {
         editData.detailTextView = detail
-        print("======= this is detail \(editData.detailTextView)")
     }
 }
 
 // QRCode text from QRCodeVC
 extension EditViewController: EditQRCodeViewControllerDelegate {
     func getMessage(message: String) {
-        print("wwwww??", message)
         messageFromQRVC = message
+        self.decodeInvoice(message: message)
     }
 
     func getInvDetail(didGet items: Invoice) {
@@ -789,5 +829,21 @@ extension EditViewController: EditQRCodeViewControllerDelegate {
 
     func getInvDetail(didFailwith error: Error) {
         print("can not parse invoice data")
+        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
+
+        let okAction = UIAlertAction(
+            title: "再試一次",
+            style: .default) { action in
+                guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "editQRScanVC") as? EditQRCodeViewController else {
+                    fatalError("can not find presentEditQRScan VC")
+                }
+                presentEditQRScanVC.delegate = self
+                self.present(presentEditQRScanVC, animated: true)
+            }
+        self.controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        self.controller.addAction(cancelAction)
+        // 顯示提示框
+        self.present(self.controller, animated: true, completion: nil)
     }
 }

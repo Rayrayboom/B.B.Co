@@ -11,6 +11,7 @@ import SwiftUI
 
 protocol CoDetailTableViewCellDelegate: AnyObject {
     func getInputTextField(indexPath: IndexPath, textField: String)
+    func addNewContent(_ cell: CoDetailTableViewCell, indexPathItem: Int)
 }
 
 class CoDetailTableViewCell: UITableViewCell {
@@ -19,6 +20,8 @@ class CoDetailTableViewCell: UITableViewCell {
     var content: [String] = []
     // 宣告一個pickerView
     let contentPicker = UIPickerView()
+    // calculator VC
+    var presentCalculateVC: CalculateViewController?
     var indexPath: IndexPath? {
         didSet {
             switch indexPath?.section {
@@ -31,9 +34,9 @@ class CoDetailTableViewCell: UITableViewCell {
                 contentTextField.keyboardAppearance = .dark
                 return
             case 2:
-                // contentTextField有更動時叫出黑色文字鍵盤
-                contentTextField.keyboardType = .numberPad
-                contentTextField.keyboardAppearance = .dark
+                // 隱藏IQKeyBoard自動帶出的鍵盤
+                contentTextField.inputView = UIView.init(frame: CGRect.zero)
+                contentTextField.inputAccessoryView = UIView.init(frame: CGRect.zero)
             default:
                 // contentTextField有更動時叫出黑色數字鍵盤
                 contentTextField.keyboardType = .namePhonePad
@@ -106,10 +109,32 @@ extension CoDetailTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
 // textField delegate
 extension CoDetailTableViewCell: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if indexPath?.section == 3 {
+        switch indexPath?.section {
+        case 1:
+            return
+        case 2:
+            // 讓amount textField一點進去就直接顯示計算機
+            let addNewDataStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
+            presentCalculateVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calculateVC") as! CalculateViewController
+            presentCalculateVC?.modalPresentationStyle = .overCurrentContext
+            self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
+
+            presentCalculateVC?.closure = {[weak self] text in
+                if self?.contentTextField.text == "" {
+                    self?.contentTextField.text = text
+                    self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
+                } else {
+                    self?.contentTextField.text = text
+                    self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
+                }
+            }
+        case 3:
             contentTextField.text = content[0]
+        default:
+            return
         }
     }
+
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")
         print("====== co delegate \(contentTextField.text)")

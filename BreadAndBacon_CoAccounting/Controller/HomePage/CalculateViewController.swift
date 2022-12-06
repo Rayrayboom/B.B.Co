@@ -32,6 +32,18 @@ class CalculateViewController: UIViewController {
 
     // UI
     func setupUI() {
+        UIView.performWithoutAnimation {
+            self.equalBO.setImage(UIImage(named: "Okay"), for: .normal)
+            self.equalBO.setTitle("OK", for: .normal)
+            self.equalBO.layoutIfNeeded()
+        }
+// MARK: - 待設定點textField後可以直接在計算機的label做計算
+//        if logic.array.count == 0 {
+//            logic.currentNumber = Double(label.text!) ?? 3.0
+//            logic.array.append(logic.currentNumber)
+//        }
+//        print("===", logic.array, "現在數字：", logic.currentNumber, "label.text", label.text)
+        
         backgroundView.backgroundColor = UIColor().hexStringToUIColor(hex: "f3f2ef")
         backgroundView.layer.cornerRadius = 10
         backgroundViewTopConatrain.constant = CGFloat(UIScreen.main.bounds.height * 5/10)
@@ -43,9 +55,6 @@ class CalculateViewController: UIViewController {
             self.blackView.alpha = 0.3
         }
         dismissBlackViewWhenTapSpace()
-        self.equalBO.setTitle("OK", for: .normal)
-        self.equalBO.layoutIfNeeded()
-        
     }
     
     // 點擊一下空白處讓blackView消失
@@ -60,6 +69,7 @@ class CalculateViewController: UIViewController {
     @objc func singleTap(recognizer: UITapGestureRecognizer){
         let point = recognizer.location(ofTouch: 0, in: recognizer.view)
         if point.y < self.view.center.y {
+            self.closure?(self.label.text ?? "")
             dismiss(animated: true, completion: nil)
             self.blackView.removeFromSuperview()
         }
@@ -85,8 +95,10 @@ class CalculateViewController: UIViewController {
     // MARK: - 點選AC/C
     @IBAction func clearButtonClicked(_ sender: UIButton) {
         UIView.performWithoutAnimation {
+            self.allClearBO.setImage(UIImage(named: "AC"), for: .normal)
             self.allClearBO.setTitle("AC", for: .normal)
             self.allClearBO.layoutIfNeeded()
+            self.equalBO.setImage(UIImage(named: "Okay"), for: .normal)
             self.equalBO.setTitle("OK", for: .normal)
             self.equalBO.layoutIfNeeded()
         }
@@ -98,6 +110,7 @@ class CalculateViewController: UIViewController {
     // MARK: - 點選數字button
     @IBAction func numberButtonClicked(_ sender: UIButton) {
         UIView.performWithoutAnimation {
+            self.allClearBO.setImage(UIImage(named: "C"), for: .normal)
             self.allClearBO.setTitle("C", for: .normal)
             self.allClearBO.layoutIfNeeded()
         }
@@ -149,6 +162,7 @@ class CalculateViewController: UIViewController {
     @IBAction func operatorButtonClicked(_ sender: UIButton) {
         labelFlashing()
         UIView.performWithoutAnimation {
+            self.equalBO.setImage(UIImage(named: "Equal"), for: .normal)
             self.equalBO.setTitle("=", for: .normal)
             self.equalBO.layoutIfNeeded()
         }
@@ -184,7 +198,7 @@ class CalculateViewController: UIViewController {
         print("previousIsOperation", previousIsOperation)
     }
     
-    // MARK: - 點選 =
+    // MARK: - 點選 =/OK
     @IBAction func equalButtonClicked(_ sender: UIButton) {
         labelFlashing()
         if label.text == "Error" {
@@ -196,6 +210,7 @@ class CalculateViewController: UIViewController {
         if previousIsOperation == false {
             if sender.titleLabel?.text == "=" {
                 UIView.performWithoutAnimation {
+                    self.equalBO.setImage(UIImage(named: "Okay"), for: .normal)
                     self.equalBO.setTitle("OK", for: .normal)
                     self.equalBO.layoutIfNeeded()
                 }
