@@ -123,7 +123,7 @@ class EditQRCodeViewController: UIViewController {
         }
     }
 
-    // dismiss EditQRCode VC
+    // 停止偵測 + dismissQRCodeVC
     func dismissQRCodeVC() {
         captureSession.stopRunning()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -152,6 +152,7 @@ extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
                 messageLabel.text = metadataObj.stringValue
                 // 把亂碼傳給aadNewDataVC
                 self.delegate?.getMessage(message: metadataObj.stringValue ?? "")
+                // 取得亂碼後停止偵測 + dismissQRCodeVC
                 dismissQRCodeVC()
             }
         }

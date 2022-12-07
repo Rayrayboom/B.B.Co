@@ -383,7 +383,27 @@ class AddNewDataViewController: UIViewController {
                 }
             }
     }
-    
+
+    // 掃描QRCode error handle
+    func parseErrorAlert() {
+        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
+
+        let okAction = UIAlertAction(
+            title: "再試一次",
+            style: .default) { action in
+                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
+                    fatalError("can not find QRScanner VC")
+                }
+                presentQRScanVC.delegate = self
+                self.present(presentQRScanVC, animated: true)
+            }
+        self.controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        self.controller.addAction(cancelAction)
+        // 顯示提示框
+        self.present(self.controller, animated: true, completion: nil)
+    }
+
     // 解析invoice data
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
@@ -392,15 +412,15 @@ class AddNewDataViewController: UIViewController {
         var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
         let translateYear = (Int(invYear) ?? 0) + 1911
         invYear = String(translateYear)
-        
+
         let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
         let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
         let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
         let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
-        
+
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
-        
+
         print("invNum", invNum)
         print("message", message)
         print("encrypt", encrypt)
@@ -410,7 +430,7 @@ class AddNewDataViewController: UIViewController {
         print("randomNumber", randomNumber)
         print("sellerID", sellerID)
     }
-    
+
     // POST API and parse data
     func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
         let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=\(APIKey.invoiceUUID)&randomNumber=\(randomNumber)&appID=\(APIKey.QRAppID)")
@@ -419,9 +439,10 @@ class AddNewDataViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if let error = error {
                 print("=== post API is error", error)
+                self.parseErrorAlert()
                 return
             }
-            
+
             guard let response = response as? HTTPURLResponse,
                   response.statusCode == 200 else {
                 print("response error")
@@ -438,9 +459,7 @@ class AddNewDataViewController: UIViewController {
                         self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
                     }
                     self.data.amountTextField = String(amount)
-                    print("=== this is self.data.amountTextField", self.data.amountTextField)
-                    print("=== this is self.data.detailTextView", self.data.detailTextView)
-                    print("=== this is data", data)
+                    // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
                     DispatchQueue.main.async {
                         self.addNewDataTableView.reloadData()
                     }
@@ -527,7 +546,7 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 
     // swiftlint:disable cyclomatic_complexity
-    // MARK: TableView DataSource
+    // MARK: - TableView DataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if segmentTag == 2 {
             if indexPath.section == 0 {
@@ -561,7 +580,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                     fatalError("can not create cell")
                 }
                 addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-// MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
@@ -843,21 +861,5 @@ extension AddNewDataViewController: QRCodeViewControllerDelegate {
 
     func getInvDetail(didFailwith error: Error) {
         print("can not parse invoice data")
-        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
-
-        let okAction = UIAlertAction(
-            title: "再試一次",
-            style: .default) { action in
-                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
-                    fatalError("can not find QRScanner VC")
-                }
-                presentQRScanVC.delegate = self
-                self.present(presentQRScanVC, animated: true)
-            }
-        self.controller.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-        self.controller.addAction(cancelAction)
-        // 顯示提示框
-        self.present(self.controller, animated: true, completion: nil)
     }
 }
