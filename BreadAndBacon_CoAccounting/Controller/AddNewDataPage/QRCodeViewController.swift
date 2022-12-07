@@ -11,8 +11,6 @@ import AVFoundation
 // QRCode掃描後的內容以protocol-delegate傳給addNewData page_detail cell
 protocol QRCodeViewControllerDelegate: AnyObject {
     func getMessage(message: String)
-    func getInvDetail(didGet items: Invoice)
-    func getInvDetail(didFailwith error: Error)
 }
 
 class QRCodeViewController: UIViewController {
@@ -121,7 +119,7 @@ class QRCodeViewController: UIViewController {
         }
     }
 
-    // dismiss QRCode VC
+    // 停止偵測 + dismissQRCodeVC
     func dismissQRCodeVC() {
         captureSession.stopRunning()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -153,6 +151,7 @@ extension QRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
                 messageLabel.text = metadataObj.stringValue
                 // 把亂碼傳給aadNewDataVC
                 self.delegate?.getMessage(message: metadataObj.stringValue ?? "")
+                // 取得亂碼後停止偵測 + dismissQRCodeVC
                 dismissQRCodeVC()
             }
         }

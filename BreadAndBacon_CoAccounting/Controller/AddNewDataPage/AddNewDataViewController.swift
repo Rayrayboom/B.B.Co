@@ -226,6 +226,7 @@ class AddNewDataViewController: UIViewController {
         data.categoryTextField = ""
         data.accountTextField = ""
         data.categoryImageName = ""
+        data.detailTextView = ""
         addNewDataTableView.reloadData()
     }
 
@@ -383,7 +384,27 @@ class AddNewDataViewController: UIViewController {
                 }
             }
     }
-    
+
+    // 掃描QRCode error handle
+    func parseErrorAlert() {
+        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
+
+        let okAction = UIAlertAction(
+            title: "再試一次",
+            style: .default) { action in
+                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
+                    fatalError("can not find QRScanner VC")
+                }
+                presentQRScanVC.delegate = self
+                self.present(presentQRScanVC, animated: true)
+            }
+        self.controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        self.controller.addAction(cancelAction)
+        // 顯示提示框
+        self.present(self.controller, animated: true, completion: nil)
+    }
+
     // 解析invoice data
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
@@ -392,25 +413,19 @@ class AddNewDataViewController: UIViewController {
         var invYear = (message as NSString).substring(with: NSMakeRange(10, 3))
         let translateYear = (Int(invYear) ?? 0) + 1911
         invYear = String(translateYear)
-        
+
         let invMonth = (message as NSString).substring(with: NSMakeRange(13, 2))
         let invDay = (message as NSString).substring(with: NSMakeRange(15, 2))
         let randomNumber = (message as NSString).substring(with: NSMakeRange(17, 4))
         let sellerID = (message as NSString).substring(with: NSMakeRange(45, 8))
-        
+
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
-        
-        print("invNum", invNum)
-        print("message", message)
-        print("encrypt", encrypt)
-        print("invYear", invYear)
-        print("invMonth", invMonth)
-        print("invDay", invDay)
-        print("randomNumber", randomNumber)
-        print("sellerID", sellerID)
+
+        // 確認是否有取到正確資料
+        print("invNum \(invNum), message \(message), encrypt \(encrypt), invYear \(invYear), invMonth \(invMonth), invDay \(invDay), randomNumber \(randomNumber), sellerID \(sellerID)")
     }
-    
+
     // POST API and parse data
     func sendInvoiceAPI(invNum: String, invDate: String, encrypt: String, sellerID: String, randomNumber: String) {
         let url = URL(string: "https://api.einvoice.nat.gov.tw/PB2CAPIVAN/invapp/InvApp?version=0.6&type=QRCode&invNum=\(invNum)&action=qryInvDetail&generation=V2&invDate=\(invDate)&encrypt=\(encrypt)&sellerID=\(sellerID)&UUID=\(APIKey.invoiceUUID)&randomNumber=\(randomNumber)&appID=\(APIKey.QRAppID)")
@@ -419,9 +434,12 @@ class AddNewDataViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if let error = error {
                 print("=== post API is error", error)
+                DispatchQueue.main.async {
+                    self.parseErrorAlert()
+                }
                 return
             }
-            
+
             guard let response = response as? HTTPURLResponse,
                   response.statusCode == 200 else {
                 print("response error")
@@ -430,7 +448,7 @@ class AddNewDataViewController: UIViewController {
 
             if let dataInv = data {
                 if let detail = self.parseData(jsonData: dataInv) {
-                    // 讓掃描完的amount & detail data自動吃到textField裡，不需觸發到textFieldDidEndEditing
+                    // 讓掃描完的amount & detail data自動傳進textField，不需觸發到textFieldDidEndEditing
                     self.data.detailTextView = ""
                     var amount = 0
                     for item in 0..<detail.details.count {
@@ -438,9 +456,7 @@ class AddNewDataViewController: UIViewController {
                         self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
                     }
                     self.data.amountTextField = String(amount)
-                    print("=== this is self.data.amountTextField", self.data.amountTextField)
-                    print("=== this is self.data.detailTextView", self.data.detailTextView)
-                    print("=== this is data", data)
+                    // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
                     DispatchQueue.main.async {
                         self.addNewDataTableView.reloadData()
                     }
@@ -527,7 +543,7 @@ extension AddNewDataViewController: UITableViewDataSource {
     }
 
     // swiftlint:disable cyclomatic_complexity
-    // MARK: TableView DataSource
+    // MARK: - TableView DataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if segmentTag == 2 {
             if indexPath.section == 0 {
@@ -536,7 +552,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                dateCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 data.dateTime = BBCDateFormatter.shareFormatter.string(from: dateCell.addDatePicker.date)
 
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
@@ -560,42 +575,26 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-// MARK: - notice
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
-                    addDataCell.contentTextField.text = ""
                     data.amountTextField = addDataCell.amountFromCalculator
+                    addDataCell.indexPath = indexPath
                 case 1:
-                    addDataCell.contentTextField.text = ""
                     switch segmentTag {
                     case 0:
-                        addDataCell.content = costContent
-                        addDataCell.imageArr = costImageArr
+                        addDataCell.setContentAndImage(content: costContent, image: costImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     case 1:
-                        addDataCell.content = incomeContent
-                        addDataCell.imageArr = incomeImageArr
+                        addDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     default:
-                        addDataCell.content = accountContent
-                        addDataCell.imageArr = accountImageArr
+                        addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     }
                 default:
-                    addDataCell.contentTextField.text = ""
-                    addDataCell.content = accountContent
-                    addDataCell.imageArr = accountImageArr
+                    addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
-
-                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
-                addDataCell.contentTextField.inputView = nil
-                // 切換segment時，清除已選圖案
-                addDataCell.chooseImage.image = nil
-                addDataCell.indexPath = indexPath
-                addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
                 // 依照category array裡的資料筆數決定section:1有幾個cell
                 addDataCell.fillInContent(name: transferCategory[indexPath.row])
-                addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
@@ -604,7 +603,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                qrCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
@@ -614,9 +612,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                detailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                // 轉帳頁面不需掃描發票，故給空值
-                detailCell.detailTextView.text = ""
                 detailCell.delegate = self
                 return detailCell
             }
@@ -627,7 +622,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                dateCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 dateCell.delegate = self
                 if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date {
                     let current = BBCDateFormatter.shareFormatter.string(from: dateFromVC)
@@ -660,49 +654,32 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                addDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
-// MARK: 更新發票內容cell
                 switch indexPath.row {
                 case 0:
-                    addDataCell.contentTextField.text = ""
                     addDataCell.contentTextField.text = data.amountTextField
+                    addDataCell.indexPath = indexPath
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
                     if messageFromQRVC != "" {
                         // 發票amount資料要塞進data.amountTextField才會真的吃到資料
                         addDataCell.contentTextField.text = data.amountTextField
                     }
                 case 1:
-                    addDataCell.contentTextField.text = ""
                     addDataCell.contentTextField.text = data.categoryTextField
-                    // 切換segment時，清除已選圖案
-                    addDataCell.chooseImage.image = nil
                     addDataCell.chooseImage.image = data.categoryImageName.toImage()
                     switch segmentTag {
                     case 0:
-                        addDataCell.content = costContent
-                        addDataCell.imageArr = costImageArr
+                        addDataCell.setContentAndImage(content: costContent, image: costImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     case 1:
-                        addDataCell.content = incomeContent
-                        addDataCell.imageArr = incomeImageArr
+                        addDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     default:
-                        addDataCell.content = accountContent
+                        addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     }
                 default:
-                    addDataCell.contentTextField.text = ""
-                    addDataCell.content = accountContent
+                    addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
-
-                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
-                addDataCell.contentTextField.inputView = nil
-                // 切換segment時，清除已選圖案
-                addDataCell.chooseImage.image = nil
-                addDataCell.indexPath = indexPath
-                addDataCell.segmentTag = segmentTag
                 addDataCell.delegate = self
                 addDataCell.fillInContent(name: costCategory[indexPath.row])
-                addDataCell.contentTextField.textAlignment = .center
                 addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
@@ -711,7 +688,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                qrCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 // 支出、收入要顯示QRCode scanner
                 qrCell.qrButton.isHidden = false
                 return qrCell
@@ -721,12 +697,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                detailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                // 切換不同頁面時，detail要先清空
-                detailCell.detailTextView.text = ""
                 // 發票detail資料要塞進data.detailTextField才會真的吃到資料
                 detailCell.detailTextView.text = data.detailTextView
-
                 detailCell.delegate = self
                 return detailCell
             }
@@ -832,32 +804,5 @@ extension AddNewDataViewController: QRCodeViewControllerDelegate {
     func getMessage(message: String) {
         messageFromQRVC = message
         self.decodeInvoice(message: message)
-    }
-
-    func getInvDetail(didGet items: Invoice) {
-        invoice = items
-        // 讓掃描完的amount & detail data自動吃到textField裡，不需觸發到textFieldDidEndEditing
-        data.amountTextField = items.details[0].amount
-        data.detailTextView = items.details[0].detailDescription
-    }
-
-    func getInvDetail(didFailwith error: Error) {
-        print("can not parse invoice data")
-        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
-
-        let okAction = UIAlertAction(
-            title: "再試一次",
-            style: .default) { action in
-                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
-                    fatalError("can not find QRScanner VC")
-                }
-                presentQRScanVC.delegate = self
-                self.present(presentQRScanVC, animated: true)
-            }
-        self.controller.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-        self.controller.addAction(cancelAction)
-        // 顯示提示框
-        self.present(self.controller, animated: true, completion: nil)
     }
 }

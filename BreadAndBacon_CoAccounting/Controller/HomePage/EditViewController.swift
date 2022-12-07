@@ -419,6 +419,26 @@ class EditViewController: UIViewController {
         documentRef.delete()
     }
 
+    // 掃描QRCode error handle
+    func parseErrorAlert() {
+        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(
+            title: "再試一次",
+            style: .default) { action in
+                guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "editQRScanVC") as? EditQRCodeViewController else {
+                    fatalError("can not find presentEditQRScan VC")
+                }
+                presentEditQRScanVC.delegate = self
+                self.present(presentEditQRScanVC, animated: true)
+            }
+        self.controller.addAction(okAction)
+        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+        self.controller.addAction(cancelAction)
+        // 顯示提示框
+        self.present(self.controller, animated: true, completion: nil)
+    }
+
     // 解析invoice data
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
@@ -452,6 +472,9 @@ class EditViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if let error = error {
                 print("=== post API is error", error)
+                DispatchQueue.main.async {
+                    self.parseErrorAlert()
+                }
                 return
             }
 
@@ -471,9 +494,7 @@ class EditViewController: UIViewController {
                         self.editData.detailTextView +=  "\(detail.details[item].detailDescription)\n"
                     }
                     self.editData.amountTextField = String(amount)
-                    print("=== this is self.editData.amountTextField", self.editData.amountTextField)
-                    print("=== this is self.editData.detailTextView", self.editData.detailTextView)
-                    print("=== this is data", data)
+                    // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
                     DispatchQueue.main.async {
                         self.editTableView.reloadData()
                     }
@@ -821,29 +842,5 @@ extension EditViewController: EditQRCodeViewControllerDelegate {
     func getMessage(message: String) {
         messageFromQRVC = message
         self.decodeInvoice(message: message)
-    }
-
-    func getInvDetail(didGet items: Invoice) {
-        invoice = items
-    }
-
-    func getInvDetail(didFailwith error: Error) {
-        print("can not parse invoice data")
-        self.controller = UIAlertController(title: "Oops, 系統有點問題，請再試一次", message: nil, preferredStyle: .alert)
-
-        let okAction = UIAlertAction(
-            title: "再試一次",
-            style: .default) { action in
-                guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "editQRScanVC") as? EditQRCodeViewController else {
-                    fatalError("can not find presentEditQRScan VC")
-                }
-                presentEditQRScanVC.delegate = self
-                self.present(presentEditQRScanVC, animated: true)
-            }
-        self.controller.addAction(okAction)
-        let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
-        self.controller.addAction(cancelAction)
-        // 顯示提示框
-        self.present(self.controller, animated: true, completion: nil)
     }
 }

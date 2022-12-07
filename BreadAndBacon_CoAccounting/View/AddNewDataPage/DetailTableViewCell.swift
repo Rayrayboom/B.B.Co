@@ -25,6 +25,8 @@ class DetailTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        // 設定cell color
+        self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         // 設定textField外觀
         detailTextView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         detailTextView.layer.borderWidth = 1
@@ -35,7 +37,12 @@ class DetailTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // 每次新生成時，detailTextView要先清空
+        detailTextView.text = ""
     }
 }
 
