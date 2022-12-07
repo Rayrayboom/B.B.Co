@@ -20,6 +20,8 @@ class AddDateTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         addDatePicker.tintColor = .systemBrown
+        // 設定cell color
+        self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

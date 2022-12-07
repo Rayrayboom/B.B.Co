@@ -843,12 +843,4 @@ extension EditViewController: EditQRCodeViewControllerDelegate {
         messageFromQRVC = message
         self.decodeInvoice(message: message)
     }
-
-    func getInvDetail(didGet items: Invoice) {
-        invoice = items
-    }
-
-    func getInvDetail(didFailwith error: Error) {
-        print("can not parse invoice data")
-    }
 }

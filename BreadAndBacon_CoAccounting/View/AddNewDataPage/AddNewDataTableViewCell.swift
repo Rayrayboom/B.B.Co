@@ -68,15 +68,37 @@ class AddNewDataTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
+        // 設定cell color
+        self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         // 設定textField外觀
         contentTextField.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         contentTextField.layer.borderWidth = 1
         contentTextField.layer.borderColor = CGColor.init(red: 189/255, green: 189/255, blue: 190/255, alpha: 1)
         contentTextField.layer.cornerRadius = 5
+        contentTextField.textAlignment = .center
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // 生成cell時，清除textField裡的值
+        contentTextField.text = ""
+        // 生成cell時，清除已選圖案
+        chooseImage.image = nil
+        // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
+        contentTextField.inputView = nil
+    }
+    
+    
+    // 設定content & image & indexPath & segmentTag
+    func setContentAndImage(content: [String], image: [UIImage?], indexPath: IndexPath, segmentTag: Int) {
+        self.content = content
+        self.imageArr = image
+        self.indexPath = indexPath
+        self.segmentTag = segmentTag
     }
 
     // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用

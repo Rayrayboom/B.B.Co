@@ -11,8 +11,6 @@ import AVFoundation
 // QRCode掃描後的內容以protocol-delegate傳給addNewData page_detail cell
 protocol EditQRCodeViewControllerDelegate: AnyObject {
     func getMessage(message: String)
-    func getInvDetail(didGet items: Invoice)
-    func getInvDetail(didFailwith error: Error)
 }
 
 class EditQRCodeViewController: UIViewController {
