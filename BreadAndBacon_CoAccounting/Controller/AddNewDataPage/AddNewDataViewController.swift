@@ -439,7 +439,9 @@ class AddNewDataViewController: UIViewController {
         let task = URLSession.shared.dataTask(with: request, completionHandler: {(data, response, error) in
             if let error = error {
                 print("=== post API is error", error)
-                self.parseErrorAlert()
+                DispatchQueue.main.async {
+                    self.parseErrorAlert()
+                }
                 return
             }
 
