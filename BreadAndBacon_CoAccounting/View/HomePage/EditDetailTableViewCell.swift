@@ -16,8 +16,10 @@ class EditDetailTableViewCell: UITableViewCell {
 
     @IBOutlet weak var detailTextView: UITextView!
     override func awakeFromNib() {
-        detailTextView.delegate = self
         super.awakeFromNib()
+        detailTextView.delegate = self
+        // cell color
+        self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         detailTextView.keyboardAppearance = .dark
         // 設定textField外觀
         detailTextView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
