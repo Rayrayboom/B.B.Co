@@ -576,6 +576,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                addDataCell.delegate = self
+                addDataCell.contentConfig(segment: segmentTag, titleName: transferCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
@@ -584,10 +586,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 default:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
-                addDataCell.delegate = self
-                // 依照category array裡的資料筆數決定section:1有幾個cell
-                addDataCell.fillInContent(name: transferCategory[indexPath.row])
-                addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
@@ -647,6 +645,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                addDataCell.delegate = self
+                addDataCell.contentConfig(segment: segmentTag, titleName: costCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
@@ -669,9 +669,6 @@ extension AddNewDataViewController: UITableViewDataSource {
                 default:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
-                addDataCell.delegate = self
-                addDataCell.fillInContent(name: costCategory[indexPath.row])
-                addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
@@ -688,9 +685,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                // 發票detail資料要塞進data.detailTextField才會真的吃到資料
-                detailCell.detailTextView.text = data.detailTextView
                 detailCell.delegate = self
+                detailCell.config(detailText: data.detailTextView)
                 return detailCell
             }
         }

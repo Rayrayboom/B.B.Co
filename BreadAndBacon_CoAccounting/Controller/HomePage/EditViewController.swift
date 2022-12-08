@@ -615,8 +615,8 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editDetailCell.config(detailText: editData.detailTextView)
                 editDetailCell.delegate = self
+                editDetailCell.config(detailText: editData.detailTextView)
                 return editDetailCell
             }
 // MARK: - 支出、收入segemant
@@ -663,8 +663,8 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editDetailCell.config(detailText: editData.detailTextView)
                 editDetailCell.delegate = self
+                editDetailCell.config(detailText: editData.detailTextView)
                 return editDetailCell
             }
         }

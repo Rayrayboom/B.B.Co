@@ -44,6 +44,12 @@ class DetailTableViewCell: UITableViewCell {
         // 每次新生成時，detailTextView要先清空
         detailTextView.text = ""
     }
+    
+    // 配置textView
+    func config(detailText: String) {
+        // 發票detail資料要塞進data.detailTextField才會真的吃到資料
+        detailTextView.text = detailText
+    }
 }
 
 // textView delegate
