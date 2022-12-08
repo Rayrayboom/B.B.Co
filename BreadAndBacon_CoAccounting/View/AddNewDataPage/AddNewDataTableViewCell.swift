@@ -107,7 +107,9 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
 
 // MARK: - alert: add category
-    func contentConfig(segment: Int) {
+    func contentConfig(segment: Int, titleName: String) {
+        // titleName: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
+        titleLabel.text = titleName
         controller = UIAlertController(title: "新增選項", message: "", preferredStyle: .alert)
         controller.addTextField { textField in
             textField.placeholder = "內容"

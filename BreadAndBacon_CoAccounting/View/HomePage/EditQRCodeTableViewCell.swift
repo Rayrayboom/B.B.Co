@@ -12,7 +12,8 @@ class EditQRCodeTableViewCell: UITableViewCell {
     @IBOutlet weak var qrButton: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        // cell color
+        self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

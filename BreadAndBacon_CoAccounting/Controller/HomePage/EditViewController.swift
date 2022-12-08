@@ -27,29 +27,36 @@ struct DataModel {
 }
 
 class EditViewController: UIViewController {
-    // 接homeVC點選對應cell的單筆資料
-    var data: Account?
+    // 接homeVC點選對應cell的單筆資料，並存到editVC struct裡
+    var data: Account? {
+        didSet {
+            editData.dateTime = data?.date ?? ""
+            editData.monthTime = data?.month ?? ""
+            editData.amountTextField = data?.amount ?? ""
+            editData.categoryImageName = data?.categoryImage ?? ""
+            editData.categoryTextField = data?.category ?? ""
+            editData.accountTextField = data?.account ?? ""
+            editData.detailTextView = data?.detail ?? ""
+        }
+    }
     var category: [Category] = []
     var costCategory: [String] = ["金額", "種類", "帳戶"]
     var transferCategory: [String] = ["金額", "來源帳戶", "目的帳戶"]
     // 存支出textField picker資料
     var costContent: [String] = [] {
         didSet {
-            print("=== this is all costContent \(self.costContent)")
             editTableView.reloadData()
         }
     }
     // 存收入textField picker資料
     var incomeContent: [String] = [] {
         didSet {
-            print("=== this is all incomeContent \(self.incomeContent)")
             editTableView.reloadData()
         }
     }
     // 存轉帳textField picker資料
     var accountContent: [String] = [] {
         didSet {
-            print("=== this is all accountContent \(self.accountContent)")
             editTableView.reloadData()
         }
     }
@@ -74,14 +81,6 @@ class EditViewController: UIViewController {
     var imageIndexPath: IndexPath?
     var editData = DataModel()
     weak var homeVC: ViewController?
-    // 用來判斷是否有使用QR scanner去掃描內容
-    var isTappedQR = 0
-    // 存QRCode掃描內容
-    var messageFromQRVC: String = "" {
-        didSet {
-            editTableView.reloadData()
-        }
-    }
     // 存decode後的發票資料
     var invoice: Invoice? {
         didSet {
@@ -98,8 +97,6 @@ class EditViewController: UIViewController {
         }
     }
     var getId: String = ""
-    // 判斷使用者是否有進行切換segment
-    var isChange: Bool = false
 
     let group = DispatchGroup()
     let queueGroup = DispatchQueue.global()
@@ -113,8 +110,6 @@ class EditViewController: UIViewController {
         else {
             fatalError("can not find EditQRScanner VC")
         }
-        // 當內容是透過QR scanner拿取，isTappedQR == 1
-        isTappedQR = 1
         presentEditQRScanVC.delegate = self
         self.present(presentEditQRScanVC, animated: true)
     }
@@ -167,11 +162,11 @@ class EditViewController: UIViewController {
 
     // segmentControl 偵測改值狀態
     func didSelectsegmentedControl() {
-        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+        sourceSegmentControl.addTarget(self, action: #selector(handleSegmentControl), for: .valueChanged)
     }
 
     // func for segmentControl 更改時切換頁面
-    @objc func handelSegmentControl() {
+    @objc func handleSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
@@ -186,7 +181,8 @@ class EditViewController: UIViewController {
         default:
             sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
         }
-        isChange = true
+        guard let cell = editTableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? EditDataTableViewCell else { fatalError("can not specific cell") }
+        cell.resetContent()
         editData.categoryTextField = ""
         editData.categoryImageName = ""
         editTableView.reloadData()
@@ -201,7 +197,6 @@ class EditViewController: UIViewController {
     // 取消並dismiss VC
     @objc func dismissPage() {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
-        isChange = false
     }
 
     // 儲存已編輯完成的data
@@ -216,11 +211,8 @@ class EditViewController: UIViewController {
             noAmountAlert()
             return
         }
-        // 按下儲存編輯時isTappedQR要重置，才不會影響下一筆編輯的資料判斷
-        isTappedQR = 0
         // 編輯(updateDocument)firebase上的data
         self.editAllUser()
-        isChange = false
     }
 
     // 判斷指定資料原先是哪個大類別
@@ -455,13 +447,8 @@ class EditViewController: UIViewController {
         // POST API
         sendInvoiceAPI(invNum: String(invNum), invDate: "\(invYear)/\(invMonth)/\(invDay)", encrypt: String(encrypt), sellerID: sellerID, randomNumber: randomNumber)
 
-        print("invNum", invNum)
-        print("encrypt", encrypt)
-        print("invYear", invYear)
-        print("invMonth", invMonth)
-        print("invDay", invDay)
-        print("randomNumber", randomNumber)
-        print("sellerID", sellerID)
+        // 確認是否有取到正確資料
+        print("invNum \(invNum), message \(message), encrypt \(encrypt), invYear \(invYear), invMonth \(invMonth), invDay \(invDay), randomNumber \(randomNumber), sellerID \(sellerID)")
     }
 
     // POST API and parse data
@@ -574,9 +561,21 @@ extension EditViewController: UITableViewDataSource {
             return "備註"
         }
     }
+    
+//    enum Section: Int {
+//        case amount = 0
+//        case catrgory = 1
+//        case qrCode = 2
+//        case detail = 3
+//    }
 
+// MARK: - 轉帳segemant
     // swiftlint:disable cyclomatic_complexity
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        guard var section = Section(rawValue: indexPath.row) else {
+//            fatalError("can not upwrapped section")
+//        }
+        
         if segmentTag == 2 {
             if indexPath.section == 0 {
                 guard let editTimeCell = tableView.dequeueReusableCell(
@@ -584,54 +583,24 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                
-                editTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                // 由homeVC傳被點選的cell對應資料data過來，editVC用data接，裡面的date資料就是該筆資料的日期
-                editData.dateTime = data?.date ?? ""
-                editData.monthTime = data?.month ?? ""
-
-                editTimeCell.editDatePicker.date = BBCDateFormatter.shareFormatter.date(from: editData.dateTime) ?? Date()
-
+                editTimeCell.setDate(dateTime: editData.dateTime)
                 return editTimeCell
             } else if indexPath.section == 1 {
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
-                
-                editDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-    // MARK: - notice
+                editDataCell.delegate = self
+                // 配置pickerView & titleName
+                editDataCell.contentConfig(segment: segmentTag, indexPath: indexPath, titleName: transferCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
-                    // 把金額cell先清空image
-                    editDataCell.chooseImage.image = nil
-                    editDataCell.contentTextField.text = ""
-                    editData.amountTextField = self.data?.amount ?? ""
-                    editDataCell.contentTextField.text = editData.amountTextField
+                    editDataCell.setContentAndImage(contentPickerView: nil, imagePickerView: nil, content: editData.amountTextField, image: nil, segmentTag: segmentTag)
                 case 1:
-                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
-                    editDataCell.content = accountContent
-                    editData.categoryTextField = self.data?.category ?? ""
-                    editDataCell.contentTextField.text = editData.categoryTextField
-                    editDataCell.imageArr = accountImageArr
-                    if isChange == true {
-                        editDataCell.contentTextField.text = ""
-                        editDataCell.chooseImage.image = nil
-                    }
+                    editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: accountImageArr, content: editData.categoryTextField, image: editData.categoryImageName.toImage(), segmentTag: segmentTag)
                 default:
-                    editDataCell.content = accountContent
-                    editData.accountTextField = self.data?.account ?? ""
-                    editDataCell.contentTextField.text = editData.accountTextField
+                    editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: nil, content: editData.accountTextField, image: nil, segmentTag: segmentTag)
                 }
-
-                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
-                editDataCell.contentTextField.inputView = nil
-                editDataCell.indexPath = indexPath
-                editDataCell.segmentTag = segmentTag
-                editDataCell.delegate = self
-                editDataCell.fillInContent(name: transferCategory[indexPath.row])
-                editDataCell.contentTextField.textAlignment = .center
-                editDataCell.contentConfig(segment: segmentTag)
                 return editDataCell
             } else if indexPath.section == 2 {
                 guard let editQRCell = tableView.dequeueReusableCell(
@@ -639,7 +608,6 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editQRCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 return editQRCell
             } else {
                 guard let editDetailCell = tableView.dequeueReusableCell(
@@ -647,14 +615,11 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                // 把轉帳data塞給editData.detailTextView structure
-                editData.detailTextView = self.data?.detail ?? ""
-                // 把轉帳data塞給editDetailCell的detailTextView顯示
-                editDetailCell.detailTextView.text = self.data?.detail
                 editDetailCell.delegate = self
+                editDetailCell.config(detailText: editData.detailTextView)
                 return editDetailCell
             }
+// MARK: - 支出、收入segemant
         } else {
             if indexPath.section == 0 {
                 guard let editTimeCell = tableView.dequeueReusableCell(
@@ -662,72 +627,28 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                // 由homeVC傳被點選的cell對應資料data過來，editVC用data接，裡面的date資料就是該筆資料的日期
-                editData.dateTime = data?.date ?? ""
-                editData.monthTime = data?.month ?? ""
-
-                editTimeCell.editDatePicker.date = BBCDateFormatter.shareFormatter.date(from: editData.dateTime) ?? Date()
-
+                editTimeCell.setDate(dateTime: editData.dateTime)
                 return editTimeCell
             } else if indexPath.section == 1 {
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
-                editDataCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-    // MARK: - notice
+                editDataCell.delegate = self
+                editDataCell.contentConfig(segment: segmentTag, indexPath: indexPath, titleName: costCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
-                    // 把金額cell先清空image
-                    editDataCell.chooseImage.image = nil
-                    // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
-                    if messageFromQRVC != "" {
-                        editDataCell.contentTextField.text = editData.amountTextField
-                    } else {
-                        editData.amountTextField = self.data?.amount ?? ""
-                        editDataCell.contentTextField.text = self.data?.amount
-                    }
+                    editDataCell.setContentAndImage(contentPickerView: nil, imagePickerView: nil, content: editData.amountTextField, image: nil, segmentTag: segmentTag)
                 case 1:
-                    editDataCell.chooseImage.image = data?.categoryImage?.toImage()
                     switch segmentTag {
                     case 0:
-                        editDataCell.content = costContent
-                        // 在生成editDataCell時先把已經從firebase抓下來的單筆對應資料的值塞給struct(editData)
-                        editData.categoryTextField = self.data?.category ?? ""
-                        // 接著把已經從firebase抓下來的單筆對應資料的值塞給editVC中的textField.text顯示
-                        editDataCell.contentTextField.text = editData.categoryTextField
-                        editDataCell.imageArr = costImageArr
-                        // 當使用者切換segment時，清空category textField & image，讓使用者重新選取（保留金額、帳戶、備註）
-                        if isChange == true {
-                            editDataCell.contentTextField.text = ""
-                            editDataCell.chooseImage.image = nil
-                        }
+                        editDataCell.setContentAndImage(contentPickerView: costContent, imagePickerView: costImageArr, content: editData.categoryTextField, image: editData.categoryImageName.toImage(), segmentTag: segmentTag)
                     default:
-                        editDataCell.content = incomeContent
-                        editData.categoryTextField = self.data?.category ?? ""
-                        editDataCell.contentTextField.text = editData.categoryTextField
-                        editDataCell.imageArr = incomeImageArr
-                        // 當使用者切換segment時，清空category textField & image，讓使用者重新選取（保留金額、帳戶、備註）
-                        if isChange == true {
-                            editDataCell.contentTextField.text = ""
-                            editDataCell.chooseImage.image = nil
-                        }
+                        editDataCell.setContentAndImage(contentPickerView: incomeContent, imagePickerView: incomeImageArr, content: editData.categoryTextField, image: editData.categoryImageName.toImage(), segmentTag: segmentTag)
                     }
                 default:
-                    editDataCell.content = accountContent
-                    editData.accountTextField = self.data?.account ?? ""
-                    editDataCell.contentTextField.text = editData.accountTextField
+                    editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: nil, content: editData.accountTextField, image: nil, segmentTag: segmentTag)
                 }
-
-                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
-                editDataCell.contentTextField.inputView = nil
-                editDataCell.indexPath = indexPath
-                editDataCell.segmentTag = segmentTag
-                editDataCell.delegate = self
-                editDataCell.fillInContent(name: costCategory[indexPath.row])
-                editDataCell.contentTextField.textAlignment = .center
-                editDataCell.contentConfig(segment: segmentTag)
                 return editDataCell
             } else if indexPath.section == 2 {
                 guard let editQRCell = tableView.dequeueReusableCell(
@@ -735,7 +656,6 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editQRCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
                 return editQRCell
             } else {
                 guard let editDetailCell = tableView.dequeueReusableCell(
@@ -743,17 +663,8 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-                
-                print("=== this is isTappedQR", isTappedQR)
-                // 判斷：當內容是透過QR scanner拿取(isTappedQR == 1)的話，則顯示對應掃描資訊; 若是一般手動編輯(isTappedQR == 0)則顯示原textView資訊
-                if isTappedQR == 1 {
-                    editDetailCell.detailTextView.text = editData.detailTextView
-                } else {
-                    editDetailCell.detailTextView.text = self.data?.detail
-                    editData.detailTextView = self.data?.detail ?? ""
-                }
                 editDetailCell.delegate = self
+                editDetailCell.config(detailText: editData.detailTextView)
                 return editDetailCell
             }
         }
@@ -764,12 +675,9 @@ extension EditViewController: UITableViewDataSource {
 extension EditViewController: EditDataTableViewCellDelegate {
     // 用delegate把alertVC要用到的present在這邊做，因為cell無法直接用present這個動作
     func addNewContent(_ cell: EditDataTableViewCell, indexPathItem: Int) {
-        print("=== in 1")
         if indexPathItem == 0 {
-            print("=== in 2")
             present(cell.presentCalculateVC ?? UIViewController(), animated: true)
         } else {
-            print("=== in 3")
             present(cell.controller, animated: true)
         }
     }
@@ -792,7 +700,6 @@ extension EditViewController: EditDataTableViewCellDelegate {
     func getTitle(indexPath: IndexPath, title: String) {
         self.tapIndexpath = indexPath
         editData.titleLabel = title
-        print("======= \(editData.titleLabel)")
     }
 
     // 新增的選項用delegate傳回來並改變array data
@@ -840,7 +747,7 @@ extension EditViewController: EditDetailTableViewCellDelegate {
 // QRCode text from QRCodeVC
 extension EditViewController: EditQRCodeViewControllerDelegate {
     func getMessage(message: String) {
-        messageFromQRVC = message
+        // 解析發票亂碼
         self.decodeInvoice(message: message)
     }
 }

@@ -156,11 +156,11 @@ class PieChartViewController: UIViewController {
     // segmentControl
     func didSelectSegmentControl() {
         // segmentControl 偵測改值狀態
-        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+        sourceSegmentControl.addTarget(self, action: #selector(handleSegmentControl), for: .valueChanged)
     }
 
     // segmentControl - @objc
-    @objc func handelSegmentControl() {
+    @objc func handleSegmentControl() {
         BBCoLoading.loading(view: self.view)
         // 設置segmented control被選取時文字、button顏色
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]

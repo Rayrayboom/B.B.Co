@@ -126,11 +126,11 @@ class CoAccountingViewController: UIViewController {
 
     // segmentControl
     func didSelectSegmentControl() {
-        coSegmentedControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+        coSegmentedControl.addTarget(self, action: #selector(handleSegmentControl), for: .valueChanged)
     }
 
     // segmentControl - @objc
-    @objc func handelSegmentControl() {
+    @objc func handleSegmentControl() {
         BBCoLoading.loading(view: self.view)
         // 設置segmented control被選取時文字、button顏色
         var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]

@@ -202,11 +202,11 @@ class AddNewDataViewController: UIViewController {
 
     // segmentControl 偵測改值狀態
     func didSelectsegmentedControl() {
-        sourceSegmentControl.addTarget(self, action: #selector(handelSegmentControl), for: .valueChanged)
+        sourceSegmentControl.addTarget(self, action: #selector(handleSegmentControl), for: .valueChanged)
     }
 
     // func for segmentControl 更改時切換頁面
-    @objc func handelSegmentControl() {
+    @objc func handleSegmentControl() {
         // 設置segmented control被選取時文字、button顏色
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
@@ -542,6 +542,7 @@ extension AddNewDataViewController: UITableViewDataSource {
         }
     }
 
+// MARK: - 轉帳segemant
     // swiftlint:disable cyclomatic_complexity
     // MARK: - TableView DataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -575,27 +576,16 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                addDataCell.delegate = self
+                addDataCell.contentConfig(segment: segmentTag, titleName: transferCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
                     data.amountTextField = addDataCell.amountFromCalculator
                     addDataCell.indexPath = indexPath
-                case 1:
-                    switch segmentTag {
-                    case 0:
-                        addDataCell.setContentAndImage(content: costContent, image: costImageArr, indexPath: indexPath, segmentTag: segmentTag)
-                    case 1:
-                        addDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
-                    default:
-                        addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
-                    }
                 default:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
-                addDataCell.delegate = self
-                // 依照category array裡的資料筆數決定section:1有幾個cell
-                addDataCell.fillInContent(name: transferCategory[indexPath.row])
-                addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
@@ -615,6 +605,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 detailCell.delegate = self
                 return detailCell
             }
+// MARK: - 支出、收入segemant
         } else {
             if indexPath.section == 0 {
                 guard let dateCell = tableView.dequeueReusableCell(
@@ -654,6 +645,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
+                addDataCell.delegate = self
+                addDataCell.contentConfig(segment: segmentTag, titleName: costCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
@@ -670,17 +663,12 @@ extension AddNewDataViewController: UITableViewDataSource {
                     switch segmentTag {
                     case 0:
                         addDataCell.setContentAndImage(content: costContent, image: costImageArr, indexPath: indexPath, segmentTag: segmentTag)
-                    case 1:
-                        addDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     default:
-                        addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
+                        addDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     }
                 default:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
-                addDataCell.delegate = self
-                addDataCell.fillInContent(name: costCategory[indexPath.row])
-                addDataCell.contentConfig(segment: segmentTag)
                 return addDataCell
             } else if indexPath.section == 2 {
                 guard let qrCell = tableView.dequeueReusableCell(
@@ -697,9 +685,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                // 發票detail資料要塞進data.detailTextField才會真的吃到資料
-                detailCell.detailTextView.text = data.detailTextView
                 detailCell.delegate = self
+                detailCell.config(detailText: data.detailTextView)
                 return detailCell
             }
         }

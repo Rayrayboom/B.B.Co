@@ -16,8 +16,10 @@ class EditDetailTableViewCell: UITableViewCell {
 
     @IBOutlet weak var detailTextView: UITextView!
     override func awakeFromNib() {
-        detailTextView.delegate = self
         super.awakeFromNib()
+        detailTextView.delegate = self
+        // cell color
+        self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         detailTextView.keyboardAppearance = .dark
         // 設定textField外觀
         detailTextView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
@@ -29,7 +31,11 @@ class EditDetailTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
+    }
+
+    // 配置textView
+    func config(detailText: String) {
+        detailTextView.text = detailText
     }
 }
 
