@@ -86,24 +86,25 @@ class EditDataTableViewCell: UITableViewCell {
     func resetContent() {
         chooseImage.image = nil
         contentTextField.text = ""
+        // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
         contentTextField.inputView = nil
     }
 
-    // 設定content & image & indexPath & segmentTag
-    func setContentAndImage(content: [String], image: [UIImage?], indexPath: IndexPath, segmentTag: Int) {
-        self.content = content
-        self.imageArr = image
-        self.indexPath = indexPath
+    // 設定content & image & segmentTag
+    func setContentAndImage(contentPickerView: [String]?, imagePickerView: [UIImage?]?, content: String, image: UIImage?, segmentTag: Int) {
+        self.content = contentPickerView ?? [""]
+        self.imageArr = imagePickerView ?? [UIImage()]
+        // 把已經從firebase抓下來的單筆對應資料的值塞給editVC中的textField.text和chooseImage顯示
+        self.contentTextField.text = content
+        self.chooseImage.image = image
         self.segmentTag = segmentTag
     }
 
-    // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
-    func fillInContent(name: String) {
-        titleLabel.text = name
-    }
-
     // MARK: - picker
-    func contentConfig(segment: Int) {
+    func contentConfig(segment: Int, indexPath: IndexPath, titleName: String) {
+        self.indexPath = indexPath
+        // titleName: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
+        titleLabel.text = titleName
         controller = UIAlertController(title: "新增選項", message: "", preferredStyle: .alert)
         controller.addTextField { textField in
             textField.placeholder = "內容"
@@ -119,9 +120,9 @@ class EditDataTableViewCell: UITableViewCell {
 
             // MARK: - 以下待測試 .arrayUnion 方法
             // 按下ok之後判斷現在在哪一頁，然後判斷是哪一個indexPath，把對應的選項上傳到對應的title document裡
-            switch self.segmentTag {
+            switch segment {
             case 0:
-                switch self.indexPath?.item {
+                switch indexPath.item {
                 case 1:
                     self.createCategory(id: self.getId, subCollection: "expenditure_category")
                 case 2:
@@ -130,7 +131,7 @@ class EditDataTableViewCell: UITableViewCell {
                     return
                 }
             case 1:
-                switch self.indexPath?.item {
+                switch indexPath.item {
                 case 1:
                     self.createCategory(id: self.getId, subCollection: "revenue_category")
                 case 2:

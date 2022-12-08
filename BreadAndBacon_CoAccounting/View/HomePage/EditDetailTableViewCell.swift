@@ -31,7 +31,11 @@ class EditDetailTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
+    }
+
+    // 配置textView
+    func config(detailText: String) {
+        detailTextView.text = detailText
     }
 }
 

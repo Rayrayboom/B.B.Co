@@ -561,10 +561,21 @@ extension EditViewController: UITableViewDataSource {
             return "備註"
         }
     }
+    
+//    enum Section: Int {
+//        case amount = 0
+//        case catrgory = 1
+//        case qrCode = 2
+//        case detail = 3
+//    }
 
 // MARK: - 轉帳segemant
     // swiftlint:disable cyclomatic_complexity
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        guard var section = Section(rawValue: indexPath.row) else {
+//            fatalError("can not upwrapped section")
+//        }
+        
         if segmentTag == 2 {
             if indexPath.section == 0 {
                 guard let editTimeCell = tableView.dequeueReusableCell(
@@ -578,28 +589,18 @@ extension EditViewController: UITableViewDataSource {
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
-                
+                editDataCell.delegate = self
+                // 配置pickerView & titleName
+                editDataCell.contentConfig(segment: segmentTag, indexPath: indexPath, titleName: transferCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
-                    editDataCell.contentTextField.text = ""
-                    editDataCell.contentTextField.text = editData.amountTextField
+                    editDataCell.setContentAndImage(contentPickerView: nil, imagePickerView: nil, content: editData.amountTextField, image: nil, segmentTag: segmentTag)
                 case 1:
-                    editDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
-                    editDataCell.chooseImage.image = editData.categoryImageName.toImage()
-                    editDataCell.contentTextField.text = editData.categoryTextField
+                    editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: accountImageArr, content: editData.categoryTextField, image: editData.categoryImageName.toImage(), segmentTag: segmentTag)
                 default:
-                    editDataCell.content = accountContent
-                    editDataCell.contentTextField.text = editData.accountTextField
+                    editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: nil, content: editData.accountTextField, image: nil, segmentTag: segmentTag)
                 }
-
-                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
-                editDataCell.contentTextField.inputView = nil
-                editDataCell.indexPath = indexPath
-                editDataCell.segmentTag = segmentTag
-                editDataCell.delegate = self
-                editDataCell.fillInContent(name: transferCategory[indexPath.row])
-                editDataCell.contentConfig(segment: segmentTag)
                 return editDataCell
             } else if indexPath.section == 2 {
                 guard let editQRCell = tableView.dequeueReusableCell(
@@ -614,8 +615,7 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                // 把轉帳data塞給editDetailCell的detailTextView顯示
-                editDetailCell.detailTextView.text = editData.detailTextView
+                editDetailCell.config(detailText: editData.detailTextView)
                 editDetailCell.delegate = self
                 return editDetailCell
             }
@@ -633,33 +633,22 @@ extension EditViewController: UITableViewDataSource {
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
+                editDataCell.delegate = self
+                editDataCell.contentConfig(segment: segmentTag, indexPath: indexPath, titleName: costCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
                 switch indexPath.row {
                 case 0:
-                    editDataCell.contentTextField.text = editData.amountTextField
+                    editDataCell.setContentAndImage(contentPickerView: nil, imagePickerView: nil, content: editData.amountTextField, image: nil, segmentTag: segmentTag)
                 case 1:
-                    editDataCell.chooseImage.image = editData.categoryImageName.toImage()
                     switch segmentTag {
                     case 0:
-                        editDataCell.setContentAndImage(content: costContent, image: costImageArr, indexPath: indexPath, segmentTag: segmentTag)
-                        // 把已經從firebase抓下來的單筆對應資料的值塞給editVC中的textField.text顯示
-                        editDataCell.contentTextField.text = editData.categoryTextField
+                        editDataCell.setContentAndImage(contentPickerView: costContent, imagePickerView: costImageArr, content: editData.categoryTextField, image: editData.categoryImageName.toImage(), segmentTag: segmentTag)
                     default:
-                        editDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
-                        editDataCell.contentTextField.text = editData.categoryTextField
+                        editDataCell.setContentAndImage(contentPickerView: incomeContent, imagePickerView: incomeImageArr, content: editData.categoryTextField, image: editData.categoryImageName.toImage(), segmentTag: segmentTag)
                     }
                 default:
-                    editDataCell.content = accountContent
-                    editDataCell.contentTextField.text = editData.accountTextField
+                    editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: nil, content: editData.accountTextField, image: nil, segmentTag: segmentTag)
                 }
-
-                // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
-                editDataCell.contentTextField.inputView = nil
-                editDataCell.indexPath = indexPath
-                editDataCell.segmentTag = segmentTag
-                editDataCell.delegate = self
-                editDataCell.fillInContent(name: costCategory[indexPath.row])
-                editDataCell.contentConfig(segment: segmentTag)
                 return editDataCell
             } else if indexPath.section == 2 {
                 guard let editQRCell = tableView.dequeueReusableCell(
@@ -674,7 +663,7 @@ extension EditViewController: UITableViewDataSource {
                 else {
                     fatalError("can not create cell")
                 }
-                editDetailCell.detailTextView.text = editData.detailTextView
+                editDetailCell.config(detailText: editData.detailTextView)
                 editDetailCell.delegate = self
                 return editDetailCell
             }
