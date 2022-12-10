@@ -212,30 +212,30 @@ class PieChartViewController: UIViewController {
         pieChartViewConfig()
     }
 
-    // 圓餅圖內容
-    func pieChartViewDataInput() {
-// MARK: - total放全域變數整個pie顯示金額會錯誤（待找原因）
-        // 用來裝整理完重複品項的資料dictionary
+    // 計算帳目細項種類、金額，傳入data return [String : Int]
+    func pieChartData(data: [Account]) -> [String : Int] {
         var total: [String : Int] = [:]
         for num in data {
-            guard let category = num.category else { return }
+            guard let category = num.category else { fatalError() }
             if total[category] == nil {
                 total[num.category ?? ""] = Int(num.amount)
             } else {
-                guard var amount = total[category] else { return }
+                guard var amount = total[category] else { fatalError() }
                 amount += Int(num.amount) ?? 0
                 total[category] = amount
             }
         }
+        return total
+    }
 
+    // 圓餅圖內容
+    func pieChartViewDataInput() {
+        // 計算後的pie chart data
+        let total = pieChartData(data: data)
+        // 把要給pie chart的值append進array
         for num in total.keys {
             pieChartDataEntries.append(PieChartDataEntry.init(value: Double(total[num] ?? 0), label: num, icon: nil))
         }
-
-//        print("ddddd", data)
-//        print("ppppp", total)
-//        print("iiiii", pieChartDataEntries)
-//        print("dsdsds", totalData)
     }
 
     // 圓餅圖規格

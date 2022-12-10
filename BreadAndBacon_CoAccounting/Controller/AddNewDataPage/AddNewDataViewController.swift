@@ -405,7 +405,7 @@ class AddNewDataViewController: UIViewController {
         self.present(self.controller, animated: true, completion: nil)
     }
 
-    // 解析invoice data
+    // 分析invoice亂碼string
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
         let message = message
@@ -446,26 +446,14 @@ class AddNewDataViewController: UIViewController {
                 return
             }
 
-            if let dataInv = data {
-                if let detail = self.parseData(jsonData: dataInv) {
-                    // 讓掃描完的amount & detail data自動傳進textField，不需觸發到textFieldDidEndEditing
-                    self.data.detailTextView = ""
-                    var amount = 0
-                    for item in 0..<detail.details.count {
-                        amount += (Int(detail.details[item].amount ?? "") ?? 0)
-                        self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
-                    }
-                    self.data.amountTextField = String(amount)
-                    // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
-                    DispatchQueue.main.async {
-                        self.addNewDataTableView.reloadData()
-                    }
-                }
+            if let dataInv = data, let detail = self.parseData(jsonData: dataInv) {
+                    self.calculateAmountAndCategory(detail: detail)
             }
         })
         task.resume()
     }
 
+    // after POST API, 解析invoice data
     func parseData(jsonData: Data) -> Invoice? {
         do {
             let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
@@ -475,6 +463,22 @@ class AddNewDataViewController: UIViewController {
         } catch {
             print("result error")
             return nil
+        }
+    }
+    
+    // 計算invoice data總金額 & 細項總和
+    func calculateAmountAndCategory(detail: Invoice) {
+        // 讓掃描完的amount & detail data自動傳進textField，不需觸發到textFieldDidEndEditing
+        self.data.detailTextView = ""
+        var amount = 0
+        for item in 0..<detail.details.count {
+            amount += (Int(detail.details[item].amount ?? "") ?? 0)
+            self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
+        }
+        self.data.amountTextField = String(amount)
+        // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
+        DispatchQueue.main.async {
+            self.addNewDataTableView.reloadData()
         }
     }
 }
