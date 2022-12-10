@@ -179,12 +179,6 @@ class PieChartViewController: UIViewController {
     }
 
 // MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
-//     從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(id: String, subCollection: String, indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(data[indexPathRow].id)
-        documentRef.delete()
-    }
 
 // MARK: - Pie Chart
     // 建立圓餅圖view（生成物件、位置、內容）
@@ -347,10 +341,10 @@ extension PieChartViewController: UITableViewDelegate {
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 switch self.segmentTag {
                 case 1:
-                    self.deleteSpecificData(id: self.getId, subCollection: "revenue", indexPathRow: indexPath.row)
+                    BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
                     self.fetchUser(id: self.getId, subCollection: "revenue")
                 default:
-                    self.deleteSpecificData(id: self.getId,  subCollection: "expenditure", indexPathRow: indexPath.row)
+                    BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
                     self.fetchUser(id: self.getId, subCollection: "expenditure")
                 }
             }
@@ -391,9 +385,9 @@ extension PieChartViewController: UITableViewDataSource {
             // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             switch segmentTag {
             case 1:
-                deleteSpecificData(id: getId, subCollection: "revenue", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
             default:
-                deleteSpecificData(id: getId,  subCollection: "expenditure", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
             }
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
