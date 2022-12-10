@@ -24,6 +24,7 @@ struct DataModel {
     var titleLabel: String = ""
     var detailTextView: String = ""
     var categoryImageName: String = ""
+    var segmentTag: Int = 0
 }
 
 class EditViewController: UIViewController {
@@ -37,6 +38,8 @@ class EditViewController: UIViewController {
             editData.categoryTextField = data?.category ?? ""
             editData.accountTextField = data?.account ?? ""
             editData.detailTextView = data?.detail ?? ""
+            editData.categoryImageName = data?.categoryImage ?? ""
+            editData.segmentTag = data?.segmentTag ?? 0
         }
     }
     var category: [Category] = []
@@ -134,8 +137,6 @@ class EditViewController: UIViewController {
         fetchUser(id: getId, subCollection: "expenditure")
         fetchUser(id: getId, subCollection: "revenue")
         fetchUser(id: getId, subCollection: "account")
-        // 在homeVC點選指定data時，一進來edit頁面要先把對應的image值塞到categoryImage，才能讓使用者即使不做任何編輯做存檔後也可以拿到該筆image
-        editData.categoryImageName = data?.categoryImage ?? ""
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -144,6 +145,7 @@ class EditViewController: UIViewController {
         view.endEditing(true)
     }
 
+    // UI
     func setupUI() {
         // segmented control邊框
         sourceSegmentControl.layer.borderWidth = 1.5
@@ -204,7 +206,6 @@ class EditViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "Pencil_original"), style: .plain, target: self, action: #selector(saveEdit))
     }
 
-// MARK: -如下edit func先全部執行，目前可以照預期的呈現，後續再來想判斷式
     // 儲存並dismiss VC
     @objc func saveEdit() {
         if editData.amountTextField == "" {
@@ -217,7 +218,7 @@ class EditViewController: UIViewController {
 
     // 判斷指定資料原先是哪個大類別
     func dataSegmentCategory() -> String {
-        switch data?.segmentTag {
+        switch editData.segmentTag {
         case 0:
             return "expenditure"
         case 1:
@@ -277,138 +278,17 @@ class EditViewController: UIViewController {
             }
     }
 
-    func createUserData(id: String, subCollection: String) {
-        guard let cell = editTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? EditTimeTableViewCell
-        else {
-            fatalError("can not find AddDateTableViewCell")
-        }
-        let dataBase = Firestore.firestore()
-        let fetchDocumentID = dataBase.collection("user")
-            .document(id)
-            .collection(subCollection)
-            .document()
-        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = fetchDocumentID.documentID
-        // 需存id，後續delete要抓取ID刪除對應資料
-        switch subCollection {
-        case "expenditure":
-            let account = Account(
-                id: identifier,
-                amount: editData.amountTextField,
-                category: editData.categoryTextField,
-                account: editData.accountTextField,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),//editData.dateTime,
-                month: editData.monthTime,
-                destinationAccountId: nil,
-                sourceAccountId: nil,
-                accountId: "accountId",
-                expenditureId: "expenditureId",
-                revenueId: nil,
-                detail: editData.detailTextView,
-                categoryImage: editData.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        case "revenue":
-            let account = Account(
-                id: identifier,
-                amount: editData.amountTextField,
-                category: editData.categoryTextField,
-                account: editData.accountTextField,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),//editData.dateTime,
-                month: editData.monthTime,
-                destinationAccountId: nil,
-                sourceAccountId: nil,
-                accountId: "accountId",
-                expenditureId: nil,
-                revenueId: "revenueId",
-                detail: editData.detailTextView,
-                categoryImage: editData.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        default:
-            let account = Account(
-                id: identifier,
-                amount: editData.amountTextField,
-                category: editData.categoryTextField,
-                account: editData.accountTextField,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),//editData.dateTime,
-                month: editData.monthTime,
-                destinationAccountId: "destinationAccountId",
-                sourceAccountId: "sourceAccountId",
-                accountId: nil,
-                expenditureId: nil,
-                revenueId: nil,
-                detail: editData.detailTextView,
-                categoryImage: editData.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        }
-    }
-
-    // 點選對應細項編輯資料
-    func editUser(id: String, subCollection: String, documentID: String) {
-        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
-        guard let cell = editTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? EditTimeTableViewCell
-        else {
-            fatalError("can not find AddDateTableViewCell")
-        }
-        let dataBase = Firestore.firestore()
-        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
-        // 進入group
-        self.group.enter()
-        dataBase.collection("user/\(id)/\(subCollection)").document("\(documentID)").updateData([
-            // 按下編輯按鈕時塞值
-            "date": BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
-            "amount": editData.amountTextField,
-            "category": editData.categoryTextField,
-            "account": editData.accountTextField,
-            "detail": editData.detailTextView,
-            "category_image": editData.categoryImageName
-        ]) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document update successfully")
-            }
-            // 每一支API打完之後leave group
-            self.group.leave()
-        }
-    }
-
     // 針對更改的單筆資料，若原先為revenue修改為expenditure，則將subCollection revenue的document刪除，並新增一筆document到subCollection expenditure
     func editAllUser() {
-        if data?.segmentTag != segmentTag {
-            deleteSpecificData(id: getId, subCollection: dataSegmentCategory())
-            createUserData(id: getId, subCollection: segmentCategory())
+        if editData.segmentTag != segmentTag {
+            BBCoFireBaseManager.shared.deleteSpecificData(id: getId, subCollection: dataSegmentCategory(), dataId: data?.id ?? "")
+            BBCoFireBaseManager.shared.editUserData(tableView: editTableView, id: getId, subCollection: segmentCategory(), amount: editData.amountTextField, category: editData.categoryTextField, account: editData.accountTextField, month: editData.monthTime, detail: editData.detailTextView, categoryImage: editData.categoryImageName, segment: segmentTag)
         }
-        editUser(id: getId, subCollection: dataSegmentCategory(), documentID: data?.id ?? "")
-
+        BBCoFireBaseManager.shared.editUserDetail(tableView: editTableView, id: getId, subCollection: dataSegmentCategory(), documentID: data?.id ?? "", amount: editData.amountTextField, category: editData.categoryTextField, account: editData.accountTextField, detail: editData.detailTextView, category_image: editData.categoryImageName)
         // notify放這邊是因為要等所有edit API執行完後再執行dismiss VC
         group.notify(queue: .main) {
             self.presentingViewController?.dismiss(animated: true, completion: nil)
         }
-    }
-
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(id: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(data?.id ?? "")
-        documentRef.delete()
     }
 
     // 掃描QRCode error handle
@@ -471,21 +351,8 @@ class EditViewController: UIViewController {
                 return
             }
 
-            if let dataInv = data {
-                if let detail = self.parseData(jsonData: dataInv) {
-                    // 讓掃描完的amount & detail data自動吃到textField裡，不需觸發到textFieldDidEndEditing
-                    self.editData.detailTextView = ""
-                    var amount = 0
-                    for item in 0..<detail.details.count {
-                        amount += (Int(detail.details[item].amount ?? "") ?? 0)
-                        self.editData.detailTextView +=  "\(detail.details[item].detailDescription)\n"
-                    }
-                    self.editData.amountTextField = String(amount)
-                    // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
-                    DispatchQueue.main.async {
-                        self.editTableView.reloadData()
-                    }
-                }
+            if let dataInv = data, let detail = self.parseData(jsonData: dataInv) {
+                self.calculateAmountAndCategory(detail: detail)
             }
         })
         task.resume()
@@ -500,6 +367,22 @@ class EditViewController: UIViewController {
         }catch {
             print("result error")
             return nil
+        }
+    }
+
+    // 計算invoice data總金額 & 細項總和
+    func calculateAmountAndCategory(detail: Invoice) {
+        // 讓掃描完的amount & detail data自動傳進textField，不需觸發到textFieldDidEndEditing
+        self.editData.detailTextView = ""
+        var amount = 0
+        for item in 0..<detail.details.count {
+            amount += (Int(detail.details[item].amount) ?? 0)
+            self.editData.detailTextView +=  "\(detail.details[item].detailDescription)\n"
+        }
+        self.editData.amountTextField = String(amount)
+        // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
+        DispatchQueue.main.async {
+            self.editTableView.reloadData()
         }
     }
 }
@@ -687,13 +570,10 @@ extension EditViewController: EditDataTableViewCellDelegate {
         switch tapIndexpath?.row {
         case 0:
             editData.amountTextField = textField
-            print("======= \(editData.amountTextField)")
         case 1:
             editData.categoryTextField = textField
-            print("======= \(editData.categoryTextField)")
         default:
             editData.accountTextField = textField
-            print("======= \(editData.accountTextField)")
         }
     }
 

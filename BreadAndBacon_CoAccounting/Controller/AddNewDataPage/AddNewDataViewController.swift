@@ -161,6 +161,27 @@ class AddNewDataViewController: UIViewController {
         cancelNewData()
         // 點選+時，執行新增資料到firebase
         saveNewData()
+        
+//        enum SubCollection: String{
+//            case expenditure = "expenditure"
+//            case revenue = "revenue"
+//            case account = "account"
+//        }
+//        for subCollection in [SubCollection.expenditure, SubCollection.revenue, SubCollection.account] {
+//            var contentArray = BBCoFireBaseManager.shared.fetchUserCategory(id: getId, subCollection: subCollection.rawValue)
+//            switch subCollection {
+//            case .expenditure:
+//                costContent = contentArray
+//                print("=== costContent", costContent)
+//            case .revenue:
+//                incomeContent = contentArray
+//                print("=== incomeContent", incomeContent)
+//            case .account:
+//                accountContent = contentArray
+//                print("=== accountContent", accountContent)
+//            }
+//        }
+                
         // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
         fetchUserCategory(id: getId, subCollection: "expenditure")
         fetchUserCategory(id: getId, subCollection: "revenue")
@@ -255,11 +276,11 @@ class AddNewDataViewController: UIViewController {
         }
         switch segmentTag {
         case 0:
-            createUserData(id: getId, subCollection: "expenditure")
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "expenditure", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         case 1:
-            createUserData(id: getId, subCollection: "revenue")
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "revenue", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         default:
-            createUserData(id: getId, subCollection: "account")
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "account", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         }
 
         // success alert animation
@@ -281,85 +302,6 @@ class AddNewDataViewController: UIViewController {
         self.present(controller, animated: true, completion: nil)
     }
 
-    // MARK: - 上傳資料到Firebase
-    func createUserData(id: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
-        let fetchDocumentID = dataBase.collection("user")
-            .document(id)
-            .collection(subCollection)
-            .document()
-        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = fetchDocumentID.documentID
-        // 需存id，後續delete要抓取ID刪除對應資料
-        switch subCollection {
-        case "expenditure":
-            let account = Account(
-                id: identifier,
-                amount: data.amountTextField,
-                category: data.categoryTextField,
-                account: data.accountTextField,
-                date: data.dateTime,
-                month: data.monthTime,
-                destinationAccountId: nil,
-                sourceAccountId: nil,
-                accountId: "accountId",
-                expenditureId: "expenditureId",
-                revenueId: nil,
-                detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        case "revenue":
-            let account = Account(
-                id: identifier,
-                amount: data.amountTextField,
-                category: data.categoryTextField,
-                account: data.accountTextField,
-                date: data.dateTime,
-                month: data.monthTime,
-                destinationAccountId: nil,
-                sourceAccountId: nil,
-                accountId: "accountId",
-                expenditureId: nil,
-                revenueId: "revenueId",
-                detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        default:
-            let account = Account(
-                id: identifier,
-                amount: data.amountTextField,
-                category: data.categoryTextField,
-                account: data.accountTextField,
-                date: data.dateTime,
-                month: data.monthTime,
-                destinationAccountId: "destinationAccountId",
-                sourceAccountId: "sourceAccountId",
-                accountId: nil,
-                expenditureId: nil,
-                revenueId: nil,
-                detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        }
-    }
     // 從Firebase上fetch全部種類/帳戶資料
     func fetchUserCategory(id: String, subCollection: String) {
         let dataBase = Firestore.firestore()
@@ -447,7 +389,7 @@ class AddNewDataViewController: UIViewController {
             }
 
             if let dataInv = data, let detail = self.parseData(jsonData: dataInv) {
-                    self.calculateAmountAndCategory(detail: detail)
+                self.calculateAmountAndCategory(detail: detail)
             }
         })
         task.resume()
@@ -457,7 +399,6 @@ class AddNewDataViewController: UIViewController {
     func parseData(jsonData: Data) -> Invoice? {
         do {
             let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
-            // 測試看是否有抓到資料
             print("=== this is result \(result)")
             return result
         } catch {
@@ -472,7 +413,7 @@ class AddNewDataViewController: UIViewController {
         self.data.detailTextView = ""
         var amount = 0
         for item in 0..<detail.details.count {
-            amount += (Int(detail.details[item].amount ?? "") ?? 0)
+            amount += (Int(detail.details[item].amount) ?? 0)
             self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
         }
         self.data.amountTextField = String(amount)
