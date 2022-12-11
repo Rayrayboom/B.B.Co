@@ -207,9 +207,9 @@ class PieChartViewController: UIViewController {
     }
 
     // 計算帳目細項種類、金額，傳入data return [String : Int]
-    func pieChartData(data: [Account]) -> [String : Int] {
+    func pieChartData(pieData: [Account]) -> [String : Int] {
         var total: [String : Int] = [:]
-        for num in data {
+        for num in pieData {
             guard let category = num.category else { fatalError() }
             if total[category] == nil {
                 total[num.category ?? ""] = Int(num.amount)
@@ -225,7 +225,7 @@ class PieChartViewController: UIViewController {
     // 圓餅圖內容
     func pieChartViewDataInput() {
         // 計算後的pie chart data
-        let total = pieChartData(data: data)
+        let total = pieChartData(pieData: data)
         // 把要給pie chart的值append進array
         for num in total.keys {
             pieChartDataEntries.append(PieChartDataEntry.init(value: Double(total[num] ?? 0), label: num, icon: nil))

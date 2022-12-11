@@ -388,7 +388,14 @@ class BBCoFireBaseManager {
         print("=== book after fireBase \(bookData)")
         return bookData
     }
-    
+
+    // MARK: - CoAccountingVC
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(accountData: [Account], document: String, subCollection: String, indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("co-account").document(document).collection(subCollection).document(accountData[indexPathRow].id)
+        documentRef.delete()
+    }
 
 
 }

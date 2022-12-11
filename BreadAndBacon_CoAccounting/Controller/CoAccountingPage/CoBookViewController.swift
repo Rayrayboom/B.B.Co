@@ -214,7 +214,7 @@ class CoBookViewController: UIViewController {
                 guard let snapshot = snapshot else {
                     return
                 }
-                var book = snapshot.documents.compactMap { snapshot in
+                let book = snapshot.documents.compactMap { snapshot in
                     try? snapshot.data(as: Book.self)
                 }
 

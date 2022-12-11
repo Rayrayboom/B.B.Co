@@ -170,13 +170,6 @@ class CoAccountingViewController: UIViewController {
         }
     }
 
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(document: String, subCollection: String, indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("co-account").document(document).collection(subCollection).document(data[indexPathRow].id)
-        documentRef.delete()
-    }
-
 // MARK: - Pie chart
     // 建立圓餅圖view（生成物件、位置、內容）
     func setupPieChartView() {
@@ -204,47 +197,60 @@ class CoAccountingViewController: UIViewController {
         pieChartViewConfig()
     }
 
-    // 圓餅圖內容
+    // 計算category細項種類、金額，傳入data return [String : Double]
+    func pieChartCategoryData(pieCategoryData: [Account]) -> [String : Double] {
+        // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
+        var total: [String : Double] = [:]
+        for num in pieCategoryData {
+            // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
+            guard let category = num.category else { fatalError() }
+            // 若total裡沒有對應的人，則新增一對key:value進去
+            if total[category] == nil {
+                total[num.category ?? ""] = Double(num.amount)
+            } else {
+                // 若total裡已有同樣的人，就把value加上去
+                guard var amount = total[category] else { fatalError() }
+                amount += Double(num.amount) ?? 0
+                // 加完後要回傳給total
+                total[category] = amount
+            }
+        }
+        return total
+    }
+
+    // 計算user細項種類、金額，傳入data return [String : Double]
+    func pieChartUserData(pieUserData: [Account]) -> [String : Double] {
+        // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
+        var total: [String : Double] = [:]
+        for num in pieUserData {
+            // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
+            guard let user = num.user else { fatalError() }
+            // 若total裡沒有對應的人，則新增一對key:value進去
+            if total[user] == nil {
+                total[num.user ?? ""] = Double(num.amount)
+            } else {
+                // 若total裡已有同樣的人，就把value加上去
+                guard var amount = total[user] else { fatalError() }
+                amount += Double(num.amount) ?? 0
+                // 加完後要回傳給total
+                total[user] = amount
+            }
+        }
+        return total
+    }
+
+    // 圓餅圖user/category內容
     func pieChartViewDataInput() {
         switch segmentTag {
         case 1:
-            // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
-            var total: [String : Double] = [:]
-            for num in data {
-                // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
-                guard let category = num.category else { return }
-                // 若total裡沒有對應的人，則新增一對key:value進去
-                if total[category] == nil {
-                    total[num.category ?? ""] = Double(num.amount)
-                } else {
-                    // 若total裡已有同樣的人，就把value加上去
-                    guard var amount = total[category] else { return }
-                    amount += Double(num.amount) ?? 0
-                    // 加完後要回傳給total
-                    total[category] = amount
-                }
-            }
+            // 計算後的pie chart data
+            let total = pieChartCategoryData(pieCategoryData: data)
             // 把total裡的資料塞到pie chart裡
             for num in total.keys {
                 pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
             }
         default:
-            // 建立一個dictionary來針對單本記帳本所有的data偵測重複的付款人並計算單人支出總和
-            var total: [String : Double] = [:]
-            for num in data {
-                // 因為dictionary的資料 & data model的user是optional的，所以需要unwrapped
-                guard let user = num.user else { return }
-                // 若total裡沒有對應的人，則新增一對key:value進去
-                if total[user] == nil {
-                    total[num.user ?? ""] = Double(num.amount)
-                } else {
-                    // 若total裡已有同樣的人，就把value加上去
-                    guard var amount = total[user] else { return }
-                    amount += Double(num.amount) ?? 0
-                    // 加完後要回傳給total
-                    total[user] = amount
-                }
-            }
+            let total = pieChartUserData(pieUserData: data)
             // 把total裡的資料塞到pie chart裡
             for num in total.keys {
                 pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
@@ -338,7 +344,7 @@ extension CoAccountingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                self.deleteSpecificData(document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
                 self.fetchBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
             }
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
@@ -372,7 +378,7 @@ extension CoAccountingViewController: UITableViewDataSource {
         if editingStyle == .delete {
             tableView.beginUpdates()
             // 刪除firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
-            deleteSpecificData(document: didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
+            BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             // 當日尚無資料者顯示“目前還沒有記帳喔”
