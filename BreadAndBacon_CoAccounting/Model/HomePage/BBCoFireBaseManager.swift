@@ -273,5 +273,122 @@ class BBCoFireBaseManager {
         return data
     }
 
+
+    // MARK: - CoBookVC
+    // 上傳 book id & user_id 到Firebase
+    func createCoAccountData(bookNameString: String, userIdArray: [String]) -> String {
+        let dataBase = Firestore.firestore()
+        let documentID = dataBase.collection("co-account").document()
+        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
+        let identifier = documentID.documentID
+        let prefixID = identifier.prefix(5)
+        // 需存id，後續delete要抓取ID刪除對應資料
+        let book = Book(id: identifier, roomId: String(prefixID), name: bookNameString, userId: userIdArray)
+        do {
+            try documentID.setData(from: book)
+            print("success create document. ID: \(documentID.documentID)")
+        } catch {
+            print(error)
+        }
+        
+        return identifier
+    }
+
+    // 重新編輯對應的book name
+    func editSpecificData(bookData: [Book], indexPathRow: Int, textField: String) {
+        let dataBase = Firestore.firestore()
+        dataBase.collection("co-account").document(bookData[indexPathRow].id).updateData(["name": textField]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document update successfully")
+            }
+        }
+    }
+
+    // 從firebase上刪除指定document，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificData(bookData: [Book], indexPathRow: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("co-account").document(bookData[indexPathRow].id)
+        documentRef.delete()
+    }
     
+    // 從firebase上刪除document底下的subCollection，delete firebase data需要一層一層找，不能用路徑
+    func deleteSpecificSubcollection(bookData: [Book], indexPathRow: Int, bookDetailData: [Account], documentNum: Int) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("co-account").document(bookData[indexPathRow].id).collection("co_expenditure").document(bookDetailData[documentNum].id)
+        documentRef.delete()
+    }
+
+    // 更新付款人到對應帳本
+    func updateUserToBook(bookIdentifier: String, userId: String, userContentData: [User], userNameData: [String]) {
+//        userContent = []
+//        userName = []
+        var userContentArray: [User] = []
+        var userNameArray: [String] = []
+        let group = DispatchGroup()
+        let dataBase = Firestore.firestore()
+        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再update user_is data
+        // 進入group
+        group.enter()
+        dataBase.collection("user")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let user = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: User.self)
+                }
+
+                userContentArray.append(contentsOf: user)
+                userContentArray.forEach { item in
+                    if item.id == userId {
+                        userNameArray.append(item.name ?? "")
+                    }
+                }
+                // API打完回來之後leave group
+                group.leave()
+            }
+
+        // 等API執行完後notify它去updateData(用arrayUnion)
+        group.notify(queue: .main) {
+            dataBase.collection("co-account")
+                .document(bookIdentifier)
+                .updateData(["user_id": FieldValue.arrayUnion(userNameArray)]) { error in
+                if let error = error {
+                    print("Error updating document: \(error)")
+                } else {
+                    print("Document update successfully in ID: \(userNameArray)")
+                    // 等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示
+//                    self.fetchCoBook()
+                }
+            }
+        }
+    }
+    
+    // MARK: - coBookVC待處理fetch category data
+    func fetchCoBook(userName: String) -> [Book] {
+//        data = []
+        var bookData: [Book] = []
+        let group = DispatchGroup()
+        let dataBase = Firestore.firestore()
+        group.enter()
+        dataBase.collection("co-account").whereField("user_id", arrayContains: userName)
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let book = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Book.self)
+                }
+                bookData.append(contentsOf: book)
+                print("=== book in fireBase \(bookData)")
+                group.leave()
+            }
+        print("=== book after fireBase \(bookData)")
+        return bookData
+    }
+    
+
+
 }
