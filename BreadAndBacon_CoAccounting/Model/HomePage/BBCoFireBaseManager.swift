@@ -460,4 +460,35 @@ class BBCoFireBaseManager {
         }
     }
 
+    // MARK: - signInVC
+    // 建立使用者資料，document id設為user id(因為user id一人對應一組不會變)
+    func createUserIdentify(id: String, email: String, name: String) {
+        let dataBase = Firestore.firestore()
+        // 建立firebase路徑
+        let userID = dataBase.collection("user")
+        // 於路徑中新增一筆document，document id為user id
+        let identifier = userID.document(id)
+        let collection = User(id: id, email: email, name: name)
+
+        do {
+            try identifier.setData(from: collection)
+            print("success create user document ID: \(identifier)")
+        } catch {
+            print(error)
+        }
+    }
+
+    // 新增對應category細項
+    func createCategory(id: String, subCollection: String, content: String) {
+        let db = Firestore.firestore()
+        let documentRef = db.collection("user").document(id).collection(subCollection).document()
+        let collection = Category(id: documentRef.documentID, title: content)
+
+        do {
+            try documentRef.setData(from: collection)
+        } catch {
+            print(error)
+        }
+    }
+
 }

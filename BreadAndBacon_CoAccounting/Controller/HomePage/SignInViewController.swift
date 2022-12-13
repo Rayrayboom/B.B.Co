@@ -88,23 +88,6 @@ class SignInViewController: UIViewController {
         controller.performRequests()
     }
 
-    // 建立使用者資料，document id設為user id(因為user id一人對應一組不會變)
-    func createUserIdentify(id: String, email: String, name: String) {
-        let dataBase = Firestore.firestore()
-        // 建立firebase路徑
-        let userID = dataBase.collection("user")
-        // 於路徑中新增一筆document，document id為user id
-        let identifier = userID.document(id)
-        let collection = User(id: id, email: email, name: name)
-
-        do {
-            try identifier.setData(from: collection)
-            print("success create user document ID: \(identifier)")
-        } catch {
-            print(error)
-        }
-    }
-
     // gen JWT token
     func makeSwiftJWT() {
         let myHeader = Header(kid: APIKey.authKey)
@@ -188,7 +171,7 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
                         print("Document data: \(dataDescription)")
                     } else {
                         print("Document does not exist")
-                        self.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
+                        BBCoFireBaseManager.shared.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
                     }
                 }
                 // 判斷若是第一次登入的話就先create三大種類的category，讓使用者一開始有預設選項可以用
@@ -234,19 +217,6 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
         }
     }
 
-    // 新增對應category細項
-    func createCategory(id: String, subCollection: String, content: String) {
-        let db = Firestore.firestore()
-        let documentRef = db.collection("user").document(id).collection(subCollection).document()
-        let collection = Category(id: documentRef.documentID, title: content)
-
-        do {
-            try documentRef.setData(from: collection)
-        } catch {
-            print(error)
-        }
-    }
-    
     // 一次新增全部category
     func createAllCategory() {
         let allCategory = [costContent, incomeContent, accountContent]
@@ -254,11 +224,11 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             for item in content {
                 switch content {
                 case costContent:
-                    createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "expenditure_category", content: item)
+                    BBCoFireBaseManager.shared.createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "expenditure_category", content: item)
                 case incomeContent:
-                    createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "revenue_category", content: item)
+                    BBCoFireBaseManager.shared.createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "revenue_category", content: item)
                 default:
-                    createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "account_category", content: item)
+                    BBCoFireBaseManager.shared.createCategory(id: KeychainWrapper.standard.string(forKey: "id") ?? "", subCollection: "account_category", content: item)
                 }
             }
         }
