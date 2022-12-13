@@ -116,7 +116,7 @@ class CoBookViewController: UIViewController {
         let okAction = UIAlertAction(title: "新增", style: .default) { [unowned controller] _ in
             self.bookName = controller.textFields?[0].text ?? ""
             // 新增co_account book時儲存自動生成的document id
-            let identifier = BBCoFireBaseManager.shared.createCoAccountData(bookNameString: self.bookName, userIdArray: self.userName)
+            let identifier = BBCoFireBaseManager.shared.createCoAccountBookData(bookNameString: self.bookName, userIdArray: self.userName)
             self.fetchCoBook()
             // 按下新增帳本時，在該帳本的付款人會先預設加上本人
             BBCoFireBaseManager.shared.updateUserToBook(bookIdentifier: identifier, userId: self.getId, userContentData: self.userContent, userNameData: self.userName)

@@ -276,7 +276,7 @@ class BBCoFireBaseManager {
 
     // MARK: - CoBookVC
     // 上傳 book id & user_id 到Firebase
-    func createCoAccountData(bookNameString: String, userIdArray: [String]) -> String {
+    func createCoAccountBookData(bookNameString: String, userIdArray: [String]) -> String {
         let dataBase = Firestore.firestore()
         let documentID = dataBase.collection("co-account").document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
@@ -397,5 +397,67 @@ class BBCoFireBaseManager {
         documentRef.delete()
     }
 
+    // MARK: - addCoDetailVC
+    // 上傳資料到Firebase
+    func createCoAccountData(tableView: UITableView, document: String, subCollection: String, amount: String, category: String, month: String, user: String) {
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell
+        else {
+            fatalError("can not find CoTimeTableViewCell")
+        }
+        let dataBase = Firestore.firestore()
+        let documentID = dataBase.collection("co-account")
+            .document(document)
+            .collection(subCollection)
+            .document()
+        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
+        let identifier = documentID.documentID
+        // 需存id，後續delete要抓取ID刪除對應資料
+        let account = Account(
+            id: identifier,
+            amount: amount,
+            category: category,
+            account: nil,
+            date: BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date), //data.dateTime,
+            month: month,
+            destinationAccountId: nil,
+            sourceAccountId: nil,
+            accountId: nil,
+            expenditureId: "expenditureId",
+            revenueId: nil,
+            detail: nil,
+            user: user,
+            categoryImage: nil,
+            segmentTag: nil)
+        do {
+            try documentID.setData(from: account)
+            print("success create document. ID: \(documentID.documentID)")
+        } catch {
+            print(error)
+        }
+    }
+
+    // 點選對應細項編輯資料
+    func editUser(tableView: UITableView, document: String, subCollection: String, documentID: String, date: String, amount: String, category: String, user: String) {
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
+        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
+        guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell else {
+            fatalError("can not find CoTimeTableViewCell")
+        }
+        let dataBase = Firestore.firestore()
+        dataBase.collection("co-account/\(document)/\(subCollection)").document("\(documentID)").updateData([
+            // 這邊兩種方法都可以，因為data.dateTime也透過cell的delegate塞了cell的date資料了，(針對date讓一開始顯示畫面時就先吃到datePicker的資料，不用等到點選變更後才塞資料)
+            "date": date,
+            //BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date),
+            "amount": amount,
+            "category": category,
+            "user": user
+        ]) { error in
+            if let error = error {
+                print("Error updating document: \(error)")
+            } else {
+                print("Document update successfully ")
+            }
+        }
+    }
 
 }
