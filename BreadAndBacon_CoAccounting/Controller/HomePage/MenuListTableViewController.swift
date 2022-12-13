@@ -140,7 +140,8 @@ class MenuListTableViewController: UITableViewController {
                 // 刪除co-account所有有關這個使用者的資料(但不刪除尚有其他user_id的帳本)
                 self.deleteCoAccoount()
                 // 刪除user document
-                self.deleteUser()
+//                self.deleteUser()
+                BBCoFireBaseManager.shared.deleteUser(userId: self.getId)
                 // 打revoke token API
                 self.removeAccount()
                 KeychainWrapper.standard.remove(forKey: "id")
@@ -212,7 +213,7 @@ class MenuListTableViewController: UITableViewController {
         }
     }
 
-    // TODO: - 刪除個人（個人資訊+個人記帳細項）
+    // MARK: - 刪除個人（個人資訊+個人記帳細項）
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteUser() {
         let dataBase = Firestore.firestore()
@@ -241,15 +242,21 @@ class MenuListTableViewController: UITableViewController {
 
     // 刪除個人記帳subcollection所有的資料
     func deleteAllSubCollectionDoc() {
-        deleteSubCollectionDoc(subCollection: "expenditure")
-        deleteSubCollectionDoc(subCollection: "expenditure_category")
-        deleteSubCollectionDoc(subCollection: "revenue")
-        deleteSubCollectionDoc(subCollection: "revenue_category")
-        deleteSubCollectionDoc(subCollection: "account")
-        deleteSubCollectionDoc(subCollection: "account_category")
+//        deleteSubCollectionDoc(subCollection: "expenditure")
+//        deleteSubCollectionDoc(subCollection: "expenditure_category")
+//        deleteSubCollectionDoc(subCollection: "revenue")
+//        deleteSubCollectionDoc(subCollection: "revenue_category")
+//        deleteSubCollectionDoc(subCollection: "account")
+//        deleteSubCollectionDoc(subCollection: "account_category")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "expenditure")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "expenditure_category")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "revenue")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "revenue_category")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "account")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "account_category")
     }
 
-    // TODO: - 刪除共同帳本（共同帳本付款者）
+    // MARK: - 刪除共同（共同帳本付款者）
     func deleteCoAccoount() {
         bookContent = []
         let dataBase = Firestore.firestore()

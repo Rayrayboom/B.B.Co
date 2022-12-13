@@ -490,5 +490,32 @@ class BBCoFireBaseManager {
             print(error)
         }
     }
+    
+    // MARK: - MenuListTableVC
+    // 個人（個人資訊+個人記帳細項）
+    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteUser(userId: String) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document(userId)
+        documentRef.delete()
+    }
 
+    // 刪除個人記帳單一subCollection底下所有的資料
+    func deleteSubCollectionDoc(userId: String, subCollection: String) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase.collection("user").document(userId).collection(subCollection)
+        documentRef.getDocuments { querySnapshot, error in
+            if let error = error {
+                print("Error getting documents: \(error)")
+            } else {
+                guard let querySnapshot = querySnapshot else {
+                    return
+                }
+                for document in querySnapshot.documents {
+                    print("=== this is documentID \(document.documentID)")
+                    document.reference.delete()
+                }
+            }
+        }
+    }
 }
