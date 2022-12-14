@@ -140,7 +140,6 @@ class MenuListTableViewController: UITableViewController {
                 // 刪除co-account所有有關這個使用者的資料(但不刪除尚有其他user_id的帳本)
                 self.deleteCoAccount()
                 // 刪除user document
-//                self.deleteUser()
                 BBCoFireBaseManager.shared.deleteUser(userId: self.getId)
                 // 打revoke token API
                 self.removeAccount()
@@ -213,33 +212,6 @@ class MenuListTableViewController: UITableViewController {
         }
     }
 
-    // MARK: - 刪除個人（個人資訊+個人記帳細項）
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteUser() {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(getId)
-        documentRef.delete()
-    }
-
-    // 刪除個人記帳單一subCollection底下所有的資料
-    func deleteSubCollectionDoc(subCollection: String) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(getId).collection(subCollection)
-        documentRef.getDocuments { querySnapshot, error in
-            if let error = error {
-                print("Error getting documents: \(error)")
-            } else {
-                guard let querySnapshot = querySnapshot else {
-                    return
-                }
-                for document in querySnapshot.documents {
-                    print("=== this is documentID \(document.documentID)")
-                    document.reference.delete()
-                }
-            }
-        }
-    }
-
     // 刪除個人記帳subcollection所有的資料
     func deleteAllSubCollectionDoc() {
         BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "expenditure")
@@ -250,41 +222,6 @@ class MenuListTableViewController: UITableViewController {
         BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "account_category")
     }
 
-//    // MARK: - 刪除共同（共同帳本付款者）
-//    func deleteCoAccount() {
-//        bookContent = []
-//        let dataBase = Firestore.firestore()
-//        self.group.enter()
-//        // 先搜尋co-account裡有哪些book包含getName(付款人-userName)
-//        dataBase.collection("co-account").whereField("user_id", arrayContains: getName)
-//            .getDocuments { snapshot, error in
-//                guard let snapshot = snapshot else {
-//                    return
-//                }
-//                let book = snapshot.documents.compactMap { snapshot in
-//                    try? snapshot.data(as: Book.self)
-//                }
-//                self.bookContent.append(contentsOf: book)
-//                print("=== is bookContent", self.bookContent)
-//                self.group.leave()
-//            }
-//        group.notify(queue: .main) {
-//            // 把有包含我的book用forEach一個一個找，如果user_id == 1表示我刪除帳號後這本帳本也就失效，因此連同帳本一併刪除; 若user_id超過一人，表示還有其他使用者在這本帳本裡，因此只執行把我自己從付款者裡移除
-//            self.bookContent.forEach { item in
-//                if item.userId.count == 1 {
-//                    print("=== item.userId isEmpty")
-//                    let documentRef = dataBase.collection("co-account").document(item.id)
-//                    documentRef.delete()
-//                } else {
-//                    dataBase.collection("co-account")
-//                        .document(item.id)
-//                        .updateData(["user_id": FieldValue.arrayRemove([self.getName])])
-//                    print("=== is item.userId", item.userId)
-//                }
-//            }
-//        }
-//    }
-    
     // MARK: - 刪除共同（共同帳本付款者）
     func deleteCoAccount() {
         bookContent = []
@@ -292,10 +229,17 @@ class MenuListTableViewController: UITableViewController {
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             self.group.enter()
-            // 先搜尋co-account裡有哪些book包含getName(付款人-userName)
+            // 先搜尋co-account裡有哪些book包含getName(付款人-userName)，using Result type
             BBCoFireBaseManager.shared.fetchUserAllCoBook(userName: self.getName) { result in
-                self.bookContent = result
-                self.group.leave()
+                switch result {
+                case .success(let bookContentData):
+                    self.bookContent = bookContentData
+                    self.group.leave()
+                case .failure(let error):
+                    print(error.localizedDescription, "fetch coBook data error")
+                    self.group.leave()
+                }
+                
             }
             self.group.wait()
             // 把有包含我的book用forEach一個一個找，如果user_id == 1表示我刪除帳號後這本帳本也就失效，因此連同帳本一併刪除; 若user_id超過一人，表示還有其他使用者在這本帳本裡，因此只執行把我自己從付款者裡移除

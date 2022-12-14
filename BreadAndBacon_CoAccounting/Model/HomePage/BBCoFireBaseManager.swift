@@ -15,7 +15,6 @@ class BBCoFireBaseManager {
 
     // MARK: - 上傳資料到Firebase
     func createUserData(id: String, subCollection: String, amount: String, category: String, account: String, date: String, month: String, detail: String, categoryImage: String, segment: Int) {
-        let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("user")
             .document(id)
             .collection(subCollection)
@@ -98,7 +97,6 @@ class BBCoFireBaseManager {
     func fetchUserCategory(id: String, subCollection: String) -> [String] {
         var contentArray: [String] = []
         let group = DispatchGroup()
-        let dataBase = Firestore.firestore()
         group.enter()
         dataBase.collection("user/\(id)/\(subCollection)_category")
             .getDocuments { snapshot, error in
@@ -129,7 +127,6 @@ class BBCoFireBaseManager {
         else {
             fatalError("can not find AddDateTableViewCell")
         }
-        let dataBase = Firestore.firestore()
         let fetchDocumentID = dataBase.collection("user")
             .document(id)
             .collection(subCollection)
@@ -215,7 +212,6 @@ class BBCoFireBaseManager {
         else {
             fatalError("can not find AddDateTableViewCell")
         }
-        let dataBase = Firestore.firestore()
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
         // 進入group
         group.enter()
@@ -240,7 +236,6 @@ class BBCoFireBaseManager {
 
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(id: String, subCollection: String, dataId: String) {
-        let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(dataId ?? "")
         documentRef.delete()
     }
@@ -254,7 +249,6 @@ class BBCoFireBaseManager {
         var data: [Account] = []
         // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月 dd 日"格式來偵測
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        let dataBase = Firestore.firestore()
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
         // 進入group
         group.enter()
@@ -279,7 +273,6 @@ class BBCoFireBaseManager {
     // MARK: - CoBookVC
     // 上傳 book id & user_id 到Firebase
     func createCoAccountBookData(bookNameString: String, userIdArray: [String]) -> String {
-        let dataBase = Firestore.firestore()
         let documentID = dataBase.collection("co-account").document()
         // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
         let identifier = documentID.documentID
@@ -298,7 +291,6 @@ class BBCoFireBaseManager {
 
     // 重新編輯對應的book name
     func editSpecificData(bookData: [Book], indexPathRow: Int, textField: String) {
-        let dataBase = Firestore.firestore()
         dataBase.collection("co-account").document(bookData[indexPathRow].id).updateData(["name": textField]) { error in
             if let error = error {
                 print("Error updating document: \(error)")
@@ -310,14 +302,12 @@ class BBCoFireBaseManager {
 
     // 從firebase上刪除指定document，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(bookData: [Book], indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("co-account").document(bookData[indexPathRow].id)
         documentRef.delete()
     }
     
     // 從firebase上刪除document底下的subCollection，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificSubcollection(bookData: [Book], indexPathRow: Int, bookDetailData: [Account], documentNum: Int) {
-        let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("co-account").document(bookData[indexPathRow].id).collection("co_expenditure").document(bookDetailData[documentNum].id)
         documentRef.delete()
     }
@@ -327,7 +317,6 @@ class BBCoFireBaseManager {
         var userContentArray: [User] = []
         var userNameArray: [String] = []
         let group = DispatchGroup()
-        let dataBase = Firestore.firestore()
         // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再update user_is data
         // 進入group
         group.enter()
@@ -352,7 +341,7 @@ class BBCoFireBaseManager {
 
         // 等API執行完後notify它去updateData(用arrayUnion)
         group.notify(queue: .main) {
-            dataBase.collection("co-account")
+            self.dataBase.collection("co-account")
                 .document(bookIdentifier)
                 .updateData(["user_id": FieldValue.arrayUnion(userNameArray)]) { error in
                 if let error = error {
@@ -369,7 +358,6 @@ class BBCoFireBaseManager {
     // fetch所有包含自己的共同帳本
     func fetchCoBook(userName: String, completion: @escaping([Book]) -> Void) {
         var bookData: [Book] = []
-        let dataBase = Firestore.firestore()
         dataBase.collection("co-account").whereField("user_id", arrayContains: userName)
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -387,7 +375,6 @@ class BBCoFireBaseManager {
     // 從Firebase上fetch對應book的detail資料
     func fetchBookDetail(document: String, subCollection: String, completion: @escaping([Account]) -> Void) {
         var bookDetailData: [Account] = []
-        let dataBase = Firestore.firestore()
         dataBase.collection("co-account/\(document)/\(subCollection)")
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -404,7 +391,6 @@ class BBCoFireBaseManager {
     // MARK: - CoAccountingVC
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(accountData: [Account], document: String, subCollection: String, indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("co-account").document(document).collection(subCollection).document(accountData[indexPathRow].id)
         documentRef.delete()
     }
@@ -416,7 +402,6 @@ class BBCoFireBaseManager {
         else {
             fatalError("can not find CoTimeTableViewCell")
         }
-        let dataBase = Firestore.firestore()
         let documentID = dataBase.collection("co-account")
             .document(document)
             .collection(subCollection)
@@ -455,7 +440,6 @@ class BBCoFireBaseManager {
         guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell else {
             fatalError("can not find CoTimeTableViewCell")
         }
-        let dataBase = Firestore.firestore()
         dataBase.collection("co-account/\(document)/\(subCollection)").document("\(documentID)").updateData([
             // 這邊兩種方法都可以，因為data.dateTime也透過cell的delegate塞了cell的date資料了，(針對date讓一開始顯示畫面時就先吃到datePicker的資料，不用等到點選變更後才塞資料)
             "date": date,
@@ -475,7 +459,6 @@ class BBCoFireBaseManager {
     // MARK: - signInVC
     // 建立使用者資料，document id設為user id(因為user id一人對應一組不會變)
     func createUserIdentify(id: String, email: String, name: String) {
-        let dataBase = Firestore.firestore()
         // 建立firebase路徑
         let userID = dataBase.collection("user")
         // 於路徑中新增一筆document，document id為user id
@@ -507,14 +490,12 @@ class BBCoFireBaseManager {
     // 個人（個人資訊+個人記帳細項）
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteUser(userId: String) {
-        let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("user").document(userId)
         documentRef.delete()
     }
 
     // 刪除個人記帳單一subCollection底下所有的資料
     func deleteSubCollectionDoc(userId: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
         let documentRef = dataBase.collection("user").document(userId).collection(subCollection)
         documentRef.getDocuments { querySnapshot, error in
             if let error = error {
@@ -532,19 +513,20 @@ class BBCoFireBaseManager {
     }
 
     // MARK: - 刪除共同（共同帳本付款者）
+    // Result type
     enum Result<Success, Failure> where Failure: Error {
         case success(Success)
         case failure(Failure)
     }
 
     // 先搜尋co-account裡有哪些book包含getName(付款人-userName)
-    func fetchUserAllCoBook(userName: String, completion: @escaping ([Book]) -> Void /*(Result<[Book], Error>) -> Void*/) {
+    func fetchUserAllCoBook(userName: String, completion: @escaping /*([Book]) -> Void*/ (Result<[Book], Error>) -> Void) {
         var bookContentData: [Book] = []
         dataBase.collection("co-account").whereField("user_id", arrayContains: userName)
             .getDocuments { snapshot, error in
-//                if let error = error {
-//                    completion(error.localizedDescription)
-//                } else {
+                if let error = error {
+                    completion(.failure(error))
+                } else {
                     guard let snapshot = snapshot else {
                         return
                     }
@@ -553,8 +535,8 @@ class BBCoFireBaseManager {
                     }
                     bookContentData.append(contentsOf: book)
                     print("=== is bookContent", bookContentData)
-                    completion(bookContentData)
-//                }
+                    completion(.success(bookContentData))
+                }
             }
     }
 
