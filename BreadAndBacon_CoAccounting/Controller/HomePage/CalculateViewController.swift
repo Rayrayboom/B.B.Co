@@ -126,24 +126,6 @@ class CalculateViewController: UIViewController {
             willClearDisplay = false
         }
 
-        // 顯示在label
-//        if var labelText = label.text {
-//            if labelText == "0" {
-//
-//                labelText = sender.currentTitle ?? "蛤"
-//                print("蛤", labelText)
-//            } else {
-//
-//                labelText += sender.currentTitle ?? "才怪"
-//                print("才怪", labelText)
-//            }
-//            do {
-//                logic.currentNumber = try Double(value: labelText)
-//            } catch {
-//                print("Error")
-//            }
-//        }
-
         if label.text == "0" || label.text == "00" { label.text = logic.showNumber(tag: sender.tag) }
         else {
             label.text! += logic.showNumber(tag: sender.tag)

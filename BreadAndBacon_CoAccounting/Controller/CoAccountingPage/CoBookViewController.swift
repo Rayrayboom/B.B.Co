@@ -58,7 +58,7 @@ class CoBookViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         BBCoLoading.loading(view: self.view)
-        fetchCoBook()
+        fetchCoBook(userName: getName)
         bookTableView.reloadData()
         // 回到帳本目錄時時恢復下方tabbar
         self.tabBarController?.tabBar.isHidden = false
@@ -89,7 +89,7 @@ class CoBookViewController: UIViewController {
     // refreshControl func
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.fetchCoBook()
+            self.fetchCoBook(userName: self.getName)
             self.refreshControl.endRefreshing()
         }
     }
@@ -117,9 +117,8 @@ class CoBookViewController: UIViewController {
             self.bookName = controller.textFields?[0].text ?? ""
             // 新增co_account book時儲存自動生成的document id
             let identifier = BBCoFireBaseManager.shared.createCoAccountBookData(bookNameString: self.bookName, userIdArray: self.userName)
-            self.fetchCoBook()
-            // 按下新增帳本時，在該帳本的付款人會先預設加上本人
-            BBCoFireBaseManager.shared.updateUserToBook(bookIdentifier: identifier, userId: self.getId, userContentData: self.userContent, userNameData: self.userName)
+            self.fetchCoBook(userName: self.getName)
+            self.updateDataAndfetchCoBook(bookIdentifier: identifier, userId: self.getId, userContentData: self.userContent, userNameData: self.userName, userName: self.getName)
             // success alert animation
             SPAlert.successAlert()
         }
@@ -160,49 +159,6 @@ class CoBookViewController: UIViewController {
         present(controller, animated: true)
     }
 
-//    // 更新付款人到對應帳本
-//    func updateUserToBook(bookIdentifier: String) {
-//        userContent = []
-//        userName = []
-//        let dataBase = Firestore.firestore()
-//        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再update user_is data
-//        // 進入group
-//        self.group.enter()
-//        dataBase.collection("user")
-//            .getDocuments { snapshot, error in
-//                guard let snapshot = snapshot else {
-//                    return
-//                }
-//                let user = snapshot.documents.compactMap { snapshot in
-//                    try? snapshot.data(as: User.self)
-//                }
-//
-//                self.userContent.append(contentsOf: user)
-//                self.userContent.forEach { item in
-//                    if item.id == self.getId {
-//                        self.userName.append(item.name ?? "")
-//                    }
-//                }
-//                // API打完回來之後leave group
-//                self.group.leave()
-//            }
-//
-//        // 等API執行完後notify它去updateData(用arrayUnion)
-//        group.notify(queue: .main) {
-//            dataBase.collection("co-account")
-//                .document(bookIdentifier)
-//                .updateData(["user_id": FieldValue.arrayUnion(self.userName)]) { error in
-//                if let error = error {
-//                    print("Error updating document: \(error)")
-//                } else {
-//                    print("Document update successfully in ID: \(self.userName)")
-//                    // 等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示
-//                    self.fetchCoBook()
-//                }
-//            }
-//        }
-//    }
-
     // 從Firebase上抓符合book id的document，並fetch資料下來
     func fetchBookSpecific(collection: String, field: String, inputID: String) {
         specificBook = []
@@ -231,7 +187,7 @@ class CoBookViewController: UIViewController {
                 } else {
                     // book ID輸入正確的話就執行updateUserToBook func
                     self.specificBook.append(contentsOf: book)
-                    BBCoFireBaseManager.shared.updateUserToBook(bookIdentifier: self.specificBook[0].id, userId: self.getId, userContentData: self.userContent, userNameData: self.userName)
+                    self.updateDataAndfetchCoBook(bookIdentifier: self.specificBook[0].id, userId: self.getId, userContentData: self.userContent, userNameData: self.userName, userName: self.getName)
                     // success alert animation
                     SPAlert.successAlert()
                     print("I find the document \(self.specificBook)")
@@ -239,23 +195,37 @@ class CoBookViewController: UIViewController {
             }
     }
 
-    // 從Firebase上fetch有幾本帳本user id是有我自己的(因為user_id是array，因此要用whereField-arrayContains來判斷array裡的元素)
-    func fetchCoBook() {
+    // 更新付款人到帳本後再fetch一次資料，並在main thread更新(等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示)
+    func updateDataAndfetchCoBook(bookIdentifier: String, userId: String, userContentData: [User], userNameData: [String], userName: String) {
         data = []
-        let dataBase = Firestore.firestore()
-        self.group.enter()
-        dataBase.collection("co-account").whereField("user_id", arrayContains: getName)
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let book = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Book.self)
-                }
-                self.data.append(contentsOf: book)
-                print("book here \(self.data)")
-                self.group.leave()
+        // 切換到global thread處理更新付款人
+        DispatchQueue.global().async {
+            let group = DispatchGroup()
+            group.enter()
+            BBCoFireBaseManager.shared.updateUserToBook(bookIdentifier: bookIdentifier, userId: userId, userContentData: userContentData, userNameData: userNameData) {
+                group.leave()
             }
+            group.wait()
+            group.enter()
+            BBCoFireBaseManager.shared.fetchCoBook(userName: userName) { result in
+                self.data = result
+                print("=== self.data", self.data)
+                group.leave()
+            }
+            // 取得資料後回到main thread更新UI
+            group.notify(queue: .main) {
+                self.bookTableView.reloadData()
+            }
+        }
+    }
+
+    // fetch所有包含自己的共同帳本
+    func fetchCoBook(userName: String) {
+        data = []
+        BBCoFireBaseManager.shared.fetchCoBook(userName: userName) { result in
+            self.data = result
+            print("=== self.data", self.data)
+        }
     }
 
     // 從Firebase上fetch對應book的detail資料
@@ -298,7 +268,7 @@ class CoBookViewController: UIViewController {
             // success alert animation
             SPAlert.successAlert()
             // 修改完後再去fetch一次book data（顯示最新資料在tableView）
-            self.fetchCoBook()
+            self.fetchCoBook(userName: self.getName)
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -337,18 +307,18 @@ extension CoBookViewController: UITableViewDelegate {
                     // 接著刪除book
                     BBCoFireBaseManager.shared.deleteSpecificData(bookData: self.data, indexPathRow: indexPath.row)
                     // 重新抓最新資料(會reloadData)
-                    self.fetchCoBook()
+                    self.fetchCoBook(userName: self.getName)
                 }
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.indexPathFromBook = indexPath
                 self.editAlert()
-                self.fetchCoBook()
+                self.fetchCoBook(userName: self.getName)
             }
 
             let copyAction = UIAction(title: "複製book ID", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.indexPathFromBook = indexPath
-                self.fetchCoBook()
+                self.fetchCoBook(userName: self.getName)
                 self.group.notify(queue: .main) {
                     UIPasteboard.general.string = self.data[indexPath.row].roomId
                 }

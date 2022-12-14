@@ -321,9 +321,7 @@ class BBCoFireBaseManager {
     }
 
     // 更新付款人到對應帳本
-    func updateUserToBook(bookIdentifier: String, userId: String, userContentData: [User], userNameData: [String]) {
-//        userContent = []
-//        userName = []
+    func updateUserToBook(bookIdentifier: String, userId: String, userContentData: [User], userNameData: [String], completion: (() -> Void)? = nil) {
         var userContentArray: [User] = []
         var userNameArray: [String] = []
         let group = DispatchGroup()
@@ -359,20 +357,17 @@ class BBCoFireBaseManager {
                     print("Error updating document: \(error)")
                 } else {
                     print("Document update successfully in ID: \(userNameArray)")
-                    // 等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示
-//                    self.fetchCoBook()
+                    // 啟動completion
+                    completion?()
                 }
             }
         }
     }
     
-    // MARK: - coBookVC待處理fetch category data
-    func fetchCoBook(userName: String) -> [Book] {
-//        data = []
+    // fetch所有包含自己的共同帳本
+    func fetchCoBook(userName: String, completion: @escaping([Book]) -> Void) {
         var bookData: [Book] = []
-        let group = DispatchGroup()
         let dataBase = Firestore.firestore()
-        group.enter()
         dataBase.collection("co-account").whereField("user_id", arrayContains: userName)
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -382,11 +377,9 @@ class BBCoFireBaseManager {
                     try? snapshot.data(as: Book.self)
                 }
                 bookData.append(contentsOf: book)
-                print("=== book in fireBase \(bookData)")
-                group.leave()
+                // 啟動completion才會執行傳值
+                completion(bookData)
             }
-        print("=== book after fireBase \(bookData)")
-        return bookData
     }
 
     // MARK: - CoAccountingVC
