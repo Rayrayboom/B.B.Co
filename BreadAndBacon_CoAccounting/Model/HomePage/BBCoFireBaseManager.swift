@@ -363,7 +363,7 @@ class BBCoFireBaseManager {
             }
         }
     }
-    
+
     // fetch所有包含自己的共同帳本
     func fetchCoBook(userName: String, completion: @escaping([Book]) -> Void) {
         var bookData: [Book] = []
@@ -379,6 +379,24 @@ class BBCoFireBaseManager {
                 bookData.append(contentsOf: book)
                 // 啟動completion才會執行傳值
                 completion(bookData)
+            }
+    }
+
+    // 從Firebase上fetch對應book的detail資料
+    func fetchBookDetail(document: String, subCollection: String, completion: @escaping([Account]) -> Void) {
+        var bookDetailData: [Account] = []
+        let dataBase = Firestore.firestore()
+        dataBase.collection("co-account/\(document)/\(subCollection)")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                bookDetailData.append(contentsOf: account)
+                print("=== book detail here \(bookDetailData)")
+                completion(bookDetailData)
             }
     }
 

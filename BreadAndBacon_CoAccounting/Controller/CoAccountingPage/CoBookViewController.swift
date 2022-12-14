@@ -228,23 +228,14 @@ class CoBookViewController: UIViewController {
         }
     }
 
-    // 從Firebase上fetch對應book的detail資料
     func fetchBookDetail(document: String, subCollection: String) {
         bookDetail = []
-        let dataBase = Firestore.firestore()
         self.group.enter()
-        dataBase.collection("co-account/\(document)/\(subCollection)")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let account = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Account.self)
-                }
-                self.bookDetail.append(contentsOf: account)
-                print("=== book detail here \(self.bookDetail)")
-                self.group.leave()
-            }
+        BBCoFireBaseManager.shared.fetchBookDetail(document: document, subCollection: subCollection) { result in
+            self.bookDetail = result
+            print("=== self.bookDetail", self.bookDetail)
+            self.group.leave()
+        }
     }
 
     // 編輯cell的alert
