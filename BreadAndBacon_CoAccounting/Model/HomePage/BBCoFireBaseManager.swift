@@ -7,9 +7,11 @@
 
 import Foundation
 import FirebaseFirestore
+import CoreMedia
 
 class BBCoFireBaseManager {
     static let shared = BBCoFireBaseManager()
+    let dataBase = Firestore.firestore()
 
     // MARK: - 上傳資料到Firebase
     func createUserData(id: String, subCollection: String, amount: String, category: String, account: String, date: String, month: String, detail: String, categoryImage: String, segment: Int) {
@@ -395,7 +397,6 @@ class BBCoFireBaseManager {
                     try? snapshot.data(as: Account.self)
                 }
                 bookDetailData.append(contentsOf: account)
-                print("=== book detail here \(bookDetailData)")
                 completion(bookDetailData)
             }
     }
@@ -529,4 +530,46 @@ class BBCoFireBaseManager {
             }
         }
     }
+
+    // MARK: - 刪除共同（共同帳本付款者）
+    enum Result<Success, Failure> where Failure: Error {
+        case success(Success)
+        case failure(Failure)
+    }
+
+    // 先搜尋co-account裡有哪些book包含getName(付款人-userName)
+    func fetchUserAllCoBook(userName: String, completion: @escaping ([Book]) -> Void /*(Result<[Book], Error>) -> Void*/) {
+        var bookContentData: [Book] = []
+        dataBase.collection("co-account").whereField("user_id", arrayContains: userName)
+            .getDocuments { snapshot, error in
+//                if let error = error {
+//                    completion(error.localizedDescription)
+//                } else {
+                    guard let snapshot = snapshot else {
+                        return
+                    }
+                    let book = snapshot.documents.compactMap { snapshot in
+                        try? snapshot.data(as: Book.self)
+                    }
+                    bookContentData.append(contentsOf: book)
+                    print("=== is bookContent", bookContentData)
+                    completion(bookContentData)
+//                }
+            }
+    }
+
+    // 把有包含我的book用forEach一個一個找，如果user_id == 1表示我刪除帳號後這本帳本也就失效，因此連同帳本一併刪除，因為VC的group.leave需要在completion後實現，但因以下兩個func沒有要回傳值，故用optional的completion
+    func deleteCoBook(bookId: String, completion: (() -> Void)? = nil) {
+        dataBase.collection("co-account").document(bookId).delete()
+        completion?()
+    }
+
+    // 若user_id超過一人，表示還有其他使用者在這本帳本裡，因此只執行把我自己從付款者裡移除
+    func deleteUserFromCoBook(bookId: String, userName: String, completion: (() -> Void)? = nil) {
+        dataBase.collection("co-account")
+            .document(bookId)
+            .updateData(["user_id": FieldValue.arrayRemove([userName])])
+        completion?()
+    }
 }
+

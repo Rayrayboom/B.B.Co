@@ -224,7 +224,6 @@ class CoBookViewController: UIViewController {
         data = []
         BBCoFireBaseManager.shared.fetchCoBook(userName: userName) { result in
             self.data = result
-            print("=== self.data", self.data)
         }
     }
 
@@ -233,7 +232,6 @@ class CoBookViewController: UIViewController {
         self.group.enter()
         BBCoFireBaseManager.shared.fetchBookDetail(document: document, subCollection: subCollection) { result in
             self.bookDetail = result
-            print("=== self.bookDetail", self.bookDetail)
             self.group.leave()
         }
     }
