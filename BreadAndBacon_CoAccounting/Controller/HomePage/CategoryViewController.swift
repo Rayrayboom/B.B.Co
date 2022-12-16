@@ -28,11 +28,20 @@ class CategoryViewController: UIViewController {
         // 判斷點選side menu對應cell時fetch不同category資料
         switch indexPathRow {
         case 0:
-            fetchUserCategory(id: getId, subCollection: "expenditure")
+            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "expenditure") { [weak self] result in
+                guard let self = self else { return }
+                self.category = result
+            }
         case 1:
-            fetchUserCategory(id: getId, subCollection: "revenue")
+            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "revenue") { [weak self] result in
+                guard let self = self else { return }
+                self.category = result
+            }
         case 2:
-            fetchUserCategory(id: getId, subCollection: "account")
+            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "account") { [weak self] result in
+                guard let self = self else { return }
+                self.category = result
+            }
         default:
             break
         }
@@ -55,24 +64,7 @@ class CategoryViewController: UIViewController {
     }
 
     @objc func dismissCategory() {
-//        navigationController?.dismiss(animated: true)
         self.presentingViewController?.dismiss(animated: true, completion: nil)
-    }
-
-    // 從Firebase上fetch種類/帳戶資料
-    func fetchUserCategory(id: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
-        dataBase.collection("user/\(id)/\(subCollection)_category")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let category = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Category.self)
-                }
-                self.category.append(contentsOf: category)
-                print("the category are here \(self.category)")
-            }
     }
 
     // 用category_id從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
@@ -119,10 +111,13 @@ extension CategoryViewController: UITableViewDataSource {
             // 刪除firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             switch indexPathRow {
             case 0:
+//                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row, dataId: category[indexPathRow].id ?? "")
                 deleteSpecificData(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row)
             case 1:
+//                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "revenue", indexPathRow: indexPath.row, dataId: category[indexPathRow].id ?? "")
                 deleteSpecificData(id: getId, subCollection: "revenue", indexPathRow: indexPath.row)
             case 2:
+//                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "account", indexPathRow: indexPath.row, dataId: category[indexPathRow].id ?? "")
                 deleteSpecificData(id: getId, subCollection: "account", indexPathRow: indexPath.row)
             default:
                 break

@@ -6,9 +6,7 @@
 //
 
 import UIKit
-import SwiftUI
 import AVFoundation
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SPAlert
 
@@ -162,30 +160,29 @@ class AddNewDataViewController: UIViewController {
         // 點選+時，執行新增資料到firebase
         saveNewData()
         
-//        enum SubCollection: String{
-//            case expenditure = "expenditure"
-//            case revenue = "revenue"
-//            case account = "account"
-//        }
-//        for subCollection in [SubCollection.expenditure, SubCollection.revenue, SubCollection.account] {
-//            var contentArray = BBCoFireBaseManager.shared.fetchUserCategory(id: getId, subCollection: subCollection.rawValue)
-//            switch subCollection {
-//            case .expenditure:
-//                costContent = contentArray
-//                print("=== costContent", costContent)
-//            case .revenue:
-//                incomeContent = contentArray
-//                print("=== incomeContent", incomeContent)
-//            case .account:
-//                accountContent = contentArray
-//                print("=== accountContent", accountContent)
-//            }
-//        }
-                
+        enum SubCollection: String{
+            case expenditure = "expenditure"
+            case revenue = "revenue"
+            case account = "account"
+        }
+
         // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
-        fetchUserCategory(id: getId, subCollection: "expenditure")
-        fetchUserCategory(id: getId, subCollection: "revenue")
-        fetchUserCategory(id: getId, subCollection: "account")
+        for subCollection in [SubCollection.expenditure, SubCollection.revenue, SubCollection.account] {
+            var contentArray = BBCoFireBaseManager.shared.fetchUserCategory(id: getId, subCollection: subCollection.rawValue) {
+                result in
+                switch subCollection {
+                case .expenditure:
+                    self.costContent = result
+                    print("=== costContent", self.costContent)
+                case .revenue:
+                    self.incomeContent = result
+                    print("=== incomeContent", self.incomeContent)
+                case .account:
+                    self.accountContent = result
+                    print("=== accountContent", self.accountContent)
+                }
+            }
+        }
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -300,31 +297,6 @@ class AddNewDataViewController: UIViewController {
         controller.addAction(okAction)
         // 顯示提示框
         self.present(controller, animated: true, completion: nil)
-    }
-
-    // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUserCategory(id: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
-        dataBase.collection("user/\(id)/\(subCollection)_category")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let category = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Category.self)
-                }
-
-                for num in 0..<category.count {
-                    switch subCollection {
-                    case "expenditure":
-                        self.costContent.append(category[num].title)
-                    case "revenue":
-                        self.incomeContent.append(category[num].title)
-                    default:
-                        self.accountContent.append(category[num].title)
-                    }
-                }
-            }
     }
 
     // 掃描QRCode error handle

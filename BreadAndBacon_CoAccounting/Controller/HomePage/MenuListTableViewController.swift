@@ -6,10 +6,8 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SwiftJWT
-import SwiftUI
 import SafariServices
 
 struct MyClaim: Claims {

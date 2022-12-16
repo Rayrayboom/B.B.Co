@@ -9,11 +9,17 @@ import Foundation
 import FirebaseFirestore
 import CoreMedia
 
+// Result type
+enum Result<Success, Failure> where Failure: Error {
+    case success(Success)
+    case failure(Failure)
+}
+
 class BBCoFireBaseManager {
     static let shared = BBCoFireBaseManager()
     let dataBase = Firestore.firestore()
 
-    // MARK: - 上傳資料到Firebase
+    // MARK: - addNewDataVC上傳資料到Firebase
     func createUserData(id: String, subCollection: String, amount: String, category: String, account: String, date: String, month: String, detail: String, categoryImage: String, segment: Int) {
         let documentRef = dataBase.collection("user")
             .document(id)
@@ -92,12 +98,10 @@ class BBCoFireBaseManager {
         }
     }
 
-    // MARK: - addNewDataVC待處理fetch category data
+    // addNewDataVC & editVC共用
     // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUserCategory(id: String, subCollection: String) -> [String] {
+    func fetchUserCategory(id: String, subCollection: String, completion: @escaping([String]) -> Void) {
         var contentArray: [String] = []
-        let group = DispatchGroup()
-        group.enter()
         dataBase.collection("user/\(id)/\(subCollection)_category")
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
@@ -110,16 +114,38 @@ class BBCoFireBaseManager {
                 for num in 0..<category.count {
                     contentArray.append(category[num].title)
                 }
-                group.leave()
+                completion(contentArray)
             }
-        group.notify(queue: .main) {
-            print("=== contentArrayFromManager", contentArray)
-        }
-        return contentArray
     }
     
-    
-    
+    // MARK: - categoryVC
+    // 從Firebase上fetch種類/帳戶資料給sideMenu
+    func fetchSideMenuCategory(id: String, subCollection: String, completion: @escaping(([Category]) -> Void)) {
+        var categoryData: [Category] = []
+        dataBase.collection("user/\(id)/\(subCollection)_category")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let category = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Category.self)
+                }
+                categoryData.append(contentsOf: category)
+                completion(categoryData)
+            }
+    }
+    // MARK: - notify
+    // 用category_id從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
+    func deleteSideMenuCategory(id: String, subCollection: String, indexPathRow: Int, dataId: String) {
+        let dataBase = Firestore.firestore()
+        let documentRef = dataBase
+            .collection("user")
+            .document(id)
+            .collection("\(subCollection)_category")
+            .document(dataId)
+        documentRef.delete()
+    }
+
     // MARK: - EditVC
     // edit user data
     func editUserData(tableView: UITableView, id: String, subCollection: String, amount: String, category: String, account: String, month: String, detail: String, categoryImage: String, segment: Int) {
@@ -203,7 +229,7 @@ class BBCoFireBaseManager {
             }
         }
     }
-    
+
     // 點選對應細項編輯資料
     func editUserDetail(tableView: UITableView, id: String, subCollection: String, documentID: String, amount: String, category: String, account: String, detail: String, category_image: String) {
         let group = DispatchGroup()
@@ -513,12 +539,6 @@ class BBCoFireBaseManager {
     }
 
     // MARK: - 刪除共同（共同帳本付款者）
-    // Result type
-    enum Result<Success, Failure> where Failure: Error {
-        case success(Success)
-        case failure(Failure)
-    }
-
     // 先搜尋co-account裡有哪些book包含getName(付款人-userName)
     func fetchUserAllCoBook(userName: String, completion: @escaping /*([Book]) -> Void*/ (Result<[Book], Error>) -> Void) {
         var bookContentData: [Book] = []
