@@ -142,42 +142,21 @@ class ViewController: UIViewController {
         self.fetchAllData()
     }
 
-    // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
-    func fetchUserSpecific(id: String, subCollection: String) {
-// MARK: - 注意！
-//        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
-//        month = BBCDateFormatter.shareFormatter.string(from: self.date)
-
-        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月 dd 日"格式來偵測
-        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        let dataBase = Firestore.firestore()
-        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
-        // 進入group
-        self.group.enter()
-        // 因為UIDatePicker一定要在main thread做，但group是在global執行，因此先在全域宣告一個Date型別的變數，當fetch data抓date picker的日期資料時，改用全域變數的date拿到date的資料(self.date)
-        dataBase.collection("user/\(id)/\(subCollection)")
-            .whereField("date", isEqualTo: BBCDateFormatter.shareFormatter.string(from: self.date))
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let account = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Account.self)
-                }
-                self.data.append(contentsOf: account)
-                // 每一支API打完之後leave group
-                self.group.leave()
-            }
-    }
-
+    // 抓指定日期所有subCollection data
     func fetchAllData() {
         // 點選新的日期時，先把存資料、種類的array清空，讓新fetch data塞最新資料，才不會一直append下去
         data = []
         category = []
-        fetchUserSpecific(id: getId, subCollection: "expenditure")
-        fetchUserSpecific(id: getId, subCollection: "revenue")
-        fetchUserSpecific(id: getId, subCollection: "account")
-
+        let subCollection = ["expenditure", "revenue", "account"]
+        
+        for num in subCollection {
+            group.enter()
+            BBCoFireBaseManager.shared.fetchUserSpecific(id: getId, subCollection: num, date: self.date) { [weak self] result in
+                guard let self = self else { return }
+                self.data = result
+                self.group.leave()
+            }
+        }
         // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
         group.notify(queue: .main) {
             self.checkDataCount()

@@ -66,17 +66,6 @@ class CategoryViewController: UIViewController {
     @objc func dismissCategory() {
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
-
-    // 用category_id從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(id: String, subCollection: String, indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase
-            .collection("user")
-            .document(id)
-            .collection("\(subCollection)_category")
-            .document(category[indexPathRow].id ?? "")
-        documentRef.delete()
-    }
 }
 
 extension CategoryViewController: UITableViewDelegate {
@@ -111,14 +100,11 @@ extension CategoryViewController: UITableViewDataSource {
             // 刪除firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             switch indexPathRow {
             case 0:
-//                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row, dataId: category[indexPathRow].id ?? "")
-                deleteSpecificData(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row, dataId: category[indexPath.row].id ?? "")
             case 1:
-//                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "revenue", indexPathRow: indexPath.row, dataId: category[indexPathRow].id ?? "")
-                deleteSpecificData(id: getId, subCollection: "revenue", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "revenue", indexPathRow: indexPath.row, dataId: category[indexPath.row].id ?? "")
             case 2:
-//                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "account", indexPathRow: indexPath.row, dataId: category[indexPathRow].id ?? "")
-                deleteSpecificData(id: getId, subCollection: "account", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "account", indexPathRow: indexPath.row, dataId: category[indexPath.row].id ?? "")
             default:
                 break
             }
