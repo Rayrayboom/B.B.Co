@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SideMenu
 
@@ -153,7 +152,8 @@ class ViewController: UIViewController {
             group.enter()
             BBCoFireBaseManager.shared.fetchUserSpecific(id: getId, subCollection: num, date: self.date) { [weak self] result in
                 guard let self = self else { return }
-                self.data = result
+                self.data += result
+                print("=== num", num)
                 self.group.leave()
             }
         }

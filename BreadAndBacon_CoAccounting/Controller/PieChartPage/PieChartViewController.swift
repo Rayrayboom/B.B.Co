@@ -7,7 +7,6 @@
 
 import UIKit
 import Charts
-import FirebaseFirestore
 import SwiftKeychainWrapper
 
 class PieChartViewController: UIViewController {
@@ -33,9 +32,9 @@ class PieChartViewController: UIViewController {
     var segmentTag: Int? {
         didSet {
             if segmentTag == 0 {
-                fetchUser(id: getId, subCollection: "expenditure")
+                fetchOverview(id: getId, subCollection: "expenditure")
             } else {
-                fetchUser(id: getId, subCollection: "revenue")
+                fetchOverview(id: getId, subCollection: "revenue")
             }
         }
     }
@@ -94,9 +93,9 @@ class PieChartViewController: UIViewController {
         // 一進頁面後預設顯示支出總覽(default)，每fetch一次資料data就會改動，在data didSet就會重新去畫pie chart
         switch segmentTag {
         case 1:
-            fetchUser(id: getId, subCollection: "revenue")
+            fetchOverview(id: getId, subCollection: "revenue")
         default:
-            fetchUser(id: getId, subCollection: "expenditure")
+            fetchOverview(id: getId, subCollection: "expenditure")
         }
         pieTableView.reloadData()
     }
@@ -104,9 +103,9 @@ class PieChartViewController: UIViewController {
     // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)，只要重新fetch一次資料即可，因為每fetch一次data就會更新，data didSet就會執行重新畫pie chart的動作
     @objc func didMonthChanged() {
         if segmentTag == 1 {
-            fetchUser(id: getId, subCollection: "revenue")
+            fetchOverview(id: getId, subCollection: "revenue")
         } else {
-            fetchUser(id: getId, subCollection: "expenditure")
+            fetchOverview(id: getId, subCollection: "expenditure")
         }
         BBCoLoading.loading(view: self.view)
     }
@@ -121,9 +120,9 @@ class PieChartViewController: UIViewController {
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if self.segmentTag == 0 {
-                self.fetchUser(id: self.getId, subCollection: "expenditure")
+                self.fetchOverview(id: self.getId, subCollection: "expenditure")
             } else {
-                self.fetchUser(id: self.getId, subCollection: "revenue")
+                self.fetchOverview(id: self.getId, subCollection: "revenue")
             }
             self.refreshControl.endRefreshing()
         }
@@ -296,32 +295,18 @@ class PieChartViewController: UIViewController {
     }
 
     // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
-    func fetchUser(id: String, subCollection: String) {
+    func fetchOverview(id: String, subCollection: String) {
         data = []
-//        total = [:]
-//        totalData = []
-        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
-        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
-        let dataBase = Firestore.firestore()
-        self.group.enter()
-        print("this is month \(BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))")
-        // 抓取哪個月份由monthDatePicker.date決定
-        dataBase.collection("user/\(id)/\(subCollection)")
-            .whereField("month", isEqualTo: BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let account = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Account.self)
-                }
-                self.data.append(contentsOf: account)
-                print("data here \(self.data)")
-                self.group.leave()
-            }
+        group.enter()
+        BBCoFireBaseManager.shared.fetchMonthOverview(id: id, subCollection: subCollection, monthData: monthDatePicker.date) { result in
+            self.data = result
+            print("=== data from result", self.data)
+            self.group.leave()
+        }
         // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
         group.notify(queue: .main) {
             self.checkDataCount()
+            print("=== in notify")
         }
     }
 }
@@ -342,10 +327,10 @@ extension PieChartViewController: UITableViewDelegate {
                 switch self.segmentTag {
                 case 1:
                     BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
-                    self.fetchUser(id: self.getId, subCollection: "revenue")
+                    self.fetchOverview(id: self.getId, subCollection: "revenue")
                 default:
                     BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
-                    self.fetchUser(id: self.getId, subCollection: "expenditure")
+                    self.fetchOverview(id: self.getId, subCollection: "expenditure")
                 }
             }
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])

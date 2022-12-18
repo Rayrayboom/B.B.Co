@@ -264,6 +264,28 @@ class BBCoFireBaseManager {
         let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(dataId)
         documentRef.delete()
     }
+    
+    // MARK: - pieChartVC
+    // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
+    func fetchMonthOverview(id: String, subCollection: String, monthData: Date, completion: @escaping([Account]) -> Void) {
+        var userData: [Account] = []
+        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
+        // 抓取哪個月份由monthDatePicker.date決定
+        dataBase.collection("user/\(id)/\(subCollection)")
+            .whereField("month", isEqualTo: BBCDateFormatter.shareFormatter.string(from: monthData))
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                userData.append(contentsOf: account)
+                print("=== data here \(userData)")
+                completion(userData)
+            }
+    }
 
     // MARK: - homeVC
     // 從Firebase上抓當前選擇日期的資料，並fetch資料下來

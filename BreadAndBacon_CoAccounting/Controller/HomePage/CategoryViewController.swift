@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftKeychainWrapper
 
 class CategoryViewController: UIViewController {

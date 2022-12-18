@@ -180,8 +180,6 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
 
             // second login
             else {
-                // TODO: - get name -> vc name
-                // TODO: - get name from firebase "id"
                 let dataBase = Firestore.firestore()
                 let docRef = dataBase.collection("user").document(user)
                 // 判斷user裡的document有沒有對應的user id，有的話表示已登入過，直接進到user document拿user name(因為第二次登入後apple不會再給name,email)，不存在表示沒有建立過帳號
