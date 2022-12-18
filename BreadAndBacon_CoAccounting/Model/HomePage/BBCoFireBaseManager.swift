@@ -350,6 +350,24 @@ class BBCoFireBaseManager {
         documentRef.delete()
     }
 
+    // 從Firebase上抓符合book id的document，並fetch資料下來
+    func fetchBookSpecific(collection: String, field: String, inputID: String, completion: @escaping([Book]) -> Void) {
+        var specificBook: [Book] = []
+        dataBase.collection(collection)
+            .whereField(field, isEqualTo: inputID)
+            .getDocuments { [weak self] snapshot, error in
+                guard let self = self else { return }
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let book = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Book.self)
+                }
+                specificBook.append(contentsOf: book)
+                completion(specificBook)
+            }
+    }
+
     // 更新付款人到對應帳本
     func updateUserToBook(bookIdentifier: String, userId: String, userContentData: [User], userNameData: [String], completion: (() -> Void)? = nil) {
         var userContentArray: [User] = []

@@ -153,7 +153,6 @@ class ViewController: UIViewController {
             BBCoFireBaseManager.shared.fetchUserSpecific(id: getId, subCollection: num, date: self.date) { [weak self] result in
                 guard let self = self else { return }
                 self.data += result
-                print("=== num", num)
                 self.group.leave()
             }
         }

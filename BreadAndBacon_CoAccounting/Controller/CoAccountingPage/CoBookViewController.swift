@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SPAlert
 
@@ -70,7 +69,6 @@ class CoBookViewController: UIViewController {
         // tableView top內縮10 points
         bookTableView.contentInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
     }
-    // MARK: -待確認要放在哪裡才會顯示對的功能
     // 當日尚無資料者顯示“目前還沒共同帳本”
     func checkDataCount() {
         if self.data.isEmpty {
@@ -150,7 +148,7 @@ class CoBookViewController: UIViewController {
         // 按下OK執行新增account book(使用者輸入accounnt book name)
         let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
-            self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
+            self.checkBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -159,40 +157,36 @@ class CoBookViewController: UIViewController {
         present(controller, animated: true)
     }
 
-    // 從Firebase上抓符合book id的document，並fetch資料下來
-    func fetchBookSpecific(collection: String, field: String, inputID: String) {
-        specificBook = []
-        let dataBase = Firestore.firestore()
-        dataBase.collection(collection)
-            .whereField(field, isEqualTo: inputID)
-            .getDocuments { [weak self] snapshot, error in
-                guard let self = self else { return }
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let book = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Book.self)
-                }
-
-                // error handle，輸入book ID錯誤時，跳出提醒視窗
-                if book.isEmpty {
-                    self.controller = UIAlertController(title: "book ID 錯誤", message: "沒有這本帳本哦，請再輸入一次", preferredStyle: .alert)
-                    // 建立[確認]按鈕
-                    let okAction = UIAlertAction(
-                        title: "我知道了",
-                        style: .default, handler: nil)
-                    self.controller.addAction(okAction)
-                    // 顯示提示框
-                    self.present(self.controller, animated: true, completion: nil)
-                } else {
-                    // book ID輸入正確的話就執行updateUserToBook func
-                    self.specificBook.append(contentsOf: book)
-                    self.updateDataAndfetchCoBook(bookIdentifier: self.specificBook[0].id, userId: self.getId, userContentData: self.userContent, userNameData: self.userName, userName: self.getName)
-                    // success alert animation
-                    SPAlert.successAlert()
-                    print("I find the document \(self.specificBook)")
-                }
+    func checkBookSpecific(collection: String, field: String, inputID: String) {
+        group.enter()
+        BBCoFireBaseManager.shared
+            .fetchBookSpecific(collection: collection, field: field, inputID: inputID) { result in
+                self.specificBook = result
+                self.group.leave()
             }
+        group.notify(queue: .main) {
+            self.checkCorrectBook(book: self.specificBook)
+            self.bookTableView.reloadData()
+        }
+    }
+    
+    func checkCorrectBook(book: [Book]) {
+        // error handle，輸入book ID錯誤時，跳出提醒視窗
+        if book.isEmpty {
+            self.controller = UIAlertController(title: "book ID 錯誤", message: "沒有這本帳本哦，請再輸入一次", preferredStyle: .alert)
+            // 建立[確認]按鈕
+            let okAction = UIAlertAction(
+                title: "我知道了",
+                style: .default, handler: nil)
+            self.controller.addAction(okAction)
+            // 顯示提示框
+            self.present(self.controller, animated: true, completion: nil)
+        } else {
+            // book ID輸入正確的話就執行updateUserToBook func
+            self.updateDataAndfetchCoBook(bookIdentifier: book[0].id, userId: self.getId, userContentData: self.userContent, userNameData: self.userName, userName: self.getName)
+            // success alert animation
+            SPAlert.successAlert()
+        }
     }
 
     // 更新付款人到帳本後再fetch一次資料，並在main thread更新(等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示)
