@@ -35,6 +35,23 @@ struct Model {
 }
 
 class AddNewDataViewController: UIViewController {
+    enum Segment: CaseIterable {
+        case expenditure
+        case revenue
+        case account
+    }
+    enum Section: CaseIterable {
+        case date
+        case category
+        case qrcode
+        case detail
+    }
+    enum Row: CaseIterable {
+        case amount
+        case category
+        case fromAccount
+    }
+
     // calculator manager
     var logic = BBCoLogicManager()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
@@ -205,17 +222,6 @@ class AddNewDataViewController: UIViewController {
         // tableView top內縮10 points
         addNewDataTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
-
-
-// MARK: - TODO: 月曆優化（待處理）
-//        let blackView = UIView(frame: UIScreen.main.bounds)
-//        blackView.backgroundColor = .black
-//        blackView.alpha = 0
-//        presentingViewController?.view.addSubview(blackView)
-//
-//        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
-//            blackView.alpha = 0.5
-//        }
     }
 
     // segmentControl 偵測改值狀態
@@ -407,54 +413,54 @@ extension AddNewDataViewController: UITableViewDelegate {
 
 extension AddNewDataViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 3 {
+        let section = Section.allCases[indexPath.section]
+        switch section {
+        case .detail:
             return 250
-        }
-//        else if indexPath.section == 1 {
-//            return 80
-//        }
-        else {
+        default:
             return UITableView.automaticDimension
         }
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4 //5
+        return 4
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[section]
         switch section {
-        case 0:
+        case .date:
             return 1
-//        case 1:
-//            return 1
-        case 1:
+        case .category:
             return costCategory.count
-        case 2:
-            if segmentTag == 2 {
+        case .qrcode:
+            switch segment {
+            case .account:
                 return 0
-            } else {
+            default:
                 return 1
             }
-        default:
+        case .detail:
             return 1
         }
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[section]
         switch section {
-        case 0:
+        case .date:
             return "選擇日期"
-//        case 1:
-//            return "選擇圖案"
-        case 1:
+        case .category:
             return "選擇細項"
-        case 2:
-            if segmentTag == 2 {
+        case .qrcode:
+            switch segment {
+            case .account:
                 return nil
-            } else {
+            default:
                 return "使用QRCode掃描發票"
             }
-        default:
+        case .detail:
             return "備註"
         }
     }
@@ -463,8 +469,13 @@ extension AddNewDataViewController: UITableViewDataSource {
     // swiftlint:disable cyclomatic_complexity
     // MARK: - TableView DataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if segmentTag == 2 {
-            if indexPath.section == 0 {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[indexPath.section]
+        let row = Row.allCases[indexPath.row]
+        switch segment {
+        case .account:
+            switch section {
+            case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
                     withIdentifier: "dateCell") as? AddDateTableViewCell
                 else {
@@ -475,19 +486,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
 
                 return dateCell
-            }
-//            else if indexPath.section == 1 {
-//                guard let imageCell = tableView.dequeueReusableCell(
-//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-//                else {
-//                    fatalError("can not create imageCell")
-//                }
-////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-//                imageCell.configure(with: models)
-//
-//                return imageCell
-//            }
-            else if indexPath.section == 1 {
+            case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -496,15 +495,15 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: transferCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
-                switch indexPath.row {
-                case 0:
+                switch row {
+                case .amount:
                     data.amountTextField = addDataCell.amountFromCalculator
                     addDataCell.indexPath = indexPath
                 default:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
                 return addDataCell
-            } else if indexPath.section == 2 {
+            case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
@@ -513,7 +512,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
-            } else {
+            case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
                     withIdentifier: "detailCell") as? DetailTableViewCell
                 else {
@@ -522,9 +521,9 @@ extension AddNewDataViewController: UITableViewDataSource {
                 detailCell.delegate = self
                 return detailCell
             }
-// MARK: - 支出、收入segemant
-        } else {
-            if indexPath.section == 0 {
+        default:
+            switch section {
+            case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
                     withIdentifier: "dateCell") as? AddDateTableViewCell
                 else {
@@ -544,19 +543,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let monthData = data.dateTime.prefix(11)
                 data.monthTime = String(monthData)
                 return dateCell
-            }
-//            else if indexPath.section == 1 {
-//                guard let imageCell = tableView.dequeueReusableCell(
-//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-//                else {
-//                    fatalError("can not create imageCell")
-//                }
-////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-//                imageCell.configure(with: models)
-//
-//                return imageCell
-//            }
-            else if indexPath.section == 1 {
+            case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -565,8 +552,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: costCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
-                switch indexPath.row {
-                case 0:
+                switch row {
+                case .amount:
                     addDataCell.contentTextField.text = data.amountTextField
                     addDataCell.indexPath = indexPath
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
@@ -574,7 +561,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                         // 發票amount資料要塞進data.amountTextField才會真的吃到資料
                         addDataCell.contentTextField.text = data.amountTextField
                     }
-                case 1:
+                case .category:
                     addDataCell.contentTextField.text = data.categoryTextField
                     addDataCell.chooseImage.image = data.categoryImageName.toImage()
                     switch segmentTag {
@@ -583,11 +570,11 @@ extension AddNewDataViewController: UITableViewDataSource {
                     default:
                         addDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     }
-                default:
+                case .fromAccount:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
                 return addDataCell
-            } else if indexPath.section == 2 {
+            case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
@@ -596,7 +583,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 支出、收入要顯示QRCode scanner
                 qrCell.qrButton.isHidden = false
                 return qrCell
-            } else {
+            case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
                     withIdentifier: "detailCell") as? DetailTableViewCell
                 else {

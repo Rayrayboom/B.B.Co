@@ -564,8 +564,7 @@ class BBCoFireBaseManager {
 
     // 新增對應category細項
     func createCategory(id: String, subCollection: String, content: String) {
-        let db = Firestore.firestore()
-        let documentRef = db.collection("user").document(id).collection(subCollection).document()
+        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document()
         let collection = Category(id: documentRef.documentID, title: content)
 
         do {

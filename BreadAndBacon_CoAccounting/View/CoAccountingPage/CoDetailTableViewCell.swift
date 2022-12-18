@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftUI
 
 protocol CoDetailTableViewCellDelegate: AnyObject {
