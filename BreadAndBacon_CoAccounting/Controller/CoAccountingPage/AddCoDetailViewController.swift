@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
-import CoreAudio
 import SPAlert
 
 // MARK: - expenditure
@@ -71,7 +69,9 @@ class AddCoDetailViewController: UIViewController {
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
         // 抓取現有user data
-        fetchUser(didSelecetedBook: didSelecetedBook)
+        BBCoFireBaseManager.shared.fetchMember(didSelecetedBook: didSelecetedBook) { result in
+            self.userContent += result
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -113,23 +113,6 @@ class AddCoDetailViewController: UIViewController {
         controller.addAction(okAction)
         // 顯示提示框
         self.present(controller, animated: true, completion: nil)
-    }
-
-    // 從Firebase上fetch全部user資料，並append到userContent裡
-    func fetchUser(didSelecetedBook: String) {
-        userContent = []
-        let dataBase = Firestore.firestore()
-        let docRef = dataBase.collection("co-account").document(didSelecetedBook)
-
-        docRef.getDocument { (document, error) in
-            if let document = document, document.exists,
-               let data = try? document.data(as: Book.self)
-            {
-                self.userContent.append(contentsOf: data.userId)
-            } else {
-                print("Document does not exist")
-            }
-        }
     }
 }
 
@@ -231,7 +214,6 @@ extension AddCoDetailViewController: CoTimeTableViewCellDelegate {
     func getDate(_: CoTimeTableViewCell, sender: UIDatePicker) {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
         data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
-        print("=== is delegate datetime", data.dateTime)
     }
 }
 

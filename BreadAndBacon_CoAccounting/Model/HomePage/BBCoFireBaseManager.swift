@@ -282,7 +282,6 @@ class BBCoFireBaseManager {
                     try? snapshot.data(as: Account.self)
                 }
                 userData.append(contentsOf: account)
-                print("=== data here \(userData)")
                 completion(userData)
             }
     }
@@ -506,6 +505,23 @@ class BBCoFireBaseManager {
         }
     }
 
+    // 從Firebase上fetch全部user資料，並append到userContentData裡
+    func fetchMember(didSelecetedBook: String, completion: @escaping(([String]) -> Void)) {
+        var userContentData: [String] = []
+        let docRef = dataBase.collection("co-account").document(didSelecetedBook)
+
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists,
+               let data = try? document.data(as: Book.self)
+            {
+                userContentData.append(contentsOf: data.userId)
+                completion(userContentData)
+            } else {
+                print("Document does not exist")
+            }
+        }
+    }
+
     // 點選對應細項編輯資料
     func editUser(tableView: UITableView, document: String, subCollection: String, documentID: String, date: String, amount: String, category: String, user: String) {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
@@ -601,7 +617,6 @@ class BBCoFireBaseManager {
                         try? snapshot.data(as: Book.self)
                     }
                     bookContentData.append(contentsOf: book)
-                    print("=== is bookContent", bookContentData)
                     completion(.success(bookContentData))
                 }
             }
