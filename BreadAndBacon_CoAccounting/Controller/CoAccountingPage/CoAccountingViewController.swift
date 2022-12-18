@@ -7,7 +7,6 @@
 
 import UIKit
 import Charts
-import FirebaseFirestore
 
 class CoAccountingViewController: UIViewController {
     var pieChartView: PieChartView!
@@ -81,7 +80,7 @@ class CoAccountingViewController: UIViewController {
         // 進入帳本內部時隱藏下方tabbar
         self.tabBarController?.tabBar.isHidden = true
         // 畫面一有變動就會去重新fetch一次data並把資料&畫面(pie + tableView)更新到最新狀態
-        fetchBookDetail(document: didSelecetedBook, subCollection: "co_expenditure")
+        fetchCoBookDetail(document: didSelecetedBook, subCollection: "co_expenditure")
         bookDetailTableView.reloadData()
     }
 
@@ -119,7 +118,7 @@ class CoAccountingViewController: UIViewController {
     // refreshControl func
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.fetchBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
+            self.fetchCoBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
             self.refreshControl.endRefreshing()
         }
     }
@@ -147,24 +146,14 @@ class CoAccountingViewController: UIViewController {
         bookDetailTableView.reloadData()
     }
 
-    // 從Firebase上fetch對應book的detail資料
-    func fetchBookDetail(document: String, subCollection: String) {
+    func fetchCoBookDetail(document: String, subCollection: String) {
         data = []
-        let dataBase = Firestore.firestore()
-        // 進入group
-        self.group.enter()
-        dataBase.collection("co-account/\(document)/\(subCollection)")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let account = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Account.self)
-                }
-                self.data.append(contentsOf: account)
-                print("book datail here \(self.data)")
-                self.group.leave()
-            }
+        group.enter()
+        BBCoFireBaseManager.shared.fetchCoBookDetail(document: document, subCollection: subCollection) { result in
+            self.data = result
+            self.group.leave()
+        }
+
         group.notify(queue: .main) {
             self.checkDataCount()
         }
@@ -345,7 +334,7 @@ extension CoAccountingViewController: UITableViewDelegate {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
-                self.fetchBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
+                self.fetchCoBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
             }
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
         }

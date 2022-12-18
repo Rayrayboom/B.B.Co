@@ -445,6 +445,23 @@ class BBCoFireBaseManager {
     }
 
     // MARK: - CoAccountingVC
+    // 從Firebase上fetch對應book的detail資料
+    func fetchCoBookDetail(document: String, subCollection: String, completion: @escaping(([Account]) -> Void)) {
+        var coBookDetailData: [Account] = []
+        dataBase.collection("co-account/\(document)/\(subCollection)")
+            .getDocuments { snapshot, error in
+                guard let snapshot = snapshot else {
+                    return
+                }
+                let account = snapshot.documents.compactMap { snapshot in
+                    try? snapshot.data(as: Account.self)
+                }
+                coBookDetailData.append(contentsOf: account)
+                print("book datail here \(coBookDetailData)")
+                completion(coBookDetailData)
+            }
+    }
+    
     // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
     func deleteSpecificData(accountData: [Account], document: String, subCollection: String, indexPathRow: Int) {
         let documentRef = dataBase.collection("co-account").document(document).collection(subCollection).document(accountData[indexPathRow].id)
