@@ -133,35 +133,10 @@ class AddNewDataViewController: UIViewController {
         self.present(presentQRScanVC, animated: true)
     }
 
-// MARK: - TODO: 月曆優化（待處理）
-//    @IBAction func presentCalendar(_ sender: UIButton) {
-//        let addNewDataStoryboard: UIStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
-//        guard let presentCalendarVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calendarVC") as? CalendarViewController else {
-//            fatalError("can not present calendarVC")
-//        }
-//
-//        presentCalendarVC.modalPresentationStyle = .currentContext
-//        present(presentCalendarVC, animated: true)
-//    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // 使用者登入後就可以抓到存在keyChain裡的user id
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
-
-        // 測試存images(暫時) for tableView with collectionView
-//        models.append(Model(text: "早餐", imageName: "Breakfast"))
-//        models.append(Model(text: "午餐", imageName: "Lunch"))
-//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-//        models.append(Model(text: "晚餐", imageName: "Dinner"))
-//        models.append(Model(text: "交通", imageName: "Transportation"))
-//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
-//        models.append(Model(text: "早餐", imageName: "Breakfast"))
-//        models.append(Model(text: "午餐", imageName: "Lunch"))
-//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-//        models.append(Model(text: "晚餐", imageName: "Dinner"))
-//        models.append(Model(text: "交通", imageName: "Transportation"))
-//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
 
         // 註冊image tableView cell
         addNewDataTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)

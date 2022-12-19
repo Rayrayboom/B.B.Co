@@ -24,6 +24,23 @@ struct DataModel {
 }
 
 class EditViewController: UIViewController {
+    enum Segment: CaseIterable {
+        case expenditure
+        case revenue
+        case account
+    }
+    enum Section: CaseIterable {
+        case date
+        case category
+        case qrcode
+        case detail
+    }
+    enum Row: CaseIterable {
+        case amount
+        case category
+        case fromAccount
+    }
+
     // 接homeVC點選對應cell的單筆資料，並存到editVC struct裡
     var data: Account? {
         didSet {
@@ -112,9 +129,6 @@ class EditViewController: UIViewController {
         presentEditQRScanVC.delegate = self
         self.present(presentEditQRScanVC, animated: true)
     }
-
-// MARK: - TODO
-    // 偵測第幾個segment control後直接在新VC上顯示對應index
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -387,9 +401,11 @@ extension EditViewController: UITableViewDelegate {
 
 extension EditViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 3 {
+        let section = Section.allCases[indexPath.section]
+        switch section {
+        case .detail:
             return 250
-        } else {
+        default:
             return UITableView.automaticDimension
         }
     }
@@ -399,59 +415,55 @@ extension EditViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[section]
         switch section {
-        case 0:
+        case .date:
             return 1
-//        case 1:
-//            return 1
-        case 1:
+        case .category:
             return costCategory.count
-        case 2:
-            if segmentTag == 2 {
+        case .qrcode:
+            switch segment {
+            case .account:
                 return 0
-            } else {
+            default:
                 return 1
             }
-        default:
+        case .detail:
             return 1
         }
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[section]
         switch section {
-        case 0:
+        case .date:
             return "選擇日期"
-//        case 1:
-//            return "選擇圖案"
-        case 1:
+        case .category:
             return "選擇細項"
-        case 2:
-            if segmentTag == 2 {
+        case .qrcode:
+            switch segment {
+            case .account:
                 return nil
-            } else {
+            default:
                 return "使用QRCode掃描發票"
             }
-        default:
+        case .detail:
             return "備註"
         }
     }
-    
-//    enum Section: Int {
-//        case amount = 0
-//        case catrgory = 1
-//        case qrCode = 2
-//        case detail = 3
-//    }
 
 // MARK: - 轉帳segemant
     // swiftlint:disable cyclomatic_complexity
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard var section = Section(rawValue: indexPath.row) else {
-//            fatalError("can not upwrapped section")
-//        }
-        
-        if segmentTag == 2 {
-            if indexPath.section == 0 {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[indexPath.section]
+        let row = Row.allCases[indexPath.row]
+        switch segment {
+        case .account:
+            switch section {
+            case .date:
                 guard let editTimeCell = tableView.dequeueReusableCell(
                     withIdentifier: "editTimeCell") as? EditTimeTableViewCell
                 else {
@@ -459,7 +471,7 @@ extension EditViewController: UITableViewDataSource {
                 }
                 editTimeCell.setDate(dateTime: editData.dateTime)
                 return editTimeCell
-            } else if indexPath.section == 1 {
+            case .category:
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
@@ -476,14 +488,14 @@ extension EditViewController: UITableViewDataSource {
                     editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: nil, content: editData.accountTextField, image: nil, segmentTag: segmentTag)
                 }
                 return editDataCell
-            } else if indexPath.section == 2 {
+            case .qrcode:
                 guard let editQRCell = tableView.dequeueReusableCell(
                     withIdentifier: "editQRCell") as? EditQRCodeTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
                 return editQRCell
-            } else {
+            case .detail:
                 guard let editDetailCell = tableView.dequeueReusableCell(
                     withIdentifier: "editDetailCell") as? EditDetailTableViewCell
                 else {
@@ -493,9 +505,9 @@ extension EditViewController: UITableViewDataSource {
                 editDetailCell.config(detailText: editData.detailTextView)
                 return editDetailCell
             }
-// MARK: - 支出、收入segemant
-        } else {
-            if indexPath.section == 0 {
+        default:
+            switch section {
+            case .date:
                 guard let editTimeCell = tableView.dequeueReusableCell(
                     withIdentifier: "editTimeCell") as? EditTimeTableViewCell
                 else {
@@ -503,7 +515,7 @@ extension EditViewController: UITableViewDataSource {
                 }
                 editTimeCell.setDate(dateTime: editData.dateTime)
                 return editTimeCell
-            } else if indexPath.section == 1 {
+            case .category:
                 guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: "editDataCell") as? EditDataTableViewCell else {
                     fatalError("can not create cell")
                 }
@@ -524,14 +536,14 @@ extension EditViewController: UITableViewDataSource {
                     editDataCell.setContentAndImage(contentPickerView: accountContent, imagePickerView: nil, content: editData.accountTextField, image: nil, segmentTag: segmentTag)
                 }
                 return editDataCell
-            } else if indexPath.section == 2 {
+            case .qrcode:
                 guard let editQRCell = tableView.dequeueReusableCell(
                     withIdentifier: "editQRCell") as? EditQRCodeTableViewCell
                 else {
                     fatalError("can not create cell")
                 }
                 return editQRCell
-            } else {
+            case .detail:
                 guard let editDetailCell = tableView.dequeueReusableCell(
                     withIdentifier: "editDetailCell") as? EditDetailTableViewCell
                 else {
