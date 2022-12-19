@@ -26,9 +26,7 @@ struct Account: Codable {
     var amount: String
     var category: String?
     var account: String?
-    // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
     var date: String
-    // month用string型別存取"年/月"，讓pie chart直接偵測該月份抓整月資訊
     var month: String
     var destinationAccountId: String?
     var sourceAccountId: String?
@@ -37,9 +35,7 @@ struct Account: Codable {
     var revenueId: String?
     var detail: String?
     var user: String?
-    // 記個人記帳圖案資料
     var categoryImage: String?
-    // 儲存單筆資料種類來源(expenditure(0), revenue(1), account(2))
     var segmentTag: Int?
 
     enum CodingKeys: String, CodingKey {
@@ -55,9 +51,7 @@ struct Account: Codable {
         case expenditureId = "expenditure_id"
         case revenueId = "revenue_id"
         case detail
-        // 給co_accounting用的型別，因為要記錄是哪個使用者的支出
         case user
-        // 記個人記帳圖案資料
         case categoryImage = "category_image"
         case segmentTag = "segment_tag"
     }

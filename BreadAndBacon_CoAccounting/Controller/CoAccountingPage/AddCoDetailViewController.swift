@@ -8,35 +8,26 @@
 import UIKit
 import SPAlert
 
-// MARK: - expenditure
 struct CoDataModel {
     var itemTextField: String = ""
     var amountTextField: String = ""
     var userTextField: String = ""
-    // date改用string型別存取，因為只需要存"年/月/日"，存時間"時/分"的話後續無法抓取資料
     var dateTime: String = ""
     var monthTime: String = ""
 }
 
 class AddCoDetailViewController: UIViewController {
-    // 判斷是否是要來編輯，true是來編輯資料，false則是新增資料
     var isEdit: Bool = false
     let sectionTitle = ["日期", "品項", "金額", "付款人"]
     var tapIndexpath: IndexPath?
     var data = CoDataModel()
-    // 用來儲存目前已新增的資料array(資料從CoAccountVC傳來)
     var currentData: Account?
-
-    // 用來存所點選之帳本的id(用來新增對應帳本detail)
     var didSelecetedBook: String = ""
-
-    // 存付款者textField picker資料，後續由加好友時抓取firebase資料，用didSet
     var userContent: [String] = [] {
         didSet {
             coDetailTableView.reloadData()
         }
     }
-    // alertController
     var controller = UIAlertController()
     var closure: ((String) -> (Void))?
 
@@ -47,7 +38,6 @@ class AddCoDetailViewController: UIViewController {
     }
 
     @IBOutlet weak var saveCoDetailBO: UIButton!
-    // 存detail到firebase並dismiss addCoDetailVC
     @IBAction func saveCoDetail(_ sender: Any) {
         if data.amountTextField == "" {
             noAmountAlert()
@@ -58,7 +48,6 @@ class AddCoDetailViewController: UIViewController {
         } else {
             BBCoFireBaseManager.shared.editUser(tableView: coDetailTableView, document: didSelecetedBook, subCollection: "co_expenditure", documentID: currentData?.id ?? "", date: data.dateTime, amount: data.amountTextField, category: data.itemTextField, user: data.userTextField)
         }
-        // success alert animation
         SPAlert.successAlert()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
     }
@@ -68,7 +57,6 @@ class AddCoDetailViewController: UIViewController {
         setupUI()
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
-        // 抓取現有user data
         BBCoFireBaseManager.shared.fetchMember(didSelecetedBook: didSelecetedBook) { result in
             self.userContent += result
         }
@@ -83,7 +71,6 @@ class AddCoDetailViewController: UIViewController {
         view.endEditing(true)
     }
 
-    // UI
     func setupUI() {
         saveCoDetailBO.layer.cornerRadius = 10
         self.titleLabel.text = isEdit ? "編輯 支出" : "新 支出"
@@ -102,27 +89,20 @@ class AddCoDetailViewController: UIViewController {
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
     }
 
-    // 當金額為空值時，跳出警告訊息
     func noAmountAlert() {
-        // 掃描時跳出alert提醒使用者掃描左邊QRCode
         controller = UIAlertController(title: "金額不得為空", message: "請輸入金額", preferredStyle: .alert)
-        // 建立[我知道了]按鈕
         let okAction = UIAlertAction(
             title: "我知道了",
             style: .default, handler: nil)
         controller.addAction(okAction)
-        // 顯示提示框
         self.present(controller, animated: true, completion: nil)
     }
 }
 
 extension AddCoDetailViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // 點選cell時觸發點選效果
         tableView.deselectRow(at: indexPath, animated: true)
-        // 把當前點到的indexPath傳到cell的indexPath
         tapIndexpath = indexPath
-        // 點擊cell時收起鍵盤
         view.endEditing(true)
         print(indexPath)
     }
@@ -165,7 +145,7 @@ extension AddCoDetailViewController: UITableViewDataSource {
         coDetailCell.contentTextField.textAlignment = .center
 
         switch indexPath.section {
-        case 0: // 針對time設定
+        case 0: 
             guard let coTimeCell = tableView.dequeueReusableCell(withIdentifier: "coTimeCell") as? CoTimeTableViewCell
             else {
                 fatalError("can not create coTimeCell")
@@ -173,36 +153,23 @@ extension AddCoDetailViewController: UITableViewDataSource {
             coTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
             coTimeCell.delegate = self
-            // 執行點選cell的datePicker時給值，回傳給coAccountVC的data.dateTime
             coTimeCell.config()
-            // 編輯狀態時偵測被點選品項並塞值給datePicker，若非編輯狀態(新增)則帶入當天日期
             data.dateTime = isEdit ? (currentData?.date)! : data.dateTime
-// MARK: - have "!" issue & will crash (新增完品項後不能直接點編輯)
-//            guard let dateTimeInDate = BBCDateFormatter.shareFormatter.date(from: data.dateTime) else {
-//                fatalError("can not transfer date")
-//            }
-// MARK: - crash here "BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date() : Date()"
-            // 讓edit/addNew的time cell datePicker顯示當前所選取細項的date
             coTimeCell.datePicker.date = isEdit ?  BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date() : Date()
             return coTimeCell
 
-        case 3: // 針對付款者textField設定，編輯狀態時偵測被點選品項並塞值給textField
-            // 計算userContent裡面有幾個user的資料，因為是一筆一筆的array，所以用userContent.count，透過for迴圈把array裡的user name append進去content array裡(要塞進pickerView的資料)
+        case 3:
             for user in userContent {
                 coDetailCell.content.append(user)
             }
-// MARK: - have "!" issue
-//            guard let user = currentData[tapIndexpath?.row ?? 0].user else { fatalError() }
             data.userTextField = isEdit ? (currentData?.user)! : ""
             coDetailCell.contentTextField.text = isEdit ? data.userTextField : ""
             return coDetailCell
-        case 2: // 針對金額textField設定，編輯狀態時偵測被點選品項並塞值給textField
+        case 2:
             data.amountTextField = isEdit ? (currentData?.amount)! : ""
             coDetailCell.contentTextField.text = isEdit ? data.amountTextField : ""
             return coDetailCell
-        default: // 針對品項textField設定，編輯狀態時偵測被點選品項並塞值給textField
-// MARK: - have "!" issue
-//            guard let category = currentData[tapIndexpath?.row ?? 0].category else { fatalError() }
+        default:
             data.itemTextField = isEdit ? (currentData?.category)! : ""
             coDetailCell.contentTextField.text = isEdit ? data.itemTextField : ""
             return coDetailCell

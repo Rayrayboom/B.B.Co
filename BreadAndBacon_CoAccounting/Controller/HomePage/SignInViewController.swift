@@ -20,9 +20,8 @@ struct MyClaims: Claims {
 class SignInViewController: UIViewController {
     private let signInButton = ASAuthorizationAppleIDButton()
     var userData = ""
-    // 存JWT
+    // store JWT
     var signedJWT: String = ""
-    // alertController
     var controller = UIAlertController()
     var costContent: [String] = ["早餐", "午餐", "晚餐", "宵夜" ]
     var incomeContent: [String] = ["現金", "獎金"]
@@ -43,14 +42,12 @@ class SignInViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // 判斷當使用者已登入後，重開app不需再登入一次，因為登出會刪掉keychain的user id，故用這個條件來判斷
         if (KeychainWrapper.standard.string(forKey: "id") != nil) {
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let viewController = mainStoryboard.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
             UIApplication.shared.windows.first?.rootViewController = viewController
             UIApplication.shared.windows.first?.makeKeyAndVisible()
         } else {
-            // 先把sign in button加入畫面
             view.addSubview(signInButton)
             signInButton.addTarget(self, action: #selector(didTapSignIn), for: .touchUpInside)
         }
@@ -76,7 +73,7 @@ class SignInViewController: UIViewController {
     }
 
     @objc func didTapSignIn() {
-        // 按下登入時取得JWT token
+        // get JWT token when user press sign-in button
         makeSwiftJWT()
         let provider = ASAuthorizationAppleIDProvider()
         let request = provider.createRequest()
@@ -109,7 +106,7 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
         print("sign in failed")
     }
 
-    // 取得refresh token，並存在keyChain裡
+    // get refresh token and store in keyChain
     func getRefreshToken(codeString: String) {
         let url = URL(string: "https://appleid.apple.com/auth/token?client_id=\(APIKey.bundleID)&client_secret=\(signedJWT)&grant_type=authorization_code&code=\(codeString)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "https://apple.com")!
         var request = URLRequest(url: url)
@@ -150,7 +147,6 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             let firstName = credentials.fullName?.givenName
             let lastName = credentials.fullName?.familyName
             let email = credentials.email
-            // authorizationCode每次登入都不一樣, ex. cb4ea06aa72c7454985548506dda2883a.0.rrsyu.J0e-UzcZTROUwW75Z_1Haw
             if let authorizationCode = credentials.authorizationCode,
                let codeString = String(data: authorizationCode, encoding: .utf8) {
                 getRefreshToken(codeString: codeString)
@@ -158,13 +154,10 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
 
             // first login
             if let firstName = firstName, let lastName = lastName {
-                // 把user id存在ketchain的"id"這個key裡(key-value的概念)
                 KeychainWrapper.standard.set(user, forKey: "id")
-                // 把user name存在ketchain的"name"這個key裡(key-value的概念)-只有第一次apple會給值
                 KeychainWrapper.standard.set((lastName ?? "") + (firstName ?? ""), forKey: "name")
                 let dataBase = Firestore.firestore()
                 let docRef = dataBase.collection("user").document(user)
-                // 判斷user裡的document有沒有對應的user id，不存在表示沒有建立過帳號，接著建立一筆user document; 反之，若現有帳號已存在則直接導入畫面
                 docRef.getDocument { (document, error) in
                     if let document = document, document.exists {
                         let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
@@ -174,7 +167,6 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
                         BBCoFireBaseManager.shared.createUserIdentify(id: user, email: email ?? "", name: (lastName ?? "") + (firstName ?? ""))
                     }
                 }
-                // 判斷若是第一次登入的話就先create三大種類的category，讓使用者一開始有預設選項可以用
                 createAllCategory()
             }
 
@@ -182,7 +174,6 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
             else {
                 let dataBase = Firestore.firestore()
                 let docRef = dataBase.collection("user").document(user)
-                // 判斷user裡的document有沒有對應的user id，有的話表示已登入過，直接進到user document拿user name(因為第二次登入後apple不會再給name,email)，不存在表示沒有建立過帳號
                 docRef.getDocument { (document, error) in
                     if let document = document, document.exists,
                         let user = try? document.data(as: User.self)
@@ -193,17 +184,9 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
                         print("Document does not exist")
                     }
                 }
-                // TODO: - keychain set name
-                // 把user id存在ketchain的"id"這個key裡(key-value的概念)
                 KeychainWrapper.standard.set(user, forKey: "id")
             }
 
-            // 測試是否拿到資料
-//            print("ggggg", getId)
-//            print(credentials.user)
-//            print(firstName)
-//            print(lastName)
-//            print(email)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let viewController = mainStoryboard.instantiateViewController(withIdentifier: "tabBarVC") as! UITabBarController
             UIApplication.shared.windows.first?.rootViewController = viewController
@@ -215,7 +198,6 @@ extension SignInViewController: ASAuthorizationControllerDelegate {
         }
     }
 
-    // 一次新增全部category
     func createAllCategory() {
         let allCategory = [costContent, incomeContent, accountContent]
         allCategory.forEach { content in

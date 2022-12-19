@@ -59,20 +59,5 @@ extension TabViewController: UITabBarControllerDelegate {
             }
         }
         return true
-// MARK: - need to figure out
-//        if viewController is PresentViewController {
-//            print("in presentVC")
-//            guard let presentAddNewData = self.storyboard?.instantiateViewController(withIdentifier: "addNewData") as? AddNewDataViewController else {
-//                fatalError("ERROR: Can not find addNewData page.")
-//            }
-//
-//            let navigation = UINavigationController(rootViewController: presentAddNewData)
-//            navigation.modalPresentationStyle = .fullScreen
-//            present(navigation, animated: true, completion: nil)
-//            //            self.present(AddNewDataViewController(), animated: true)
-//            return false
-//        } else {
-//            return true
-//        }
     }
 }

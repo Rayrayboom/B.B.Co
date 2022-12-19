@@ -11,35 +11,23 @@ import Charts
 class CoAccountingViewController: UIViewController {
     var pieChartView: PieChartView!
     var fillInPieChartView: UIView!
-    // pie資料
     var pieChartDataEntries: [PieChartDataEntry] = []
-
-    // 裝firebase上的資料
     var data: [Account] = [] {
         didSet {
-            // 當資料有變動時就會去fetch一次data，當fetch data時 data就會有變動，有變動就會執行setupPieChartView來重畫pie chart
             setupPieChartView()
             bookDetailTableViewConstrains()
             bookDetailTableView.reloadData()
         }
     }
-
-    // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
     var segmentTag: Int? {
         didSet {
             self.bookDetailTableView.reloadData()
-            // 當資料有變動時就會去fetch一次data，當fetch data時 data就會有變動，有變動就會執行setupPieChartView來重畫pie chart
             setupPieChartView()
             bookDetailTableViewConstrains()
         }
     }
-
-    // 用來存所點選之帳本的id(用來抓取對應帳本detail)
     var didSelecetedBook: String = ""
-
-    // 用來存有哪些user可以有權限編輯共同帳本
     var userName: [String] = []
-    // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
     let group = DispatchGroup()
 
@@ -65,32 +53,23 @@ class CoAccountingViewController: UIViewController {
         bookDetailTableView.delegate = self
         bookDetailTableView.dataSource = self
         setupUI()
-        // 選取segment control時拿SegmentIndex
         didSelectSegmentControl()
-        // 畫出view來放pieChartView
         setupfillInPieChartView()
-        // 加上refreshControl下拉更新(重fetch data)
         refreshBookDetail()
     }
 
-    // 當addCoDetailVC dismiss後回到coAccountingVC會呼叫viewWillAppear，重新fetch一次data並reload bookTableView
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         BBCoLoading.loading(view: self.view)
-        // 進入帳本內部時隱藏下方tabbar
         self.tabBarController?.tabBar.isHidden = true
-        // 畫面一有變動就會去重新fetch一次data並把資料&畫面(pie + tableView)更新到最新狀態
         fetchCoBookDetail(document: didSelecetedBook, subCollection: "co_expenditure")
         bookDetailTableView.reloadData()
     }
 
-    // UI
     func setupUI() {
         self.navigationItem.title = "支出總覽"
-        // segmented control邊框
         coSegmentedControl.layer.borderWidth = 1.5
         coSegmentedControl.layer.borderColor = CGColor(red: 233/255, green: 229/255, blue: 218/255, alpha: 1)
-        // 預設一進去segmented所選文字為黑色+黃底
         if coSegmentedControl.selectedSegmentIndex == 0 {
             coSegmentedControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -100,7 +79,6 @@ class CoAccountingViewController: UIViewController {
         bookDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
-    // 當日尚無資料者顯示“目前還沒有記帳喔”
     func checkDataCount() {
         if self.data.isEmpty {
             self.remindLabel.isHidden = false
@@ -109,13 +87,11 @@ class CoAccountingViewController: UIViewController {
         }
     }
 
-    // 加上refreshControl下拉更新(重fetch data)
     func refreshBookDetail() {
         refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
         bookDetailTableView.addSubview(refreshControl)
     }
 
-    // refreshControl func
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.fetchCoBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
@@ -123,19 +99,15 @@ class CoAccountingViewController: UIViewController {
         }
     }
 
-    // segmentControl
     func didSelectSegmentControl() {
         coSegmentedControl.addTarget(self, action: #selector(handleSegmentControl), for: .valueChanged)
     }
 
-    // segmentControl - @objc
     @objc func handleSegmentControl() {
         BBCoLoading.loading(view: self.view)
-        // 設置segmented control被選取時文字、button顏色
-        var titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         coSegmentedControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
 
-        // 設置對應segmentTag顏色
         segmentTag = coSegmentedControl.selectedSegmentIndex
         switch segmentTag {
         case 1:
@@ -160,7 +132,7 @@ class CoAccountingViewController: UIViewController {
     }
 
 // MARK: - Pie chart
-    // 建立圓餅圖view（生成物件、位置、內容）
+    // setup pieChart view（生成物件、位置、內容）
     func setupPieChartView() {
         // 在要畫pie chart之前先把pie的資料&subview都清空
         pieChartDataEntries = []
@@ -285,7 +257,7 @@ class CoAccountingViewController: UIViewController {
         chartData.setValueFormatter(DefaultValueFormatter(formatter: formatter))
     }
 
-    // 設定pieTableView constrains
+    // pieTableView constrains
     func bookDetailTableViewConstrains() {
         bookDetailTableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -296,7 +268,7 @@ class CoAccountingViewController: UIViewController {
         ])
     }
 
-    // 設定fillInPieChartView constrains, 拿來放pieChartView
+    // fillInPieChartView constrains, 拿來放pieChartView
     func setupfillInPieChartView() {
         fillInPieChartView = UIView()
         self.view.addSubview(fillInPieChartView)
@@ -319,7 +291,6 @@ extension CoAccountingViewController: UITableViewDelegate {
         presentEditAddCoVC.isEdit = true
         presentEditAddCoVC.tapIndexpath = indexPath
         presentEditAddCoVC.didSelecetedBook = didSelecetedBook
-        // 把目前已新增的資料array傳過去addCoVC(給編輯時帶入對應資料使用)
         presentEditAddCoVC.currentData = data[indexPath.row]
         presentEditAddCoVC.modalPresentationStyle = .fullScreen
         present(presentEditAddCoVC, animated: true)
@@ -329,7 +300,6 @@ extension CoAccountingViewController: UITableViewDelegate {
         return "支出明細"
     }
 
-    // 長按tableView cell叫出刪除功能
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
@@ -362,15 +332,12 @@ extension CoAccountingViewController: UITableViewDataSource {
         return listCell
     }
 
-    // tableView左滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
-            // 刪除firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
-            // 當日尚無資料者顯示“目前還沒有記帳喔”
             self.checkDataCount()
             tableView.endUpdates()
         }

@@ -24,7 +24,6 @@ class CategoryViewController: UIViewController {
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
         setupUI()
         tapDismiss()
-        // 判斷點選side menu對應cell時fetch不同category資料
         switch indexPathRow {
         case 0:
             BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "expenditure") { [weak self] result in
@@ -92,11 +91,9 @@ extension CategoryViewController: UITableViewDataSource {
         return categoryCell
     }
 
-    // tableView左滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
-            // 刪除firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             switch indexPathRow {
             case 0:
                 BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row, dataId: category[indexPath.row].id ?? "")
