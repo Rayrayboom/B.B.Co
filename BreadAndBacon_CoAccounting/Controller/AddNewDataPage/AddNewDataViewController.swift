@@ -6,9 +6,7 @@
 //
 
 import UIKit
-import SwiftUI
 import AVFoundation
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SPAlert
 
@@ -37,6 +35,23 @@ struct Model {
 }
 
 class AddNewDataViewController: UIViewController {
+    enum Segment: CaseIterable {
+        case expenditure
+        case revenue
+        case account
+    }
+    enum Section: CaseIterable {
+        case date
+        case category
+        case qrcode
+        case detail
+    }
+    enum Row: CaseIterable {
+        case amount
+        case category
+        case fromAccount
+    }
+
     // calculator manager
     var logic = BBCoLogicManager()
     var costCategory: [String] = ["金額", "種類", "帳戶"]
@@ -118,35 +133,10 @@ class AddNewDataViewController: UIViewController {
         self.present(presentQRScanVC, animated: true)
     }
 
-// MARK: - TODO: 月曆優化（待處理）
-//    @IBAction func presentCalendar(_ sender: UIButton) {
-//        let addNewDataStoryboard: UIStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
-//        guard let presentCalendarVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calendarVC") as? CalendarViewController else {
-//            fatalError("can not present calendarVC")
-//        }
-//
-//        presentCalendarVC.modalPresentationStyle = .currentContext
-//        present(presentCalendarVC, animated: true)
-//    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // 使用者登入後就可以抓到存在keyChain裡的user id
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
-
-        // 測試存images(暫時) for tableView with collectionView
-//        models.append(Model(text: "早餐", imageName: "Breakfast"))
-//        models.append(Model(text: "午餐", imageName: "Lunch"))
-//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-//        models.append(Model(text: "晚餐", imageName: "Dinner"))
-//        models.append(Model(text: "交通", imageName: "Transportation"))
-//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
-//        models.append(Model(text: "早餐", imageName: "Breakfast"))
-//        models.append(Model(text: "午餐", imageName: "Lunch"))
-//        models.append(Model(text: "午餐", imageName: "Lunch 2"))
-//        models.append(Model(text: "晚餐", imageName: "Dinner"))
-//        models.append(Model(text: "交通", imageName: "Transportation"))
-//        models.append(Model(text: "娛樂", imageName: "Entertainment"))
 
         // 註冊image tableView cell
         addNewDataTableView.register(ImageTableViewCell.nib(), forCellReuseIdentifier: ImageTableViewCell.identifier)
@@ -161,10 +151,30 @@ class AddNewDataViewController: UIViewController {
         cancelNewData()
         // 點選+時，執行新增資料到firebase
         saveNewData()
+        
+        enum SubCollection: String{
+            case expenditure = "expenditure"
+            case revenue = "revenue"
+            case account = "account"
+        }
+
         // 抓firebase上的支出/收入/轉帳的種類/帳戶pickerView選項資料
-        fetchUserCategory(id: getId, subCollection: "expenditure")
-        fetchUserCategory(id: getId, subCollection: "revenue")
-        fetchUserCategory(id: getId, subCollection: "account")
+        for subCollection in [SubCollection.expenditure, SubCollection.revenue, SubCollection.account] {
+            var contentArray = BBCoFireBaseManager.shared.fetchUserCategory(id: getId, subCollection: subCollection.rawValue) {
+                result in
+                switch subCollection {
+                case .expenditure:
+                    self.costContent = result
+                    print("=== costContent", self.costContent)
+                case .revenue:
+                    self.incomeContent = result
+                    print("=== incomeContent", self.incomeContent)
+                case .account:
+                    self.accountContent = result
+                    print("=== accountContent", self.accountContent)
+                }
+            }
+        }
         // datePicker的格式
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
     }
@@ -187,17 +197,6 @@ class AddNewDataViewController: UIViewController {
         // tableView top內縮10 points
         addNewDataTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "1b4464")
-
-
-// MARK: - TODO: 月曆優化（待處理）
-//        let blackView = UIView(frame: UIScreen.main.bounds)
-//        blackView.backgroundColor = .black
-//        blackView.alpha = 0
-//        presentingViewController?.view.addSubview(blackView)
-//
-//        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
-//            blackView.alpha = 0.5
-//        }
     }
 
     // segmentControl 偵測改值狀態
@@ -255,11 +254,11 @@ class AddNewDataViewController: UIViewController {
         }
         switch segmentTag {
         case 0:
-            createUserData(id: getId, subCollection: "expenditure")
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "expenditure", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         case 1:
-            createUserData(id: getId, subCollection: "revenue")
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "revenue", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         default:
-            createUserData(id: getId, subCollection: "account")
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "account", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         }
 
         // success alert animation
@@ -279,110 +278,6 @@ class AddNewDataViewController: UIViewController {
         controller.addAction(okAction)
         // 顯示提示框
         self.present(controller, animated: true, completion: nil)
-    }
-
-    // MARK: - 上傳資料到Firebase
-    func createUserData(id: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
-        let fetchDocumentID = dataBase.collection("user")
-            .document(id)
-            .collection(subCollection)
-            .document()
-        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = fetchDocumentID.documentID
-        // 需存id，後續delete要抓取ID刪除對應資料
-        switch subCollection {
-        case "expenditure":
-            let account = Account(
-                id: identifier,
-                amount: data.amountTextField,
-                category: data.categoryTextField,
-                account: data.accountTextField,
-                date: data.dateTime,
-                month: data.monthTime,
-                destinationAccountId: nil,
-                sourceAccountId: nil,
-                accountId: "accountId",
-                expenditureId: "expenditureId",
-                revenueId: nil,
-                detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        case "revenue":
-            let account = Account(
-                id: identifier,
-                amount: data.amountTextField,
-                category: data.categoryTextField,
-                account: data.accountTextField,
-                date: data.dateTime,
-                month: data.monthTime,
-                destinationAccountId: nil,
-                sourceAccountId: nil,
-                accountId: "accountId",
-                expenditureId: nil,
-                revenueId: "revenueId",
-                detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        default:
-            let account = Account(
-                id: identifier,
-                amount: data.amountTextField,
-                category: data.categoryTextField,
-                account: data.accountTextField,
-                date: data.dateTime,
-                month: data.monthTime,
-                destinationAccountId: "destinationAccountId",
-                sourceAccountId: "sourceAccountId",
-                accountId: nil,
-                expenditureId: nil,
-                revenueId: nil,
-                detail: data.detailTextView,
-                categoryImage: data.categoryImageName,
-                segmentTag: segmentTag)
-            do {
-                try fetchDocumentID.setData(from: account)
-                print("success create document. ID: \(fetchDocumentID.documentID)")
-            } catch {
-                print(error)
-            }
-        }
-    }
-    // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUserCategory(id: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
-        dataBase.collection("user/\(id)/\(subCollection)_category")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let category = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Category.self)
-                }
-
-                for num in 0..<category.count {
-                    switch subCollection {
-                    case "expenditure":
-                        self.costContent.append(category[num].title)
-                    case "revenue":
-                        self.incomeContent.append(category[num].title)
-                    default:
-                        self.accountContent.append(category[num].title)
-                    }
-                }
-            }
     }
 
     // 掃描QRCode error handle
@@ -405,7 +300,7 @@ class AddNewDataViewController: UIViewController {
         self.present(self.controller, animated: true, completion: nil)
     }
 
-    // 解析invoice data
+    // 分析invoice亂碼string
     func decodeInvoice(message: String) {
         let invNum = message.prefix(10)
         let message = message
@@ -446,35 +341,38 @@ class AddNewDataViewController: UIViewController {
                 return
             }
 
-            if let dataInv = data {
-                if let detail = self.parseData(jsonData: dataInv) {
-                    // 讓掃描完的amount & detail data自動傳進textField，不需觸發到textFieldDidEndEditing
-                    self.data.detailTextView = ""
-                    var amount = 0
-                    for item in 0..<detail.details.count {
-                        amount += (Int(detail.details[item].amount ?? "") ?? 0)
-                        self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
-                    }
-                    self.data.amountTextField = String(amount)
-                    // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
-                    DispatchQueue.main.async {
-                        self.addNewDataTableView.reloadData()
-                    }
-                }
+            if let dataInv = data, let detail = self.parseData(jsonData: dataInv) {
+                self.calculateAmountAndCategory(detail: detail)
             }
         })
         task.resume()
     }
 
+    // after POST API, 解析invoice data
     func parseData(jsonData: Data) -> Invoice? {
         do {
             let result = try JSONDecoder().decode(Invoice.self, from: jsonData)
-            // 測試看是否有抓到資料
             print("=== this is result \(result)")
             return result
         } catch {
             print("result error")
             return nil
+        }
+    }
+    
+    // 計算invoice data總金額 & 細項總和
+    func calculateAmountAndCategory(detail: Invoice) {
+        // 讓掃描完的amount & detail data自動傳進textField，不需觸發到textFieldDidEndEditing
+        self.data.detailTextView = ""
+        var amount = 0
+        for item in 0..<detail.details.count {
+            amount += (Int(detail.details[item].amount) ?? 0)
+            self.data.detailTextView +=  "\(detail.details[item].detailDescription)\n"
+        }
+        self.data.amountTextField = String(amount)
+        // 拿到decode data後要更新畫面上的textField，屬於UI設定，故要切回main thread做
+        DispatchQueue.main.async {
+            self.addNewDataTableView.reloadData()
         }
     }
 }
@@ -490,54 +388,54 @@ extension AddNewDataViewController: UITableViewDelegate {
 
 extension AddNewDataViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 3 {
+        let section = Section.allCases[indexPath.section]
+        switch section {
+        case .detail:
             return 250
-        }
-//        else if indexPath.section == 1 {
-//            return 80
-//        }
-        else {
+        default:
             return UITableView.automaticDimension
         }
     }
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4 //5
+        return 4
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[section]
         switch section {
-        case 0:
+        case .date:
             return 1
-//        case 1:
-//            return 1
-        case 1:
+        case .category:
             return costCategory.count
-        case 2:
-            if segmentTag == 2 {
+        case .qrcode:
+            switch segment {
+            case .account:
                 return 0
-            } else {
+            default:
                 return 1
             }
-        default:
+        case .detail:
             return 1
         }
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[section]
         switch section {
-        case 0:
+        case .date:
             return "選擇日期"
-//        case 1:
-//            return "選擇圖案"
-        case 1:
+        case .category:
             return "選擇細項"
-        case 2:
-            if segmentTag == 2 {
+        case .qrcode:
+            switch segment {
+            case .account:
                 return nil
-            } else {
+            default:
                 return "使用QRCode掃描發票"
             }
-        default:
+        case .detail:
             return "備註"
         }
     }
@@ -546,8 +444,13 @@ extension AddNewDataViewController: UITableViewDataSource {
     // swiftlint:disable cyclomatic_complexity
     // MARK: - TableView DataSource
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if segmentTag == 2 {
-            if indexPath.section == 0 {
+        let segment = Segment.allCases[sourceSegmentControl.selectedSegmentIndex]
+        let section = Section.allCases[indexPath.section]
+        let row = Row.allCases[indexPath.row]
+        switch segment {
+        case .account:
+            switch section {
+            case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
                     withIdentifier: "dateCell") as? AddDateTableViewCell
                 else {
@@ -558,19 +461,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 dateCell.addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: data.dateTime) ?? Date()
 
                 return dateCell
-            }
-//            else if indexPath.section == 1 {
-//                guard let imageCell = tableView.dequeueReusableCell(
-//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-//                else {
-//                    fatalError("can not create imageCell")
-//                }
-////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-//                imageCell.configure(with: models)
-//
-//                return imageCell
-//            }
-            else if indexPath.section == 1 {
+            case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -579,15 +470,15 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: transferCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
-                switch indexPath.row {
-                case 0:
+                switch row {
+                case .amount:
                     data.amountTextField = addDataCell.amountFromCalculator
                     addDataCell.indexPath = indexPath
                 default:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
                 return addDataCell
-            } else if indexPath.section == 2 {
+            case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
@@ -596,7 +487,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
-            } else {
+            case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
                     withIdentifier: "detailCell") as? DetailTableViewCell
                 else {
@@ -605,9 +496,9 @@ extension AddNewDataViewController: UITableViewDataSource {
                 detailCell.delegate = self
                 return detailCell
             }
-// MARK: - 支出、收入segemant
-        } else {
-            if indexPath.section == 0 {
+        default:
+            switch section {
+            case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
                     withIdentifier: "dateCell") as? AddDateTableViewCell
                 else {
@@ -627,19 +518,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 let monthData = data.dateTime.prefix(11)
                 data.monthTime = String(monthData)
                 return dateCell
-            }
-//            else if indexPath.section == 1 {
-//                guard let imageCell = tableView.dequeueReusableCell(
-//                    withIdentifier: ImageTableViewCell.identifier) as? ImageTableViewCell
-//                else {
-//                    fatalError("can not create imageCell")
-//                }
-////                imageCell.backgroundColor = UIColor(red: 245/255, green: 240/255, blue: 206/255, alpha: 1)
-//                imageCell.configure(with: models)
-//
-//                return imageCell
-//            }
-            else if indexPath.section == 1 {
+            case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
                     withIdentifier: "addDataCell") as? AddNewDataTableViewCell
                 else {
@@ -648,8 +527,8 @@ extension AddNewDataViewController: UITableViewDataSource {
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: costCategory[indexPath.row])
                 // 判斷目前在哪一個indexPath.row來決定要給cell的content哪一個array
-                switch indexPath.row {
-                case 0:
+                switch row {
+                case .amount:
                     addDataCell.contentTextField.text = data.amountTextField
                     addDataCell.indexPath = indexPath
                     // 判斷-當QRCode還沒進行掃描時messageFromQRVC會為空string""，用nil的話會一直成立
@@ -657,7 +536,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                         // 發票amount資料要塞進data.amountTextField才會真的吃到資料
                         addDataCell.contentTextField.text = data.amountTextField
                     }
-                case 1:
+                case .category:
                     addDataCell.contentTextField.text = data.categoryTextField
                     addDataCell.chooseImage.image = data.categoryImageName.toImage()
                     switch segmentTag {
@@ -666,11 +545,11 @@ extension AddNewDataViewController: UITableViewDataSource {
                     default:
                         addDataCell.setContentAndImage(content: incomeContent, image: incomeImageArr, indexPath: indexPath, segmentTag: segmentTag)
                     }
-                default:
+                case .fromAccount:
                     addDataCell.setContentAndImage(content: accountContent, image: accountImageArr, indexPath: indexPath, segmentTag: segmentTag)
                 }
                 return addDataCell
-            } else if indexPath.section == 2 {
+            case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
                     withIdentifier: "QRCell") as? QRCodeTableViewCell
                 else {
@@ -679,7 +558,7 @@ extension AddNewDataViewController: UITableViewDataSource {
                 // 支出、收入要顯示QRCode scanner
                 qrCell.qrButton.isHidden = false
                 return qrCell
-            } else {
+            case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
                     withIdentifier: "detailCell") as? DetailTableViewCell
                 else {

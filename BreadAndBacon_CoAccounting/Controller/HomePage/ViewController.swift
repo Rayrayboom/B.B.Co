@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SideMenu
 
@@ -59,7 +58,6 @@ class ViewController: UIViewController {
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
         tappedDatePicker()
-        dateBO.setTitleColor(UIColor().hexStringToUIColor(hex: "f2f6f7"), for: .normal)
         // 讓date button一開始顯示當天日期
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
@@ -80,6 +78,7 @@ class ViewController: UIViewController {
     func setupUI() {
         showDetailTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
+        dateBO.setTitleColor(UIColor().hexStringToUIColor(hex: "f2f6f7"), for: .normal)
     }
     
     // 當日尚無資料者顯示“目前還沒有記帳喔”
@@ -139,81 +138,30 @@ class ViewController: UIViewController {
         // date button顯示date picker拿到的日期(也就是today的日期)
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
         // 點擊date button後會回到當天日期，需要再fetch一次data讓他呈現當天的資料
-            self.fetchAllData()
+        self.fetchAllData()
     }
 
-    // 從Firebase上抓當前選擇日期的資料，並fetch資料下來
-    func fetchUserSpecific(id: String, subCollection: String) {
-// MARK: - 注意！
-//        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
-//        month = BBCDateFormatter.shareFormatter.string(from: self.date)
-
-        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月 dd 日"格式來偵測
-        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        let dataBase = Firestore.firestore()
-        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
-        // 進入group
-        self.group.enter()
-        // 因為UIDatePicker一定要在main thread做，但group是在global執行，因此先在全域宣告一個Date型別的變數，當fetch data抓date picker的日期資料時，改用全域變數的date拿到date的資料(self.date)
-        dataBase.collection("user/\(id)/\(subCollection)")
-            .whereField("date", isEqualTo: BBCDateFormatter.shareFormatter.string(from: self.date))
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let account = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Account.self)
-                }
-                self.data.append(contentsOf: account)
-                // 每一支API打完之後leave group
-                self.group.leave()
-            }
-    }
-
-    // 從Firebase上fetch全部種類/帳戶資料
-    func fetchUserCategory(id: String, subCollection: String) {
-        let dataBase = Firestore.firestore()
-        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再同步更新到tableView上
-        // 進入group
-        self.group.enter()
-        dataBase.collection("user/\(id)/\(subCollection)_category")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let category = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Category.self)
-                }
-                self.category.append(contentsOf: category)
-                // 每一支API打完回來之後leave group
-                self.group.leave()
-            }
-    }
-
+    // 抓指定日期所有subCollection data
     func fetchAllData() {
         // 點選新的日期時，先把存資料、種類的array清空，讓新fetch data塞最新資料，才不會一直append下去
         data = []
         category = []
-        fetchUserSpecific(id: getId, subCollection: "expenditure")
-        fetchUserCategory(id: getId, subCollection: "expenditure")
-        fetchUserSpecific(id: getId, subCollection: "revenue")
-        fetchUserCategory(id: getId, subCollection: "revenue")
-        fetchUserSpecific(id: getId, subCollection: "account")
-        fetchUserCategory(id: getId, subCollection: "account")
-
+        let subCollection = ["expenditure", "revenue", "account"]
+        
+        for num in subCollection {
+            group.enter()
+            BBCoFireBaseManager.shared.fetchUserSpecific(id: getId, subCollection: num, date: self.date) { [weak self] result in
+                guard let self = self else { return }
+                self.data += result
+                self.group.leave()
+            }
+        }
         // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
         group.notify(queue: .main) {
             self.checkDataCount()
             self.dateBO.addTarget(self, action: #selector(self.tappedDateButton), for: .touchUpInside)
             self.showDetailTableView.reloadData()
         }
-    }
-
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(id: String, subCollection: String, indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(data[indexPathRow].id)
-        documentRef.delete()
     }
 }
 
@@ -257,9 +205,9 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                self.deleteSpecificData(id: self.getId, subCollection: "expenditure", indexPathRow: indexPath.row)
-                self.deleteSpecificData(id: self.getId, subCollection: "revenue", indexPathRow: indexPath.row)
-                self.deleteSpecificData(id: self.getId, subCollection: "account", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "account", dataId: self.data[indexPath.row].id)
                 self.fetchAllData()
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
@@ -310,9 +258,9 @@ extension ViewController: UITableViewDataSource {
         if editingStyle == .delete {
             tableView.beginUpdates()
             // 順序問題，需要先偵測對應indexPath資料再進行刪除
-            deleteSpecificData(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row)
-            deleteSpecificData(id: getId, subCollection: "revenue", indexPathRow: indexPath.row)
-            deleteSpecificData(id: getId, subCollection: "account", indexPathRow: indexPath.row)
+            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
+            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
+            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "account", dataId: self.data[indexPath.row].id)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.endUpdates()

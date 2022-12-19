@@ -6,10 +6,8 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SwiftJWT
-import SwiftUI
 import SafariServices
 
 struct MyClaim: Claims {
@@ -138,9 +136,9 @@ class MenuListTableViewController: UITableViewController {
                 // 刪除user底下所有的subCollection document
                 self.deleteAllSubCollectionDoc()
                 // 刪除co-account所有有關這個使用者的資料(但不刪除尚有其他user_id的帳本)
-                self.deleteCoAccoount()
+                self.deleteCoAccount()
                 // 刪除user document
-                self.deleteUser()
+                BBCoFireBaseManager.shared.deleteUser(userId: self.getId)
                 // 打revoke token API
                 self.removeAccount()
                 KeychainWrapper.standard.remove(forKey: "id")
@@ -212,75 +210,54 @@ class MenuListTableViewController: UITableViewController {
         }
     }
 
-    // TODO: - 刪除個人（個人資訊+個人記帳細項）
-    // 從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteUser() {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(getId)
-        documentRef.delete()
-    }
-
-    // 刪除個人記帳單一subCollection底下所有的資料
-    func deleteSubCollectionDoc(subCollection: String) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(getId).collection(subCollection)
-        documentRef.getDocuments { querySnapshot, error in
-            if let error = error {
-                print("Error getting documents: \(error)")
-            } else {
-                guard let querySnapshot = querySnapshot else {
-                    return
-                }
-                for document in querySnapshot.documents {
-                    print("=== this is documentID \(document.documentID)")
-                    document.reference.delete()
-                }
-            }
-        }
-    }
-
     // 刪除個人記帳subcollection所有的資料
     func deleteAllSubCollectionDoc() {
-        deleteSubCollectionDoc(subCollection: "expenditure")
-        deleteSubCollectionDoc(subCollection: "expenditure_category")
-        deleteSubCollectionDoc(subCollection: "revenue")
-        deleteSubCollectionDoc(subCollection: "revenue_category")
-        deleteSubCollectionDoc(subCollection: "account")
-        deleteSubCollectionDoc(subCollection: "account_category")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "expenditure")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "expenditure_category")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "revenue")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "revenue_category")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "account")
+        BBCoFireBaseManager.shared.deleteSubCollectionDoc(userId: getId, subCollection: "account_category")
     }
 
-    // TODO: - 刪除共同帳本（共同帳本付款者）
-    func deleteCoAccoount() {
+    // MARK: - 刪除共同（共同帳本付款者）
+    func deleteCoAccount() {
         bookContent = []
-        let dataBase = Firestore.firestore()
-        self.group.enter()
-        // 先搜尋co-account裡有哪些book包含getName(付款人-userName)
-        dataBase.collection("co-account").whereField("user_id", arrayContains: getName)
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
+        // 因有先後順序問題，需要先抓book資料回來後再進行下一步判斷，會用到group.wait()，故需切換到global thread執行
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            self.group.enter()
+            // 先搜尋co-account裡有哪些book包含getName(付款人-userName)，using Result type
+            BBCoFireBaseManager.shared.fetchUserAllCoBook(userName: self.getName) { result in
+                switch result {
+                case .success(let bookContentData):
+                    self.bookContent = bookContentData
+                    self.group.leave()
+                case .failure(let error):
+                    print(error.localizedDescription, "fetch coBook data error")
+                    self.group.leave()
                 }
-                let book = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Book.self)
-                }
-                self.bookContent.append(contentsOf: book)
-                print("=== is bookContent", self.bookContent)
-                self.group.leave()
+                
             }
-        group.notify(queue: .main) {
+            self.group.wait()
             // 把有包含我的book用forEach一個一個找，如果user_id == 1表示我刪除帳號後這本帳本也就失效，因此連同帳本一併刪除; 若user_id超過一人，表示還有其他使用者在這本帳本裡，因此只執行把我自己從付款者裡移除
+            // 因為VC的group.leave需要在completion後實現，但因以下兩個func沒有要回傳值，故用optional的completion
             self.bookContent.forEach { item in
+                self.group.enter()
                 if item.userId.count == 1 {
-                    print("=== item.userId isEmpty")
-                    let documentRef = dataBase.collection("co-account").document(item.id)
-                    documentRef.delete()
+                    BBCoFireBaseManager.shared.deleteCoBook(bookId: item.id) { [weak self] in
+                        guard let self = self else { return }
+                        self.group.leave()
+                    }
                 } else {
-                    dataBase.collection("co-account")
-                        .document(item.id)
-                        .updateData(["user_id": FieldValue.arrayRemove([self.getName])])
-                    print("=== is item.userId", item.userId)
+                    BBCoFireBaseManager.shared.deleteUserFromCoBook(bookId: item.id, userName: self.getName) { [weak self] in
+                        guard let self = self else { return }
+                        self.group.leave()
+                    }
                 }
             }
+            // 因用完wait後還是要用notify，但這裡不需要在main更新UI，故不寫動作給它
+            self.group.notify(queue: .main) {}
         }
     }
 }

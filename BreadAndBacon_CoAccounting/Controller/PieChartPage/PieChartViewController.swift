@@ -7,7 +7,6 @@
 
 import UIKit
 import Charts
-import FirebaseFirestore
 import SwiftKeychainWrapper
 
 class PieChartViewController: UIViewController {
@@ -33,9 +32,9 @@ class PieChartViewController: UIViewController {
     var segmentTag: Int? {
         didSet {
             if segmentTag == 0 {
-                fetchUser(id: getId, subCollection: "expenditure")
+                fetchOverview(id: getId, subCollection: "expenditure")
             } else {
-                fetchUser(id: getId, subCollection: "revenue")
+                fetchOverview(id: getId, subCollection: "revenue")
             }
         }
     }
@@ -94,9 +93,9 @@ class PieChartViewController: UIViewController {
         // 一進頁面後預設顯示支出總覽(default)，每fetch一次資料data就會改動，在data didSet就會重新去畫pie chart
         switch segmentTag {
         case 1:
-            fetchUser(id: getId, subCollection: "revenue")
+            fetchOverview(id: getId, subCollection: "revenue")
         default:
-            fetchUser(id: getId, subCollection: "expenditure")
+            fetchOverview(id: getId, subCollection: "expenditure")
         }
         pieTableView.reloadData()
     }
@@ -104,9 +103,9 @@ class PieChartViewController: UIViewController {
     // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)，只要重新fetch一次資料即可，因為每fetch一次data就會更新，data didSet就會執行重新畫pie chart的動作
     @objc func didMonthChanged() {
         if segmentTag == 1 {
-            fetchUser(id: getId, subCollection: "revenue")
+            fetchOverview(id: getId, subCollection: "revenue")
         } else {
-            fetchUser(id: getId, subCollection: "expenditure")
+            fetchOverview(id: getId, subCollection: "expenditure")
         }
         BBCoLoading.loading(view: self.view)
     }
@@ -121,9 +120,9 @@ class PieChartViewController: UIViewController {
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if self.segmentTag == 0 {
-                self.fetchUser(id: self.getId, subCollection: "expenditure")
+                self.fetchOverview(id: self.getId, subCollection: "expenditure")
             } else {
-                self.fetchUser(id: self.getId, subCollection: "revenue")
+                self.fetchOverview(id: self.getId, subCollection: "revenue")
             }
             self.refreshControl.endRefreshing()
         }
@@ -179,12 +178,6 @@ class PieChartViewController: UIViewController {
     }
 
 // MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
-//     從firebase上刪除資料，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(id: String, subCollection: String, indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(data[indexPathRow].id)
-        documentRef.delete()
-    }
 
 // MARK: - Pie Chart
     // 建立圓餅圖view（生成物件、位置、內容）
@@ -212,30 +205,30 @@ class PieChartViewController: UIViewController {
         pieChartViewConfig()
     }
 
-    // 圓餅圖內容
-    func pieChartViewDataInput() {
-// MARK: - total放全域變數整個pie顯示金額會錯誤（待找原因）
-        // 用來裝整理完重複品項的資料dictionary
+    // 計算帳目細項種類、金額，傳入data return [String : Int]
+    func pieChartData(pieData: [Account]) -> [String : Int] {
         var total: [String : Int] = [:]
-        for num in data {
-            guard let category = num.category else { return }
+        for num in pieData {
+            guard let category = num.category else { fatalError() }
             if total[category] == nil {
                 total[num.category ?? ""] = Int(num.amount)
             } else {
-                guard var amount = total[category] else { return }
+                guard var amount = total[category] else { fatalError() }
                 amount += Int(num.amount) ?? 0
                 total[category] = amount
             }
         }
+        return total
+    }
 
+    // 圓餅圖內容
+    func pieChartViewDataInput() {
+        // 計算後的pie chart data
+        let total = pieChartData(pieData: data)
+        // 把要給pie chart的值append進array
         for num in total.keys {
             pieChartDataEntries.append(PieChartDataEntry.init(value: Double(total[num] ?? 0), label: num, icon: nil))
         }
-
-//        print("ddddd", data)
-//        print("ppppp", total)
-//        print("iiiii", pieChartDataEntries)
-//        print("dsdsds", totalData)
     }
 
     // 圓餅圖規格
@@ -302,32 +295,18 @@ class PieChartViewController: UIViewController {
     }
 
     // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
-    func fetchUser(id: String, subCollection: String) {
+    func fetchOverview(id: String, subCollection: String) {
         data = []
-//        total = [:]
-//        totalData = []
-        // fetch firebase指定條件為date的資料時，用"yyyy 年 MM 月"格式來偵測
-        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月"
-        let dataBase = Firestore.firestore()
-        self.group.enter()
-        print("this is month \(BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))")
-        // 抓取哪個月份由monthDatePicker.date決定
-        dataBase.collection("user/\(id)/\(subCollection)")
-            .whereField("month", isEqualTo: BBCDateFormatter.shareFormatter.string(from: monthDatePicker.date))
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let account = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Account.self)
-                }
-                self.data.append(contentsOf: account)
-                print("data here \(self.data)")
-                self.group.leave()
-            }
+        group.enter()
+        BBCoFireBaseManager.shared.fetchMonthOverview(id: id, subCollection: subCollection, monthData: monthDatePicker.date) { result in
+            self.data = result
+            print("=== data from result", self.data)
+            self.group.leave()
+        }
         // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
         group.notify(queue: .main) {
             self.checkDataCount()
+            print("=== in notify")
         }
     }
 }
@@ -347,11 +326,11 @@ extension PieChartViewController: UITableViewDelegate {
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 switch self.segmentTag {
                 case 1:
-                    self.deleteSpecificData(id: self.getId, subCollection: "revenue", indexPathRow: indexPath.row)
-                    self.fetchUser(id: self.getId, subCollection: "revenue")
+                    BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
+                    self.fetchOverview(id: self.getId, subCollection: "revenue")
                 default:
-                    self.deleteSpecificData(id: self.getId,  subCollection: "expenditure", indexPathRow: indexPath.row)
-                    self.fetchUser(id: self.getId, subCollection: "expenditure")
+                    BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
+                    self.fetchOverview(id: self.getId, subCollection: "expenditure")
                 }
             }
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
@@ -391,9 +370,9 @@ extension PieChartViewController: UITableViewDataSource {
             // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             switch segmentTag {
             case 1:
-                deleteSpecificData(id: getId, subCollection: "revenue", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
             default:
-                deleteSpecificData(id: getId,  subCollection: "expenditure", indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
             }
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)

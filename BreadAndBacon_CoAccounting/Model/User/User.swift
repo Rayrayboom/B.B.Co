@@ -6,33 +6,7 @@
 //
 
 import Foundation
-import FirebaseFirestore
 import FirebaseFirestoreSwift
-
-// struct User: Codable {
-//    @DocumentID var documentID: String?
-//    let id: String?
-//    let email: String?
-//    let name: String?
-//    let account: [Account]?
-//    let accountCategory: [Category]?
-//    let expenditure: [Account]?
-//    let expenditureCategory: [Category]?
-//    let revenue: [Account]?
-//    let revenueCategory: [Category]?
-//
-//    enum CodingKeys: String, CodingKey {
-//        case id
-//        case email
-//        case name
-//        case account
-//        case accountCategory = "account_category"
-//        case expenditure
-//        case expenditureCategory = "expenditure_category"
-//        case revenue
-//        case revenueCategory = "revenue_category"
-//    }
-// }
 
 struct User: Codable {
     @DocumentID var documentID: String?

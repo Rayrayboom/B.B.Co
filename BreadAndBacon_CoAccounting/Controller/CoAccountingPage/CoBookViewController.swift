@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
 import SwiftKeychainWrapper
 import SPAlert
 
@@ -32,8 +31,6 @@ class CoBookViewController: UIViewController {
     // 存keychain user name
     var getName: String = ""
     let group = DispatchGroup()
-    // 新增co_account book時儲存自動生成的document id
-    var identifier: String = ""
     // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
     // 用來存當前點選的cell indexPath
@@ -60,7 +57,7 @@ class CoBookViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         BBCoLoading.loading(view: self.view)
-        fetchCoBook()
+        fetchCoBook(userName: getName)
         bookTableView.reloadData()
         // 回到帳本目錄時時恢復下方tabbar
         self.tabBarController?.tabBar.isHidden = false
@@ -72,7 +69,6 @@ class CoBookViewController: UIViewController {
         // tableView top內縮10 points
         bookTableView.contentInset = UIEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
     }
-    // MARK: -待確認要放在哪裡才會顯示對的功能
     // 當日尚無資料者顯示“目前還沒共同帳本”
     func checkDataCount() {
         if self.data.isEmpty {
@@ -91,7 +87,7 @@ class CoBookViewController: UIViewController {
     // refreshControl func
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.fetchCoBook()
+            self.fetchCoBook(userName: self.getName)
             self.refreshControl.endRefreshing()
         }
     }
@@ -117,10 +113,10 @@ class CoBookViewController: UIViewController {
         // 按下OK執行新增account book(使用者輸入accounnt book name)
         let okAction = UIAlertAction(title: "新增", style: .default) { [unowned controller] _ in
             self.bookName = controller.textFields?[0].text ?? ""
-            self.createCoAccountData()
-            self.fetchCoBook()
-            // 按下新增帳本時，在該帳本的付款人會先預設加上本人
-            self.updateUserToBook(bookIdentifier: self.identifier)
+            // 新增co_account book時儲存自動生成的document id
+            let identifier = BBCoFireBaseManager.shared.createCoAccountBookData(bookNameString: self.bookName, userIdArray: self.userName)
+            self.fetchCoBook(userName: self.getName)
+            self.updateDataAndfetchCoBook(bookIdentifier: identifier, userId: self.getId, userContentData: self.userContent, userNameData: self.userName, userName: self.getName)
             // success alert animation
             SPAlert.successAlert()
         }
@@ -152,7 +148,7 @@ class CoBookViewController: UIViewController {
         // 按下OK執行新增account book(使用者輸入accounnt book name)
         let okAction = UIAlertAction(title: "加入", style: .default) { [unowned controller] _ in
             self.inputBookID = controller.textFields?[0].text ?? ""
-            self.fetchBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
+            self.checkBookSpecific(collection: "co-account", field: "room_id", inputID: self.inputBookID)
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
@@ -161,137 +157,77 @@ class CoBookViewController: UIViewController {
         present(controller, animated: true)
     }
 
-    func updateUserToBook(bookIdentifier: String) {
-        userContent = []
-        userName = []
-        let dataBase = Firestore.firestore()
-        // 因為有API抓取時間差GCD問題，故用group/notice來讓API資料全部回來後再update user_is data
-        // 進入group
-        self.group.enter()
-        dataBase.collection("user")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let user = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: User.self)
-                }
-
-                self.userContent.append(contentsOf: user)
-                self.userContent.forEach { item in
-                    if item.id == self.getId {
-                        self.userName.append(item.name ?? "")
-                    }
-                }
-                // API打完回來之後leave group
+    func checkBookSpecific(collection: String, field: String, inputID: String) {
+        group.enter()
+        BBCoFireBaseManager.shared
+            .fetchBookSpecific(collection: collection, field: field, inputID: inputID) { result in
+                self.specificBook = result
                 self.group.leave()
             }
-
-        // 等API執行完後notify它去updateData(用arrayUnion)
         group.notify(queue: .main) {
-            dataBase.collection("co-account")
-                .document(bookIdentifier)
-                .updateData(["user_id": FieldValue.arrayUnion(self.userName)]) { error in
-                if let error = error {
-                    print("Error updating document: \(error)")
-                } else {
-                    print("Document update successfully in ID: \(self.userName)")
-                    // 等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示
-                    self.fetchCoBook()
-                }
-            }
+            self.checkCorrectBook(book: self.specificBook)
+            self.bookTableView.reloadData()
+        }
+    }
+    
+    func checkCorrectBook(book: [Book]) {
+        // error handle，輸入book ID錯誤時，跳出提醒視窗
+        if book.isEmpty {
+            self.controller = UIAlertController(title: "book ID 錯誤", message: "沒有這本帳本哦，請再輸入一次", preferredStyle: .alert)
+            // 建立[確認]按鈕
+            let okAction = UIAlertAction(
+                title: "我知道了",
+                style: .default, handler: nil)
+            self.controller.addAction(okAction)
+            // 顯示提示框
+            self.present(self.controller, animated: true, completion: nil)
+        } else {
+            // book ID輸入正確的話就執行updateUserToBook func
+            self.updateDataAndfetchCoBook(bookIdentifier: book[0].id, userId: self.getId, userContentData: self.userContent, userNameData: self.userName, userName: self.getName)
+            // success alert animation
+            SPAlert.successAlert()
         }
     }
 
-    // 從Firebase上抓符合book id的document，並fetch資料下來
-    func fetchBookSpecific(collection: String, field: String, inputID: String) {
-        specificBook = []
-        let dataBase = Firestore.firestore()
-        dataBase.collection(collection)
-            .whereField(field, isEqualTo: inputID)
-            .getDocuments { [weak self] snapshot, error in
-                guard let self = self else { return }
-                guard let snapshot = snapshot else {
-                    return
-                }
-                var book = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Book.self)
-                }
-
-                // error handle，輸入book ID錯誤時，跳出提醒視窗
-                if book.isEmpty {
-                    self.controller = UIAlertController(title: "book ID 錯誤", message: "沒有這本帳本哦，請再輸入一次", preferredStyle: .alert)
-                    // 建立[確認]按鈕
-                    let okAction = UIAlertAction(
-                        title: "我知道了",
-                        style: .default, handler: nil)
-                    self.controller.addAction(okAction)
-                    // 顯示提示框
-                    self.present(self.controller, animated: true, completion: nil)
-                } else {
-                    // book ID輸入正確的話就執行updateUserToBook func
-                    self.specificBook.append(contentsOf: book)
-                    self.updateUserToBook(bookIdentifier: self.specificBook[0].id)
-                    // success alert animation
-                    SPAlert.successAlert()
-                    print("I find the document \(self.specificBook)")
-                }
-            }
-    }
-
-    // MARK: - 上傳 book id & user_id 到Firebase
-    func createCoAccountData() {
-        let dataBase = Firestore.firestore()
-        let documentID = dataBase.collection("co-account").document()
-        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        identifier = documentID.documentID
-        let prefixID = identifier.prefix(5)
-        // 需存id，後續delete要抓取ID刪除對應資料
-        let book = Book(id: identifier, roomId: String(prefixID), name: bookName, userId: userName)
-        do {
-            try documentID.setData(from: book)
-            print("success create document. ID: \(documentID.documentID)")
-        } catch {
-            print(error)
-        }
-    }
-
-    // 從Firebase上fetch有幾本帳本user id是有我自己的(因為user_id是array，因此要用whereField-arrayContains來判斷array裡的元素)
-    func fetchCoBook() {
+    // 更新付款人到帳本後再fetch一次資料，並在main thread更新(等完全新增完付款者後，再去fetach一次book的資料看哪幾本有自己並顯示)
+    func updateDataAndfetchCoBook(bookIdentifier: String, userId: String, userContentData: [User], userNameData: [String], userName: String) {
         data = []
-        let dataBase = Firestore.firestore()
-        self.group.enter()
-        dataBase.collection("co-account").whereField("user_id", arrayContains: getName)
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let book = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Book.self)
-                }
-                self.data.append(contentsOf: book)
-                print("book here \(self.data)")
-                self.group.leave()
+        // 切換到global thread處理更新付款人
+        DispatchQueue.global().async {
+            let group = DispatchGroup()
+            group.enter()
+            BBCoFireBaseManager.shared.updateUserToBook(bookIdentifier: bookIdentifier, userId: userId, userContentData: userContentData, userNameData: userNameData) {
+                group.leave()
             }
+            group.wait()
+            group.enter()
+            BBCoFireBaseManager.shared.fetchCoBook(userName: userName) { result in
+                self.data = result
+                print("=== self.data", self.data)
+                group.leave()
+            }
+            // 取得資料後回到main thread更新UI
+            group.notify(queue: .main) {
+                self.bookTableView.reloadData()
+            }
+        }
     }
 
-    // 從Firebase上fetch對應book的detail資料
+    // fetch所有包含自己的共同帳本
+    func fetchCoBook(userName: String) {
+        data = []
+        BBCoFireBaseManager.shared.fetchCoBook(userName: userName) { result in
+            self.data = result
+        }
+    }
+
     func fetchBookDetail(document: String, subCollection: String) {
         bookDetail = []
-        let dataBase = Firestore.firestore()
         self.group.enter()
-        dataBase.collection("co-account/\(document)/\(subCollection)")
-            .getDocuments { snapshot, error in
-                guard let snapshot = snapshot else {
-                    return
-                }
-                let account = snapshot.documents.compactMap { snapshot in
-                    try? snapshot.data(as: Account.self)
-                }
-                self.bookDetail.append(contentsOf: account)
-                print("book datail here \(self.data)")
-                self.group.leave()
-            }
+        BBCoFireBaseManager.shared.fetchBookDetail(document: document, subCollection: subCollection) { result in
+            self.bookDetail = result
+            self.group.leave()
+        }
     }
 
     // 編輯cell的alert
@@ -311,43 +247,17 @@ class CoBookViewController: UIViewController {
             // 把輸入textField的資料給bookName
             self.bookName = controller.textFields?[0].text ?? ""
             // 更新firebase對應document的book name
-            self.editSpecificData(indexPathRow: self.indexPathFromBook?.row ?? 0, textField: self.bookName)
+            BBCoFireBaseManager.shared.editSpecificData(bookData: self.data, indexPathRow: self.indexPathFromBook?.row ?? 0, textField: self.bookName)
             // success alert animation
             SPAlert.successAlert()
             // 修改完後再去fetch一次book data（顯示最新資料在tableView）
-            self.fetchCoBook()
+            self.fetchCoBook(userName: self.getName)
         }
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
         controller.addAction(cancelAction)
         // 記得要present後alert才會出現
         present(controller, animated: true)
-    }
-
-    // 針對對應的book cell編輯
-    func editSpecificData(indexPathRow: Int, textField: String) {
-        let dataBase = Firestore.firestore()
-        dataBase.collection("co-account").document(data[indexPathRow].id).updateData(["name": textField ]) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document update successfully")
-            }
-        }
-    }
-
-    // 從firebase上刪除指定document，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificData(indexPathRow: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id)
-        documentRef.delete()
-    }
-
-    // 從firebase上刪除document底下的subCollection，delete firebase data需要一層一層找，不能用路徑
-    func deleteSpecificSubcollection(indexPathRow: Int, documentNum: Int) {
-        let dataBase = Firestore.firestore()
-        let documentRef = dataBase.collection("co-account").document(data[indexPathRow].id).collection("co_expenditure").document(bookDetail[documentNum].id)
-        documentRef.delete()
     }
 }
 
@@ -375,23 +285,23 @@ extension CoBookViewController: UITableViewDelegate {
                 self.group.notify(queue: .main) {
                     // 先把subcollection裡面的document一筆一筆刪除
                     for num in 0..<self.bookDetail.count {
-                        self.deleteSpecificSubcollection(indexPathRow: indexPath.row, documentNum: num)
+                        BBCoFireBaseManager.shared.deleteSpecificSubcollection(bookData: self.data, indexPathRow: indexPath.row, bookDetailData: self.bookDetail, documentNum: num)
                     }
                     // 接著刪除book
-                    self.deleteSpecificData(indexPathRow: indexPath.row)
+                    BBCoFireBaseManager.shared.deleteSpecificData(bookData: self.data, indexPathRow: indexPath.row)
                     // 重新抓最新資料(會reloadData)
-                    self.fetchCoBook()
+                    self.fetchCoBook(userName: self.getName)
                 }
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.indexPathFromBook = indexPath
                 self.editAlert()
-                self.fetchCoBook()
+                self.fetchCoBook(userName: self.getName)
             }
 
             let copyAction = UIAction(title: "複製book ID", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
                 self.indexPathFromBook = indexPath
-                self.fetchCoBook()
+                self.fetchCoBook(userName: self.getName)
                 self.group.notify(queue: .main) {
                     UIPasteboard.general.string = self.data[indexPath.row].roomId
                 }
@@ -430,11 +340,11 @@ extension CoBookViewController: UITableViewDataSource {
                 tableView.beginUpdates()
                 // 先把subcollection裡面的document一筆一筆刪除
                 for num in 0..<self.bookDetail.count {
-                    self.deleteSpecificSubcollection(indexPathRow: indexPath.row, documentNum: num)
+                    BBCoFireBaseManager.shared.deleteSpecificSubcollection(bookData: self.data, indexPathRow: indexPath.row, bookDetailData: self.bookDetail, documentNum: num)
                 }
                 // 接著刪除book
                 // 順序問題，需要先偵測對應indexPath資料再進行刪除
-                self.deleteSpecificData(indexPathRow: indexPath.row)
+                BBCoFireBaseManager.shared.deleteSpecificData(bookData: self.data, indexPathRow: indexPath.row)
                 self.data.remove(at: indexPath.row)
                 tableView.deleteRows(at: [indexPath], with: .fade)
                 tableView.endUpdates()

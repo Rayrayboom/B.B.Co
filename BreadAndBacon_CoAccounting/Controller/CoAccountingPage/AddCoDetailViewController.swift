@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import FirebaseFirestore
-import CoreAudio
 import SPAlert
 
 // MARK: - expenditure
@@ -56,9 +54,9 @@ class AddCoDetailViewController: UIViewController {
             return
         }
         if isEdit == false {
-            createCoAccountData(document: didSelecetedBook, subCollection: "co_expenditure")
+            BBCoFireBaseManager.shared.createCoAccountData(tableView: coDetailTableView, document: didSelecetedBook, subCollection: "co_expenditure", amount: data.amountTextField, category: data.itemTextField, month: data.monthTime, user: data.userTextField)
         } else {
-            editUser(document: didSelecetedBook, subCollection: "co_expenditure", documentID: currentData?.id ?? "")
+            BBCoFireBaseManager.shared.editUser(tableView: coDetailTableView, document: didSelecetedBook, subCollection: "co_expenditure", documentID: currentData?.id ?? "", date: data.dateTime, amount: data.amountTextField, category: data.itemTextField, user: data.userTextField)
         }
         // success alert animation
         SPAlert.successAlert()
@@ -71,7 +69,9 @@ class AddCoDetailViewController: UIViewController {
         coDetailTableView.delegate = self
         coDetailTableView.dataSource = self
         // 抓取現有user data
-        fetchUser(didSelecetedBook: didSelecetedBook)
+        BBCoFireBaseManager.shared.fetchMember(didSelecetedBook: didSelecetedBook) { result in
+            self.userContent += result
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -113,85 +113,6 @@ class AddCoDetailViewController: UIViewController {
         controller.addAction(okAction)
         // 顯示提示框
         self.present(controller, animated: true, completion: nil)
-    }
-
-    // MARK: - 上傳資料到Firebase
-    func createCoAccountData(document: String, subCollection: String) {
-        guard let cell = coDetailTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell
-        else {
-            fatalError("can not find CoTimeTableViewCell")
-        }
-        let dataBase = Firestore.firestore()
-        let documentID = dataBase.collection("co-account")
-            .document(document)
-            .collection(subCollection)
-            .document()
-        // 讓swift code先去生成一組id並存起來，後續要識別document修改資料用
-        let identifier = documentID.documentID
-        // 需存id，後續delete要抓取ID刪除對應資料
-        let account = Account(
-            id: identifier,
-            amount: data.amountTextField,
-            category: data.itemTextField,
-            account: nil,
-            date: BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date), //data.dateTime,
-            month: data.monthTime,
-            destinationAccountId: nil,
-            sourceAccountId: nil,
-            accountId: nil,
-            expenditureId: "expenditureId",
-            revenueId: nil,
-            detail: nil,
-            user: data.userTextField,
-            categoryImage: nil,
-            segmentTag: nil)
-        do {
-            try documentID.setData(from: account)
-            print("success create document. ID: \(documentID.documentID)")
-        } catch {
-            print(error)
-        }
-    }
-
-    // 從Firebase上fetch全部user資料，並append到userContent裡
-    func fetchUser(didSelecetedBook: String) {
-        userContent = []
-        let dataBase = Firestore.firestore()
-        let docRef = dataBase.collection("co-account").document(didSelecetedBook)
-
-        docRef.getDocument { (document, error) in
-            if let document = document, document.exists,
-               let data = try? document.data(as: Book.self)
-            {
-                self.userContent.append(contentsOf: data.userId)
-            } else {
-                print("Document does not exist")
-            }
-        }
-    }
-
-    // 點選對應細項編輯資料
-    func editUser(document: String, subCollection: String, documentID: String) {
-        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
-        // 把indexPath(0, 0)的位置指向CoTimeTableViewCell，去cell裡面拿東西（非生成cell實例）
-        guard let cell = coDetailTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CoTimeTableViewCell else {
-            fatalError("can not find CoTimeTableViewCell")
-        }
-        let dataBase = Firestore.firestore()
-        dataBase.collection("co-account/\(document)/\(subCollection)").document("\(documentID)").updateData([
-            // 這邊兩種方法都可以，因為data.dateTime也透過cell的delegate塞了cell的date資料了，(針對date讓一開始顯示畫面時就先吃到datePicker的資料，不用等到點選變更後才塞資料)
-            "date": data.dateTime,
-            //BBCDateFormatter.shareFormatter.string(from: cell.datePicker.date),
-            "amount": data.amountTextField,
-            "category": data.itemTextField,
-            "user": data.userTextField
-        ]) { error in
-            if let error = error {
-                print("Error updating document: \(error)")
-            } else {
-                print("Document update successfully ")
-            }
-        }
     }
 }
 
@@ -293,7 +214,6 @@ extension AddCoDetailViewController: CoTimeTableViewCellDelegate {
     func getDate(_: CoTimeTableViewCell, sender: UIDatePicker) {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
         data.dateTime = BBCDateFormatter.shareFormatter.string(from: sender.date)
-        print("=== is delegate datetime", data.dateTime)
     }
 }
 
@@ -304,13 +224,10 @@ extension AddCoDetailViewController: CoDetailTableViewCellDelegate {
         switch tapIndexpath?.section {
         case 1:
             data.itemTextField = textField
-            print("======= this is itemTextField \(data.itemTextField)")
         case 2:
             data.amountTextField = textField
-            print("======= this is amountTextField \(data.amountTextField)")
         default:
             data.userTextField = textField
-            print("======= this is userTextField \(data.userTextField)")
         }
     }
 
