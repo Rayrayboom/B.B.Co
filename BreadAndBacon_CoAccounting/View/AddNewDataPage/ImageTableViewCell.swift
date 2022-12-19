@@ -58,25 +58,15 @@ extension ImageTableViewCell: UICollectionViewDataSource {
 }
 
 extension ImageTableViewCell: UICollectionViewDelegateFlowLayout {
-    // 每個cell的size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 50, height: 70)
     }
 
-    // vertical：上下cell的間距
-    // horizontal：左右cell的間距
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 20
     }
 
-    //vertical：左右cell的間距
-    //horizontal：上下cell的間距
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 20
     }
-
-//    //左右各內縮20 points
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-//        <#code#>
-//    }
 }

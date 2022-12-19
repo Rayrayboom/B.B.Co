@@ -12,7 +12,6 @@ private struct StoryboardCategory {
     static let addNewData = "AddNewData"
 }
 
-
 extension UIStoryboard {
     static var addNewData: UIStoryboard { return goToStoryboard(name: StoryboardCategory.addNewData) }
     private static func goToStoryboard(name: String) -> UIStoryboard {

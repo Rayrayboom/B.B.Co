@@ -20,32 +20,22 @@ protocol AddNewDataTableViewCellDelegate: AnyObject {
 
 class AddNewDataTableViewCell: UITableViewCell {
     weak var delegate: AddNewDataTableViewCellDelegate?
-    // 用來存取對應content array（由VC判斷當前是哪一個indexPath.row來決定content array要放costContent或accountContent）
     var content: [String] = []
-    // 用來存image的array
     var imageArr: [UIImage?] = []
-    // 宣告一個pickerView
     let contentPicker = UIPickerView()
-    // 宣告一個alertVC
     var controller = UIAlertController()
     var segmentTag = 0
-    // calculator VC
     var presentCalculateVC: CalculateViewController?
-    // 放計算機的值
     var amountFromCalculator = ""
     var indexPath: IndexPath? {
         didSet {
-            // 第一個金額cell不需要picker，因此讓他顯示自製計算機
             if indexPath?.item == 0 {
                 addNewContentBO.isHidden = true
-                // 隱藏IQKeyBoard自動帶出的鍵盤
                 contentTextField.inputView = UIView.init(frame: CGRect.zero)
                 contentTextField.inputAccessoryView = UIView.init(frame: CGRect.zero)
                 return
             } else {
-                // picker delegate & datasource
                 addNewContentBO.isHidden = false
-                // 種類、帳戶需要picker，故執行picker功能
                 contentPicker.delegate = self
                 contentPicker.dataSource = self
                 contentTextField.inputView = contentPicker
@@ -68,9 +58,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
-        // 設定cell color
         self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-        // 設定textField外觀
         contentTextField.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         contentTextField.layer.borderWidth = 1
         contentTextField.layer.borderColor = CGColor.init(red: 189/255, green: 189/255, blue: 190/255, alpha: 1)
@@ -81,19 +69,14 @@ class AddNewDataTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    
+
     override func prepareForReuse() {
         super.prepareForReuse()
-        // 生成cell時，清除textField裡的值
         contentTextField.text = ""
-        // 生成cell時，清除已選圖案
         chooseImage.image = nil
-        // 每次切換segment時，讓顯示金額、種類、帳戶的textField重置（意指把picker先清除），因為在生成cell時會在傳indexPath過去cell時給予對應的picker
         contentTextField.inputView = nil
     }
-    
-    
-    // 設定content & image & indexPath & segmentTag
+
     func setContentAndImage(content: [String], image: [UIImage?], indexPath: IndexPath, segmentTag: Int) {
         self.content = content
         self.imageArr = image
@@ -101,30 +84,22 @@ class AddNewDataTableViewCell: UITableViewCell {
         self.segmentTag = segmentTag
     }
 
-    // name: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
     func fillInContent(name: String) {
         titleLabel.text = name
     }
 
-// MARK: - alert: add category
     func contentConfig(segment: Int, titleName: String) {
-        // titleName: 金額、種類、帳戶, content: 種類內容 - 生成tableview時覆用
         titleLabel.text = titleName
         controller = UIAlertController(title: "新增選項", message: "", preferredStyle: .alert)
         controller.addTextField { textField in
             textField.placeholder = "內容"
             textField.keyboardType = UIKeyboardType.default
         }
-        // 按下OK執行的動作
         let okAction = UIAlertAction(title: "OK", style: .default) { [unowned controller] _ in
             self.content.append(controller.textFields?[0].text ?? "")
-            // 按下ok之後同步reload picker的component
             self.contentPicker.reloadAllComponents()
-            // 用delegate把已經append的content傳回VC並改值
             self.delegate?.setContent(indexPathItem: self.indexPath?.item ?? 0, content: self.content)
 
-// MARK: - 以下待測試 .arrayUnion 方法
-            // 按下ok之後判斷現在在哪一頁，然後判斷是哪一個indexPath，把對應的選項上傳到對應的title document裡
             switch self.segmentTag {
             case 0:
                 switch self.indexPath?.item {
@@ -152,21 +127,17 @@ class AddNewDataTableViewCell: UITableViewCell {
         controller.addAction(okAction)
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         controller.addAction(cancelAction)
-
         addNewContentBO.addTarget(self, action: #selector(didSelectAddButton), for: .touchUpInside)
     }
 
     @objc func didSelectAddButton() {
-        // 按下add button後把最新選項用delegate傳給VC
         self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
     }
 
-    // 新增對應category細項
     func createCategory(id: String, subCollection: String) {
         let db = Firestore.firestore()
         let fetchDocumentID = db.collection("user").document(id).collection(subCollection).document()
         let collection = Category(id: fetchDocumentID.documentID, title: controller.textFields?[0].text ?? "")
-
         do {
             try fetchDocumentID.setData(from: collection)
             print("success create document. ID: \(fetchDocumentID.documentID)")
@@ -176,9 +147,7 @@ class AddNewDataTableViewCell: UITableViewCell {
     }
 }
 
-// MARK: - picker
 extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource {
-    // 有幾列可以選擇
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         switch indexPath?.item {
         case 1:
@@ -188,7 +157,6 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
         }
     }
 
-    // 每列有多少行資料
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch indexPath?.item {
         case 1:
@@ -203,7 +171,6 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
         }
     }
 
-    // pickerView顯示圖片+文字 兩個種類 - 每個選項顯示的資料, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         switch indexPath?.item {
         case 1:
@@ -227,18 +194,15 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
             return UIView()
         }
     }
-    
-    // pickerView component 寬度
+
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
         return 80
     }
 
-    // pickerView component 高度
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         return 50
     }
 
-    // pickerView改變選擇後執行的動作, Inherited from UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch indexPath?.item {
         case 1:
@@ -247,7 +211,6 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
             } else {
                 chooseImage.image = imageArr[row]
                 let imageToString = imageArr[row]?.toPngString() ?? ""
-                // 把種類對應圖案傳給homeVC
                 self.delegate?.getImageName(indexPath: self.indexPath ?? [0, 0], imageName: imageToString)
             }
         case 2:
@@ -258,7 +221,6 @@ extension AddNewDataTableViewCell: UIPickerViewDelegate, UIPickerViewDataSource 
     }
 }
 
-// textField delegate
 extension AddNewDataTableViewCell: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         switch indexPath?.item {
@@ -276,32 +238,27 @@ extension AddNewDataTableViewCell: UITextFieldDelegate {
             } else {
                 return
             }
-        default: // 讓amount textField一點進去就直接顯示計算機
+        default:
             let addNewDataStoryboard = UIStoryboard(name: "AddNewData", bundle: nil)
-            presentCalculateVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calculateVC") as! CalculateViewController
+            presentCalculateVC = addNewDataStoryboard.instantiateViewController(withIdentifier: "calculateVC") as? CalculateViewController
             presentCalculateVC?.modalPresentationStyle = .overCurrentContext
             self.delegate?.addNewContent(self, indexPathItem: indexPath?.item ?? 0)
 
-            // 用clousure把calculateVC的label.text值傳給回來
             presentCalculateVC?.closure = {[weak self] text in
                 if self?.contentTextField.text == "" {
-                    // 顯示在textField上
                     self?.contentTextField.text = text
                     self?.amountFromCalculator = text
-                    // 輸入完就直接吃進去textField裡面，不用等textFieldDidEndEditing
                     self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
                 } else {
                     self?.contentTextField.text = text
                     self?.delegate?.getInputTextField(indexPath: self?.indexPath ?? [0, 0], textField: textField.text ?? "")
                 }
             }
-    // MARK: - 待設定，讓使用者重點選amount textField時帶入已輸入的金額
-//            presentCalculateVC?.label.text = contentTextField.text
         }
     }
+
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.delegate?.getInputTextField(indexPath: self.indexPath ?? [0, 0], textField: textField.text ?? "")
-
         self.delegate?.getTitle(indexPath: self.indexPath ?? [0, 0], title: self.titleLabel.text ?? "")
     }
 }

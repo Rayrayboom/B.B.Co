@@ -9,9 +9,7 @@ import UIKit
 
 class CalculateViewController: UIViewController {
     var logic = BBCoLogicManager()
-    // 判斷前一個觸發點是不是 + - × ÷
     var willClearDisplay = false
-    // 確認前一個觸發點是否涉及運算
     var previousIsOperation = false
     var closure: ((String) -> (Void))?
     let blackView = UIView(frame: UIScreen.main.bounds)
@@ -28,25 +26,16 @@ class CalculateViewController: UIViewController {
             setupUI()
         }
     }
-
-    // UI
+    
     func setupUI() {
         UIView.performWithoutAnimation {
             self.equalBO.setImage(UIImage(named: "Okay"), for: .normal)
             self.equalBO.setTitle("OK", for: .normal)
             self.equalBO.layoutIfNeeded()
         }
-// MARK: - 待設定點textField後可以直接在計算機的label做計算
-//        if logic.array.count == 0 {
-//            logic.currentNumber = Double(label.text!) ?? 3.0
-//            logic.array.append(logic.currentNumber)
-//        }
-//        print("===", logic.array, "現在數字：", logic.currentNumber, "label.text", label.text)
-
         backgroundView.backgroundColor = UIColor().hexStringToUIColor(hex: "f3f2ef")
         backgroundView.layer.cornerRadius = 10
         backgroundViewTopConatrain.constant = CGFloat(UIScreen.main.bounds.height * 5/10)
-        // 設定計算機後面的黑屏
         blackView.backgroundColor = .black
         blackView.alpha = 0
         presentingViewController?.view.addSubview(blackView)
@@ -56,7 +45,6 @@ class CalculateViewController: UIViewController {
         dismissBlackViewWhenTapSpace()
     }
 
-    // 點擊一下空白處讓blackView消失
     func dismissBlackViewWhenTapSpace() {
         let singleFinger = UITapGestureRecognizer(
           target: self,
@@ -74,7 +62,6 @@ class CalculateViewController: UIViewController {
         }
     }
 
-    // 每按下button時label閃爍
     func labelFlashing() {
         label.alpha = 0
         UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
@@ -82,7 +69,6 @@ class CalculateViewController: UIViewController {
         }, completion: nil)
     }
 
-    // MARK: - 運算重置func
     func reset() {
         willClearDisplay = false
         previousIsOperation = false
@@ -91,7 +77,7 @@ class CalculateViewController: UIViewController {
         print("===", logic.array, "現在數字：", logic.currentNumber)
     }
 
-    // MARK: - 點選AC/C
+    // AC/C
     @IBAction func clearButtonClicked(_ sender: UIButton) {
         UIView.performWithoutAnimation {
             self.allClearBO.setImage(UIImage(named: "AC"), for: .normal)
@@ -106,7 +92,7 @@ class CalculateViewController: UIViewController {
         reset()
     }
 
-    // MARK: - 點選數字button
+    // number
     @IBAction func numberButtonClicked(_ sender: UIButton) {
         UIView.performWithoutAnimation {
             self.allClearBO.setImage(UIImage(named: "C"), for: .normal)
@@ -114,13 +100,11 @@ class CalculateViewController: UIViewController {
             self.allClearBO.layoutIfNeeded()
         }
 
-        // 判斷是否有error狀況
         if logic.array.count == 1 || label.text == "Error" {
             reset()
             return
         }
 
-        // 前一個按的是加減乘除，要先清畫面
         if willClearDisplay == true {
             label.text = ""
             willClearDisplay = false
@@ -130,16 +114,12 @@ class CalculateViewController: UIViewController {
         else {
             label.text! += logic.showNumber(tag: sender.tag)
         }
-
-        // 顯示的數字放到currentNumber
         logic.currentNumber = Double(label.text!)!
-
-        // 前一個觸發點沒有做運算，故為false
         previousIsOperation = false
         print("=== ", logic.array, "現在數字：", logic.currentNumber)
     }
 
-    // MARK: - 點選四則運算符 + - × ÷
+    // + - × ÷
     @IBAction func operatorButtonClicked(_ sender: UIButton) {
         labelFlashing()
         UIView.performWithoutAnimation {
@@ -147,12 +127,10 @@ class CalculateViewController: UIViewController {
             self.equalBO.setTitle("=", for: .normal)
             self.equalBO.layoutIfNeeded()
         }
-
         if label.text == "Error" {
             reset()
             return
         }
-
         logic.currentTag = Double(sender.tag)
 
         if previousIsOperation == false {
@@ -169,17 +147,14 @@ class CalculateViewController: UIViewController {
                 logic.array.append(Double(sender.tag))
             }
         }
-
-        // 前一個觸發的是 + - × ÷
         willClearDisplay = true
-        // 前一個觸發點有做運算，故為true
         previousIsOperation = true
         print("=== ", logic.array, "現在數字：",logic.currentNumber)
         print("willClearDisplay", willClearDisplay)
         print("previousIsOperation", previousIsOperation)
     }
 
-    // MARK: - 點選 =/OK
+    // =/OK
     @IBAction func equalButtonClicked(_ sender: UIButton) {
         labelFlashing()
         if label.text == "Error" {
@@ -212,14 +187,11 @@ class CalculateViewController: UIViewController {
             // dismiss計算機後，blackView也一並dismiss
             self.blackView.removeFromSuperview()
         }
-
-
-        // 前一個觸發點有做運算，故為true
         previousIsOperation = true
         print("=== ", logic.array, "現在數字：",logic.currentNumber)
     }
 
-    // MARK: - 點選 .
+    // decimals.
     @IBAction func decimalClicked(_ sender: UIButton) {
         if logic.array.count == 1 || label.text == "Error" {
             reset()
@@ -229,12 +201,11 @@ class CalculateViewController: UIViewController {
         if (label.text?.contains(".")) == false {
             label.text! += "."
         }
-
-        // 前一個觸發點沒有做運算，故為false
         previousIsOperation = false
         print("===- ", logic.array, "現在數字：",logic.currentNumber)
     }
-    // MARK: - 點選 +/-
+
+    // +/-
     @IBAction func plusMinusClicked(_ sender: UIButton) {
         labelFlashing()
 
@@ -258,13 +229,11 @@ class CalculateViewController: UIViewController {
             logic.currentNumber *= -1
             label.text = logic.formatToString(from: logic.currentNumber)
         }
-
-        // 前一個觸發點沒有做運算，故為false
         previousIsOperation = false
         print("=== ", logic.array, "現在數字：",logic.currentNumber)
     }
 
-    // MARK: - 點選 delete
+    // delete
     @IBAction func deleteClicked(_ sender: UIButton) {
         labelFlashing()
 
@@ -280,8 +249,6 @@ class CalculateViewController: UIViewController {
             logic.array[0] = Double(self.label.text?.dropLast() ?? "") ?? 0.0
             label.text = String(label.text?.dropLast() ?? "")
         }
-
-        // 前一個觸發點沒有做運算，故為false
         previousIsOperation = false
         print("=== ", logic.array, "現在數字：", logic.currentNumber)
     }

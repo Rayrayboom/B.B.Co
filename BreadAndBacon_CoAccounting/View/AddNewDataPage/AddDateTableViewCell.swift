@@ -20,7 +20,6 @@ class AddDateTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         addDatePicker.tintColor = .systemBrown
-        // 設定cell color
         self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
@@ -28,9 +27,10 @@ class AddDateTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 
-    // 點選cell的datePicker時給值，回傳給homeVC的data.dateTime & data.monthTime
-    func config() {
+    func config(currentDate: String) {
         addDatePicker.addTarget(self, action: #selector(didSelectData(_:)), for: .valueChanged)
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
+        addDatePicker.date = BBCDateFormatter.shareFormatter.date(from: currentDate) ?? Date()
     }
 
     @objc func didSelectData(_ sender: UIDatePicker) {

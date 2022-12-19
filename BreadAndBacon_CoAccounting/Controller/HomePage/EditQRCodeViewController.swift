@@ -8,7 +8,6 @@
 import UIKit
 import AVFoundation
 
-// QRCode掃描後的內容以protocol-delegate傳給addNewData page_detail cell
 protocol EditQRCodeViewControllerDelegate: AnyObject {
     func getMessage(message: String)
 }
@@ -49,27 +48,10 @@ class EditQRCodeViewController: UIViewController {
             // 初始化一個 AVCaptureMetadataOutput 物件並將其設定做為擷取 session 的輸出裝置
             let captureMetadataOutput = AVCaptureMetadataOutput()
             
-            // 開始影片的擷取
+            // 開始擷取影片
             self.captureSession.startRunning()
             
-            // TODO: 針對特定區域掃描(待研究方框位置)
-            let size = 300
-            let screenWidth = self.view.frame.size.width
-            print("=== this is screen", view.frame.size)
-            let xPos = (CGFloat(screenWidth) / CGFloat(2)) - (CGFloat(size) / CGFloat(2))
-            print("=== this is xPos", xPos)
-            let scanRect = CGRect(x: Int(xPos), y: 150, width: size, height: size)
-            print("=== this is scanRect", scanRect)
-            var x = scanRect.origin.x/480
-            var y = scanRect.origin.y/640
-            var width = scanRect.width/480
-            var height = scanRect.height/640
-//            var scanRectTransformed = CGRect(x: x, y: y, width: width, height: height)
-            var scanRectTransformed = CGRect(x: 0.33, y: 0.5, width: 0.16, height: 0.25)
-            print("=== this is scanRect.origin.x", scanRect.origin)
-            print("=== this is view.center.x", view.center.x)
-            print("=== this is view.center.y", view.center.y)
-            print("=== this is scanRectTransformed", scanRectTransformed)
+            let scanRectTransformed = CGRect(x: 0.33, y: 0.5, width: 0.16, height: 0.25)
             
             captureSession.addOutput(captureMetadataOutput)
             // 設定委派並使用預設的調度佇列來執行回呼（call back）
@@ -86,7 +68,7 @@ class EditQRCodeViewController: UIViewController {
             // 移動訊息標籤與頂部列至上層
             view.bringSubviewToFront(messageLabel)
             
-            // 加上黃色偵測方框
+            // 加上黃偵測方框
             scanAreaView = UIView()
             if let scanAreaView = scanAreaView {
                 scanAreaView.layer.borderColor = UIColor().hexStringToUIColor(hex: "E5BB4B").cgColor
@@ -96,7 +78,7 @@ class EditQRCodeViewController: UIViewController {
                 view.bringSubviewToFront(scanAreaView)
             }
             
-            // 加上黃色偵測方框
+            // 加上灰偵測方框
             mockAreaView = UIView()
             if let mockAreaView = mockAreaView {
                 mockAreaView.layer.borderColor = UIColor.lightGray.cgColor
@@ -130,7 +112,7 @@ class EditQRCodeViewController: UIViewController {
 
 extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        // 檢查  metadataObjects 陣列為非空值，它至少需包含一個物件
+        // 檢查metadataObjects 陣列為非空值，它至少需包含一個物件
         if metadataObjects.isEmpty {
             qrCodeFrameView?.frame = CGRect.zero
             messageLabel.text = "No QR code is detected"
@@ -141,7 +123,7 @@ extension EditQRCodeViewController: AVCaptureMetadataOutputObjectsDelegate {
         let metadataObj = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
 
         if metadataObj.type == AVMetadataObject.ObjectType.qr {
-            // 倘若發現的元資料與 QR code 元資料相同，便更新狀態標籤的文字並設定邊界
+            // 如果發現的元資料與QR code元資料相同，便更新狀態標籤的文字並設定邊界
             let barCodeObject = videoPreviewLayer?.transformedMetadataObject(for: metadataObj)
             qrCodeFrameView?.frame = barCodeObject!.bounds
 

@@ -13,7 +13,6 @@ class QRCodeTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // 設定cell color
         self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 

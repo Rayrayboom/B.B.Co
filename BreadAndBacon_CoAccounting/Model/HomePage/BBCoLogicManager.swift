@@ -39,7 +39,6 @@ class BBCoLogicManager {
         currentTag = 0.0
     }
 
-    // 把數字轉換為字串，對多轉換小數點後9位
     func formatToString(from num: Double) -> String {
         var formatString: String
         if String(num) == "inf" || String(num) == "nan" {
@@ -94,7 +93,6 @@ class BBCoLogicManager {
         return nil
     }
     
-    // 加減乘除運算
     func calculate(firstNumber: Double, secondNumber: Double, tag: Int) -> Double {
         var total = 0.0
         if let operation = Operation(rawValue: tag) {

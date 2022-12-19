@@ -7,12 +7,17 @@
 
 import UIKit
 
+protocol EditTimeTableViewCellDelegate: AnyObject {
+    func getDate(_ cell: EditTimeTableViewCell, sender: UIDatePicker)
+}
+
 class EditTimeTableViewCell: UITableViewCell {
+    weak var delegate: EditTimeTableViewCellDelegate?
+
     @IBOutlet weak var editDatePicker: UIDatePicker!
     override func awakeFromNib() {
         super.awakeFromNib()
         editDatePicker.tintColor = .systemBrown
-        // cell color
         self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
     }
 
@@ -21,7 +26,13 @@ class EditTimeTableViewCell: UITableViewCell {
 
     }
 
-    func setDate(dateTime: String) {
+    func config(dateTime: String) {
+        editDatePicker.addTarget(self, action: #selector(didSelectData(_:)), for: .valueChanged)
+        BBCDateFormatter.shareFormatter.dateFormat = "yyyy 年 MM 月 dd 日"
         editDatePicker.date = BBCDateFormatter.shareFormatter.date(from: dateTime) ?? Date()
+    }
+    
+    @objc func didSelectData(_ sender: UIDatePicker) {
+        delegate?.getDate(self, sender: sender)
     }
 }

@@ -22,13 +22,7 @@ class PieChartViewController: UIViewController {
             pieTableView.reloadData()
         }
     }
-
-//    var total: [String : Int] = [:]
-//    var totalData: [Account] = []
-
     var getId: String = ""
-
-    // 當segmentTag改值時，讓對應segment的內容重新載入(重畫pie chart)
     var segmentTag: Int? {
         didSet {
             if segmentTag == 0 {
@@ -38,28 +32,15 @@ class PieChartViewController: UIViewController {
             }
         }
     }
-    // 生成refreshControl實例
     var refreshControl = UIRefreshControl()
     let group = DispatchGroup()
 
-// MARK: - 待處理month pie chart
     @IBAction func goToLastMonth(_ sender: UIButton) {
         print("in the last")
-//        monthDatePicker.date = DateComponents(calendar: Calendar.current, timeZone: TimeZone.current, year: 2021, month: 11, day: 1).date!
-//        print(monthDatePicker.date)
-//        let dateComponent = Calendar.current.dateComponents(in: TimeZone.current, from: monthDatePicker.date)
-//        var month = dateComponent.month ?? 0
-//        month -= 1
         var components = monthDatePicker.calendar.dateComponents([.day, .month, .year], from: monthDatePicker.date)
         let day = components.day
         let month = components.month
         let year = components.year
-
-//        print(monthDatePicker)
-//        let today =
-//        print(today)
-//        monthDatePicker.setDate(today, animated: true)
-//        print(monthDatePicker)
     }
     @IBAction func goToNextMonth(_ sender: UIButton) {
         print("in the next")
@@ -76,21 +57,16 @@ class PieChartViewController: UIViewController {
         monthDatePicker.center = view.center
         pieTableView.delegate = self
         pieTableView.dataSource = self
-        // 選取segment control時偵測改值狀態
         didSelectSegmentControl()
         setupUI()
-        // 畫出view放pieChartView
         setupfillInPieChartView()
-        // 加上refreshControl下拉更新(重fetch data)
         refreshPieDetail()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         BBCoLoading.loading(view: self.view)
-        // 偵測monthDatePicker改值時觸發func didMonthChanged
         monthDatePicker.addTarget(self, action: #selector(didMonthChanged), for: .valueChanged)
-        // 一進頁面後預設顯示支出總覽(default)，每fetch一次資料data就會改動，在data didSet就會重新去畫pie chart
         switch segmentTag {
         case 1:
             fetchOverview(id: getId, subCollection: "revenue")
@@ -100,7 +76,6 @@ class PieChartViewController: UIViewController {
         pieTableView.reloadData()
     }
 
-    // 當monthDatePicker改值時，讓對應segment的內容重新載入(重畫pie chart)，只要重新fetch一次資料即可，因為每fetch一次data就會更新，data didSet就會執行重新畫pie chart的動作
     @objc func didMonthChanged() {
         if segmentTag == 1 {
             fetchOverview(id: getId, subCollection: "revenue")
@@ -110,13 +85,11 @@ class PieChartViewController: UIViewController {
         BBCoLoading.loading(view: self.view)
     }
 
-    // 加上refreshControl下拉更新(重fetch data)
     func refreshPieDetail() {
         refreshControl.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
         pieTableView.addSubview(refreshControl)
     }
 
-    // refreshControl func
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if self.segmentTag == 0 {
@@ -129,10 +102,8 @@ class PieChartViewController: UIViewController {
     }
 
     func setupUI() {
-        // segmented control邊框
         sourceSegmentControl.layer.borderWidth = 1.5
         sourceSegmentControl.layer.borderColor = CGColor(red: 233/255, green: 229/255, blue: 218/255, alpha: 1)
-        // 預設一進去segmented所選文字為黑色+黃底
         if sourceSegmentControl.selectedSegmentIndex == 0 {
             sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
             let segementTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
@@ -142,8 +113,7 @@ class PieChartViewController: UIViewController {
         pieTableView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         view.backgroundColor = UIColor().hexStringToUIColor(hex: "EBE5D9")
     }
-    
-    // 當日尚無資料者顯示“目前還沒有記帳喔”
+
     func checkDataCount() {
         if self.data.isEmpty {
             self.remindLabel.isHidden = false
@@ -152,20 +122,14 @@ class PieChartViewController: UIViewController {
         }
     }
 
-    // segmentControl
     func didSelectSegmentControl() {
-        // segmentControl 偵測改值狀態
         sourceSegmentControl.addTarget(self, action: #selector(handleSegmentControl), for: .valueChanged)
     }
 
-    // segmentControl - @objc
     @objc func handleSegmentControl() {
         BBCoLoading.loading(view: self.view)
-        // 設置segmented control被選取時文字、button顏色
         let titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         sourceSegmentControl.setTitleTextAttributes(titleTextAttributes, for: .selected)
-
-        // 設置對應segmentTag顏色
         segmentTag = sourceSegmentControl.selectedSegmentIndex
         switch segmentTag {
         case 1:
@@ -176,8 +140,6 @@ class PieChartViewController: UIViewController {
         }
         pieTableView.reloadData()
     }
-
-// MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
 
 // MARK: - Pie Chart
     // 建立圓餅圖view（生成物件、位置、內容）
@@ -294,7 +256,6 @@ class PieChartViewController: UIViewController {
         ])
     }
 
-    // (月份總覽)當資料為等於選取monthDatePicker的月份時，抓取所有subCollection該月份的資料
     func fetchOverview(id: String, subCollection: String) {
         data = []
         group.enter()
@@ -303,7 +264,6 @@ class PieChartViewController: UIViewController {
             print("=== data from result", self.data)
             self.group.leave()
         }
-        // notify放這邊是因為要等所有API執行完後再執行button點選觸發的功能
         group.notify(queue: .main) {
             self.checkDataCount()
             print("=== in notify")
@@ -320,7 +280,6 @@ extension PieChartViewController: UITableViewDelegate {
         return UITableView.automaticDimension
     }
 
-    // 長按tableView cell叫出刪除功能
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
@@ -340,10 +299,6 @@ extension PieChartViewController: UITableViewDelegate {
 
 extension PieChartViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        for num in total.keys {
-//            totalData.append(Account.init(id: "autoId", amount: String(total[num] ?? 0), category: num, date: "autoDate", month: "autoMonth"))
-//        }
-//        return totalData.count
         return data.count
     }
 
@@ -352,22 +307,15 @@ extension PieChartViewController: UITableViewDataSource {
             fatalError("can not create cell")
         }
         pieCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
-
         pieCell.categoryImage.image = data[indexPath.row].categoryImage?.toImage()
-//        pieCell.nameLabel.text = totalData[indexPath.row].category
-//        pieCell.amountLabel.text = totalData[indexPath.row].amount
         pieCell.nameLabel.text = data[indexPath.row].category
         pieCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
-
         return pieCell
     }
 
-// MARK: - delete功能先拿掉，因為目前重複資料會加在一起，刪除的話無法一次刪兩筆，待確認是否留
-//     tableView左滑刪除 & 連動firebase
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
-            // 依據目前在哪個segment control刪除對應種類firebase資料，和下面的data.remove是順序問題，需要先偵測對應indexPath資料再進行刪除
             switch segmentTag {
             case 1:
                 BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)

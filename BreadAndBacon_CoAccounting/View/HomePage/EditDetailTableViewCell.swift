@@ -18,10 +18,8 @@ class EditDetailTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         detailTextView.delegate = self
-        // cell color
         self.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         detailTextView.keyboardAppearance = .dark
-        // 設定textField外觀
         detailTextView.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         detailTextView.layer.borderWidth = 1
         detailTextView.layer.borderColor = CGColor.init(red: 189/255, green: 189/255, blue: 190/255, alpha: 1)
@@ -33,13 +31,11 @@ class EditDetailTableViewCell: UITableViewCell {
 
     }
 
-    // 配置textView
     func config(detailText: String) {
         detailTextView.text = detailText
     }
 }
 
-// textView delegate
 extension EditDetailTableViewCell: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         self.delegate?.getDetail(detail: detailTextView.text)
