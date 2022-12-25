@@ -18,6 +18,7 @@ enum Result<Success, Failure> where Failure: Error {
 
 class BBCoFireBaseManager {
     static let shared = BBCoFireBaseManager()
+    private init(){}
     let dataBase = Firestore.firestore()
 
     // addNewDataVC
