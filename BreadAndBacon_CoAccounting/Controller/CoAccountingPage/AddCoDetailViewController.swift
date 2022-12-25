@@ -3,7 +3,7 @@
 //  BreadAndBacon_CoAccounting
 //
 //  Created by 張育睿 on 2022/11/10.
-//
+//  swiftlint:disable line_length
 
 import UIKit
 import SPAlert

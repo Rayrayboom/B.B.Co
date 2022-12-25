@@ -3,7 +3,7 @@
 //  BreadAndBacon_CoAccounting
 //
 //  Created by 張育睿 on 2022/11/3.
-//
+//  swiftlint:disable line_length
 
 import UIKit
 import AVFoundation
@@ -254,7 +254,7 @@ class EditViewController: UIViewController {
             BBCoFireBaseManager.shared.deleteSpecificData(id: getId, subCollection: dataSegmentCategory(), dataId: data?.id ?? "")
             BBCoFireBaseManager.shared.editUserData(tableView: editTableView, id: getId, subCollection: segmentCategory(), amount: editData.amountTextField, category: editData.categoryTextField, account: editData.accountTextField, month: editData.monthTime, detail: editData.detailTextView, categoryImage: editData.categoryImageName, segment: segmentTag)
         }
-        BBCoFireBaseManager.shared.editUserDetail(tableView: editTableView, id: getId, subCollection: dataSegmentCategory(), documentID: data?.id ?? "", amount: editData.amountTextField, category: editData.categoryTextField, account: editData.accountTextField, detail: editData.detailTextView, category_image: editData.categoryImageName)
+        BBCoFireBaseManager.shared.editUserDetail(tableView: editTableView, id: getId, subCollection: dataSegmentCategory(), documentID: data?.id ?? "", amount: editData.amountTextField, category: editData.categoryTextField, account: editData.accountTextField, detail: editData.detailTextView, categoryImage: editData.categoryImageName)
         group.notify(queue: .main) {
             self.presentingViewController?.dismiss(animated: true, completion: nil)
         }

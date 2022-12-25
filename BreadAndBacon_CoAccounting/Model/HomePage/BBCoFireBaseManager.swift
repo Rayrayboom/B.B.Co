@@ -3,7 +3,9 @@
 //  BreadAndBacon_CoAccounting
 //
 //  Created by 張育睿 on 2022/12/10.
-//
+//  swiftlint:disable line_length
+//  swiftlint:disable type_body_length
+//  swiftlint: disable function_parameter_count
 
 import Foundation
 import FirebaseFirestore
@@ -105,14 +107,14 @@ class BBCoFireBaseManager {
                 let category = snapshot.documents.compactMap { snapshot in
                     try? snapshot.data(as: Category.self)
                 }
-                
+
                 for num in 0..<category.count {
                     contentArray.append(category[num].title)
                 }
                 completion(contentArray)
             }
     }
-    
+
     // categoryVC
     func fetchSideMenuCategory(id: String, subCollection: String, completion: @escaping(([Category]) -> Void)) {
         var categoryData: [Category] = []
@@ -219,7 +221,7 @@ class BBCoFireBaseManager {
         }
     }
 
-    func editUserDetail(tableView: UITableView, id: String, subCollection: String, documentID: String, amount: String, category: String, account: String, detail: String, category_image: String) {
+    func editUserDetail(tableView: UITableView, id: String, subCollection: String, documentID: String, amount: String, category: String, account: String, detail: String, categoryImage: String) {
         let group = DispatchGroup()
         guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? EditTimeTableViewCell
         else {
@@ -232,7 +234,7 @@ class BBCoFireBaseManager {
             "category": category,
             "account": account,
             "detail": detail,
-            "category_image": category_image
+            "category_image": categoryImage
         ]) { error in
             if let error = error {
                 print("Error updating document: \(error)")
@@ -247,7 +249,7 @@ class BBCoFireBaseManager {
         let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(dataId)
         documentRef.delete()
     }
-    
+
     // pieChartVC
     func fetchMonthOverview(id: String, subCollection: String, monthData: Date, completion: @escaping([Account]) -> Void) {
         var userData: [Account] = []
@@ -297,7 +299,7 @@ class BBCoFireBaseManager {
         } catch {
             print(error)
         }
-        
+
         return identifier
     }
 
@@ -521,7 +523,7 @@ class BBCoFireBaseManager {
             print(error)
         }
     }
-    
+
     // MenuListTableVC
     func deleteUser(userId: String) {
         let documentRef = dataBase.collection("user").document(userId)
@@ -576,4 +578,3 @@ class BBCoFireBaseManager {
         completion?()
     }
 }
-
