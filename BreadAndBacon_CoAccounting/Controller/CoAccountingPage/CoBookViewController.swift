@@ -181,7 +181,6 @@ class CoBookViewController: UIViewController {
     }
 
     func fetchCoBook(userName: String) {
-        data = []
         BBCoFireBaseManager.shared.fetchCoBook(userName: userName) { result in
             self.data = result
         }
@@ -260,6 +259,7 @@ extension CoBookViewController: UITableViewDelegate {
                 self.group.notify(queue: .main) {
                     UIPasteboard.general.string = self.data[indexPath.row].roomId
                 }
+                SPAlert.successAlert()
             }
             
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction, copyAction])
