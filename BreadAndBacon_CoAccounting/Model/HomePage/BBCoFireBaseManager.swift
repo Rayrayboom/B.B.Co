@@ -142,11 +142,7 @@ class BBCoFireBaseManager {
     }
 
     // EditVC
-    func editUserData(tableView: UITableView, id: String, subCollection: String, amount: String, category: String, account: String, month: String, detail: String, categoryImage: String, segment: Int) {
-        guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? EditTimeTableViewCell
-        else {
-            fatalError("can not find AddDateTableViewCell")
-        }
+    func editUserData(tableView: UITableView, id: String, subCollection: String, date: String, amount: String, category: String, account: String, month: String, detail: String, categoryImage: String, segment: Int) {
         let fetchDocumentID = dataBase.collection("user")
             .document(id)
             .collection(subCollection)
@@ -159,7 +155,7 @@ class BBCoFireBaseManager {
                 amount: amount,
                 category: category,
                 account: account,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
+                date: date,
                 month: month,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -181,7 +177,7 @@ class BBCoFireBaseManager {
                 amount: amount,
                 category: category,
                 account: account,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
+                date: date,
                 month: month,
                 destinationAccountId: nil,
                 sourceAccountId: nil,
@@ -203,7 +199,7 @@ class BBCoFireBaseManager {
                 amount: amount,
                 category: category,
                 account: account,
-                date: BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
+                date: date,
                 month: month,
                 destinationAccountId: "destinationAccountId",
                 sourceAccountId: "sourceAccountId",
@@ -222,15 +218,9 @@ class BBCoFireBaseManager {
         }
     }
 
-    func editUserDetail(tableView: UITableView, id: String, subCollection: String, documentID: String, amount: String, category: String, account: String, detail: String, categoryImage: String) {
-        let group = DispatchGroup()
-        guard let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? EditTimeTableViewCell
-        else {
-            fatalError("can not find AddDateTableViewCell")
-        }
-        group.enter()
+    func editUserDetail(tableView: UITableView, id: String, subCollection: String, documentID: String, date: String, amount: String, category: String, account: String, detail: String, categoryImage: String) {
         dataBase.collection("user/\(id)/\(subCollection)").document("\(documentID)").updateData([
-            "date": BBCDateFormatter.shareFormatter.string(from: cell.editDatePicker.date),
+            "date": date,
             "amount": amount,
             "category": category,
             "account": account,
@@ -242,7 +232,6 @@ class BBCoFireBaseManager {
             } else {
                 print("Document update successfully")
             }
-            group.leave()
         }
     }
 
