@@ -8,42 +8,25 @@
 import UIKit
 import SwiftKeychainWrapper
 
-class CategoryViewController: UIViewController {
+final class CategoryViewController: UIViewController {
+    // var viewModel 是為了可以更改 viewModel 裡的 indexPathRow (因為viewModel是用struct去宣告(immutable); 如果是class就可以用let)
+    var categoryListViewModel = CategoryListViewModel()
     var category: [Category] = [] {
         didSet {
             categoryTableView.reloadData()
         }
     }
-    var indexPathRow: Int = 0
-    var getId: String = ""
-    let group = DispatchGroup()
 
     @IBOutlet weak var categoryTableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
-        getId = KeychainWrapper.standard.string(forKey: "id") ?? ""
         setupUI()
         tapDismiss()
-        switch indexPathRow {
-        case 0:
-            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "expenditure") { [weak self] result in
-                guard let self = self else { return }
-                self.category = result
-            }
-        case 1:
-            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "revenue") { [weak self] result in
-                guard let self = self else { return }
-                self.category = result
-            }
-        case 2:
-            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "account") { [weak self] result in
-                guard let self = self else { return }
-                self.category = result
-            }
-        default:
-            break
+        categoryListViewModel.fetchSideMenuCategory()
+        categoryListViewModel.category.bind { [unowned self] result in
+            self.category = result
         }
-
+        
         categoryTableView.delegate = self
         categoryTableView.dataSource = self
     }
@@ -94,17 +77,7 @@ extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
-            switch indexPathRow {
-            case 0:
-                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "expenditure", indexPathRow: indexPath.row, dataId: category[indexPath.row].id ?? "")
-            case 1:
-                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "revenue", indexPathRow: indexPath.row, dataId: category[indexPath.row].id ?? "")
-            case 2:
-                BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "account", indexPathRow: indexPath.row, dataId: category[indexPath.row].id ?? "")
-            default:
-                break
-            }
-            category.remove(at: indexPath.row)
+            categoryListViewModel.deleteSideMenuCategory(detailRow: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.endUpdates()
         }

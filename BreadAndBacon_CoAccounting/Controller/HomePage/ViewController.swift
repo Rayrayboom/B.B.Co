@@ -31,8 +31,8 @@ class ViewController: UIViewController {
     var month: String = ""
     var getId: String = ""
     var refreshControl = UIRefreshControl()
+
     @IBOutlet weak var remindLabel: UILabel!
-    
     @IBOutlet weak var dateBO: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
     @IBOutlet weak var showDetailTableView: UITableView!
