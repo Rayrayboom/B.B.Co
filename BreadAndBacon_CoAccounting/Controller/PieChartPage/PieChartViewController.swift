@@ -306,6 +306,10 @@ extension PieChartViewController: UITableViewDelegate {
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
         }
     }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 }
 
 extension PieChartViewController: UITableViewDataSource {
@@ -320,6 +324,7 @@ extension PieChartViewController: UITableViewDataSource {
         pieCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         pieCell.categoryImage.image = data[indexPath.row].categoryImage?.toImage()
         pieCell.nameLabel.text = data[indexPath.row].category
+        pieCell.detailLabel.text = data[indexPath.row].detail
         pieCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
         return pieCell
     }
