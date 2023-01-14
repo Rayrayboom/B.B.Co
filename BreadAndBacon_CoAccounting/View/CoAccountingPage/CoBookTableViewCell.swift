@@ -11,7 +11,8 @@ class CoBookTableViewCell: UITableViewCell {
     @IBOutlet weak var bookNameLabel: UILabel!
     @IBOutlet weak var roomIDLabel: UILabel!
     @IBOutlet weak var coImageView: UIImageView!
-
+    @IBOutlet weak var menberQuantity: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
     }

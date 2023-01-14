@@ -282,6 +282,7 @@ extension CoBookViewController: UITableViewDataSource {
         coBookCell.bookNameLabel.text = data[indexPath.row].name
         coBookCell.roomIDLabel.text = "ID: \(data[indexPath.row].roomId)"
         coBookCell.coImageView.image = UIImage(named: "CoAcc-clicked")
+        coBookCell.menberQuantity.text = "成員: \(data[indexPath.row].userId.count) 人"
 
         return coBookCell
     }
