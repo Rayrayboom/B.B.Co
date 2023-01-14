@@ -26,7 +26,6 @@ class CoBookViewController: UIViewController {
     var getName: String = ""
     let group = DispatchGroup()
     var refreshControl = UIRefreshControl()
-    var indexPathFromBook: IndexPath?
 
     @IBOutlet weak var bookTableView: UITableView!
     @IBOutlet weak var remindLabel: UILabel!
@@ -195,21 +194,21 @@ class CoBookViewController: UIViewController {
         }
     }
 
-    func editAlert() {
+    func editAlert(indexPath: IndexPath) {
         controller = UIAlertController(title: "編輯帳本名稱", message: nil, preferredStyle: .alert)
         controller.addTextField { textField in
-            textField.placeholder = "請輸入想編輯的名稱"
+            textField.text = self.data[indexPath.row].name
             textField.keyboardType = UIKeyboardType.default
             textField.keyboardAppearance = .dark
         }
-        guard let cell = bookTableView.cellForRow(at: indexPathFromBook ?? IndexPath()) as? CoBookTableViewCell
+        guard let cell = bookTableView.cellForRow(at: indexPath) as? CoBookTableViewCell
         else {
             fatalError("can not find CoBookTableViewCell")
         }
 
         let okAction = UIAlertAction(title: "修改", style: .default) { [unowned controller] _ in
             self.bookName = controller.textFields?[0].text ?? ""
-            BBCoFireBaseManager.shared.editSpecificData(bookData: self.data, indexPathRow: self.indexPathFromBook?.row ?? 0, textField: self.bookName)
+            BBCoFireBaseManager.shared.editSpecificData(bookData: self.data, indexPathRow: indexPath.row, textField: self.bookName)
             SPAlert.successAlert()
             self.fetchCoBook(userName: self.getName)
         }
@@ -248,13 +247,11 @@ extension CoBookViewController: UITableViewDelegate {
                 }
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                self.indexPathFromBook = indexPath
-                self.editAlert()
+                self.editAlert(indexPath: indexPath)
                 self.fetchCoBook(userName: self.getName)
             }
 
             let copyAction = UIAction(title: "複製book ID", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                self.indexPathFromBook = indexPath
                 self.fetchCoBook(userName: self.getName)
                 self.group.notify(queue: .main) {
                     UIPasteboard.general.string = self.data[indexPath.row].roomId
