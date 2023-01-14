@@ -153,9 +153,9 @@ class CoAccountingViewController: UIViewController {
             pieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
         ])
         // 圓餅圖內容
-        pieChartViewDataInput()
+        let totalAmount = pieChartViewDataInput(pieCategoryData: data)
         // 圓餅圖規格
-        pieChartViewConfig()
+        pieChartViewConfig(totalAmount: totalAmount)
     }
 
     // 計算category細項種類、金額，傳入data return [String : Double]
@@ -201,26 +201,35 @@ class CoAccountingViewController: UIViewController {
     }
 
     // 圓餅圖user/category內容
-    func pieChartViewDataInput() {
+    func pieChartViewDataInput(pieCategoryData: [Account]) -> Double {
         switch segmentTag {
         case 1:
             // 計算後的pie chart data
-            let total = pieChartCategoryData(pieCategoryData: data)
+            let total = pieChartCategoryData(pieCategoryData: pieCategoryData)
+            // 儲存總金額
+            var totalAmount = 0.0
+
             // 把total裡的資料塞到pie chart裡
             for num in total.keys {
                 pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
+                totalAmount += Double(total[num] ?? 0)
             }
+            return totalAmount
         default:
-            let total = pieChartUserData(pieUserData: data)
+            let total = pieChartUserData(pieUserData: pieCategoryData)
+            var totalAmount = 0.0
+
             // 把total裡的資料塞到pie chart裡
             for num in total.keys {
                 pieChartDataEntries.append(PieChartDataEntry.init(value: total[num] ?? 0, label: num, icon: nil))
+                totalAmount += Double(total[num] ?? 0)
             }
+            return totalAmount
         }
     }
 
     // 圓餅圖規格
-    func pieChartViewConfig() {
+    func pieChartViewConfig(totalAmount: Double) {
         let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
         // 設定圓餅圖的顏色
         chartDataSet.colors = [UIColor().hexStringToUIColor(hex: "de9493"),
@@ -248,8 +257,11 @@ class CoAccountingViewController: UIViewController {
         chartDataSet.selectionShift = 5
         // 扇形間隔
         chartDataSet.sliceSpace = 3
-        // 設置為實心圓
-        pieChartView.drawHoleEnabled = false
+        // 設置為空心圓
+        pieChartView.drawHoleEnabled = true
+        // 設置中央金額總和
+        pieChartView.centerText = "總金額\n\(Int(totalAmount))"
+        pieChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
 
         // 設定數值包含$符號
         let formatter = NumberFormatter()
