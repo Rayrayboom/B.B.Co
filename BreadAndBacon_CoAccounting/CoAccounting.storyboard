@@ -46,12 +46,21 @@
                                                         <constraint firstAttribute="width" constant="50" id="xPs-QY-B9d"/>
                                                     </constraints>
                                                 </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="成員:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YJf-cO-y95">
+                                                    <rect key="frame" x="349" y="16" width="35" height="32"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="dxo-M7-24e" secondAttribute="bottom" id="AX2-z6-W7u"/>
+                                                <constraint firstItem="YJf-cO-y95" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="topMargin" constant="5" id="DPh-ui-gH9"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="YJf-cO-y95" secondAttribute="bottom" constant="5" id="EpO-nh-XyX"/>
                                                 <constraint firstItem="x2v-0C-WS1" firstAttribute="leading" secondItem="dxo-M7-24e" secondAttribute="trailing" constant="10" id="I0O-9k-980"/>
                                                 <constraint firstItem="ylW-EM-kPi" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" constant="5" id="JYd-dq-UBC"/>
                                                 <constraint firstItem="x2v-0C-WS1" firstAttribute="top" secondItem="ylW-EM-kPi" secondAttribute="bottom" id="NxK-aF-43V"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="YJf-cO-y95" secondAttribute="trailing" constant="10" id="Og4-4Z-fKr"/>
                                                 <constraint firstItem="ylW-EM-kPi" firstAttribute="leading" secondItem="dxo-M7-24e" secondAttribute="trailing" constant="10" id="P6A-bS-lAZ"/>
                                                 <constraint firstAttribute="bottom" secondItem="x2v-0C-WS1" secondAttribute="bottom" constant="5" id="Qsc-ZR-1Fc"/>
                                                 <constraint firstItem="dxo-M7-24e" firstAttribute="top" secondItem="kW7-8X-gdR" secondAttribute="top" id="ZTa-Dx-56Y"/>
@@ -62,6 +71,7 @@
                                         <connections>
                                             <outlet property="bookNameLabel" destination="ylW-EM-kPi" id="ZFG-xE-QIF"/>
                                             <outlet property="coImageView" destination="dxo-M7-24e" id="p1s-a5-j7n"/>
+                                            <outlet property="menberQuantity" destination="YJf-cO-y95" id="1aP-En-EqW"/>
                                             <outlet property="roomIDLabel" destination="x2v-0C-WS1" id="jo3-mP-sNX"/>
                                         </connections>
                                     </tableViewCell>

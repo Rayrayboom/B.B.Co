@@ -10,6 +10,7 @@ import UIKit
 class PieChartTableViewCell: UITableViewCell {
     @IBOutlet weak var categoryImage: UIImageView!
     @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var amountLabel: UILabel!
 
     override func awakeFromNib() {

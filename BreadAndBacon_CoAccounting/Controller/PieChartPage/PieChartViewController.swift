@@ -162,9 +162,9 @@ class PieChartViewController: UIViewController {
             pieChartView.heightAnchor.constraint(equalToConstant: self.view.bounds.height / 3)
         ])
         // 圓餅圖內容
-        pieChartViewDataInput()
+        let totalAmount = pieChartViewDataInput(pieData: data)
         // 圓餅圖規格
-        pieChartViewConfig()
+        pieChartViewConfig(totalAmount: totalAmount)
     }
 
     // 計算帳目細項種類、金額，傳入data return [String : Int]
@@ -184,17 +184,22 @@ class PieChartViewController: UIViewController {
     }
 
     // 圓餅圖內容
-    func pieChartViewDataInput() {
+    func pieChartViewDataInput(pieData: [Account]) -> Int {
         // 計算後的pie chart data
-        let total = pieChartData(pieData: data)
+        let total = pieChartData(pieData: pieData)
+        // 儲存總金額
+        var totalAmount = 0
+
         // 把要給pie chart的值append進array
         for num in total.keys {
             pieChartDataEntries.append(PieChartDataEntry.init(value: Double(total[num] ?? 0), label: num, icon: nil))
+            totalAmount += Int(total[num] ?? 0)
         }
+        return totalAmount
     }
 
     // 圓餅圖規格
-    func pieChartViewConfig() {
+    func pieChartViewConfig(totalAmount: Int) {
         let chartDataSet = PieChartDataSet(entries: pieChartDataEntries, label: "")
         // 設定圓餅圖的顏色
         chartDataSet.colors = [UIColor().hexStringToUIColor(hex: "de9493"),
@@ -208,6 +213,7 @@ class PieChartViewController: UIViewController {
                                UIColor().hexStringToUIColor(hex: "57549e"),
                                UIColor().hexStringToUIColor(hex: "284155")]
         // 設定資料數值的字體大小
+//        chartDataSet.label = nil
         chartDataSet.valueTextColor = .black
         chartDataSet.valueFont = UIFont.systemFont(ofSize: 15.0)
 
@@ -223,8 +229,13 @@ class PieChartViewController: UIViewController {
         chartDataSet.selectionShift = 5
         // 扇形間隔
         chartDataSet.sliceSpace = 3
-        // 設置為實心圓
-        pieChartView.drawHoleEnabled = false
+        // 不顯示數值
+//        chartDataSet.drawValuesEnabled = false
+        // 設置為空心圓
+        pieChartView.drawHoleEnabled = true
+        // 設置中央金額總和
+        pieChartView.centerText = "總金額\n\(totalAmount)"
+        pieChartView.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
 
         // 設定數值包含$符號
         let formatter = NumberFormatter()
@@ -295,6 +306,10 @@ extension PieChartViewController: UITableViewDelegate {
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
         }
     }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableView.automaticDimension
+    }
 }
 
 extension PieChartViewController: UITableViewDataSource {
@@ -309,6 +324,7 @@ extension PieChartViewController: UITableViewDataSource {
         pieCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         pieCell.categoryImage.image = data[indexPath.row].categoryImage?.toImage()
         pieCell.nameLabel.text = data[indexPath.row].category
+        pieCell.detailLabel.text = data[indexPath.row].detail
         pieCell.amountLabel.text = "$ \(data[indexPath.row].amount)"
         return pieCell
     }

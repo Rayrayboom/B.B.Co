@@ -19,6 +19,18 @@ struct MyClaim: Claims {
 
 // 建立side menu tableView
 class MenuListTableViewController: UITableViewController {
+    enum Section: CaseIterable {
+        case greeting
+        case category
+    }
+    enum Row: CaseIterable {
+        case expenditure
+        case revenue
+        case account
+        case privacy
+        case signOutDeleteAccount
+    }
+    
     var items = ["支出種類", "收入種類", "帳戶種類", "隱私權條款", "登出 及 刪除帳號"]
     let darkColor = UIColor(red: 33/255, green: 33/255, blue: 33/255, alpha: 1)
     var getId: String = ""
@@ -53,8 +65,9 @@ class MenuListTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.section {
-        case 0:
+        let section = Section.allCases[indexPath.section]
+        switch section {
+        case .greeting:
             let personalCell = tableView.dequeueReusableCell(withIdentifier: "personalCell", for: indexPath)
             personalCell.textLabel?.text = "哈囉~ \(getName)"
             personalCell.textLabel?.textColor = .white
@@ -73,13 +86,15 @@ class MenuListTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let section = Section.allCases[indexPath.section]
+        let row = Row.allCases[indexPath.row]
 
-        switch indexPath.section {
-        case 0:
+        switch section {
+        case .greeting:
             print("side menu")
         default:
-            switch indexPath.row {
-            case 3: // show privacy
+            switch row {
+            case .privacy: // show privacy
                 let homeStoryboard = UIStoryboard(name: "Home", bundle: nil)
                 guard let presentPrivacyVC = homeStoryboard
                     .instantiateViewController(withIdentifier: "privacyVC") as? PrivacyViewController
@@ -88,7 +103,7 @@ class MenuListTableViewController: UITableViewController {
                 }
                 presentPrivacyVC.modalPresentationStyle = .automatic
                 present(presentPrivacyVC, animated: true)
-            case 4: // sign out and delete account
+            case .signOutDeleteAccount: // sign out and delete account
                 signOutAlert()
             default: // category list
                 let homeStoryboard = UIStoryboard(name: "Home", bundle: nil)
@@ -98,7 +113,7 @@ class MenuListTableViewController: UITableViewController {
                     fatalError("can not present categoryVC")
                 }
 
-                presentCategoryVC.indexPathRow = indexPath.row
+                presentCategoryVC.categoryListViewModel.indexPathRow = indexPath.row
                 presentCategoryVC.modalPresentationStyle = .automatic
                 present(presentCategoryVC, animated: true)
             }

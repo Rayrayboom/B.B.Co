@@ -131,7 +131,7 @@ class EditViewController: UIViewController {
         setupUI()
         cancelNewData()
         saveEditData()
-        
+
         enum SubCollection: String{
             case expenditure = "expenditure"
             case revenue = "revenue"
