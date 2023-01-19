@@ -36,6 +36,19 @@ struct CategoryListViewModel {
             break
         }
     }
+    
+    func editSideMenuCategory(detailRow: Int, textFieldContent: String) {
+        switch indexPathRow {
+        case 0:
+            BBCoFireBaseManager.shared.editSideMenuCategory(id: getId, subCollection: "expenditure", indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "", textField: textFieldContent)
+        case 1:
+            BBCoFireBaseManager.shared.editSideMenuCategory(id: getId, subCollection: "revenue", indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "", textField: textFieldContent)
+        case 2:
+            BBCoFireBaseManager.shared.editSideMenuCategory(id: getId, subCollection: "account", indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "", textField: textFieldContent)
+        default:
+            break
+        }
+    }
 
     func deleteSideMenuCategory(detailRow: Int) {
         switch indexPathRow {
@@ -51,4 +64,3 @@ struct CategoryListViewModel {
         category.value.remove(at: detailRow)
     }
 }
-

@@ -132,6 +132,17 @@ class BBCoFireBaseManager {
             }
     }
 
+    // 編輯 side menu category name
+    func editSideMenuCategory(id: String, subCollection: String, indexPathRow: Int, dataId: String, textField: String) {
+        let documentRef = dataBase.collection("user").document(id).collection("\(subCollection)_category").document(dataId).updateData(["title" : textField]) { error in
+            if let error = error {
+                print("Error updating category: \(error)")
+            } else {
+                print("Category update successfully")
+            }
+        }
+    }
+
     func deleteSideMenuCategory(id: String, subCollection: String, indexPathRow: Int, dataId: String) {
         let documentRef = dataBase
             .collection("user")
