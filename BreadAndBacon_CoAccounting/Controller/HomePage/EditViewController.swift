@@ -8,7 +8,6 @@
 import UIKit
 import AVFoundation
 import SwiftKeychainWrapper
-import SwiftUI
 
 struct DataModel {
     var amountTextField: String = ""

@@ -18,9 +18,12 @@ struct CoDataModel {
 
 class AddCoDetailViewController: UIViewController {
     var isEdit: Bool = false
-    let sectionTitle = ["日期", "品項", "金額", "付款人"]
     var tapIndexpath: IndexPath?
     var data = CoDataModel()
+    let subCategory = SubCategory()
+    let ID = Identifier()
+    let errorMessage = ErrorMessage()
+    let sectionTitle = ["日期", "品項", "金額", "付款人"]
     var currentData: Account?
     var didSelecetedBook: String = ""
     var userContent: [String] = [] {
@@ -44,9 +47,9 @@ class AddCoDetailViewController: UIViewController {
             return
         }
         if isEdit == false {
-            BBCoFireBaseManager.shared.createCoAccountData(tableView: coDetailTableView, document: didSelecetedBook, subCollection: "co_expenditure", amount: data.amountTextField, category: data.itemTextField, month: data.monthTime, user: data.userTextField)
+            BBCoFireBaseManager.shared.createCoAccountData(tableView: coDetailTableView, document: didSelecetedBook, subCollection: subCategory.coExpenditure, amount: data.amountTextField, category: data.itemTextField, month: data.monthTime, user: data.userTextField)
         } else {
-            BBCoFireBaseManager.shared.editUser(tableView: coDetailTableView, document: didSelecetedBook, subCollection: "co_expenditure", documentID: currentData?.id ?? "", date: data.dateTime, amount: data.amountTextField, category: data.itemTextField, user: data.userTextField)
+            BBCoFireBaseManager.shared.editUser(tableView: coDetailTableView, document: didSelecetedBook, subCollection: subCategory.coExpenditure, documentID: currentData?.id ?? "", date: data.dateTime, amount: data.amountTextField, category: data.itemTextField, user: data.userTextField)
         }
         SPAlert.successAlert()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -135,9 +138,9 @@ extension AddCoDetailViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let coDetailCell = tableView.dequeueReusableCell(withIdentifier: "coDetailCell") as? CoDetailTableViewCell
+        guard let coDetailCell = tableView.dequeueReusableCell(withIdentifier: ID.coDetailCellID) as? CoDetailTableViewCell
         else {
-            fatalError("can not create coDetailCell")
+            fatalError(errorMessage.fatalErrorMSG)
         }
         coDetailCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         coDetailCell.indexPath = indexPath
@@ -146,9 +149,9 @@ extension AddCoDetailViewController: UITableViewDataSource {
 
         switch indexPath.section {
         case 0: 
-            guard let coTimeCell = tableView.dequeueReusableCell(withIdentifier: "coTimeCell") as? CoTimeTableViewCell
+            guard let coTimeCell = tableView.dequeueReusableCell(withIdentifier: ID.coTimeCellID) as? CoTimeTableViewCell
             else {
-                fatalError("can not create coTimeCell")
+                fatalError(errorMessage.fatalErrorMSG)
             }
             coTimeCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 

@@ -9,7 +9,6 @@ import UIKit
 import AVFoundation
 import SwiftKeychainWrapper
 import SPAlert
-import CloudKit
 
 struct NewDataModel {
     var amountTextField: String = ""

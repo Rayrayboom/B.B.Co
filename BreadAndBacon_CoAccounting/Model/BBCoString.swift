@@ -27,6 +27,16 @@ struct Identifier {
     let editQRCellID = "editQRCell"
     let editDetailCellID = "editDetailCell"
     let editQRScanVCID = "editQRScanVC"
+    // CoDetailVC
+    let coDetailCellID = "coDetailCell"
+    let coTimeCellID = "coTimeCell"
+    // CoAccountVC
+    let listCellID = "listCell"
+    let addCoDetailVCID = "addCoDetailVC"
+    // CoBookVC
+    let coBookCellID = "coBookCell"
+    let coAccountingVCID = "coAccountingVC"
+    
 }
 
 struct HeaderTitle {
@@ -34,6 +44,8 @@ struct HeaderTitle {
     let chooseCategory = "選擇細項"
     let chooseQRCode = "使用QRCode掃描發票"
     let chooseDetail = "備註"
+    let expenditureDetail = "支出明細"
+    let myAccountingBook = "我的帳本"
 }
 
 struct ErrorMessage {
@@ -41,4 +53,11 @@ struct ErrorMessage {
     let fatalErrorMSGSpecific = "can not specific cell"
     let fatalErrorMSGQRVC = "can not find QRScanner VC"
     let fatalErrorMSGEditQRVC = "can not find EditQRScanner VC"
+    let fatalErrorMSGCoDetailVC = "can not find CoDetailVC"
+    let fatalErrorMSGCoAccountingVC = "can not push coAccountingVC"
+    let fatalErrorMSGCoBookTableViewCell = "can not find CoBookTableViewCell"
+}
+
+struct ImageName {
+    
 }
