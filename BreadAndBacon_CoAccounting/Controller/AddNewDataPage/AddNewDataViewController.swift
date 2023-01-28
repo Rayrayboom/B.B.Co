@@ -84,6 +84,8 @@ class AddNewDataViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
     var data = NewDataModel()
+    var ID = Identifier()
+    var errorMessage = ErrorMessage()
     var models = [Model]()
     var dateFromHomeVC: String? = ""
     var messageFromQRVC: String = ""
@@ -397,18 +399,18 @@ extension AddNewDataViewController: UITableViewDataSource {
             switch section {
             case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
-                    withIdentifier: "dateCell") as? AddDateTableViewCell
+                    withIdentifier: ID.addDataDateCellID) as? AddDateTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 dateCell.delegate = self
                 dateCell.config(currentDate: data.dateTime)
                 return dateCell
             case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
-                    withIdentifier: "addDataCell") as? AddNewDataTableViewCell
+                    withIdentifier: ID.addDataDataCellID) as? AddNewDataTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: transferCategory[indexPath.row])
@@ -423,18 +425,18 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return addDataCell
             case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
-                    withIdentifier: "QRCell") as? QRCodeTableViewCell
+                    withIdentifier: ID.addDataQRCellID) as? QRCodeTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
             case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
-                    withIdentifier: "detailCell") as? DetailTableViewCell
+                    withIdentifier: ID.addDataDetailCellID) as? DetailTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 detailCell.delegate = self
                 return detailCell
@@ -443,9 +445,9 @@ extension AddNewDataViewController: UITableViewDataSource {
             switch section {
             case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
-                    withIdentifier: "dateCell") as? AddDateTableViewCell
+                    withIdentifier: ID.addDataDateCellID) as? AddDateTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 dateCell.delegate = self
                 if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date, data.dateTime == "" {
@@ -459,9 +461,9 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return dateCell
             case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
-                    withIdentifier: "addDataCell") as? AddNewDataTableViewCell
+                    withIdentifier: ID.addDataDataCellID) as? AddNewDataTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: costCategory[indexPath.row])
@@ -487,17 +489,17 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return addDataCell
             case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
-                    withIdentifier: "QRCell") as? QRCodeTableViewCell
+                    withIdentifier: ID.addDataQRCellID) as? QRCodeTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 qrCell.qrButton.isHidden = false
                 return qrCell
             case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
-                    withIdentifier: "detailCell") as? DetailTableViewCell
+                    withIdentifier: ID.addDataDetailCellID) as? DetailTableViewCell
                 else {
-                    fatalError("can not create cell")
+                    fatalError(errorMessage.fatalErrorMSG)
                 }
                 detailCell.delegate = self
                 detailCell.config(detailText: data.detailTextView)
