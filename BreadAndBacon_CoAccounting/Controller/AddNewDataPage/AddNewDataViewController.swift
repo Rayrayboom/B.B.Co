@@ -9,6 +9,7 @@ import UIKit
 import AVFoundation
 import SwiftKeychainWrapper
 import SPAlert
+import CloudKit
 
 struct NewDataModel {
     var amountTextField: String = ""
@@ -84,8 +85,10 @@ class AddNewDataViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
     var data = NewDataModel()
-    var ID = Identifier()
-    var errorMessage = ErrorMessage()
+    let subCategory = SubCategory()
+    let ID = Identifier()
+    let headerTitle = HeaderTitle()
+    let errorMessage = ErrorMessage()
     var models = [Model]()
     var dateFromHomeVC: String? = ""
     var messageFromQRVC: String = ""
@@ -112,8 +115,8 @@ class AddNewDataViewController: UIViewController {
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
     @IBAction func insertQRCode(_ sender: UIButton) {
-        guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
-            fatalError("can not find QRScanner VC")
+        guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: ID.addDataQRScanVCID) as? QRCodeViewController else {
+            fatalError(errorMessage.fatalErrorMSGQRVC)
         }
         presentQRScanVC.delegate = self
         self.present(presentQRScanVC, animated: true)
@@ -218,11 +221,11 @@ class AddNewDataViewController: UIViewController {
         }
         switch segmentTag {
         case 0:
-            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "expenditure", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: subCategory.expenditure, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         case 1:
-            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "revenue", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: subCategory.revenue, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         default:
-            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: "account", amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: subCategory.account, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         }
         SPAlert.successAlert()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -243,8 +246,8 @@ class AddNewDataViewController: UIViewController {
         let okAction = UIAlertAction(
             title: "再試一次",
             style: .default) { action in
-                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: "qrScanVC") as? QRCodeViewController else {
-                    fatalError("can not find QRScanner VC")
+                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: self.ID.addDataQRScanVCID) as? QRCodeViewController else {
+                    fatalError(self.errorMessage.fatalErrorMSGQRVC)
                 }
                 presentQRScanVC.delegate = self
                 self.present(presentQRScanVC, animated: true)
@@ -374,18 +377,18 @@ extension AddNewDataViewController: UITableViewDataSource {
         let section = Section.allCases[section]
         switch section {
         case .date:
-            return "選擇日期"
+            return headerTitle.chooseDate
         case .category:
-            return "選擇細項"
+            return headerTitle.chooseCategory
         case .qrcode:
             switch segment {
             case .account:
                 return nil
             default:
-                return "使用QRCode掃描發票"
+                return headerTitle.chooseQRCode
             }
         case .detail:
-            return "備註"
+            return headerTitle.chooseDetail
         }
     }
 
