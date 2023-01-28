@@ -108,6 +108,7 @@ extension CategoryViewController: UITableViewDataSource {
             tableView.beginUpdates()
             categoryListViewModel.deleteSideMenuCategory(detailRow: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.reloadData()
             tableView.endUpdates()
         }
     }
