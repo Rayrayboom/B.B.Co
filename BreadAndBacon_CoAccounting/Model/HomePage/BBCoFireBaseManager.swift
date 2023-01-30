@@ -23,13 +23,13 @@ class BBCoFireBaseManager {
 
     // addNewDataVC
     func createUserData(id: String, subCollection: String, amount: String, category: String, account: String, date: String, month: String, detail: String, categoryImage: String, segment: Int) {
-        let documentRef = dataBase.collection("user")
+        let documentRef = dataBase.collection(SubCategory.user)
             .document(id)
             .collection(subCollection)
             .document()
         let identifier = documentRef.documentID
         switch subCollection {
-        case "expenditure":
+        case SubCategory.expenditure:
             let account = Account(
                 id: identifier,
                 amount: amount,
@@ -51,7 +51,7 @@ class BBCoFireBaseManager {
             } catch {
                 print(error)
             }
-        case "revenue":
+        case SubCategory.revenue:
             let account = Account(
                 id: identifier,
                 amount: amount,
@@ -134,7 +134,7 @@ class BBCoFireBaseManager {
 
     // 編輯 side menu category name
     func editSideMenuCategory(id: String, subCollection: String, indexPathRow: Int, dataId: String, textField: String) {
-        let documentRef = dataBase.collection("user").document(id).collection("\(subCollection)_category").document(dataId).updateData(["title" : textField]) { error in
+        let documentRef = dataBase.collection(SubCategory.user).document(id).collection("\(subCollection)_category").document(dataId).updateData(["title" : textField]) { error in
             if let error = error {
                 print("Error updating category: \(error)")
             } else {
@@ -145,7 +145,7 @@ class BBCoFireBaseManager {
 
     func deleteSideMenuCategory(id: String, subCollection: String, indexPathRow: Int, dataId: String) {
         let documentRef = dataBase
-            .collection("user")
+            .collection(SubCategory.user)
             .document(id)
             .collection("\(subCollection)_category")
             .document(dataId)
@@ -154,13 +154,13 @@ class BBCoFireBaseManager {
 
     // EditVC
     func editUserData(tableView: UITableView, id: String, subCollection: String, date: String, amount: String, category: String, account: String, month: String, detail: String, categoryImage: String, segment: Int) {
-        let fetchDocumentID = dataBase.collection("user")
+        let fetchDocumentID = dataBase.collection(SubCategory.user)
             .document(id)
             .collection(subCollection)
             .document()
         let identifier = fetchDocumentID.documentID
         switch subCollection {
-        case "expenditure":
+        case SubCategory.expenditure:
             let account = Account(
                 id: identifier,
                 amount: amount,
@@ -182,7 +182,7 @@ class BBCoFireBaseManager {
             } catch {
                 print(error)
             }
-        case "revenue":
+        case SubCategory.revenue:
             let account = Account(
                 id: identifier,
                 amount: amount,
@@ -247,7 +247,7 @@ class BBCoFireBaseManager {
     }
 
     func deleteSpecificData(id: String, subCollection: String, dataId: String) {
-        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document(dataId)
+        let documentRef = dataBase.collection(SubCategory.user).document(id).collection(subCollection).document(dataId)
         documentRef.delete()
     }
 
@@ -290,7 +290,7 @@ class BBCoFireBaseManager {
 
     // CoBookVC
     func createCoAccountBookData(bookNameString: String, userIdArray: [String]) -> String {
-        let documentID = dataBase.collection("co-account").document()
+        let documentID = dataBase.collection(SubCategory.coAccount).document()
         let identifier = documentID.documentID
         let prefixID = identifier.prefix(5)
         let book = Book(id: identifier, roomId: String(prefixID), name: bookNameString, userId: userIdArray)
@@ -305,7 +305,7 @@ class BBCoFireBaseManager {
     }
 
     func editSpecificData(bookData: [Book], indexPathRow: Int, textField: String) {
-        dataBase.collection("co-account").document(bookData[indexPathRow].id).updateData(["name": textField]) { error in
+        dataBase.collection(SubCategory.coAccount).document(bookData[indexPathRow].id).updateData(["name": textField]) { error in
             if let error = error {
                 print("Error updating document: \(error)")
             } else {
@@ -315,12 +315,12 @@ class BBCoFireBaseManager {
     }
 
     func deleteSpecificData(bookData: [Book], indexPathRow: Int) {
-        let documentRef = dataBase.collection("co-account").document(bookData[indexPathRow].id)
+        let documentRef = dataBase.collection(SubCategory.coAccount).document(bookData[indexPathRow].id)
         documentRef.delete()
     }
 
     func deleteSpecificSubcollection(bookData: [Book], indexPathRow: Int, bookDetailData: [Account], documentNum: Int) {
-        let documentRef = dataBase.collection("co-account").document(bookData[indexPathRow].id).collection("co_expenditure").document(bookDetailData[documentNum].id)
+        let documentRef = dataBase.collection(SubCategory.coAccount).document(bookData[indexPathRow].id).collection(SubCategory.coExpenditure).document(bookDetailData[documentNum].id)
         documentRef.delete()
     }
 
@@ -346,7 +346,7 @@ class BBCoFireBaseManager {
         var userNameArray: [String] = []
         let group = DispatchGroup()
         group.enter()
-        dataBase.collection("user")
+        dataBase.collection(SubCategory.user)
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -365,7 +365,7 @@ class BBCoFireBaseManager {
             }
 
         group.notify(queue: .main) {
-            self.dataBase.collection("co-account")
+            self.dataBase.collection(SubCategory.coAccount)
                 .document(bookIdentifier)
                 .updateData(["user_id": FieldValue.arrayUnion(userNameArray)]) { error in
                 if let error = error {
@@ -380,7 +380,7 @@ class BBCoFireBaseManager {
 
     func fetchCoBook(userName: String, completion: @escaping([Book]) -> Void) {
         var bookData: [Book] = []
-        dataBase.collection("co-account").whereField("user_id", arrayContains: userName)
+        dataBase.collection(SubCategory.coAccount).whereField("user_id", arrayContains: userName)
             .getDocuments { snapshot, error in
                 guard let snapshot = snapshot else {
                     return
@@ -426,7 +426,7 @@ class BBCoFireBaseManager {
     }
 
     func deleteSpecificData(accountData: [Account], document: String, subCollection: String, indexPathRow: Int) {
-        let documentRef = dataBase.collection("co-account").document(document).collection(subCollection).document(accountData[indexPathRow].id)
+        let documentRef = dataBase.collection(SubCategory.coAccount).document(document).collection(subCollection).document(accountData[indexPathRow].id)
         documentRef.delete()
     }
 
@@ -467,7 +467,7 @@ class BBCoFireBaseManager {
 
     func fetchMember(didSelecetedBook: String, completion: @escaping(([String]) -> Void)) {
         var userContentData: [String] = []
-        let docRef = dataBase.collection("co-account").document(didSelecetedBook)
+        let docRef = dataBase.collection(SubCategory.coAccount).document(didSelecetedBook)
 
         docRef.getDocument { (document, error) in
             if let document = document, document.exists,
@@ -502,7 +502,7 @@ class BBCoFireBaseManager {
 
     // signInVC
     func createUserIdentify(id: String, email: String, name: String) {
-        let userID = dataBase.collection("user")
+        let userID = dataBase.collection(SubCategory.user)
         let identifier = userID.document(id)
         let collection = User(id: id, email: email, name: name)
 
@@ -515,7 +515,7 @@ class BBCoFireBaseManager {
     }
 
     func createCategory(id: String, subCollection: String, content: String) {
-        let documentRef = dataBase.collection("user").document(id).collection(subCollection).document()
+        let documentRef = dataBase.collection(SubCategory.user).document(id).collection(subCollection).document()
         let collection = Category(id: documentRef.documentID, title: content)
 
         do {
@@ -527,12 +527,12 @@ class BBCoFireBaseManager {
 
     // MenuListTableVC
     func deleteUser(userId: String) {
-        let documentRef = dataBase.collection("user").document(userId)
+        let documentRef = dataBase.collection(SubCategory.user).document(userId)
         documentRef.delete()
     }
 
     func deleteSubCollectionDoc(userId: String, subCollection: String) {
-        let documentRef = dataBase.collection("user").document(userId).collection(subCollection)
+        let documentRef = dataBase.collection(SubCategory.user).document(userId).collection(subCollection)
         documentRef.getDocuments { querySnapshot, error in
             if let error = error {
                 print("Error getting documents: \(error)")
@@ -550,7 +550,7 @@ class BBCoFireBaseManager {
 
     func fetchUserAllCoBook(userName: String, completion: @escaping /*([Book]) -> Void*/ (Result<[Book], Error>) -> Void) {
         var bookContentData: [Book] = []
-        dataBase.collection("co-account").whereField("user_id", arrayContains: userName)
+        dataBase.collection(SubCategory.coAccount).whereField("user_id", arrayContains: userName)
             .getDocuments { snapshot, error in
                 if let error = error {
                     completion(.failure(error))
@@ -568,12 +568,12 @@ class BBCoFireBaseManager {
     }
 
     func deleteCoBook(bookId: String, completion: (() -> Void)? = nil) {
-        dataBase.collection("co-account").document(bookId).delete()
+        dataBase.collection(SubCategory.coAccount).document(bookId).delete()
         completion?()
     }
 
     func deleteUserFromCoBook(bookId: String, userName: String, completion: (() -> Void)? = nil) {
-        dataBase.collection("co-account")
+        dataBase.collection(SubCategory.coAccount)
             .document(bookId)
             .updateData(["user_id": FieldValue.arrayRemove([userName])])
         completion?()

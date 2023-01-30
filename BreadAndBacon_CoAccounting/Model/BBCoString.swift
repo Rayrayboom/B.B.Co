@@ -29,12 +29,16 @@ enum Identifier {
     // CoBookVC
     static let coBookCellID = "coBookCell"
     static let coAccountingVCID = "coAccountingVC"
+    // CategoryVC
+    static let categoryCellID = "categoryCell"
 }
 
 enum SubCategory {
+    static let user = "user"
     static let expenditure = "expenditure"
     static let revenue = "revenue"
     static let account = "account"
+    static let coAccount = "co-account"
     static let coExpenditure = "co_expenditure"
 }
 
@@ -45,6 +49,7 @@ enum HeaderTitle {
     static let chooseDetail = "備註"
     static let expenditureDetail = "支出明細"
     static let myAccountingBook = "我的帳本"
+    static let categoryList = "種類列表"
 }
 
 enum ErrorMessage {

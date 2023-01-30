@@ -86,7 +86,7 @@ extension CategoryViewController: UITableViewDelegate {
 
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "種類列表"
+        return HeaderTitle.categoryList
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -94,9 +94,9 @@ extension CategoryViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let categoryCell = tableView.dequeueReusableCell(withIdentifier: "categoryCell") as? CategoryTableViewCell
+        guard let categoryCell = tableView.dequeueReusableCell(withIdentifier: Identifier.categoryCellID) as? CategoryTableViewCell
         else {
-            fatalError("can not create category Cell")
+            fatalError(ErrorMessage.fatalErrorMSG)
         }
         categoryCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         categoryCell.categoryLabel.text = category[indexPath.row].title
