@@ -19,10 +19,6 @@ class CoBookViewController: UIViewController {
     var userContent: [User] = []
     var userName: [String] = []
     var controller = UIAlertController()
-    let subCategory = SubCategory()
-    let ID = Identifier()
-    let headerTitle = HeaderTitle()
-    let errorMessage = ErrorMessage()
     var bookName: String = ""
     var inputBookID: String = ""
     var specificBook: [Book] = []
@@ -207,7 +203,7 @@ class CoBookViewController: UIViewController {
         }
         guard let cell = bookTableView.cellForRow(at: indexPath) as? CoBookTableViewCell
         else {
-            fatalError(errorMessage.fatalErrorMSGCoBookTableViewCell)
+            fatalError(ErrorMessage.fatalErrorMSGCoBookTableViewCell)
         }
 
         let okAction = UIAlertAction(title: "修改", style: .default) { [unowned controller] _ in
@@ -225,9 +221,9 @@ class CoBookViewController: UIViewController {
 
 extension CoBookViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let pushCoAccountingVC = self.storyboard?.instantiateViewController(withIdentifier: ID.coAccountingVCID)as? CoAccountingViewController
+        guard let pushCoAccountingVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.coAccountingVCID)as? CoAccountingViewController
         else {
-            fatalError(errorMessage.fatalErrorMSGCoAccountingVC)
+            fatalError(ErrorMessage.fatalErrorMSGCoAccountingVC)
         }
         pushCoAccountingVC.didSelecetedBook = data[indexPath.row].id
 
@@ -235,13 +231,13 @@ extension CoBookViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return headerTitle.myAccountingBook
+        return HeaderTitle.myAccountingBook
     }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: self.subCategory.coExpenditure)
+                self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: SubCategory.coExpenditure)
                 self.group.notify(queue: .main) {
                     for num in 0..<self.bookDetail.count {
                         BBCoFireBaseManager.shared.deleteSpecificSubcollection(bookData: self.data, indexPathRow: indexPath.row, bookDetailData: self.bookDetail, documentNum: num)
@@ -274,9 +270,9 @@ extension CoBookViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let coBookCell = tableView.dequeueReusableCell(withIdentifier: ID.coBookCellID) as? CoBookTableViewCell
+        guard let coBookCell = tableView.dequeueReusableCell(withIdentifier: Identifier.coBookCellID) as? CoBookTableViewCell
         else {
-            fatalError(errorMessage.fatalErrorMSG)
+            fatalError(ErrorMessage.fatalErrorMSG)
         }
         coBookCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
@@ -290,7 +286,7 @@ extension CoBookViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: subCategory.coExpenditure)
+            self.fetchBookDetail(document: self.data[indexPath.row].id, subCollection: SubCategory.coExpenditure)
             self.group.notify(queue: .main) {
                 tableView.beginUpdates()
                 for num in 0..<self.bookDetail.count {

@@ -88,10 +88,6 @@ class EditViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
     var editData = DataModel()
-    let subCategory = SubCategory()
-    let ID = Identifier()
-    let headerTitle = HeaderTitle()
-    let errorMessage = ErrorMessage()
     weak var homeVC: ViewController?
     // store decode invoice data
     var invoice: Invoice? {
@@ -117,9 +113,9 @@ class EditViewController: UIViewController {
     @IBOutlet weak var editTableView: UITableView!
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
     @IBAction func insertEditQRCode(_ sender: UIButton) {
-        guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: ID.editQRScanVCID) as? EditQRCodeViewController
+        guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.editQRScanVCID) as? EditQRCodeViewController
         else {
-            fatalError(errorMessage.fatalErrorMSGEditQRVC)
+            fatalError(ErrorMessage.fatalErrorMSGEditQRVC)
         }
         presentEditQRScanVC.delegate = self
         self.present(presentEditQRScanVC, animated: true)
@@ -194,7 +190,7 @@ class EditViewController: UIViewController {
         default:
             sourceSegmentControl.selectedSegmentTintColor = UIColor().hexStringToUIColor(hex: "E5BB4B")
         }
-        guard let cell = editTableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? EditDataTableViewCell else { fatalError(errorMessage.fatalErrorMSGSpecific) }
+        guard let cell = editTableView.cellForRow(at: IndexPath(row: 1, section: 1)) as? EditDataTableViewCell else { fatalError(ErrorMessage.fatalErrorMSGSpecific) }
         cell.resetContent()
         editData.categoryTextField = ""
         editData.categoryImageName = ""
@@ -225,22 +221,22 @@ class EditViewController: UIViewController {
     func dataSegmentCategory() -> String {
         switch editData.segmentTag {
         case 0:
-            return subCategory.expenditure
+            return SubCategory.expenditure
         case 1:
-            return subCategory.revenue
+            return SubCategory.revenue
         default:
-            return subCategory.account
+            return SubCategory.account
         }
     }
 
     func segmentCategory() -> String {
         switch segmentTag {
         case 0:
-            return subCategory.expenditure
+            return SubCategory.expenditure
         case 1:
-            return subCategory.revenue
+            return SubCategory.revenue
         default:
-            return subCategory.account
+            return SubCategory.account
         }
     }
 
@@ -269,8 +265,8 @@ class EditViewController: UIViewController {
         let okAction = UIAlertAction(
             title: "再試一次",
             style: .default) { action in
-                guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: self.ID.editQRScanVCID) as? EditQRCodeViewController else {
-                    fatalError(self.errorMessage.fatalErrorMSGEditQRVC)
+                guard let presentEditQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.editQRScanVCID) as? EditQRCodeViewController else {
+                    fatalError(ErrorMessage.fatalErrorMSGEditQRVC)
                 }
                 presentEditQRScanVC.delegate = self
                 self.present(presentEditQRScanVC, animated: true)
@@ -398,18 +394,18 @@ extension EditViewController: UITableViewDataSource {
         let section = Section.allCases[section]
         switch section {
         case .date:
-            return headerTitle.chooseDate
+            return HeaderTitle.chooseDate
         case .category:
-            return headerTitle.chooseCategory
+            return HeaderTitle.chooseCategory
         case .qrcode:
             switch segment {
             case .account:
                 return nil
             default:
-                return headerTitle.chooseQRCode
+                return HeaderTitle.chooseQRCode
             }
         case .detail:
-            return headerTitle.chooseDetail
+            return HeaderTitle.chooseDetail
         }
     }
 
@@ -423,16 +419,16 @@ extension EditViewController: UITableViewDataSource {
             switch section {
             case .date:
                 guard let editTimeCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.editTimeCellID) as? EditTimeTableViewCell
+                    withIdentifier: Identifier.editTimeCellID) as? EditTimeTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 editTimeCell.delegate = self
                 editTimeCell.config(dateTime: editData.dateTime)
                 return editTimeCell
             case .category:
-                guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: ID.editDataCellID) as? EditDataTableViewCell else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: Identifier.editDataCellID) as? EditDataTableViewCell else {
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 editDataCell.delegate = self
                 editDataCell.contentConfig(segment: segmentTag, indexPath: indexPath, titleName: transferCategory[indexPath.row])
@@ -447,16 +443,16 @@ extension EditViewController: UITableViewDataSource {
                 return editDataCell
             case .qrcode:
                 guard let editQRCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.editQRCellID) as? EditQRCodeTableViewCell
+                    withIdentifier: Identifier.editQRCellID) as? EditQRCodeTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 return editQRCell
             case .detail:
                 guard let editDetailCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.editDetailCellID) as? EditDetailTableViewCell
+                    withIdentifier: Identifier.editDetailCellID) as? EditDetailTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 editDetailCell.delegate = self
                 editDetailCell.config(detailText: editData.detailTextView)
@@ -466,16 +462,16 @@ extension EditViewController: UITableViewDataSource {
             switch section {
             case .date:
                 guard let editTimeCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.editTimeCellID) as? EditTimeTableViewCell
+                    withIdentifier: Identifier.editTimeCellID) as? EditTimeTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 editTimeCell.delegate = self
                 editTimeCell.config(dateTime: editData.dateTime)
                 return editTimeCell
             case .category:
-                guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: ID.editDataCellID) as? EditDataTableViewCell else {
-                    fatalError(errorMessage.fatalErrorMSG)                }
+                guard let editDataCell = tableView.dequeueReusableCell(withIdentifier: Identifier.editDataCellID) as? EditDataTableViewCell else {
+                    fatalError(ErrorMessage.fatalErrorMSG)                }
                 editDataCell.delegate = self
                 editDataCell.contentConfig(segment: segmentTag, indexPath: indexPath, titleName: costCategory[indexPath.row])
                 switch indexPath.row {
@@ -494,16 +490,16 @@ extension EditViewController: UITableViewDataSource {
                 return editDataCell
             case .qrcode:
                 guard let editQRCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.editQRCellID) as? EditQRCodeTableViewCell
+                    withIdentifier: Identifier.editQRCellID) as? EditQRCodeTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 return editQRCell
             case .detail:
                 guard let editDetailCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.editDetailCellID) as? EditDetailTableViewCell
+                    withIdentifier: Identifier.editDetailCellID) as? EditDetailTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 editDetailCell.delegate = self
                 editDetailCell.config(detailText: editData.detailTextView)

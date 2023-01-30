@@ -84,10 +84,6 @@ class AddNewDataViewController: UIViewController {
     var tapIndexpath: IndexPath?
     var imageIndexPath: IndexPath?
     var data = NewDataModel()
-    let subCategory = SubCategory()
-    let ID = Identifier()
-    let headerTitle = HeaderTitle()
-    let errorMessage = ErrorMessage()
     var models = [Model]()
     var dateFromHomeVC: String? = ""
     var messageFromQRVC: String = ""
@@ -114,8 +110,8 @@ class AddNewDataViewController: UIViewController {
     @IBOutlet weak var sourceSegmentControl: UISegmentedControl!
 
     @IBAction func insertQRCode(_ sender: UIButton) {
-        guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: ID.addDataQRScanVCID) as? QRCodeViewController else {
-            fatalError(errorMessage.fatalErrorMSGQRVC)
+        guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.addDataQRScanVCID) as? QRCodeViewController else {
+            fatalError(ErrorMessage.fatalErrorMSGQRVC)
         }
         presentQRScanVC.delegate = self
         self.present(presentQRScanVC, animated: true)
@@ -220,11 +216,11 @@ class AddNewDataViewController: UIViewController {
         }
         switch segmentTag {
         case 0:
-            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: subCategory.expenditure, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: SubCategory.expenditure, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         case 1:
-            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: subCategory.revenue, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: SubCategory.revenue, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         default:
-            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: subCategory.account, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
+            BBCoFireBaseManager.shared.createUserData(id: getId, subCollection: SubCategory.account, amount: data.amountTextField, category: data.categoryTextField, account: data.accountTextField, date: data.dateTime, month: data.monthTime, detail: data.detailTextView, categoryImage: data.categoryImageName, segment: segmentTag)
         }
         SPAlert.successAlert()
         self.presentingViewController?.dismiss(animated: true, completion: nil)
@@ -245,8 +241,8 @@ class AddNewDataViewController: UIViewController {
         let okAction = UIAlertAction(
             title: "再試一次",
             style: .default) { action in
-                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: self.ID.addDataQRScanVCID) as? QRCodeViewController else {
-                    fatalError(self.errorMessage.fatalErrorMSGQRVC)
+                guard let presentQRScanVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.addDataQRScanVCID) as? QRCodeViewController else {
+                    fatalError(ErrorMessage.fatalErrorMSGQRVC)
                 }
                 presentQRScanVC.delegate = self
                 self.present(presentQRScanVC, animated: true)
@@ -376,18 +372,18 @@ extension AddNewDataViewController: UITableViewDataSource {
         let section = Section.allCases[section]
         switch section {
         case .date:
-            return headerTitle.chooseDate
+            return HeaderTitle.chooseDate
         case .category:
-            return headerTitle.chooseCategory
+            return HeaderTitle.chooseCategory
         case .qrcode:
             switch segment {
             case .account:
                 return nil
             default:
-                return headerTitle.chooseQRCode
+                return HeaderTitle.chooseQRCode
             }
         case .detail:
-            return headerTitle.chooseDetail
+            return HeaderTitle.chooseDetail
         }
     }
 
@@ -401,18 +397,18 @@ extension AddNewDataViewController: UITableViewDataSource {
             switch section {
             case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataDateCellID) as? AddDateTableViewCell
+                    withIdentifier: Identifier.addDataDateCellID) as? AddDateTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 dateCell.delegate = self
                 dateCell.config(currentDate: data.dateTime)
                 return dateCell
             case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataDataCellID) as? AddNewDataTableViewCell
+                    withIdentifier: Identifier.addDataDataCellID) as? AddNewDataTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: transferCategory[indexPath.row])
@@ -427,18 +423,18 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return addDataCell
             case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataQRCellID) as? QRCodeTableViewCell
+                    withIdentifier: Identifier.addDataQRCellID) as? QRCodeTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 // 轉帳不需顯示QRCode scanner
                 qrCell.qrButton.isHidden = true
                 return qrCell
             case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataDetailCellID) as? DetailTableViewCell
+                    withIdentifier: Identifier.addDataDetailCellID) as? DetailTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 detailCell.delegate = self
                 return detailCell
@@ -447,9 +443,9 @@ extension AddNewDataViewController: UITableViewDataSource {
             switch section {
             case .date:
                 guard let dateCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataDateCellID) as? AddDateTableViewCell
+                    withIdentifier: Identifier.addDataDateCellID) as? AddDateTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 dateCell.delegate = self
                 if let dateFromVC = UserDefaults.standard.object(forKey: "currentDate") as? Date, data.dateTime == "" {
@@ -463,9 +459,9 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return dateCell
             case .category:
                 guard let addDataCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataDataCellID) as? AddNewDataTableViewCell
+                    withIdentifier: Identifier.addDataDataCellID) as? AddNewDataTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 addDataCell.delegate = self
                 addDataCell.contentConfig(segment: segmentTag, titleName: costCategory[indexPath.row])
@@ -491,17 +487,17 @@ extension AddNewDataViewController: UITableViewDataSource {
                 return addDataCell
             case .qrcode:
                 guard let qrCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataQRCellID) as? QRCodeTableViewCell
+                    withIdentifier: Identifier.addDataQRCellID) as? QRCodeTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 qrCell.qrButton.isHidden = false
                 return qrCell
             case .detail:
                 guard let detailCell = tableView.dequeueReusableCell(
-                    withIdentifier: ID.addDataDetailCellID) as? DetailTableViewCell
+                    withIdentifier: Identifier.addDataDetailCellID) as? DetailTableViewCell
                 else {
-                    fatalError(errorMessage.fatalErrorMSG)
+                    fatalError(ErrorMessage.fatalErrorMSG)
                 }
                 detailCell.delegate = self
                 detailCell.config(detailText: data.detailTextView)
