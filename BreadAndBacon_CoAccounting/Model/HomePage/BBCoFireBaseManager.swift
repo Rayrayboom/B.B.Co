@@ -143,6 +143,7 @@ class BBCoFireBaseManager {
         }
     }
 
+    // 刪除 side menu category
     func deleteSideMenuCategory(id: String, subCollection: String, indexPathRow: Int, dataId: String) {
         let documentRef = dataBase
             .collection(SubCategory.user)
