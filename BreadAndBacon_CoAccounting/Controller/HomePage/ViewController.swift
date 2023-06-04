@@ -13,8 +13,9 @@ protocol ViewControllerDelegate: AnyObject {
     func getDate(currentDate: String)
 }
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     weak var delegate: ViewControllerDelegate?
+//    var homeViewModel = HomeViewModel()
     var menu: SideMenuNavigationController?
     var data: [Account] = [] {
         didSet {
@@ -49,6 +50,9 @@ class ViewController: UIViewController {
         menu?.setNavigationBarHidden(true, animated: false)
         SideMenuManager.default.leftMenuNavigationController = menu
         SideMenuManager.default.addPanGestureToPresent(toView: self.view)
+//        homeViewModel.data.bind { [unowned self] result in
+//            self.data = result
+//        }
 
         showDetailTableView.delegate = self
         showDetailTableView.dataSource = self
@@ -64,6 +68,7 @@ class ViewController: UIViewController {
         super.viewWillAppear(animated)
         BBCoLoading.loading(view: self.view)
         self.fetchAllData()
+//        homeViewModel.fetchAllData(date: date)
     }
 
     func setupUI() {
@@ -103,6 +108,7 @@ class ViewController: UIViewController {
         BBCDateFormatter.shareFormatter.dateFormat = "yyyy/MM/dd"
         dateBO.tintColor = .black
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: sender.date), for: .normal)
+//        homeViewModel.fetchAllData(date: date)
         self.fetchAllData()
     }
 
@@ -114,13 +120,14 @@ class ViewController: UIViewController {
         datePicker.setDate(today, animated: true)
         dateBO.setTitle(BBCDateFormatter.shareFormatter.string(from: datePicker.date), for: .normal)
         self.fetchAllData()
+//        homeViewModel.fetchAllData(date: date)
     }
 
     func fetchAllData() {
         data = []
         category = []
         let subCollection = ["expenditure", "revenue", "account"]
-        
+
         for num in subCollection {
             group.enter()
             BBCoFireBaseManager.shared.fetchUserSpecific(id: getId, subCollection: num, date: self.date) { [weak self] result in
@@ -129,6 +136,7 @@ class ViewController: UIViewController {
                 self.group.leave()
             }
         }
+
         group.notify(queue: .main) {
             self.checkDataCount()
             self.dateBO.addTarget(self, action: #selector(self.tappedDateButton), for: .touchUpInside)
@@ -136,6 +144,15 @@ class ViewController: UIViewController {
         }
     }
 }
+
+//extension ViewController: HomeViewModelDelegate {
+//    func doThingsAfterFetchedData() {
+//        print("=== do this")
+//        self.checkDataCount()
+//        self.dateBO.addTarget(self, action: #selector(self.tappedDateButton), for: .touchUpInside)
+//        self.showDetailTableView.reloadData()
+//    }
+//}
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -172,10 +189,12 @@ extension ViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
-            let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
-                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
-                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "account", dataId: self.data[indexPath.row].id)
+            let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { [unowned self] action in
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: SubCategory.expenditure, dataId: self.data[indexPath.row].id)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: SubCategory.revenue, dataId: self.data[indexPath.row].id)
+                BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: SubCategory.account, dataId: self.data[indexPath.row].id)
+//                homeViewModel.deleteSpecificData(indexPathRow: indexPath.row)
+                
                 self.fetchAllData()
             }
             let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
@@ -223,9 +242,10 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
-            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "expenditure", dataId: self.data[indexPath.row].id)
-            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "revenue", dataId: self.data[indexPath.row].id)
-            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: "account", dataId: self.data[indexPath.row].id)
+            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: SubCategory.expenditure, dataId: self.data[indexPath.row].id)
+            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: SubCategory.revenue, dataId: self.data[indexPath.row].id)
+            BBCoFireBaseManager.shared.deleteSpecificData(id: self.getId, subCollection: SubCategory.account, dataId: self.data[indexPath.row].id)
+//            homeViewModel.deleteSpecificData(indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.endUpdates()
