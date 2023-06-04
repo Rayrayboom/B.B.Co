@@ -21,17 +21,30 @@ struct CategoryListViewModel {
     func fetchSideMenuCategory() {
         switch indexPathRow {
         case 0:
-            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "expenditure") { result in
+            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: SubCategory.expenditure) { result in
                 category.value = result
             }
         case 1:
-            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "revenue") { result in
+            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: SubCategory.revenue) { result in
                 category.value = result
             }
         case 2:
-            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: "account") { result in
+            BBCoFireBaseManager.shared.fetchSideMenuCategory(id: getId, subCollection: SubCategory.account) { result in
                 category.value = result
             }
+        default:
+            break
+        }
+    }
+    
+    func editSideMenuCategory(detailRow: Int, textFieldContent: String) {
+        switch indexPathRow {
+        case 0:
+            BBCoFireBaseManager.shared.editSideMenuCategory(id: getId, subCollection: SubCategory.expenditure, indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "", textField: textFieldContent)
+        case 1:
+            BBCoFireBaseManager.shared.editSideMenuCategory(id: getId, subCollection: SubCategory.revenue, indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "", textField: textFieldContent)
+        case 2:
+            BBCoFireBaseManager.shared.editSideMenuCategory(id: getId, subCollection: SubCategory.account, indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "", textField: textFieldContent)
         default:
             break
         }
@@ -40,15 +53,14 @@ struct CategoryListViewModel {
     func deleteSideMenuCategory(detailRow: Int) {
         switch indexPathRow {
         case 0:
-            BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "expenditure", indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "")
+            BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: SubCategory.expenditure, indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "")
         case 1:
-            BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "revenue", indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "")
+            BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: SubCategory.revenue, indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "")
         case 2:
-            BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: "account", indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "")
+            BBCoFireBaseManager.shared.deleteSideMenuCategory(id: getId, subCollection: SubCategory.account, indexPathRow: detailRow, dataId: category.value[detailRow].id ?? "")
         default:
             break
         }
         category.value.remove(at: detailRow)
     }
 }
-

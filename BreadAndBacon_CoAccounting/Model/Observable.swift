@@ -20,6 +20,7 @@ final class Observable<T> {
         self.value = value
     }
 
+    // 給值
     func bind(listener: Listener?) {
         self.listener = listener
         listener?(value)

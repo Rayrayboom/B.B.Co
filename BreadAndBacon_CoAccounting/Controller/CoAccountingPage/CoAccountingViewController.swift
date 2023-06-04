@@ -34,9 +34,9 @@ class CoAccountingViewController: UIViewController {
 
     @IBOutlet weak var bookDetailTableView: UITableView!
     @IBAction func addDetail(_ sender: UIButton) {
-        guard let presentCoDetailVC = self.storyboard?.instantiateViewController(withIdentifier: "addCoDetailVC") as? AddCoDetailViewController
+        guard let presentCoDetailVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.addCoDetailVCID) as? AddCoDetailViewController
         else {
-            fatalError("can not present CoDetailVC")
+            fatalError(ErrorMessage.fatalErrorMSGCoDetailVC)
         }
         presentCoDetailVC.isEdit = false
         presentCoDetailVC.didSelecetedBook = didSelecetedBook
@@ -62,7 +62,7 @@ class CoAccountingViewController: UIViewController {
         super.viewWillAppear(animated)
         BBCoLoading.loading(view: self.view)
         self.tabBarController?.tabBar.isHidden = true
-        fetchCoBookDetail(document: didSelecetedBook, subCollection: "co_expenditure")
+        fetchCoBookDetail(document: didSelecetedBook, subCollection: SubCategory.coExpenditure)
         bookDetailTableView.reloadData()
     }
 
@@ -94,7 +94,7 @@ class CoAccountingViewController: UIViewController {
 
     @objc func refresh(sender: UIRefreshControl) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.fetchCoBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
+            self.fetchCoBookDetail(document: self.didSelecetedBook, subCollection: SubCategory.coExpenditure)
             self.refreshControl.endRefreshing()
         }
     }
@@ -296,9 +296,9 @@ class CoAccountingViewController: UIViewController {
 
 extension CoAccountingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let presentEditAddCoVC = self.storyboard?.instantiateViewController(withIdentifier: "addCoDetailVC") as? AddCoDetailViewController
+        guard let presentEditAddCoVC = self.storyboard?.instantiateViewController(withIdentifier: Identifier.addCoDetailVCID) as? AddCoDetailViewController
         else {
-            fatalError("can not find CoDetailVC")
+            fatalError(ErrorMessage.fatalErrorMSGCoDetailVC)
         }
         presentEditAddCoVC.isEdit = true
         presentEditAddCoVC.tapIndexpath = indexPath
@@ -309,14 +309,14 @@ extension CoAccountingViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "支出明細"
+        return HeaderTitle.expenditureDetail
     }
 
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
             let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { action in
-                BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
-                self.fetchCoBookDetail(document: self.didSelecetedBook, subCollection: "co_expenditure")
+                BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: SubCategory.coExpenditure, indexPathRow: indexPath.row)
+                self.fetchCoBookDetail(document: self.didSelecetedBook, subCollection: SubCategory.coExpenditure)
             }
             return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction])
         }
@@ -329,9 +329,9 @@ extension CoAccountingViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let listCell = tableView.dequeueReusableCell(withIdentifier: "listCell") as? ListTableViewCell
+        guard let listCell = tableView.dequeueReusableCell(withIdentifier: Identifier.listCellID) as? ListTableViewCell
         else {
-            fatalError("can not create listCell")
+            fatalError(ErrorMessage.fatalErrorMSG)
         }
         listCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
 
@@ -347,7 +347,7 @@ extension CoAccountingViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             tableView.beginUpdates()
-            BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: "co_expenditure", indexPathRow: indexPath.row)
+            BBCoFireBaseManager.shared.deleteSpecificData(accountData: self.data, document: self.didSelecetedBook, subCollection: SubCategory.coExpenditure, indexPathRow: indexPath.row)
             data.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             self.checkDataCount()

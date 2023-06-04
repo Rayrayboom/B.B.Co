@@ -16,6 +16,7 @@ final class CategoryViewController: UIViewController {
             categoryTableView.reloadData()
         }
     }
+    var controller = UIAlertController()
 
     @IBOutlet weak var categoryTableView: UITableView!
     override func viewDidLoad() {
@@ -53,11 +54,39 @@ extension CategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions -> UIMenu? in
+            let deleteAction = UIAction(title: "刪除", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { [unowned self] action in
+                self.categoryListViewModel.deleteSideMenuCategory(detailRow: indexPath.row)
+            }
+            let editAction = UIAction(title: "編輯", image: nil, identifier: nil, discoverabilityTitle: nil, attributes: .init(), state: .off) { [unowned self] action in
+                controller = UIAlertController(title: "編輯種類", message: nil, preferredStyle: .alert)
+                controller.addTextField { textField in
+                    textField.text = category[indexPath.row].title
+                    textField.keyboardType = UIKeyboardType.default
+                    textField.keyboardAppearance = .dark
+                }
+                let okAction = UIAlertAction(title: "修改", style: .default) { [unowned self] action in
+                    categoryListViewModel.editSideMenuCategory(detailRow: indexPath.row, textFieldContent: controller.textFields?[0].text ?? "")
+                    categoryListViewModel.fetchSideMenuCategory()
+                    categoryListViewModel.category.bind { [unowned self] result in
+                        self.category = result
+                    }
+                }
+                controller.addAction(okAction)
+                let cancelAction = UIAlertAction(title: "取消", style: .cancel, handler: nil)
+                controller.addAction(cancelAction)
+                present(controller, animated: true)
+            }
+            return UIMenu(title: "", image: nil, identifier: nil, options: .displayInline, children: [deleteAction, editAction])
+        }
+    }
 }
 
 extension CategoryViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "種類列表"
+        return HeaderTitle.categoryList
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -65,9 +94,9 @@ extension CategoryViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let categoryCell = tableView.dequeueReusableCell(withIdentifier: "categoryCell") as? CategoryTableViewCell
+        guard let categoryCell = tableView.dequeueReusableCell(withIdentifier: Identifier.categoryCellID) as? CategoryTableViewCell
         else {
-            fatalError("can not create category Cell")
+            fatalError(ErrorMessage.fatalErrorMSG)
         }
         categoryCell.backgroundColor = UIColor().hexStringToUIColor(hex: "f2f6f7")
         categoryCell.categoryLabel.text = category[indexPath.row].title
@@ -79,6 +108,7 @@ extension CategoryViewController: UITableViewDataSource {
             tableView.beginUpdates()
             categoryListViewModel.deleteSideMenuCategory(detailRow: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            tableView.reloadData()
             tableView.endUpdates()
         }
     }
